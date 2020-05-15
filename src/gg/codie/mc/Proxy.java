@@ -93,80 +93,110 @@ public class Proxy {
                 clientSocket = serverSocket.accept();
                 outGoing = new PrintWriter(clientSocket.getOutputStream(), true);
 
-                //Stream to get data from the browser
-                BufferedReader inComing = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                final int bufferSize = 8096;
 
-                String incomingRequest;
-                String url = "";
-                String request = "";
-                //Take the incoming request
-                char[] buf = new char[8196];        //8196 is the default max size for GET requests in Apache
-                int bytesRead = inComing.read(buf);   //BytesRead need to be calculated if the char buffer contains too many values
-                request = new String(buf, 0, bytesRead);
+                byte[] buffer = new byte[bufferSize];
+                int bytes_read;
+                LinkedList<Byte> request = new LinkedList();
+
+                bytes_read = clientSocket.getInputStream().read(buffer, 0, bufferSize);
+                for(int i = 0; i < bytes_read; i++)
+                    request.add(buffer[i]);
+
+                String requestHeaders = new String(buffer).split("\r\n\r\n")[0];
+
+//                // keep reading.
+                String requestString = new String(buffer);
+                for (String header : requestHeaders.split("\r\n")) {
+                    if(header.contains("Content-Length")) {
+                        int contentLength = Integer.parseInt(header.split(": ")[1]);
+                        int headerLength = requestString.substring(0, requestString.indexOf("\r\n\r\n") + 4).length();
+
+                        while(request.size() < contentLength + headerLength) {
+                            bytes_read = clientSocket.getInputStream().read(buffer, 0, bufferSize);
+                            for(int i = 0; i < bytes_read; i++)
+                                request.add(buffer[i]);
+                        }
+
+                        break;
+                    }
+                }
+
+                byte[] requestBytes = ArrayUtils.toPrimitives(request.toArray(new Byte[0]));
+                requestString = new String(requestBytes);
 
                 System.out.println("Request");
-                System.out.println(request);
 
                 for (String redirectedDomain : redirectedDomains) {
-                    request = request.replace(redirectedDomain, destination);
+                    requestString = requestString.replace(redirectedDomain, destination);
                 }
 
-                System.out.println(request);
+                System.out.println(requestHeaders);
 
 
 
-                url = Proxy.pullLinks(request).get(0);
+                String urlString = Proxy.pullLinks(requestString).get(0);
 
-                String host = url.replace("http://", "");
-                if (host.contains(":"))
-                    host = host.substring(0, host.indexOf('/'));
-                else
-                    host = host.substring(0, host.indexOf('/'));
+                URL url = new URL(urlString);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
-                int websitePort = 80;
-                String tempString = url.replace("http://", "").replace("https://", "");
-                if(tempString.contains(":")) {
-                    websitePort = Integer.parseInt(tempString.substring(tempString.indexOf(":") + 1, tempString.indexOf("/")));
+                for(String header : requestHeaders.substring(requestHeaders.indexOf("\r\n") + 2).split("\r\n")) {
+                    String headerName = header.substring(0, header.indexOf(":"));
+                    String headerValue = header.substring(header.indexOf(":"));
+                    connection.setRequestProperty(headerName, headerValue);
                 }
 
-                System.out.println("Sending request");
+                String methodLine = requestHeaders.substring(0, requestHeaders.indexOf("\r\n"));
+                connection.setRequestMethod(methodLine.substring(0, methodLine.indexOf(" ")));
 
-                //Resolve the hostname to an IP address
-                InetAddress ip = InetAddress.getByName(host);
+                connection.setUseCaches(false);
+                connection.setDoInput(true);
 
-                //Open socket to a specific host and port
-                Socket socket = new Socket(host, websitePort);
+                if((requestHeaders.length() + 4) < requestBytes.length) {
+                    byte[] content = Arrays.copyOfRange(requestBytes, requestHeaders.length() + 4, requestBytes.length);
+                    connection.setDoOutput(true);
+                    DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
+                    wr.write(content);
+                    wr.flush();
+                    wr.close();
+                } else {
+                    connection.connect();
+                }
 
-                //Get input and output streams for the socket
-                OutputStream out = socket.getOutputStream();
-                InputStream in = socket.getInputStream();
+                String responseHeader = "";
+                for (Map.Entry<String, List<String>> header : connection.getHeaderFields().entrySet()) {
+                    if(header.getKey() == null) {
+                        Iterator<String> valueIterator = header.getValue().iterator();
+                        responseHeader += valueIterator.next();
+                        while (valueIterator.hasNext()) {
+                            responseHeader += " " + valueIterator.next();
+                        }
+                        continue;
+                    }
+                    responseHeader += header.getKey() +  ":";
+                    Iterator<String> valueIterator = header.getValue().iterator();
+                    responseHeader += valueIterator.next();
+                    while (valueIterator.hasNext()) {
+                        responseHeader += ", " + valueIterator.next();
+                    }
+                    responseHeader += "\r\n";
+                }
+                responseHeader += "\r\n";
 
-                out.write(request.getBytes());
-                out.flush();
+                System.out.println(responseHeader);
+                clientSocket.getOutputStream().write(responseHeader.getBytes());
 
-                System.out.println("Sending Complete");
+                InputStream is = connection.getInputStream();
 
-
-                // Reads the server's response
-//                StringBuffer response = new StringBuffer();
-                byte[] buffer = new byte[4096];
-                int bytes_read;
-                LinkedList<Byte> response = new LinkedList<Byte>();
-
-                // Reads HTTP response
-                while ((bytes_read = in.read(buffer, 0, 4096)) != -1) {
-                    // Print server's response
+                buffer = new byte[bufferSize];
+                while ((bytes_read = is.read(buffer, 0, 4096)) != -1) {
                     for(int i = 0; i < bytes_read; i++)
-                        response.add(buffer[i]);
+                        clientSocket.getOutputStream().write(buffer[i]);
                 }
 
-                socket.close();
-
-
-
-                clientSocket.getOutputStream().write(toPrimitives(response.toArray(new Byte[0])));
                 clientSocket.getOutputStream().flush();
                 clientSocket.getOutputStream().close();
+
             } catch (IOException ex) {
                 System.out.println("Something went very wrong.");
                 ex.printStackTrace();
@@ -178,16 +208,6 @@ public class Proxy {
         serverSocket.close();
     }
 
-    static byte[] toPrimitives(Byte[] oBytes)
-    {
-
-        byte[] bytes = new byte[oBytes.length];
-        for(int i = 0; i < oBytes.length; i++){
-            bytes[i] = oBytes[i];
-        }
-        return bytes;
-
-    }
 
     //Pull all links from the body for easy retrieval
     private static ArrayList<String> pullLinks(String text) {

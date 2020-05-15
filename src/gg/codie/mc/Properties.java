@@ -18,7 +18,7 @@ public class Properties {
         properties.setProperty("joinServer", "false");
         properties.setProperty("jarFilePath", "");
         properties.setProperty("javaCommand", "java");
-        properties.setProperty("baseUrl", "www.minecraft.net/game/");
+        properties.setProperty("baseUrl", "www.minecraft.net:80/game/");
     }
 
     public static void loadProperties() {

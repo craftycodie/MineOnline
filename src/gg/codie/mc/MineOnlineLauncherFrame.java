@@ -149,8 +149,6 @@ public class MineOnlineLauncherFrame extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    int proxyPort = Proxy.launchProxy();
-
                     ArrayList<String> args = new ArrayList();
 
                     String premiumArgument = "-demo";
