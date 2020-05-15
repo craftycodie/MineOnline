@@ -10,9 +10,24 @@ The program can also run regular desktop versions of the game, and even old laun
 
 ## How do I use MineOnline?
 While you can use this launcher just to play applets offline, well It's called MineOnline for a reason.
-The application was build for use with [my Minecraft API project](https://github.com/codieradical/Minecraft-API).
-At the moment, there aren't any public hosts, so you'll have to localhost that project.
-The launcher is pre-configured for localhosting, so once you've got an API instance up and running, launching the game is as simple as browsing for the jar and pressing play.
+The application was build for use with [my Minecraft API project](https://github.com/codieradical/Minecraft-API), it might work with other reimplementations too.
+
+1. Select an API domain name.
+  - This is the API you want Minecraft to talk to. If you don't know of any, `mc.codie.gg` works for now.
+2. Select your jar.
+  - Select a jar using the browse button or by entering the path. Once it's been found, the applet and game classes should fill up.
+  - If applet and game class are empty, enter the main class into the relevant box. eg com.mojang.minecraft.MinecraftApplet.
+  - Note: in this current prototype release, the launcher expects retro install folders (bin folder containing lwgjl etc and natives).
+3. Select a username.
+- Authentication
+  - If you wish to authenticate to use online features like world saving or online mode servers, enter your password into the password field and press login. This will fetch your Session ID.
+  - THIS IS NOT YOUR MOJANG PASSWORD! You are logging into the specified API. If you're confused, click "Need Acccount?".
+- Joining Servers
+  - If you're using an old applet capable of joining servers, you can enter the details to join.
+  - If the server is online, you will need to get a Server Authentication Token. This requires a session ID and a server IP.
+- Base URL
+  - Some versions of the game require changes to the base URL field. More info on this later.
+  
 
 More to come soon.
 
