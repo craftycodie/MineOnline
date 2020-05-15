@@ -169,4 +169,34 @@ public class MineOnlineLauncher {
 				connection.disconnect();
 		}
 	}
+
+	public static boolean checkSession(String username, String sessionId) {
+		HttpURLConnection connection = null;
+
+		try {
+			String parameters = "session=" + URLEncoder.encode(sessionId, "UTF-8") + "&name=" + URLEncoder.encode(username, "UTF-8");
+			URL url = new URL("http://" + Properties.properties.getProperty("apiDomainName") + "/login/session.jsp?" + parameters);
+			connection = (HttpURLConnection) url.openConnection();
+			connection.setDoInput(true);
+			connection.setDoOutput(false);
+			connection.connect();
+
+			InputStream is = connection.getInputStream();
+			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+
+			String res = rd.readLine();
+
+			rd.close();
+
+			return res.equals("ok");
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			return false;
+		} finally {
+
+			if (connection != null)
+				connection.disconnect();
+		}
+	}
 }

@@ -19,6 +19,8 @@ public class Properties {
         properties.setProperty("jarFilePath", "");
         properties.setProperty("javaCommand", "java");
         properties.setProperty("baseUrl", "www.minecraft.net:80/game/");
+        properties.setProperty("sessionId", "");
+        properties.setProperty("mpPass", "");
     }
 
     public static void loadProperties() {

@@ -235,7 +235,11 @@ public class MineOnlineLauncherFrame extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 if(!apiDomainTextField.getText().isEmpty() && !usernameTextField.getText().isEmpty() && passwordField.getPassword().length > 0) {
                     String sessionId = MineOnlineLauncher.login(new String(passwordField.getPassword()));
-                    sessionIdTextField.setText(sessionId);
+                    if(sessionId == null) {
+                        JOptionPane.showMessageDialog(null, "Bad login.");
+                    } else {
+                        sessionIdTextField.setText(sessionId);
+                    }
                 } else {
                     // show alert
                 }
@@ -299,6 +303,8 @@ public class MineOnlineLauncherFrame extends JFrame {
             }
         });
 
+
+        // Todo: Make this one function for all props.
 
         apiDomainTextField.getDocument().addDocumentListener(new DocumentListener() {
             private void onChange() {
@@ -382,6 +388,44 @@ public class MineOnlineLauncherFrame extends JFrame {
         baseURLTextField.getDocument().addDocumentListener(new DocumentListener() {
             private void onChange() {
                 Properties.properties.setProperty("baseUrl", baseURLTextField.getText());
+                Properties.saveProperties();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent evt) {
+                onChange();
+            }
+
+            public void removeUpdate(DocumentEvent e) {
+                onChange();
+            }
+            public void insertUpdate(DocumentEvent e) {
+                onChange();
+            }
+        });
+
+        sessionIdTextField.getDocument().addDocumentListener(new DocumentListener() {
+            private void onChange() {
+                Properties.properties.setProperty("sessionId", sessionIdTextField.getText());
+                Properties.saveProperties();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent evt) {
+                onChange();
+            }
+
+            public void removeUpdate(DocumentEvent e) {
+                onChange();
+            }
+            public void insertUpdate(DocumentEvent e) {
+                onChange();
+            }
+        });
+
+        mppassTextField.getDocument().addDocumentListener(new DocumentListener() {
+            private void onChange() {
+                Properties.properties.setProperty("mpPass", mppassTextField.getText());
                 Properties.saveProperties();
             }
 
@@ -560,7 +604,13 @@ public class MineOnlineLauncherFrame extends JFrame {
         serverPortTextField.setText(Properties.properties.getProperty("serverPort"));
         connectToServerCheckBox.setSelected(Boolean.parseBoolean(Properties.properties.getProperty("joinServer")));
         baseURLTextField.setText(Properties.properties.getProperty("baseUrl"));
+        sessionIdTextField.setText(Properties.properties.getProperty("sessionId"));
+        mppassTextField.setText(Properties.properties.getProperty("mpPass"));
         joinServerUpdated();
+
+        if(!usernameTextField.getText().isEmpty() && !sessionIdTextField.getText().isEmpty() && !MineOnlineLauncher.checkSession(usernameTextField.getText(), sessionIdTextField.getText())){
+            sessionIdTextField.setText("");
+        }
     }
 
     private void joinServerUpdated() {
