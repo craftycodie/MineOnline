@@ -153,7 +153,7 @@ public class MineOnlineLauncherFrame extends JFrame {
 
                     String premiumArgument = "-demo";
                     if(hasPaidCheckBox.isSelected()) {
-                        premiumArgument = "-haspaid";
+                        premiumArgument = "-paid";
                     }
                     args.add(premiumArgument);
 
