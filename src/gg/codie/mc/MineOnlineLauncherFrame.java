@@ -591,15 +591,14 @@ public class MineOnlineLauncherFrame extends JFrame {
             System.getProperties().put("http.proxyHost", "0.0.0.0");
             System.getProperties().put("http.proxyPort", proxyPort);
         } catch (Exception ex) {
+            ex.printStackTrace();
             JOptionPane.showMessageDialog(null, "Failed to start proxy.");
             useLocalProxyCheckBox.setSelected(false);
         }
     }
 
     private void killProxy() {
-        if(Proxy.proxyProcess != null && Proxy.proxyProcess.isAlive()) {
-            Proxy.proxyProcess.destroy();
-        }
+        Proxy.stopProxy();
     }
 
     public static void main(String[] args) {

@@ -28,7 +28,7 @@ public class Server {
         Thread closeLauncher = new Thread() {
             public void run() {
                 serverProcess.destroy();
-                Proxy.proxyProcess.destroy();
+                Proxy.stopProxy();
             }
         };
 
@@ -38,7 +38,7 @@ public class Server {
 
         }
 
-        Proxy.proxyProcess.destroy();
+        Proxy.stopProxy();
 	}
 
 }
