@@ -13,7 +13,7 @@ While you can use this launcher just to play applets offline, well It's called M
 The application was build for use with [my Minecraft API project](https://github.com/codieradical/Minecraft-API), it might work with other reimplementations too.
 
 1. Select an API domain name.
-  - This is the API you want Minecraft to talk to. If you don't know of any, `mc.codie.gg` works for now.
+  - This is the API you want Minecraft to talk to. Defaults to "mineonline.codie.gg".
 2. Select your jar.
   - Select a jar using the browse button or by entering the path. Once it's been found, the applet and game classes should fill up.
   - If applet and game class are empty, enter the main class into the relevant box. eg com.mojang.minecraft.MinecraftApplet.
