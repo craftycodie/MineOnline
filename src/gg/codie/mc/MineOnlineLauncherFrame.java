@@ -56,10 +56,6 @@ public class MineOnlineLauncherFrame extends JFrame {
         setSize(600, 575);
         setResizable(false);
 
-        if(useLocalProxyCheckBox.isSelected()) {
-            startProxy();
-        }
-
         fileChooser.setFileFilter(new FileFilter() {
             @Override
             public boolean accept(File f) {
@@ -273,8 +269,8 @@ public class MineOnlineLauncherFrame extends JFrame {
                 } else {
                     Properties.properties.setProperty("useLocalProxy", "false");
                 }
-                useLocalProxyUpdated();
                 Properties.saveProperties();
+                useLocalProxyUpdated();
             }
         });
 
@@ -286,8 +282,8 @@ public class MineOnlineLauncherFrame extends JFrame {
                 } else {
                     Properties.properties.setProperty("joinServer", "false");
                 }
-                joinServerUpdated();
                 Properties.saveProperties();
+                joinServerUpdated();
             }
         });
 
@@ -445,7 +441,7 @@ public class MineOnlineLauncherFrame extends JFrame {
         DocumentListener loginButtonEnableListener = new DocumentListener() {
             @Override
             public void changedUpdate(DocumentEvent evt) {
-                if(passwordField.getPassword().length > 0 && !usernameTextField.getText().isEmpty() && (!apiDomainTextField.getText().isEmpty()) || !useLocalProxyCheckBox.isSelected()) {
+                if(passwordField.getPassword().length > 0 && !usernameTextField.getText().isEmpty() && (!apiDomainTextField.getText().isEmpty() || !useLocalProxyCheckBox.isSelected())) {
                     loginButton.setEnabled(true);
                 } else {
                     loginButton.setEnabled(false);
@@ -453,14 +449,14 @@ public class MineOnlineLauncherFrame extends JFrame {
             }
 
             public void removeUpdate(DocumentEvent e) {
-                if(passwordField.getPassword().length > 0 && !usernameTextField.getText().isEmpty() && (!apiDomainTextField.getText().isEmpty()) || !useLocalProxyCheckBox.isSelected()) {
+                if(passwordField.getPassword().length > 0 && !usernameTextField.getText().isEmpty() && (!apiDomainTextField.getText().isEmpty() || !useLocalProxyCheckBox.isSelected())) {
                     loginButton.setEnabled(true);
                 } else {
                     loginButton.setEnabled(false);
                 }
             }
             public void insertUpdate(DocumentEvent e) {
-                if(passwordField.getPassword().length > 0 && !usernameTextField.getText().isEmpty() && (!apiDomainTextField.getText().isEmpty()) || !useLocalProxyCheckBox.isSelected()) {
+                if(passwordField.getPassword().length > 0 && !usernameTextField.getText().isEmpty() && (!apiDomainTextField.getText().isEmpty() || !useLocalProxyCheckBox.isSelected())) {
                     loginButton.setEnabled(true);
                 } else {
                     loginButton.setEnabled(false);
@@ -521,20 +517,20 @@ public class MineOnlineLauncherFrame extends JFrame {
         DocumentListener mpPassButtonDocumentListner = new DocumentListener() {
             @Override
             public void changedUpdate(DocumentEvent evt) {
-                if(!serverIPTextField.getText().isEmpty() && !usernameTextField.getText().isEmpty() && !sessionIdTextField.getText().isEmpty() && (!apiDomainTextField.getText().isEmpty()) || !useLocalProxyCheckBox.isSelected())
+                if(!serverIPTextField.getText().isEmpty() && !usernameTextField.getText().isEmpty() && !sessionIdTextField.getText().isEmpty() && (!apiDomainTextField.getText().isEmpty() || !useLocalProxyCheckBox.isSelected()))
                     getMppassButton.setEnabled(true);
                 else
                     getMppassButton.setEnabled(false);
             }
 
             public void removeUpdate(DocumentEvent e) {
-                if(!serverIPTextField.getText().isEmpty() && !usernameTextField.getText().isEmpty() && !sessionIdTextField.getText().isEmpty() && (!apiDomainTextField.getText().isEmpty()) || !useLocalProxyCheckBox.isSelected())
+                if(!serverIPTextField.getText().isEmpty() && !usernameTextField.getText().isEmpty() && !sessionIdTextField.getText().isEmpty() && (!apiDomainTextField.getText().isEmpty() || !useLocalProxyCheckBox.isSelected()))
                     getMppassButton.setEnabled(true);
                 else
                     getMppassButton.setEnabled(false);
             }
             public void insertUpdate(DocumentEvent e) {
-                if(!serverIPTextField.getText().isEmpty() && !usernameTextField.getText().isEmpty() && !sessionIdTextField.getText().isEmpty() && (!apiDomainTextField.getText().isEmpty()) || !useLocalProxyCheckBox.isSelected())
+                if(!serverIPTextField.getText().isEmpty() && !usernameTextField.getText().isEmpty() && !sessionIdTextField.getText().isEmpty() && (!apiDomainTextField.getText().isEmpty() || !useLocalProxyCheckBox.isSelected()))
                     getMppassButton.setEnabled(true);
                 else
                     getMppassButton.setEnabled(false);
@@ -621,11 +617,11 @@ public class MineOnlineLauncherFrame extends JFrame {
         mppassTextField.setEnabled(connectToServerCheckBox.isSelected());
         mppassTextField.setEditable(connectToServerCheckBox.isSelected());
         openJoinURLButton.setEnabled(connectToServerCheckBox.isSelected());
-        getMppassButton.setEnabled(connectToServerCheckBox.isSelected() && !serverIPTextField.getText().isEmpty() && !usernameTextField.getText().isEmpty() && !sessionIdTextField.getText().isEmpty() && (!apiDomainTextField.getText().isEmpty()) || !useLocalProxyCheckBox.isSelected());
+        getMppassButton.setEnabled(connectToServerCheckBox.isSelected() && !serverIPTextField.getText().isEmpty() && !usernameTextField.getText().isEmpty() && !sessionIdTextField.getText().isEmpty() && (!apiDomainTextField.getText().isEmpty() || !useLocalProxyCheckBox.isSelected()));
     }
 
     private void useLocalProxyUpdated() {
-        if(useLocalProxyCheckBox.isSelected())
+        if(Properties.properties.getProperty("useLocalProxy").equals("true"))
             startProxy();
         else
             killProxy();

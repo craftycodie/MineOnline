@@ -19,7 +19,10 @@ public class Server {
             System.err.println("Too few arguments. Include a jar location and main class. \n Eg minecraft-server.jar com.mojang.minecraft.server.MinecraftServer");
         }
 
-        String[] CMD_ARRAY = new String[] {Properties.properties.getProperty("javaCommand"), proxySet, proxyHost, proxyPortArgument + port};
+        String[] CMD_ARRAY = Boolean.parseBoolean(Properties.properties.getProperty("useLocalProxy"))
+                ? new String[] {Properties.properties.getProperty("javaCommand"), proxySet, proxyHost, proxyPortArgument + port}
+                : new String[] {Properties.properties.getProperty("javaCommand")};
+
         CMD_ARRAY = ArrayUtils.concatenate(CMD_ARRAY, args);
 
         System.out.println("Launching Server: " + String.join(" ", CMD_ARRAY));

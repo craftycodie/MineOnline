@@ -4,6 +4,7 @@ import gg.codie.utils.ArrayUtils;
 
 import java.io.*;
 import java.net.*;
+import java.util.Locale;
 
 public class MineOnlineLauncher {
 	static String CP = "-cp";
@@ -23,11 +24,17 @@ public class MineOnlineLauncher {
 
 		switch (launchType) {
 			case Launcher:
-				CMD_ARRAY = new String[] { Properties.properties.getProperty("javaCommand"), proxySet, proxyHost, proxyPortArgument + proxyPort, CP, "\"" + jarLocation + "\"", mainClass };
+				if (Boolean.parseBoolean(Properties.properties.getProperty("useLocalProxy")))
+					CMD_ARRAY = new String[] { Properties.properties.getProperty("javaCommand"), proxySet, proxyHost, proxyPortArgument + proxyPort, CP, "\"" + jarLocation + "\"", mainClass };
+				else
+					CMD_ARRAY = new String[] { Properties.properties.getProperty("javaCommand"), CP, "\"" + jarLocation + "\"", mainClass };
 				break;
 			case Game:
-				classpath = "\"" + jarLocation + "\";\"" + binPath + File.separator + "lwjgl.jar\";\"" + binPath + File.separator + "lwjgl_util.jar\"";
-				CMD_ARRAY = new String[] { Properties.properties.getProperty("javaCommand"), proxySet, proxyHost, proxyPortArgument + proxyPort, nativesPath, CP, classpath, mainClass};
+				classpath = "\"" + jarLocation + "\"" + getClasspathSeparator() + "\"" + binPath + File.separator + "lwjgl.jar\"" + getClasspathSeparator() + "\"" + binPath + File.separator + "lwjgl_util.jar\"";
+				if (Boolean.parseBoolean(Properties.properties.getProperty("useLocalProxy")))
+					CMD_ARRAY = new String[] { Properties.properties.getProperty("javaCommand"), proxySet, proxyHost, proxyPortArgument + proxyPort, nativesPath, CP, classpath, mainClass};
+				else
+					CMD_ARRAY = new String[] { Properties.properties.getProperty("javaCommand"), nativesPath, CP, classpath, mainClass};
 				CMD_ARRAY = ArrayUtils.concatenate(CMD_ARRAY, args);
 				break;
 			case Applet:
@@ -35,16 +42,23 @@ public class MineOnlineLauncher {
 
 				// Fix drive letters.
 				char a_char = appletViewerLocation.charAt(2);
-				if (a_char==':') appletViewerLocation = appletViewerLocation.substring(1);
+				if (a_char==':')
+					appletViewerLocation = appletViewerLocation.substring(1);
 
-				classpath = "\"" + jarLocation + "\";\"" + binPath + File.separator + "lwjgl.jar\";\"" + binPath + File.separator + "lwjgl_util.jar\";\"" + appletViewerLocation + "\"";
-				CMD_ARRAY = new String[] { Properties.properties.getProperty("javaCommand"), proxySet, proxyHost, proxyPortArgument + proxyPort, nativesPath, CP, classpath, MinecraftAppletViewer.class.getCanonicalName(), mainClass};
+				classpath = "\"" + jarLocation + "\"" + getClasspathSeparator() + "\"" + binPath + File.separator + "lwjgl.jar\"" + getClasspathSeparator() + "\"" + binPath + File.separator + "lwjgl_util.jar\"" + getClasspathSeparator() + "\"" + appletViewerLocation + "\"";
+				if (Boolean.parseBoolean(Properties.properties.getProperty("useLocalProxy")))
+					CMD_ARRAY = new String[] { Properties.properties.getProperty("javaCommand"), proxySet, proxyHost, proxyPortArgument + proxyPort, nativesPath, CP, classpath, MinecraftAppletViewer.class.getCanonicalName(), mainClass};
+				else
+					CMD_ARRAY = new String[] { Properties.properties.getProperty("javaCommand"), nativesPath, CP, classpath, MinecraftAppletViewer.class.getCanonicalName(), mainClass};
 				CMD_ARRAY = ArrayUtils.concatenate(CMD_ARRAY, args);
 				break;
 			case Server:
 				classpath = "\"" + jarLocation + "\"";
 				CMD_ARRAY = ArrayUtils.concatenate(new String[] { Properties.properties.getProperty("javaCommand") }, args);
-				CMD_ARRAY = ArrayUtils.concatenate(CMD_ARRAY, new String[] { proxySet, proxyHost, proxyPortArgument + proxyPort, CP, classpath, mainClass});
+				if (Boolean.parseBoolean(Properties.properties.getProperty("useLocalProxy")))
+					CMD_ARRAY = ArrayUtils.concatenate(CMD_ARRAY, new String[] { proxySet, proxyHost, proxyPortArgument + proxyPort, CP, classpath, mainClass});
+				else
+					CMD_ARRAY = ArrayUtils.concatenate(CMD_ARRAY, new String[] { CP, classpath, mainClass});
 				break;
 		}
 
@@ -198,5 +212,14 @@ public class MineOnlineLauncher {
 			if (connection != null)
 				connection.disconnect();
 		}
+	}
+
+	public static char getClasspathSeparator() {
+		String OS = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH);
+		if (OS.indexOf("win") >= 0) {
+			return ';';
+		}
+
+		return ':';
 	}
 }

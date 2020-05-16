@@ -15,6 +15,9 @@ public class Proxy {
     private static ProxyThread proxyThread = null;
 
     public static int launchProxy() throws IOException {
+        if (!Boolean.parseBoolean(Properties.properties.getProperty("useLocalProxy")))
+            return 0;
+
         ServerSocket serverSocket = new ServerSocket(0);
         proxyThread = new ProxyThread(serverSocket);
         proxyThread.start();

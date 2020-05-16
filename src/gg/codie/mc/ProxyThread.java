@@ -89,14 +89,15 @@ public class ProxyThread implements Runnable {
                 byte[] requestBytes = ArrayUtils.toPrimitives(request.toArray(new Byte[0]));
                 requestString = new String(requestBytes);
 
-                System.out.println("Request");
-
+                int headerSize = requestString.split("\r\n\r\n")[0].length() + 4;
                 for (String redirectedDomain : redirectedDomains) {
                     requestString = requestString.replace(redirectedDomain, destination);
                 }
 
-                System.out.println(requestHeaders);
+                System.out.println("Request");
+                requestHeaders = requestString.split("\r\n\r\n")[0];
 
+                System.out.println(requestString);
 
 
                 String urlString = pullLinks(requestString).get(0);
@@ -106,7 +107,7 @@ public class ProxyThread implements Runnable {
 
                 for(String header : requestHeaders.substring(requestHeaders.indexOf("\r\n") + 2).split("\r\n")) {
                     String headerName = header.substring(0, header.indexOf(":"));
-                    String headerValue = header.substring(header.indexOf(":"));
+                    String headerValue = header.substring(header.indexOf(":") + 2);
                     connection.setRequestProperty(headerName, headerValue);
                 }
 
@@ -116,8 +117,11 @@ public class ProxyThread implements Runnable {
                 connection.setUseCaches(false);
                 connection.setDoInput(true);
 
-                if((requestHeaders.length() + 4) < requestBytes.length) {
-                    byte[] content = Arrays.copyOfRange(requestBytes, requestHeaders.length() + 4, requestBytes.length);
+
+                byte[] content = new byte[0];
+
+                if(headerSize < requestBytes.length) {
+                    content = Arrays.copyOfRange(requestBytes, headerSize, requestBytes.length);
                     connection.setDoOutput(true);
                     DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
                     wr.write(content);
@@ -147,15 +151,21 @@ public class ProxyThread implements Runnable {
                 }
                 responseHeader += "\r\n";
 
-                System.out.println(responseHeader);
-                clientSocket.getOutputStream().write(responseHeader.getBytes());
+                System.out.println("Response");
+                System.out.print(responseHeader);
+                String contentString = new String(content);
+                System.out.println(contentString);
 
                 InputStream is = connection.getInputStream();
 
+                clientSocket.getOutputStream().write(responseHeader.getBytes());
+
                 buffer = new byte[bufferSize];
                 while ((bytes_read = is.read(buffer, 0, 4096)) != -1) {
-                    for(int i = 0; i < bytes_read; i++)
+                    for(int i = 0; i < bytes_read; i++) {
+                        System.out.print(buffer[i]);
                         clientSocket.getOutputStream().write(buffer[i]);
+                    }
                 }
 
                 clientSocket.getOutputStream().flush();
