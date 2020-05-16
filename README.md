@@ -1,6 +1,10 @@
 # MineOnline
 Launch old versions of minecraft just as you remembered them, only without a browser.
 
+## New: Test MineOnline
+If you'd like to play around with this during early stages of development, I'd recommend joining my Discord server, where I regularly post updates and instructions, as well as known issues and planned features.
+https://discord.gg/z3HNFH
+
 ## What is MineOnline?
 MineOnline is a launcher for pre-release Minecraft versions capable of running web applets without a browser, and redirecting old web requests to a new API.
 
@@ -27,9 +31,6 @@ The application was build for use with [my Minecraft API project](https://github
   - If the server is online, you will need to get a Server Authentication Token. This requires a session ID and a server IP.
 - Base URL
   - Some versions of the game require changes to the base URL field. More info on this later.
-  
-
-More to come soon.
 
 ## Credit
 
