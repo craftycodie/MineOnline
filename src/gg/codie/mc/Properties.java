@@ -10,7 +10,7 @@ public class Properties {
     static {
         properties.setProperty("username", "");
         properties.setProperty("isPremium", "true");
-        properties.setProperty("apiDomainName", "localhost");
+        properties.setProperty("apiDomainName", "mineonline.codie.gg");
         properties.setProperty("redirectedDomains", Arrays.toString(new String[] {"www.minecraft.net:-1", "mineraft.net", "www.minecraft.net", "s3.amazonaws.com"}));
         properties.setProperty("useLocalProxy", "true");
         properties.setProperty("serverIP", "");
