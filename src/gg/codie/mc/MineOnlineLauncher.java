@@ -1,6 +1,7 @@
 package gg.codie.mc;
 
 import gg.codie.utils.ArrayUtils;
+import gg.codie.utils.OSUtils;
 
 import java.io.*;
 import java.net.*;
@@ -19,7 +20,13 @@ public class MineOnlineLauncher {
 		String[] CMD_ARRAY = new String[0];
 
 		String binPath = jarLocation.substring(0, jarLocation.lastIndexOf(File.separator));
-		String nativesPath = "-Djava.library.path=" + binPath + File.separator + "natives" + File.separator ;
+
+		String nativesPath = binPath + File.separator + "natives" + File.separator ;
+		if (!OSUtils.isWindows()) {
+			nativesPath = "\"" + nativesPath + "\"";
+		}
+		nativesPath = "-Djava.library.path=" + nativesPath;
+
 		String classpath;
 
 		switch (launchType) {
@@ -63,7 +70,9 @@ public class MineOnlineLauncher {
 		}
 
 		System.out.println("Launching Game: " + String.join(" ", CMD_ARRAY));
-		MineOnlineLauncher.gameProcess = new ProcessBuilder(CMD_ARRAY).start();
+		ProcessBuilder processBuilder = new ProcessBuilder(CMD_ARRAY);
+		processBuilder.directory(new File(System.getProperty("user.dir")));
+		MineOnlineLauncher.gameProcess = processBuilder.start();
 
 		Thread closeLauncher = new Thread() {
 			public void run() {
@@ -215,8 +224,7 @@ public class MineOnlineLauncher {
 	}
 
 	public static char getClasspathSeparator() {
-		String OS = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH);
-		if (OS.indexOf("win") >= 0) {
+		if (OSUtils.isWindows()) {
 			return ';';
 		}
 
