@@ -230,14 +230,12 @@ public class MineOnlineLauncherFrame extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(!apiDomainTextField.getText().isEmpty() && !usernameTextField.getText().isEmpty() && passwordField.getPassword().length > 0) {
-                    (new Thread(() -> {
-                        String sessionId = MineOnlineLauncher.login(new String(passwordField.getPassword()));
-                        if(sessionId == null) {
-                            JOptionPane.showMessageDialog(null, "Bad login.");
-                        } else {
-                            sessionIdTextField.setText(sessionId);
-                        }
-                    })).start();
+                    String sessionId = MineOnlineLauncher.login(new String(passwordField.getPassword()));
+                    if(sessionId == null) {
+                        JOptionPane.showMessageDialog(null, "Bad login.");
+                    } else {
+                        sessionIdTextField.setText(sessionId);
+                    }
                 } else {
                     // show alert
                 }
