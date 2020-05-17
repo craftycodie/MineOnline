@@ -4,8 +4,10 @@ import gg.codie.utils.ArrayUtils;
 import gg.codie.utils.OSUtils;
 
 import java.io.*;
-import java.net.*;
-import java.util.Locale;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.Map;
 
 public class MineOnlineLauncher {
 	static String CP = "-cp";
@@ -22,12 +24,10 @@ public class MineOnlineLauncher {
 		String binPath = jarLocation.substring(0, jarLocation.lastIndexOf(File.separator));
 
 		String nativesPath = binPath + File.separator + "natives" + File.separator ;
-		if (!OSUtils.isWindows()) {
-			nativesPath = "\"" + nativesPath + "\"";
-		}
+
 		nativesPath = "-Djava.library.path=" + nativesPath;
 
-		String classpath;
+		String classpath = System.getProperty("java.class.path").replace("\"", "");
 
 		switch (launchType) {
 			case Launcher:
@@ -37,7 +37,7 @@ public class MineOnlineLauncher {
 					CMD_ARRAY = new String[] { Properties.properties.getProperty("javaCommand"), CP, "\"" + jarLocation + "\"", mainClass };
 				break;
 			case Game:
-				classpath = "\"" + jarLocation + "\"" + getClasspathSeparator() + "\"" + binPath + File.separator + "lwjgl.jar\"" + getClasspathSeparator() + "\"" + binPath + File.separator + "lwjgl_util.jar\"";
+				classpath = classpath + getClasspathSeparator() + jarLocation + getClasspathSeparator() + binPath + File.separator + "lwjgl.jar" + getClasspathSeparator() + binPath + File.separator + "lwjgl_util.jar";
 				if (Boolean.parseBoolean(Properties.properties.getProperty("useLocalProxy")))
 					CMD_ARRAY = new String[] { Properties.properties.getProperty("javaCommand"), proxySet, proxyHost, proxyPortArgument + proxyPort, nativesPath, CP, classpath, mainClass};
 				else
@@ -52,7 +52,7 @@ public class MineOnlineLauncher {
 				if (a_char==':')
 					appletViewerLocation = appletViewerLocation.substring(1);
 
-				classpath = "\"" + jarLocation + "\"" + getClasspathSeparator() + "\"" + binPath + File.separator + "lwjgl.jar\"" + getClasspathSeparator() + "\"" + binPath + File.separator + "lwjgl_util.jar\"" + getClasspathSeparator() + "\"" + appletViewerLocation + "\"";
+				classpath = classpath + getClasspathSeparator() + jarLocation + getClasspathSeparator() + binPath + File.separator + "lwjgl.jar" + getClasspathSeparator() + binPath + File.separator + "lwjgl_util.jar" + getClasspathSeparator() + appletViewerLocation;
 				if (Boolean.parseBoolean(Properties.properties.getProperty("useLocalProxy")))
 					CMD_ARRAY = new String[] { Properties.properties.getProperty("javaCommand"), proxySet, proxyHost, proxyPortArgument + proxyPort, nativesPath, CP, classpath, MinecraftAppletViewer.class.getCanonicalName(), mainClass};
 				else
@@ -60,7 +60,7 @@ public class MineOnlineLauncher {
 				CMD_ARRAY = ArrayUtils.concatenate(CMD_ARRAY, args);
 				break;
 			case Server:
-				classpath = "\"" + jarLocation + "\"";
+				classpath = classpath + getClasspathSeparator() + jarLocation;
 				CMD_ARRAY = ArrayUtils.concatenate(new String[] { Properties.properties.getProperty("javaCommand") }, args);
 				if (Boolean.parseBoolean(Properties.properties.getProperty("useLocalProxy")))
 					CMD_ARRAY = ArrayUtils.concatenate(CMD_ARRAY, new String[] { proxySet, proxyHost, proxyPortArgument + proxyPort, CP, classpath, mainClass});
@@ -70,15 +70,20 @@ public class MineOnlineLauncher {
 		}
 
 		System.out.println("Launching Game: " + String.join(" ", CMD_ARRAY));
+
+		java.util.Properties props = System.getProperties();
 		ProcessBuilder processBuilder = new ProcessBuilder(CMD_ARRAY);
+		Map<String, String> env = processBuilder.environment();
+		for(String prop : props.stringPropertyNames()) {
+			env.put(prop, props.getProperty(prop));
+		}
 		processBuilder.directory(new File(System.getProperty("user.dir")));
+		processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
+		processBuilder.redirectErrorStream(true);
+
 		MineOnlineLauncher.gameProcess = processBuilder.start();
 
-		Thread closeLauncher = new Thread() {
-			public void run() {
-				MineOnlineLauncher.gameProcess.destroy();
-			}
-		};
+		Thread closeLauncher = new Thread(() -> MineOnlineLauncher.gameProcess.destroy());
 
 		Runtime.getRuntime().addShutdownHook(closeLauncher);
 	}
@@ -171,7 +176,7 @@ public class MineOnlineLauncher {
 			InputStream is = connection.getInputStream();
 			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
 
-			StringBuffer response = new StringBuffer();
+			StringBuilder response = new StringBuilder();
 			String line;
 			while ((line = rd.readLine()) != null) {
 				response.append(line);
