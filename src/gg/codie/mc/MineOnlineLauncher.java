@@ -4,8 +4,9 @@ import gg.codie.utils.ArrayUtils;
 import gg.codie.utils.OSUtils;
 
 import java.io.*;
-import java.net.*;
-import java.util.Locale;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 
 public class MineOnlineLauncher {
 	static String CP = "-cp";
@@ -22,6 +23,7 @@ public class MineOnlineLauncher {
 		String binPath = jarLocation.substring(0, jarLocation.lastIndexOf(File.separator));
 
 		String nativesPath = binPath + File.separator + "natives" + File.separator ;
+
 		nativesPath = "-Djava.library.path=" + nativesPath;
 
 		String classpath = System.getProperty("java.class.path").replace("\"", "");
@@ -71,13 +73,10 @@ public class MineOnlineLauncher {
 		processBuilder.directory(new File(System.getProperty("user.dir")));
 		processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
 		processBuilder.redirectErrorStream(true);
+
 		MineOnlineLauncher.gameProcess = processBuilder.start();
 
-		Thread closeLauncher = new Thread() {
-			public void run() {
-				MineOnlineLauncher.gameProcess.destroy();
-			}
-		};
+		Thread closeLauncher = new Thread(() -> MineOnlineLauncher.gameProcess.destroy());
 
 		Runtime.getRuntime().addShutdownHook(closeLauncher);
 	}
@@ -170,7 +169,7 @@ public class MineOnlineLauncher {
 			InputStream is = connection.getInputStream();
 			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
 
-			StringBuffer response = new StringBuffer();
+			StringBuilder response = new StringBuilder();
 			String line;
 			while ((line = rd.readLine()) != null) {
 				response.append(line);
