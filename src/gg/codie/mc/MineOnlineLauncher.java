@@ -7,6 +7,7 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.Map;
 
 public class MineOnlineLauncher {
 	static String CP = "-cp";
@@ -36,7 +37,7 @@ public class MineOnlineLauncher {
 					CMD_ARRAY = new String[] { Properties.properties.getProperty("javaCommand"), CP, "\"" + jarLocation + "\"", mainClass };
 				break;
 			case Game:
-				classpath = "\"" + classpath + getClasspathSeparator() + jarLocation + getClasspathSeparator() + binPath + File.separator + "lwjgl.jar" + getClasspathSeparator() + binPath + File.separator + "lwjgl_util.jar\"";
+				classpath = classpath + getClasspathSeparator() + jarLocation + getClasspathSeparator() + binPath + File.separator + "lwjgl.jar" + getClasspathSeparator() + binPath + File.separator + "lwjgl_util.jar";
 				if (Boolean.parseBoolean(Properties.properties.getProperty("useLocalProxy")))
 					CMD_ARRAY = new String[] { Properties.properties.getProperty("javaCommand"), proxySet, proxyHost, proxyPortArgument + proxyPort, nativesPath, CP, classpath, mainClass};
 				else
@@ -51,7 +52,7 @@ public class MineOnlineLauncher {
 				if (a_char==':')
 					appletViewerLocation = appletViewerLocation.substring(1);
 
-				classpath = "\"" + classpath + getClasspathSeparator() + jarLocation + getClasspathSeparator() + binPath + File.separator + "lwjgl.jar" + getClasspathSeparator() + binPath + File.separator + "lwjgl_util.jar" + getClasspathSeparator() + appletViewerLocation + "\"";
+				classpath = classpath + getClasspathSeparator() + jarLocation + getClasspathSeparator() + binPath + File.separator + "lwjgl.jar" + getClasspathSeparator() + binPath + File.separator + "lwjgl_util.jar" + getClasspathSeparator() + appletViewerLocation;
 				if (Boolean.parseBoolean(Properties.properties.getProperty("useLocalProxy")))
 					CMD_ARRAY = new String[] { Properties.properties.getProperty("javaCommand"), proxySet, proxyHost, proxyPortArgument + proxyPort, nativesPath, CP, classpath, MinecraftAppletViewer.class.getCanonicalName(), mainClass};
 				else
@@ -59,7 +60,7 @@ public class MineOnlineLauncher {
 				CMD_ARRAY = ArrayUtils.concatenate(CMD_ARRAY, args);
 				break;
 			case Server:
-				classpath = "\"" + classpath + getClasspathSeparator() + jarLocation + "\"";
+				classpath = classpath + getClasspathSeparator() + jarLocation;
 				CMD_ARRAY = ArrayUtils.concatenate(new String[] { Properties.properties.getProperty("javaCommand") }, args);
 				if (Boolean.parseBoolean(Properties.properties.getProperty("useLocalProxy")))
 					CMD_ARRAY = ArrayUtils.concatenate(CMD_ARRAY, new String[] { proxySet, proxyHost, proxyPortArgument + proxyPort, CP, classpath, mainClass});
@@ -69,7 +70,13 @@ public class MineOnlineLauncher {
 		}
 
 		System.out.println("Launching Game: " + String.join(" ", CMD_ARRAY));
+
+		java.util.Properties props = System.getProperties();
 		ProcessBuilder processBuilder = new ProcessBuilder(CMD_ARRAY);
+		Map<String, String> env = processBuilder.environment();
+		for(String prop : props.stringPropertyNames()) {
+			env.put(prop, props.getProperty(prop));
+		}
 		processBuilder.directory(new File(System.getProperty("user.dir")));
 		processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
 		processBuilder.redirectErrorStream(true);
