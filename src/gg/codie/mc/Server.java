@@ -3,6 +3,7 @@ package gg.codie.mc;
 import gg.codie.utils.ArrayUtils;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
@@ -26,7 +27,11 @@ public class Server {
         CMD_ARRAY = ArrayUtils.concatenate(CMD_ARRAY, args);
 
         System.out.println("Launching Server: " + String.join(" ", CMD_ARRAY));
-        Process serverProcess = new ProcessBuilder(CMD_ARRAY).start();
+        ProcessBuilder processBuilder = new ProcessBuilder(CMD_ARRAY);
+        processBuilder.directory(new File(System.getProperty("user.dir")));
+        processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
+        processBuilder.redirectErrorStream(true);
+        Process serverProcess = processBuilder.start();
 
         Thread closeLauncher = new Thread() {
             public void run() {

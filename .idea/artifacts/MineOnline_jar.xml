@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="MineOnline:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/MineOnline_jar</output-path>
+    <root id="archive" name="MineOnline.jar">
+      <element id="module-output" name="MineOnline" />
+    </root>
+  </artifact>
+</component>
