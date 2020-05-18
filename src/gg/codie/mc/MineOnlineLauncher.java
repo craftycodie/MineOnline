@@ -80,6 +80,7 @@ public class MineOnlineLauncher {
 		processBuilder.directory(new File(System.getProperty("user.dir")));
 		processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
 		processBuilder.redirectErrorStream(true);
+		processBuilder.redirectInput(ProcessBuilder.Redirect.INHERIT);
 
 		MineOnlineLauncher.gameProcess = processBuilder.start();
 
