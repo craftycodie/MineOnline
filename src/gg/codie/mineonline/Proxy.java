@@ -1,14 +1,7 @@
-package gg.codie.mc;
-
-import gg.codie.utils.ArrayUtils;
+package gg.codie.mineonline;
 
 import java.io.*;
-import java.lang.reflect.Array;
-import java.lang.reflect.Method;
 import java.net.*;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Proxy {
 

@@ -1,4 +1,4 @@
-package gg.codie.mc;
+package gg.codie.mineonline;
 
 import gg.codie.utils.ArrayUtils;
 

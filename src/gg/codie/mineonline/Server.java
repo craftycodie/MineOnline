@@ -1,11 +1,8 @@
-package gg.codie.mc;
+package gg.codie.mineonline;
 
 import gg.codie.utils.ArrayUtils;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.Map;
 
 public class Server {

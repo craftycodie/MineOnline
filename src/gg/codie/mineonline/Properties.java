@@ -1,4 +1,4 @@
-package gg.codie.mc;
+package gg.codie.mineonline;
 
 import java.io.*;
 import java.util.Arrays;

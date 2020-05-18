@@ -34,13 +34,13 @@ The application was build for use with [my Minecraft API project](https://github
 
 ## Launching Servers
 If you'd like to launch a server to authenticate using a different API, you can do so with a simple tweak to the typical launch command.
-Add `-cp <MineOnline.jar path> gg.codie.mc.Server` after "java". Eg.
+Add `-cp <MineOnline.jar path> gg.codie.mineonline.Server` after "java". Eg.
 
 ```java -Xmx1024M -Xms1024M -jar minecraft_server.jar nogui```
 
 becomes
 
-```java -cp MineOnline.jar gg.codie.mc.Server -Xmx1024M -Xms1024M -jar minecraft_server.jar nogui```
+```java -cp MineOnline.jar gg.codie.mineonline.Server -Xmx1024M -Xms1024M -jar minecraft_server.jar nogui```
 
 ## Credit
 

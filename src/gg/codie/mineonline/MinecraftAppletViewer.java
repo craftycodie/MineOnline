@@ -1,4 +1,4 @@
-package gg.codie.mc;
+package gg.codie.mineonline;
 
 import java.applet.*;
 import java.net.*;

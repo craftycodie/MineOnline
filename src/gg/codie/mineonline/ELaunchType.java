@@ -1,4 +1,4 @@
-package gg.codie.mc;
+package gg.codie.mineonline;
 
 public enum  ELaunchType {
     Applet,
