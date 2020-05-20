@@ -1,4 +1,4 @@
-# MineOnline
+![logo](mineonlinelogo.png)
 Launch old versions of minecraft just as you remembered them, only without a browser.
 
 ## New: Test MineOnline
