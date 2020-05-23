@@ -3,6 +3,7 @@ package gg.codie.mineonline.gui.rendering.utils;
 import gg.codie.mineonline.gui.rendering.Camera;
 import org.lwjgl.util.vector.Matrix3f;
 import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Quaternion;
 import org.lwjgl.util.vector.Vector3f;
 
 public class MathUtils {
@@ -90,6 +91,47 @@ public class MathUtils {
             float z = matrix.m32;
 
             return new Vector3f(x, y, z);
+        }
+
+        public static float cosFromSin(float sin, float angle) {
+            // sin(x)^2 + cos(x)^2 = 1
+            float cos = (float)Math.sqrt(1.0f - sin * sin);
+            float a = angle + (float)Math.PI / 2;
+            float b = a - (int)(a / ((float)Math.PI * 2) * ((float)Math.PI * 2));
+            if (b < 0.0)
+                b = ((float)Math.PI * 2) + b;
+            if (b >= (float)Math.PI)
+                return -cos;
+            return cos;
+        }
+
+        public static float fma(float a, float b, float c) {
+            return a * b + c;
+        }
+
+        public static Quaternion rotateXYZ(float angleX, float angleY, float angleZ, Quaternion quaternion) {
+            float sx = (float)Math.sin(angleX * 0.5f);
+            float cx = cosFromSin(sx, angleX * 0.5f);
+            float sy = (float)Math.sin(angleY * 0.5f);
+            float cy = cosFromSin(sy, angleY * 0.5f);
+            float sz = (float)Math.sin(angleZ * 0.5f);
+            float cz = cosFromSin(sz, angleZ * 0.5f);
+
+            float cycz = cy * cz;
+            float sysz = sy * sz;
+            float sycz = sy * cz;
+            float cysz = cy * sz;
+            float w = cx*cycz - sx*sysz;
+            float x = sx*cycz + cx*sysz;
+            float y = cx*sycz - sx*cysz;
+            float z = cx*cysz + sx*sycz;
+            // right-multiply
+            quaternion.set(fma(quaternion.w, x, fma(quaternion.x, w, fma(quaternion.y, z, -quaternion.z * y))),
+                    fma(quaternion.w, y, fma(-quaternion.x, z, fma(quaternion.y, w, quaternion.z * x))),
+                    fma(quaternion.w, z, fma(quaternion.x, y, fma(-quaternion.y, x, quaternion.z * w))),
+                    fma(quaternion.w, w, fma(-quaternion.x, x, fma(-quaternion.y, y, -quaternion.z * z))));
+
+            return quaternion;
         }
 
         public static Vector3f getForward(float x, float y) {

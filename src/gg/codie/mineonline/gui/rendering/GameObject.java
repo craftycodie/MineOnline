@@ -4,6 +4,7 @@ import gg.codie.mineonline.gui.rendering.models.TexturedModel;
 import gg.codie.mineonline.gui.rendering.utils.MathUtils;
 import org.lwjgl.Sys;
 import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Quaternion;
 import org.lwjgl.util.vector.Vector3f;
 
 import java.util.LinkedList;
@@ -101,8 +102,24 @@ public class GameObject {
         if(parent == null) {
             return new Vector3f(localXRot, localYRot, localZRot);
         }
+//        Quaternion rotation = new Quaternion();
+//        MathUtils.rotateXYZ(parent.getPosition().x, parent.getPosition().y, parent.getPosition().z, rotation);
+//
+//        MathUtils.rotateXYZ(localXRot, localYRot, localZRot, rotation);
+//
+//        return new Vector3f(rotation.getX(), rotation.getY(), rotation.getZ());
+
+//        System.out.println("parent x" + parent.getRotation().x + "y" + parent.getRotation().y + "x" + parent.getRotation().z);
+//        System.out.println("local x" + localXRot + "y" + localYRot + "x" + localZRot);
 
         return new Vector3f(parent.getRotation().x + localXRot,parent.getRotation().y +  localYRot, parent.getRotation().z + localZRot);
+        //return new Vector3f(parent.getRotation().x ,parent.getRotation().y, parent.getRotation().z);
+    }
+
+    public void setLocalRotation(Vector3f rotation) {
+        this.setLocalXRot(rotation.x);
+        this.setLocalYRot(rotation.y);
+        this.setLocalZRot(rotation.z);
     }
 
     public float getLocalXRot() {

@@ -15,7 +15,7 @@ public class DisplayManager {
 
         try {
             Display.setDisplayMode(new DisplayMode(WIDTH, HEIGHT));
-            Display.create(new PixelFormat(), attribs);
+            Display.create(new PixelFormat(32, 0, 24, 0,  0), attribs);
             Display.setTitle("Skin Renderer Test");
         } catch (LWJGLException e) {
             e.printStackTrace();

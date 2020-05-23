@@ -58,7 +58,7 @@ public class PlayerGameObject extends GameObject {
                 new Vector2f(28, 16), new Vector2f(8, 4)
         ));
 
-        playerRightArm = addBox(new Vector3f(-3, -2, -2), 4, 12, 4, new Vector3f(-2, -10, 0), new Vector3f(9, 24, 0), TextureHelper.getCubeTextureCoords(new Vector2f(SKIN_WIDTH, SKIN_HEIGHT),
+        playerRightArm = addBox(new Vector3f(-3, -2, -2), 4, 12, 4, new Vector3f(1, -10, 0), new Vector3f(6, 24, 0), TextureHelper.getCubeTextureCoords(new Vector2f(SKIN_WIDTH, SKIN_HEIGHT),
                 new Vector2f(52, 20), new Vector2f(4, 12),
                 new Vector2f(44, 20), new Vector2f(4, 12),
                 new Vector2f(48, 20), new Vector2f(4, 12),
@@ -68,7 +68,7 @@ public class PlayerGameObject extends GameObject {
         ));
 
 
-        playerLeftArm = addBox(new Vector3f(-1, -2, -2), 4, 12, 4, new Vector3f(2, -10, 0), new Vector3f(-9, 24, 0), TextureHelper.getCubeTextureCoords(new Vector2f(SKIN_WIDTH, SKIN_HEIGHT),
+        playerLeftArm = addBox(new Vector3f(-1, -2, -2), 4, 12, 4, new Vector3f(-1, -10, 0), new Vector3f(-6, 24, 0), TextureHelper.getCubeTextureCoords(new Vector2f(SKIN_WIDTH, SKIN_HEIGHT),
                 new Vector2f(52, 20), new Vector2f(4, 12),
                 new Vector2f(44, 20), new Vector2f(4, 12),
                 new Vector2f(48, 20), new Vector2f(4, 12),

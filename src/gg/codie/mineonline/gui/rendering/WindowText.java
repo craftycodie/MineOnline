@@ -1,5 +1,6 @@
 package gg.codie.mineonline.gui.rendering;
 
+import gg.codie.mineonline.gui.rendering.animation.*;
 import gg.codie.mineonline.gui.rendering.shaders.StaticShader;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.*;
@@ -25,37 +26,32 @@ public class WindowText {
 
         Camera camera = new DebugCamera();
 
-        //playerGameObject.playerCloak.increaseRotation(10, 0, 0);
-
-
-            playerGameObject.playerLeftArm.increaseRotation(45, 0, 0);
-            playerGameObject.playerRightArm.increaseRotation(-45, 0, 0);
-
-            playerGameObject.playerLeftLeg.increaseRotation(-45, 0, 0);
-            playerGameObject.playerRightLeg.increaseRotation(45, 0, 0);
-
-            playerGameObject.playerCloak.increaseRotation(45, 0, 0);
-
-            playerGameObject.playerHead.increaseRotation(0, 0, 0);
+        IPlayerAnimation playerAnimation = new WalkPlayerAnimation();
+        playerAnimation.reset(playerGameObject);
 
         // Game Loop
         while(!Display.isCloseRequested()) {
             //entity.increaseRotation(0, 1, 0);
             //entity.increasePosition(0, 0, -0.05f);
 
-            if(Mouse.isButtonDown(0)) {
-                playerPivot.increaseRotation(Mouse.getDY() * -0.3f, Mouse.getDX() * 0.3f, 0);
+//            if(Mouse.isButtonDown(0)) {
+//                playerPivot.increaseRotation(Mouse.getDY() * -0.3f, Mouse.getDX() * 0.3f, 0);
+//
+//                if(playerPivot.getLocalXRot() > 30) {
+//                    playerPivot.setLocalXRot(30);
+//                }
+//
+//                if(playerPivot.getLocalXRot() < -30) {
+//                    playerPivot.setLocalXRot(-30);
+//                }
+//
+//            }
 
-                if(playerPivot.getLocalXRot() > 30) {
-                    playerPivot.setLocalXRot(30);
-                }
 
-                if(playerPivot.getLocalXRot() < -30) {
-                    playerPivot.setLocalXRot(-30);
-                }
+            playerAnimation.animate(playerGameObject);
 
-            }
-
+//            playerGameObject.playerRightArm.increaseRotation(1, 0, 0);
+//            playerGameObject.playerLeftArm.increaseRotation(-1, 0, 0);
 //            playerGameObject.playerLeftArm.increaseRotation(1, 0, 0);
 //            playerGameObject.playerRightArm.increaseRotation(-1, 0, 0);
 //
