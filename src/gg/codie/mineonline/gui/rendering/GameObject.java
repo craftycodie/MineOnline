@@ -10,6 +10,7 @@ import java.util.LinkedList;
 
 public class GameObject {
 
+    public final String name;
     private TexturedModel model;
 
     protected Vector3f localPosition;
@@ -25,10 +26,16 @@ public class GameObject {
 
     private LinkedList<GameObject> children = new LinkedList<>();
 
-    protected GameObject() {}
+    public GameObject(String name) {
+        this(name, new Vector3f(0, 0, -5), 0, 0, 0, 1);
+    }
 
-    public GameObject(TexturedModel texturedModel, Vector3f localPosition, float rotX, float rotY, float rotZ, float scale) {
-        this.model = texturedModel;
+    protected GameObject() {
+        name = "untitled";
+    }
+
+    public GameObject(String name, Vector3f localPosition, float rotX, float rotY, float rotZ, float scale) {
+        this.name = name;
         this.localPosition = localPosition;
         this.localXRot = rotX;
         this.localYRot = rotY;
@@ -36,8 +43,13 @@ public class GameObject {
         this.scale = scale;
     }
 
-    public GameObject(TexturedModel texturedModel) {
-        this(texturedModel, new Vector3f(0, 0, -5), 0, 0, 0, 1);
+    public GameObject(String name, TexturedModel texturedModel, Vector3f localPosition, float rotX, float rotY, float rotZ, float scale) {
+        this(name, localPosition, rotX, rotY, rotZ, scale);
+        this.model = texturedModel;
+    }
+
+    public GameObject(String name, TexturedModel texturedModel) {
+        this(name, texturedModel, new Vector3f(0, 0, -5), 0, 0, 0, 1);
     }
 
     public void addChild(GameObject child) {
@@ -74,9 +86,9 @@ public class GameObject {
 
         Matrix4f matrix = new Matrix4f();
         matrix.translate(parent.getPosition());
-        matrix.rotate((float) Math.toRadians(parent.getXRotation()), new Vector3f(1, 0, 0));
-        matrix.rotate((float) Math.toRadians(parent.getYRotation()), new Vector3f(0, 1, 0));
-        matrix.rotate((float) Math.toRadians(parent.getZRotation()), new Vector3f(0, 0, 1));
+        matrix.rotate((float) Math.toRadians(parent.getRotation().x), new Vector3f(1, 0, 0));
+        matrix.rotate((float) Math.toRadians(parent.getRotation().y), new Vector3f(0, 1, 0));
+        matrix.rotate((float) Math.toRadians(parent.getRotation().z), new Vector3f(0, 0, 1));
         matrix.translate(localPosition);
         return MathUtils.getPosition(matrix);
     }
@@ -85,8 +97,12 @@ public class GameObject {
         this.localPosition = localPosition;
     }
 
-    public float getXRotation() {
-        return parent != null ? parent.getXRotation() + localXRot : localXRot;
+    public Vector3f getRotation() {
+        if(parent == null) {
+            return new Vector3f(localXRot, localYRot, localZRot);
+        }
+
+        return new Vector3f(parent.getRotation().x + localXRot,parent.getRotation().y +  localYRot, parent.getRotation().z + localZRot);
     }
 
     public float getLocalXRot() {
@@ -97,20 +113,12 @@ public class GameObject {
         this.localXRot = localXRot;
     }
 
-    public float getYRotation() {
-        return parent != null ? parent.getYRotation() + localYRot : localYRot;
-    }
-
     public float getLocalYRot() {
         return localYRot;
     }
 
     public void setLocalYRot(float localYRot) {
         this.localYRot = localYRot;
-    }
-
-    public float getZRotation() {
-        return parent != null ? parent.getZRotation() + localZRot : localZRot;
     }
 
     public float getLocalZRot() {

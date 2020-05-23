@@ -70,26 +70,18 @@ public class MathUtils {
     }
 
         public static Vector3f getRotation(Matrix4f matrix) {
-            float x,y,z;
-//            Matrix3f m = new Matrix3f();
-//
-//            matrix.get(m);
-            Matrix4f m = matrix;
-            if(Math.abs(m.m02 - 1) < 0.0000001) {
-                x = (float) Math.atan2(-m.m10,m.m11);
-                y = (float) (-3.1415926535897931/2);
-                z = 0.0f;
-            } else if(Math.abs(m.m02 + 1)< 0.0000001) {
-                x = (float) Math.atan2(m.m10,m.m11);
-                y = (float) (3.1415926535897931/2);
-                z = 0.0f;
-            } else {
-                x = (float) Math.atan2(m.m12,m.m22);
-                y = (float) Math.atan2(-m.m02, Math.sqrt(m.m12 * m.m12 + m.m22 * m.m22));
-                z = (float) Math.atan2(m.m01,m.m00);
+            float yaw = 0.0f;
+            float pitch = 0.0f;
+            float roll = 0.0f;
+            if(matrix.m00 == 1.0f || matrix.m00 == -1.0f){
+                yaw = (float)Math.atan2(matrix.m02, matrix.m23);
+                //pitch and roll remain = 0;
+            }else{
+                yaw = (float) Math.atan2(-matrix.m20, matrix.m00);
+                pitch = (float) Math.asin(matrix.m10);
+                roll = (float) Math.atan2(-matrix.m12, matrix.m11);
             }
-
-            return new Vector3f(x, y, z);
+            return new Vector3f(yaw, pitch, roll);
         }
 
         public static Vector3f getPosition(Matrix4f matrix) {

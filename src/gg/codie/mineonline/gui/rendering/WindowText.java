@@ -17,29 +17,26 @@ public class WindowText {
         StaticShader shader = new StaticShader();
         Renderer renderer = new Renderer(shader);
 
+        GameObject playerPivot = new GameObject("player_origin", new Vector3f(0, 0, -75), 0, 0, 0, 1 );
 
-//        RawModel testModel = loader.loadBoxToVAO(new Vector3f(-0.5f, -0.5f, -0.5f), new Vector3f(0.5f, 0.5f, 0.5f), textureCoords);
-//        ModelTexture texture = new ModelTexture(loader.loadTexture("missing"));
-//        TexturedModel texturedModel = new TexturedModel(testModel, texture);
+        PlayerGameObject playerGameObject = new PlayerGameObject("player", loader, shader, new Vector3f(0, -16, 0), 0, 0, 0, 1 );
 
-        GameObject playerPivot = new GameObject();
-
-        PlayerGameObject playerGameObject = new PlayerGameObject(loader, shader, new Vector3f(0, -24, -75), 0, 0, 0, 1 );
+        playerPivot.addChild(playerGameObject);
 
         Camera camera = new DebugCamera();
 
-
-//        RawModel headModel = loader.loadBoxToVAO(playerModel.playerHead.begin, playerModel.playerHead.end, textureCoords);
-//        ModelTexture headTexture = new ModelTexture(loader.loadTexture("missing"));
-//        TexturedModel texturedHead =  new TexturedModel(headModel, headTexture);
-//        //GameObject headEntity = new GameObject(texturedHead, new Vector3f(0, 0, -25), 90, 0, 0, 1);
+        //playerGameObject.playerCloak.increaseRotation(10, 0, 0);
 
 
-//        for (Vector3f[] box : playerModel.getBoxVertices()) {
-//            TexturedModel boxTexturedModel = new TexturedModel(loader.loadBoxToVAO(box[0], box[1], textureCoords), texture);
-//            PlayerGameObject boxEntity = new PlayerGameObject(boxTexturedModel, new Vector3f(0, 0, -25), 0, 0, 0, 1);
-//            playerModelBoxes.add(boxEntity);
-//        }
+            playerGameObject.playerLeftArm.increaseRotation(45, 0, 0);
+            playerGameObject.playerRightArm.increaseRotation(-45, 0, 0);
+
+            playerGameObject.playerLeftLeg.increaseRotation(-45, 0, 0);
+            playerGameObject.playerRightLeg.increaseRotation(45, 0, 0);
+
+            playerGameObject.playerCloak.increaseRotation(45, 0, 0);
+
+            playerGameObject.playerHead.increaseRotation(0, 0, 0);
 
         // Game Loop
         while(!Display.isCloseRequested()) {
@@ -47,8 +44,30 @@ public class WindowText {
             //entity.increasePosition(0, 0, -0.05f);
 
             if(Mouse.isButtonDown(0)) {
-                playerGameObject.increaseRotation(Mouse.getDY() * -0.3f, Mouse.getDX() * 0.3f, 0);
+                playerPivot.increaseRotation(Mouse.getDY() * -0.3f, Mouse.getDX() * 0.3f, 0);
+
+                if(playerPivot.getLocalXRot() > 30) {
+                    playerPivot.setLocalXRot(30);
+                }
+
+                if(playerPivot.getLocalXRot() < -30) {
+                    playerPivot.setLocalXRot(-30);
+                }
+
             }
+
+//            playerGameObject.playerLeftArm.increaseRotation(1, 0, 0);
+//            playerGameObject.playerRightArm.increaseRotation(-1, 0, 0);
+//
+//            playerGameObject.playerLeftLeg.increaseRotation(1, 0, 0);
+//            playerGameObject.playerRightLeg.increaseRotation(-1, 0, 0);
+//
+//            playerGameObject.playerCloak.increaseRotation(0, 0, 2);
+//
+//            playerGameObject.playerHead.increaseRotation(0, 2, 0);
+
+
+
 
             camera.move();
 
