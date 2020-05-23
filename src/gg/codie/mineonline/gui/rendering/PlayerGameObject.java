@@ -7,16 +7,13 @@ import gg.codie.mineonline.gui.rendering.textures.ModelTexture;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-
 public class PlayerGameObject extends GameObject {
 
     private final Loader loader;
     private final StaticShader shader;
 
     private final int SKIN_WIDTH = 64;
-    private final int SKIN_HEIGHT = 32;
+    private final int SKIN_HEIGHT = 64;
 
     public PlayerGameObject(Loader loader, StaticShader shader, Vector3f localPosition, float rotX, float rotY, float rotZ, float scale)
     {
@@ -29,71 +26,81 @@ public class PlayerGameObject extends GameObject {
         this.localZRot = rotZ;
         this.scale = scale;
 
-        playerCloak = addCape(new Vector3f(-5f, 0f, -1f), 10, 16, 1, new Vector3f(0, 8, -2), TextureHelper.getCubeTextureCoords(new Vector2f(SKIN_WIDTH, SKIN_HEIGHT),
-                new Vector2f(0, 0), new Vector2f(10, 16),
-                new Vector2f(0, 0), new Vector2f(10, 16),
-                new Vector2f(0, 0), new Vector2f(10, 16),
-                new Vector2f(0, 0), new Vector2f(10, 16),
-                new Vector2f(0, 0), new Vector2f(10, 16),
-                new Vector2f(0, 0), new Vector2f(10, 16)
-        ));
-
         playerHead = addBox(new Vector3f(-4f, -8f, -4f), 8, 8, 8, new Vector3f(0, 32, 0), TextureHelper.getCubeTextureCoords(new Vector2f(SKIN_WIDTH, SKIN_HEIGHT),
                 new Vector2f(24, 8), new Vector2f(8, 8),
                 new Vector2f(8, 8), new Vector2f(8, 8),
+                new Vector2f(16, 8), new Vector2f(8, 8),
                 new Vector2f(0, 8), new Vector2f(8, 8),
-                new Vector2f(8, 8), new Vector2f(8, 8),
-                new Vector2f(8, 8), new Vector2f(8, 8),
-                new Vector2f(8, 8), new Vector2f(8, 8)
+                new Vector2f(8, 0), new Vector2f(8, 8),
+                new Vector2f(16, 0), new Vector2f(8, 8)
                 ));
 
 
-        playerHeadwear = addBox(new Vector3f(-4, -8, -4), 8, 8, 8, new Vector3f(0, 32, 0), textureCoords);
+        playerHeadwear = addBox(new Vector3f(-4f, -8f, -4f), 8, 8, 8, new Vector3f(0, 32.5f, 0), TextureHelper.getCubeTextureCoords(new Vector2f(SKIN_WIDTH, SKIN_HEIGHT),
+                new Vector2f(56, 8), new Vector2f(8, 8),
+                new Vector2f(40, 8), new Vector2f(8, 8),
+                new Vector2f(48, 8), new Vector2f(8, 8),
+                new Vector2f(32, 8), new Vector2f(8, 8),
+                new Vector2f(40, 0), new Vector2f(8, 8),
+                new Vector2f(48, 0), new Vector2f(8, 8)
+        ));
+
+        playerHeadwear.setScale(1.1f);
+
         playerBody = addBox(new Vector3f(-4, 0, 2), 8, 12, 4, new Vector3f(0, 12, -4), TextureHelper.getCubeTextureCoords(new Vector2f(SKIN_WIDTH, SKIN_HEIGHT),
+                new Vector2f(32, 20), new Vector2f(8, 12),
                 new Vector2f(20, 20), new Vector2f(8, 12),
-                new Vector2f(20, 20), new Vector2f(8, 12),
-                new Vector2f(20, 20), new Vector2f(8, 12),
-                new Vector2f(20, 20), new Vector2f(8, 12),
-                new Vector2f(20, 20), new Vector2f(8, 12),
-                new Vector2f(20, 20), new Vector2f(8, 12)
+                new Vector2f(28, 20), new Vector2f(4, 12),
+                new Vector2f(16, 20), new Vector2f(4, 12),
+                new Vector2f(20, 16), new Vector2f(8, 4),
+                new Vector2f(28, 16), new Vector2f(8, 4)
         ));
 
         playerRightArm = addBox(new Vector3f(-3, -2, -2), 4, 12, 4, new Vector3f(7, 14, 0), TextureHelper.getCubeTextureCoords(new Vector2f(SKIN_WIDTH, SKIN_HEIGHT),
+                new Vector2f(52, 20), new Vector2f(4, 12),
                 new Vector2f(44, 20), new Vector2f(4, 12),
-                new Vector2f(44, 20), new Vector2f(4, 12),
-                new Vector2f(44, 20), new Vector2f(4, 12),
-                new Vector2f(44, 20), new Vector2f(4, 12),
-                new Vector2f(44, 20), new Vector2f(4, 12),
-                new Vector2f(44, 20), new Vector2f(4, 12)
+                new Vector2f(48, 20), new Vector2f(4, 12),
+                new Vector2f(40, 20), new Vector2f(4, 12),
+                new Vector2f(44, 16), new Vector2f(4, 4),
+                new Vector2f(48, 16), new Vector2f(4, 4)
         ));
 
 
         playerLeftArm = addBox(new Vector3f(-1, -2, -2), 4, 12, 4, new Vector3f(-7, 14, 0), TextureHelper.getCubeTextureCoords(new Vector2f(SKIN_WIDTH, SKIN_HEIGHT),
+                new Vector2f(52, 20), new Vector2f(4, 12),
                 new Vector2f(44, 20), new Vector2f(4, 12),
-                new Vector2f(44, 20), new Vector2f(4, 12),
-                new Vector2f(44, 20), new Vector2f(4, 12),
-                new Vector2f(44, 20), new Vector2f(4, 12),
-                new Vector2f(44, 20), new Vector2f(4, 12),
-                new Vector2f(44, 20), new Vector2f(4, 12)
+                new Vector2f(48, 20), new Vector2f(4, 12),
+                new Vector2f(40, 20), new Vector2f(4, 12),
+                new Vector2f(44, 16), new Vector2f(4, 4),
+                new Vector2f(48, 16), new Vector2f(4, 4)
         ));
 
 
         playerRightLeg = addBox(new Vector3f(-2, 0, -2), 4 , 12, 4, new Vector3f(2, 0, 0), TextureHelper.getCubeTextureCoords(new Vector2f(SKIN_WIDTH, SKIN_HEIGHT),
+                new Vector2f(12, 20), new Vector2f(4, 12),
                 new Vector2f(4, 20), new Vector2f(4, 12),
-                new Vector2f(4, 20), new Vector2f(4, 12),
-                new Vector2f(4, 20), new Vector2f(4, 12),
-                new Vector2f(4, 20), new Vector2f(4, 12),
-                new Vector2f(4, 20), new Vector2f(4, 12),
-                new Vector2f(4, 20), new Vector2f(4, 12)
+                new Vector2f(8, 20), new Vector2f(4, 12),
+                new Vector2f(0, 20), new Vector2f(4, 12),
+                new Vector2f(4, 16), new Vector2f(4, 4),
+                new Vector2f(8, 16), new Vector2f(4, 4)
         ));
 
         playerLeftLeg = addBox(new Vector3f(-2, 0, -2), 4 , 12, 4, new Vector3f(-2, 0, 0 ), TextureHelper.getCubeTextureCoords(new Vector2f(SKIN_WIDTH, SKIN_HEIGHT),
+                new Vector2f(12, 20), new Vector2f(4, 12),
                 new Vector2f(4, 20), new Vector2f(4, 12),
-                new Vector2f(4, 20), new Vector2f(4, 12),
-                new Vector2f(4, 20), new Vector2f(4, 12),
-                new Vector2f(4, 20), new Vector2f(4, 12),
-                new Vector2f(4, 20), new Vector2f(4, 12),
-                new Vector2f(4, 20), new Vector2f(4, 12)
+                new Vector2f(8, 20), new Vector2f(4, 12),
+                new Vector2f(0, 20), new Vector2f(4, 12),
+                new Vector2f(4, 16), new Vector2f(4, 4),
+                new Vector2f(8, 16), new Vector2f(4, 4)
+        ));
+
+        playerCloak = addCape(new Vector3f(-5f, 0f, -1f), 10, 16, 1, new Vector3f(0, 8, -2), TextureHelper.getCubeTextureCoords(new Vector2f(SKIN_WIDTH, 32),
+                new Vector2f(1, 1), new Vector2f(10, 16),
+                new Vector2f(11, 1), new Vector2f(10, 16),
+                new Vector2f(0, 0), new Vector2f(1, 16),
+                new Vector2f(21, 1), new Vector2f(1, 16),
+                new Vector2f(1, 0), new Vector2f(10, 1),
+                new Vector2f(11, 0), new Vector2f(10, 1)
         ));
     }
 
@@ -105,11 +112,11 @@ public class PlayerGameObject extends GameObject {
     public void increaseRotation(float dx, float dy, float dz) {
         super.increaseRotation(dx, dy, dz);
 
-        if(getX() > 30) {
+        if(getXRotation() > 30) {
             setLocalXRot(30);
         }
 
-        if(getX() < -30) {
+        if(getXRotation() < -30) {
             setLocalXRot(-30);
         }
     }
@@ -119,7 +126,7 @@ public class PlayerGameObject extends GameObject {
                 new Vector3f(begin.x + width, begin.y + height, begin.z + depth),
                 textureCoords);
 
-        ModelTexture modelTexture = new ModelTexture(loader.loadTexture("char"));
+        ModelTexture modelTexture = new ModelTexture(loader.loadTexture("codie"));
         TexturedModel texturedModel =  new TexturedModel(model, modelTexture);
 
         GameObject box = new GameObject(texturedModel, position, 0, 0, 0, 1);
@@ -152,35 +159,4 @@ public class PlayerGameObject extends GameObject {
     public GameObject playerRightLeg;
     public GameObject playerLeftLeg;
     public GameObject playerCloak;
-
-    static final float[] textureCoords = {
-
-            0,0,
-            0,1,
-            1,1,
-            1,0,
-            0,0,
-            0,1,
-            1,1,
-            1,0,
-            0,0,
-            0,1,
-            1,1,
-            1,0,
-            0,0,
-            0,1,
-            1,1,
-            1,0,
-            0,0,
-            0,1,
-            1,1,
-            1,0,
-            0,0,
-            0,1,
-            1,1,
-            1,0
-
-
-    };
-
 }

@@ -42,11 +42,17 @@ public class Renderer {
         GL30.glBindVertexArray(rawModel.getVaoID());
         GL20.glEnableVertexAttribArray(0);
         GL20.glEnableVertexAttribArray(1);
-        Matrix4f transformationMatrix = MathUtils.createTransformationMatrix(gameObject.getPosition(), gameObject.getX(), gameObject.getY(), gameObject.getZ(), gameObject.getScale());
+        Matrix4f transformationMatrix = MathUtils.createTransformationMatrix(gameObject.getPosition(), gameObject.getXRotation(), gameObject.getYRotation(), gameObject.getZRotation(), gameObject.getScale());
         shader.loadTransformationMatrix(transformationMatrix);
 
         GL13.glActiveTexture(GL13.GL_TEXTURE0);
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, texturedModel.getTexture().getTextureID());
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
+
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GL11.glEnable(GL11.GL_ALPHA_TEST);
+
         GL11.glDrawElements(GL11.GL_TRIANGLES, rawModel.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
         GL20.glDisableVertexAttribArray(0);
         GL20.glDisableVertexAttribArray(1);

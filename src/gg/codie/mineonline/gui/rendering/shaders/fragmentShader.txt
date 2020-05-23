@@ -5,8 +5,13 @@ in vec2 pass_textureCoordinates;
 out vec4 out_color;
 
 uniform sampler2D textureSampler;
+uniform bool allowTransparency;
 
 void main(void) {
+
+    if (texture(textureSampler, pass_textureCoordinates).w == 0) {
+        discard;
+    }
 
     out_color = texture(textureSampler, pass_textureCoordinates);
 

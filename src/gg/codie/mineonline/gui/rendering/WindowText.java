@@ -17,97 +17,16 @@ public class WindowText {
         StaticShader shader = new StaticShader();
         Renderer renderer = new Renderer(shader);
 
-        //PlayerGameObject playerModel = new PlayerGameObject(0, 0);
-
-
-//        float[] vertices = {
-//                -0.5f,0.5f,-0.5f,
-//                -0.5f,-0.5f,-0.5f,
-//                0.5f,-0.5f,-0.5f,
-//                0.5f,0.5f,-0.5f,
-//
-//                -0.5f,0.5f,0.5f,
-//                -0.5f,-0.5f,0.5f,
-//                0.5f,-0.5f,0.5f,
-//                0.5f,0.5f,0.5f,
-//
-//                0.5f,0.5f,-0.5f,
-//                0.5f,-0.5f,-0.5f,
-//                0.5f,-0.5f,0.5f,
-//                0.5f,0.5f,0.5f,
-//
-//                -0.5f,0.5f,-0.5f,
-//                -0.5f,-0.5f,-0.5f,
-//                -0.5f,-0.5f,0.5f,
-//                -0.5f,0.5f,0.5f,
-//
-//                -0.5f,0.5f,0.5f,
-//                -0.5f,0.5f,-0.5f,
-//                0.5f,0.5f,-0.5f,
-//                0.5f,0.5f,0.5f,
-//
-//                -0.5f,-0.5f,0.5f,
-//                -0.5f,-0.5f,-0.5f,
-//                0.5f,-0.5f,-0.5f,
-//                0.5f,-0.5f,0.5f
-//
-//        };
-
-        float[] textureCoords = {
-
-                0,0,
-                0,0.5f,
-                0.5f,0.5f,
-                0.5f,0,
-                0,0,
-                0,1,
-                1,1,
-                1,0,
-                0,0,
-                0,1,
-                1,1,
-                1,0,
-                0,0,
-                0,1,
-                1,1,
-                1,0,
-                0,0,
-                0,1,
-                1,1,
-                1,0,
-                0,0,
-                0,1,
-                1,1,
-                1,0
-
-
-        };
-
-//        int[] indices = {
-//                0,1,3,
-//                3,1,2,
-//                4,5,7,
-//                7,5,6,
-//                8,9,11,
-//                11,9,10,
-//                12,13,15,
-//                15,13,14,
-//                16,17,19,
-//                19,17,18,
-//                20,21,23,
-//                23,21,22
-//
-//        };
-
-
 
 //        RawModel testModel = loader.loadBoxToVAO(new Vector3f(-0.5f, -0.5f, -0.5f), new Vector3f(0.5f, 0.5f, 0.5f), textureCoords);
 //        ModelTexture texture = new ModelTexture(loader.loadTexture("missing"));
 //        TexturedModel texturedModel = new TexturedModel(testModel, texture);
 
+        GameObject playerPivot = new GameObject();
+
         PlayerGameObject playerGameObject = new PlayerGameObject(loader, shader, new Vector3f(0, -24, -75), 0, 0, 0, 1 );
 
-        Camera camera = new Camera();
+        Camera camera = new DebugCamera();
 
 
 //        RawModel headModel = loader.loadBoxToVAO(playerModel.playerHead.begin, playerModel.playerHead.end, textureCoords);

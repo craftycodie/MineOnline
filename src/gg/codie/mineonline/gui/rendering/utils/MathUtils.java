@@ -1,6 +1,7 @@
 package gg.codie.mineonline.gui.rendering.utils;
 
 import gg.codie.mineonline.gui.rendering.Camera;
+import org.lwjgl.util.vector.Matrix3f;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 
@@ -33,7 +34,7 @@ public class MathUtils {
     }
 
     public static float[] makeBoxVertices(Vector3f begin, Vector3f end) {
-        return new float[] {
+        return new float[]{
                 begin.x, end.y, begin.z,   // v1
                 begin.x, begin.y, begin.z,  // v2
                 end.x, begin.y, begin.z,   // v3
@@ -65,6 +66,47 @@ public class MathUtils {
                 end.x, begin.y, end.z    // v7
 
         };
+
+    }
+
+        public static Vector3f getRotation(Matrix4f matrix) {
+            float x,y,z;
+//            Matrix3f m = new Matrix3f();
+//
+//            matrix.get(m);
+            Matrix4f m = matrix;
+            if(Math.abs(m.m02 - 1) < 0.0000001) {
+                x = (float) Math.atan2(-m.m10,m.m11);
+                y = (float) (-3.1415926535897931/2);
+                z = 0.0f;
+            } else if(Math.abs(m.m02 + 1)< 0.0000001) {
+                x = (float) Math.atan2(m.m10,m.m11);
+                y = (float) (3.1415926535897931/2);
+                z = 0.0f;
+            } else {
+                x = (float) Math.atan2(m.m12,m.m22);
+                y = (float) Math.atan2(-m.m02, Math.sqrt(m.m12 * m.m12 + m.m22 * m.m22));
+                z = (float) Math.atan2(m.m01,m.m00);
+            }
+
+            return new Vector3f(x, y, z);
+        }
+
+        public static Vector3f getPosition(Matrix4f matrix) {
+            float x = matrix.m30;
+            float y = matrix.m31;
+            float z = matrix.m32;
+
+            return new Vector3f(x, y, z);
+        }
+
+        public static Vector3f getForward(float x, float y) {
+            return new Vector3f((float)Math.cos(x) * (float)Math.cos(y), (float)Math.sin(x) * (float)Math.cos(y), (float)Math.sin(y));
+        }
+
+        public static float getDistance(Vector3f a, Vector3f b) {
+                return (float)(Math.sqrt((b.x - a.x)*(b.x - a.x) + (b.y - a.y) * (b.y - a.y) + (b.z - a.z) * (b.z - a.z)));
+        }
 
 //        return new float[] {
 //                -0.5f,0.5f,-0.5f,   // v1
@@ -98,6 +140,5 @@ public class MathUtils {
 //                0.5f,-0.5f,0.5f     // v7
 //
 //        };
-    }
 
 }

@@ -1,6 +1,8 @@
 package gg.codie.mineonline.gui.rendering;
 
 import gg.codie.mineonline.gui.rendering.models.TexturedModel;
+import gg.codie.mineonline.gui.rendering.utils.MathUtils;
+import org.lwjgl.Sys;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 
@@ -65,44 +67,26 @@ public class GameObject {
         this.model = model;
     }
 
-    public Matrix4f GetModelMatrix() {
-        Matrix4f matrix4f = new Matrix4f();
-        Matrix4f.scale(new Vector3f(scale, scale, scale), matrix4f, matrix4f);
-        Matrix4f.translate(localPosition, matrix4f, matrix4f);
-        Matrix4f.rotate((float)Math.toRadians(localZRot), new Vector3f(0, 0, 1),
-                matrix4f, matrix4f);
-        Matrix4f.rotate((float)Math.toRadians(localYRot), new Vector3f(0, 1, 0),
-                matrix4f, matrix4f);
-        Matrix4f.rotate((float)Math.toRadians(localXRot), new Vector3f(1, 0, 0),
-                matrix4f, matrix4f);
-
-        return matrix4f;
-    }
-
     public Vector3f getPosition() {
         if (parent == null)
             return localPosition;
 
-        Matrix4f matrix;
-        if (parent != null) {
-            matrix = Matrix4f.mul(parent.GetModelMatrix(), GetModelMatrix(), null);
-        } else {
-            matrix = GetModelMatrix();
-        }
 
-        float x = matrix.m30;
-        float y = matrix.m31;
-        float z = matrix.m32;
-
-        return new Vector3f(x, y, z);
+        Matrix4f matrix = new Matrix4f();
+        matrix.translate(parent.getPosition());
+        matrix.rotate((float) Math.toRadians(parent.getXRotation()), new Vector3f(1, 0, 0));
+        matrix.rotate((float) Math.toRadians(parent.getYRotation()), new Vector3f(0, 1, 0));
+        matrix.rotate((float) Math.toRadians(parent.getZRotation()), new Vector3f(0, 0, 1));
+        matrix.translate(localPosition);
+        return MathUtils.getPosition(matrix);
     }
 
     public void setLocalPosition(Vector3f localPosition) {
         this.localPosition = localPosition;
     }
 
-    public float getX() {
-        return parent != null ? parent.getX() + localXRot : localXRot;
+    public float getXRotation() {
+        return parent != null ? parent.getXRotation() + localXRot : localXRot;
     }
 
     public float getLocalXRot() {
@@ -113,8 +97,8 @@ public class GameObject {
         this.localXRot = localXRot;
     }
 
-    public float getY() {
-        return parent != null ? parent.getY() + localYRot : localYRot;
+    public float getYRotation() {
+        return parent != null ? parent.getYRotation() + localYRot : localYRot;
     }
 
     public float getLocalYRot() {
@@ -125,8 +109,8 @@ public class GameObject {
         this.localYRot = localYRot;
     }
 
-    public float getZ() {
-        return parent != null ? parent.getZ() + localZRot : localZRot;
+    public float getZRotation() {
+        return parent != null ? parent.getZRotation() + localZRot : localZRot;
     }
 
     public float getLocalZRot() {
