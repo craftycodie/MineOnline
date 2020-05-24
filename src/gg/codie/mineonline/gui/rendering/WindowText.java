@@ -2,6 +2,7 @@ package gg.codie.mineonline.gui.rendering;
 
 import gg.codie.mineonline.gui.rendering.animation.*;
 import gg.codie.mineonline.gui.rendering.shaders.StaticShader;
+import org.lwjgl.Sys;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.*;
 import org.lwjgl.util.vector.Vector3f;
@@ -18,9 +19,9 @@ public class WindowText {
         StaticShader shader = new StaticShader();
         Renderer renderer = new Renderer(shader);
 
-        GameObject playerPivot = new GameObject("player_origin", new Vector3f(0, 0, -75), 0, 0, 0, 1 );
+        GameObject playerPivot = new GameObject("player_origin", new Vector3f(-20, 0, -70), new Vector3f(), new Vector3f(1, 1, 1));
 
-        PlayerGameObject playerGameObject = new PlayerGameObject("player", loader, shader, new Vector3f(0, -16, 0), 0, 0, 0, 1 );
+        PlayerGameObject playerGameObject = new PlayerGameObject("player", loader, shader, new Vector3f(0, -16, 0), new Vector3f(), new Vector3f(1, 1, 1));
 
         playerPivot.addChild(playerGameObject);
 
@@ -34,36 +35,50 @@ public class WindowText {
             //entity.increaseRotation(0, 1, 0);
             //entity.increasePosition(0, 0, -0.05f);
 
-//            if(Mouse.isButtonDown(0)) {
-//                playerPivot.increaseRotation(Mouse.getDY() * -0.3f, Mouse.getDX() * 0.3f, 0);
-//
-//                if(playerPivot.getLocalXRot() > 30) {
-//                    playerPivot.setLocalXRot(30);
-//                }
-//
-//                if(playerPivot.getLocalXRot() < -30) {
-//                    playerPivot.setLocalXRot(-30);
-//                }
-//
+//            if(playerPivot.getLocalRotation().z > 0) {
+//                playerPivot.increaseRotation(new Vector3f(0, 0, -playerPivot.getLocalRotation().z));
 //            }
+
+            if(Mouse.isButtonDown(0)) {
+                Vector3f currentRotation = playerPivot.getLocalRotation();
+                Vector3f rotation = new Vector3f();
+
+                float dy = Mouse.getDY();
+
+//                if(currentRotation.x + (dy * -0.3f) > 30) {
+//                    rotation.x = 30 - currentRotation.x;
+//                } else if(currentRotation.x + (dy * -0.3f) < -30) {
+//                    rotation.x = -30 - currentRotation.x;
+//                } else {
+//                    rotation.x = dy * -0.3f;
+//                }
+
+                rotation.y = (Mouse.getDX() * 0.5f);
+
+                System.out.println(rotation.toString());
+
+                playerPivot.increaseRotation(rotation);
+//                Vector3f rotation = playerPivot.getLocalRotation();
+
+
+
+//                playerPivot.setLocalRotation(new Vector3f(rotation.x, rotation.y, 0));
+//
+//                if(rotation.x > 30) {
+//                    System.out.println("player: x" + rotation.x + " y" + rotation.y + " z" + rotation.z);
+//                    rotation.x = 30;
+//                    playerPivot.setLocalRotation(rotation);
+//                }
+//
+//                if(rotation.x < -30) {
+//                    System.out.println("player: x" + rotation.x + " y" + rotation.y + " z" + rotation.z);
+//                    rotation.x = -30;
+//                    playerPivot.setLocalRotation(rotation);
+//                }
+            }
 
 
             playerAnimation.animate(playerGameObject);
-
-//            playerGameObject.playerRightArm.increaseRotation(1, 0, 0);
-//            playerGameObject.playerLeftArm.increaseRotation(-1, 0, 0);
-//            playerGameObject.playerLeftArm.increaseRotation(1, 0, 0);
-//            playerGameObject.playerRightArm.increaseRotation(-1, 0, 0);
-//
-//            playerGameObject.playerLeftLeg.increaseRotation(1, 0, 0);
-//            playerGameObject.playerRightLeg.increaseRotation(-1, 0, 0);
-//
-//            playerGameObject.playerCloak.increaseRotation(0, 0, 2);
-//
-//            playerGameObject.playerHead.increaseRotation(0, 2, 0);
-
-
-
 
             camera.move();
 

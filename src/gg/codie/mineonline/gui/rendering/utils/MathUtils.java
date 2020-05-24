@@ -1,24 +1,90 @@
 package gg.codie.mineonline.gui.rendering.utils;
 
 import gg.codie.mineonline.gui.rendering.Camera;
-import org.lwjgl.util.vector.Matrix3f;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Quaternion;
 import org.lwjgl.util.vector.Vector3f;
 
 public class MathUtils {
 
-    public static Matrix4f createTransformationMatrix(Vector3f translation, float rx, float ry, float rz, float scale) {
-        Matrix4f matrix = new Matrix4f();
-        matrix.setIdentity();
+    public static Matrix4f createTransformationMatrix(Vector3f position, Quaternion rotation, Vector3f scale) {
+        Matrix4f dest = new Matrix4f();
+        dest.setIdentity();
 
-        Matrix4f.translate(translation, matrix, matrix);
-        Matrix4f.rotate((float) Math.toRadians(rx), new Vector3f(1, 0, 0), matrix, matrix);
-        Matrix4f.rotate((float) Math.toRadians(ry), new Vector3f(0, 1, 0), matrix, matrix);
-        Matrix4f.rotate((float) Math.toRadians(rz), new Vector3f(0, 0, 1), matrix, matrix);
-        Matrix4f.scale(new Vector3f(scale, scale, scale), matrix, matrix);
+        float q00 = 2.0f * rotation.x * rotation.x;
+        float q11 = 2.0f * rotation.y * rotation.y;
+        float q22 = 2.0f * rotation.z * rotation.z;
+        float q01 = 2.0f * rotation.x * rotation.y;
+        float q02 = 2.0f * rotation.x * rotation.z;
+        float q03 = 2.0f * rotation.x * rotation.w;
+        float q12 = 2.0f * rotation.y * rotation.z;
+        float q13 = 2.0f * rotation.y * rotation.w;
+        float q23 = 2.0f * rotation.z * rotation.w;
 
-        return matrix;
+        dest.m00 = (1.0f - q11 - q22) * scale.x;
+        dest.m01 = (q01 + q23) * scale.x;
+        dest.m02 = (q02 - q13) * scale.x;
+        dest.m03 = 0.0f;
+        dest.m10 = (q01 - q23) * scale.y;
+        dest.m11 = (1.0f - q22 - q00) * scale.y;
+        dest.m12 = (q12 + q03) * scale.y;
+        dest.m13 = 0.0f;
+        dest.m20 = (q02 + q13) * scale.z;
+        dest.m21 = (q12 - q03) * scale.z;
+        dest.m22 = (1.0f - q11 - q00) * scale.z;
+        dest.m23 = 0.0f;
+        dest.m30 = position.x;
+        dest.m31 = position.y;
+        dest.m32 = position.z;
+        dest.m33 = 1.0f;
+
+        return dest;
+    }
+
+    public static Quaternion rotate(Quaternion q, Vector3f rotation) {
+        // Assuming the angles are in radians.
+        float c1 = (float)Math.cos(rotation.y/2);
+        float s1 = (float)Math.sin(rotation.y/2);
+        float c2 = (float)Math.cos(rotation.x/2);
+        float s2 = (float)Math.sin(rotation.x/2);
+        float c3 = (float)Math.cos(rotation.z/2);
+        float s3 = (float)Math.sin(rotation.z/2);
+        float c1c2 = c1*c2;
+        float s1s2 = s1*s2;
+        q.w =(c1c2*c3 - s1s2*s3);
+        q.x =(c1c2*s3 + s1s2*c3);
+        q.y =(s1*c2*c3 + c1*s2*s3);
+        q.z =(c1*s2*c3 - s1*c2*s3);
+
+        return q;
+    }
+
+    public static Quaternion rotateXYZ(Vector3f rotation, Quaternion dest) {
+        float rx = (float) Math.toRadians(rotation.x);
+        float ry = (float) Math.toRadians(rotation.y);
+        float rz = (float) Math.toRadians(rotation.z);
+
+        float sx = (float)Math.sin(rx * 0.5f);
+        float cx = cosFromSin(sx, rx * 0.5f);
+        float sy = (float)Math.sin(ry * 0.5f);
+        float cy = cosFromSin(sy, ry * 0.5f);
+        float sz = (float)Math.sin(rz * 0.5f);
+        float cz = cosFromSin(sz, rz * 0.5f);
+
+        float cycz = cy * cz;
+        float sysz = sy * sz;
+        float sycz = sy * cz;
+        float cysz = cy * sz;
+        float w = cx*cycz - sx*sysz;
+        float x = sx*cycz + cx*sysz;
+        float y = cx*sycz - sx*cysz;
+        float z = cx*cysz + sx*sycz;
+        // right-multiply
+        dest.set(fma(dest.w, x, fma(dest.x, w, fma(dest.y, z, -dest.z * y))),
+                fma(dest.w, y, fma(-dest.x, z, fma(dest.y, w, dest.z * x))),
+                fma(dest.w, z, fma(dest.x, y, fma(-dest.y, x, dest.z * w))),
+                fma(dest.w, w, fma(-dest.x, x, fma(-dest.y, y, -dest.z * z))));
+        return dest;
     }
 
     public static Matrix4f createViewMatrix(Camera camera){
@@ -71,18 +137,11 @@ public class MathUtils {
     }
 
         public static Vector3f getRotation(Matrix4f matrix) {
-            float yaw = 0.0f;
-            float pitch = 0.0f;
-            float roll = 0.0f;
-            if(matrix.m00 == 1.0f || matrix.m00 == -1.0f){
-                yaw = (float)Math.atan2(matrix.m02, matrix.m23);
-                //pitch and roll remain = 0;
-            }else{
-                yaw = (float) Math.atan2(-matrix.m20, matrix.m00);
-                pitch = (float) Math.asin(matrix.m10);
-                roll = (float) Math.atan2(-matrix.m12, matrix.m11);
-            }
-            return new Vector3f(yaw, pitch, roll);
+            Vector3f dest = new Vector3f();
+            dest.x = (float)Math.toDegrees(Math.atan2(matrix.m12, matrix.m22));
+            dest.y = (float)Math.toDegrees(Math.atan2(-matrix.m02, Math.sqrt(matrix.m12 * matrix.m12 + matrix.m22 * matrix.m22)));
+            dest.z = (float)Math.toDegrees(Math.atan2(matrix.m01, matrix.m00));
+            return dest;
         }
 
         public static Vector3f getPosition(Matrix4f matrix) {
@@ -91,6 +150,14 @@ public class MathUtils {
             float z = matrix.m32;
 
             return new Vector3f(x, y, z);
+        }
+
+        public static Vector3f getScale(Matrix4f matrix4f) {
+            Vector3f dest = new Vector3f();
+            dest.x = (float)Math.sqrt(matrix4f.m00 * matrix4f.m00 + matrix4f.m01 * matrix4f.m01 + matrix4f.m02 * matrix4f.m02);
+            dest.y = (float)Math.sqrt(matrix4f.m10 * matrix4f.m10 + matrix4f.m11 * matrix4f.m11 + matrix4f.m12 * matrix4f.m12);
+            dest.z = (float)Math.sqrt(matrix4f.m20 * matrix4f.m20 + matrix4f.m21 * matrix4f.m21 + matrix4f.m22 * matrix4f.m22);
+            return dest;
         }
 
         public static float cosFromSin(float sin, float angle) {
@@ -134,45 +201,86 @@ public class MathUtils {
             return quaternion;
         }
 
-        public static Vector3f getForward(float x, float y) {
-            return new Vector3f((float)Math.cos(x) * (float)Math.cos(y), (float)Math.sin(x) * (float)Math.cos(y), (float)Math.sin(y));
-        }
 
-        public static float getDistance(Vector3f a, Vector3f b) {
-                return (float)(Math.sqrt((b.x - a.x)*(b.x - a.x) + (b.y - a.y) * (b.y - a.y) + (b.z - a.z) * (b.z - a.z)));
-        }
+    public static void setRotationXYZ(Vector3f rotation, Matrix4f matrix) {
+        float sinX = (float)Math.sin(rotation.x);
+        float cosX = cosFromSin(sinX, rotation.x);
+        float sinY = (float)Math.sin(rotation.y);
+        float cosY = cosFromSin(sinY, rotation.y);
+        float sinZ = (float)Math.sin(rotation.z);
+        float cosZ = cosFromSin(sinZ, rotation.z);
+        float nm01 = -sinX * -sinY;
+        float nm02 = cosX * -sinY;
 
-//        return new float[] {
-//                -0.5f,0.5f,-0.5f,   // v1
-//                -0.5f,-0.5f,-0.5f,  // v2
-//                0.5f,-0.5f,-0.5f,   // v3
-//                0.5f,0.5f,-0.5f,    // v4
-//
-//                -0.5f,0.5f,0.5f,    // v5
-//                -0.5f,-0.5f,0.5f,   // v6
-//                0.5f,-0.5f,0.5f,    // v7
-//                0.5f,0.5f,0.5f,     // v8
-//
-//                0.5f,0.5f,-0.5f,    // v4
-//                0.5f,-0.5f,-0.5f,   // v3
-//                0.5f,-0.5f,0.5f,    // v7
-//                0.5f,0.5f,0.5f,     // v8
-//
-//                -0.5f,0.5f,-0.5f,   // v1
-//                -0.5f,-0.5f,-0.5f,  // v2
-//                -0.5f,-0.5f,0.5f,   // v6
-//                -0.5f,0.5f,0.5f,    // v5
-//
-//                -0.5f,0.5f,0.5f,    // v5
-//                -0.5f,0.5f,-0.5f,   // v1
-//                0.5f,0.5f,-0.5f,    // v4
-//                0.5f,0.5f,0.5f,     // v8
-//
-//                -0.5f,-0.5f,0.5f,   // v6
-//                -0.5f,-0.5f,-0.5f,  // v2
-//                0.5f,-0.5f,-0.5f,   // v3
-//                0.5f,-0.5f,0.5f     // v7
-//
-//        };
+        matrix.m20 = sinY;
+        matrix.m21 = -sinX * cosY;
+        matrix.m22 = cosX * cosY;
+        matrix.m00 = cosY * cosZ;
+        matrix.m01 = nm01 * cosZ + cosX * sinZ;
+        matrix.m02 = nm02 * cosZ + sinX * sinZ;
+        matrix.m10 = cosY * -sinZ;
+        matrix.m11 = nm01 * -sinZ + cosX * cosZ;
+        matrix.m12 = nm02 * -sinZ + sinX * cosZ;
+        matrix.setIdentity();
+    }
 
+
+    public static float safeAsin(float r) {
+        return r <= -1.0f ? -((float)Math.PI / 2) : r >= 1.0f ? ((float)Math.PI / 2) : (float)Math.asin(r);
+    }
+
+    public static Quaternion rotateZYX(float angleZ, float angleY, float angleX, Quaternion quaternion) {
+        float sx = (float)Math.sin(angleX * 0.5f);
+        float cx = cosFromSin(sx, angleX * 0.5f);
+        float sy = (float)Math.sin(angleY * 0.5f);
+        float cy = cosFromSin(sy, angleY * 0.5f);
+        float sz = (float)Math.sin(angleZ * 0.5f);
+        float cz = cosFromSin(sz, angleZ * 0.5f);
+
+        float cycz = cy * cz;
+        float sysz = sy * sz;
+        float sycz = sy * cz;
+        float cysz = cy * sz;
+        float w = cx*cycz + sx*sysz;
+        float x = sx*cycz - cx*sysz;
+        float y = cx*sycz + sx*cysz;
+        float z = cx*cysz - sx*sycz;
+        // right-multiply
+        quaternion.set(fma(quaternion.w, x, fma(quaternion.x, w, fma(quaternion.y, z, -quaternion.z * y))),
+                fma(quaternion.w, y, fma(-quaternion.x, z, fma(quaternion.y, w, quaternion.z * x))),
+                fma(quaternion.w, z, fma(quaternion.x, y, fma(-quaternion.y, x, quaternion.z * w))),
+                fma(quaternion.w, w, fma(-quaternion.x, x, fma(-quaternion.y, y, -quaternion.z * z))));
+
+        return quaternion;
+    }
+
+//    public static Vector3f getEulerAnglesXYZ(Quaternion quaternion) {
+//        Vector3f eulerAngles = new Vector3f();
+//        eulerAngles.x = (float)Math.atan2(2.0f * (quaternion.x*quaternion.w - quaternion.y*quaternion.z), 1.0f - 2.0f * (quaternion.x*quaternion.x + quaternion.y*quaternion.y));
+//        eulerAngles.y = safeAsin(2.0f * (quaternion.x*quaternion.z + quaternion.y*quaternion.w));
+//        eulerAngles.z = (float)Math.atan2(2.0f * (quaternion.z*quaternion.w - quaternion.x*quaternion.y), 1.0f - 2.0f * (quaternion.y*quaternion.y + quaternion.z*quaternion.z));
+//        return eulerAngles;
+//    }
+
+    public static Vector3f getForward(Vector3f rotation) {
+        Vector3f up = new Vector3f();
+
+        up.x = -(float)Math.cos(rotation.z) * (float)Math.sin(rotation.z) - (float)Math.sin(rotation.z) * (float)Math.sin(rotation.y) * (float)Math.cos(rotation.z);
+        up.y = (float)Math.sin(rotation.z) * (float)Math.sin(rotation.z) - (float)Math.cos(rotation.z) * (float)Math.sin(rotation.y) * (float)Math.cos(rotation.z);
+        up.z = (float)Math.cos(rotation.y) * (float)Math.cos(rotation.z);
+
+        return (Vector3f)up.normalise();
+    }
+
+    public static Vector3f getRight(Vector3f rotation) {
+        return (Vector3f)(new Vector3f((float)Math.cos(rotation.x) * (float)Math.cos(rotation.y), (float)Math.sin(rotation.y), (float)Math.cos(rotation.x) * (float)Math.sin(rotation.y))).normalise();
+    }
+
+    public static Vector3f getUp(Vector3f rotation) {
+        return Vector3f.cross((Vector3f)getForward(rotation).normalise(), (Vector3f)getRight(rotation).normalise(), null);
+    }
+
+    public static float getDistance(Vector3f a, Vector3f b) {
+            return (float)(Math.sqrt((b.x - a.x)*(b.x - a.x) + (b.y - a.y) * (b.y - a.y) + (b.z - a.z) * (b.z - a.z)));
+    }
 }

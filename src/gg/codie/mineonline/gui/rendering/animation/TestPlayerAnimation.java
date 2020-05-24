@@ -10,7 +10,7 @@ public class TestPlayerAnimation implements IPlayerAnimation {
         player.playerHead.setLocalRotation(new Vector3f());
         player.playerHeadwear.setLocalRotation(new Vector3f());
         player.playerLeftArm.setLocalRotation(new Vector3f());
-        player.playerRightArm.setLocalRotation(new Vector3f());
+        player.playerRightArm.setLocalRotation(new Vector3f(0, 0, 90));
         player.playerRightLeg.setLocalRotation(new Vector3f());
         player.playerLeftLeg.setLocalRotation(new Vector3f());
         player.playerCloak.setLocalRotation(new Vector3f());
@@ -19,14 +19,14 @@ public class TestPlayerAnimation implements IPlayerAnimation {
 
     @Override
     public void animate(PlayerGameObject player) {
-        player.playerRightArm.increaseRotation(1, 0, 0);
-        player.playerLeftArm.increaseRotation(-1, 0, 0);
-
-        player.playerLeftLeg.increaseRotation(1, 0, 0);
-        player.playerRightLeg.increaseRotation(-1, 0, 0);
-
-        player.playerCloak.increaseRotation(0, 0, 2);
-
-        player.playerHead.increaseRotation(0, 2, 0);
+//        player.playerRightArm.increaseRotation(1, 0, 0);
+//        player.playerLeftArm.increaseRotation(-1, 0, 0);
+//
+//        player.playerLeftLeg.increaseRotation(1, 0, 0);
+//        player.playerRightLeg.increaseRotation(-1, 0, 0);
+//
+//        player.playerCloak.increaseRotation(0, 0, 2);
+//
+//        player.playerHead.increaseRotation(0, 2, 0);
     }
 }

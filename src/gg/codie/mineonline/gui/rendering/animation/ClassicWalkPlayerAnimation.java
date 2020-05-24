@@ -26,49 +26,49 @@ public class ClassicWalkPlayerAnimation implements IPlayerAnimation {
     @Override
     public void animate(PlayerGameObject player) {
         if(armsUp) {
-            if (player.playerLeftArm.getLocalZRot() <=-90 && swingCount % 2 == 0) {
+            if (player.playerLeftArm.getLocalRotation().z <=-90 && swingCount % 2 == 0) {
                 armsUp = false;
             } else {
-                player.playerRightArm.increaseRotation(0, 0, -2);
-                player.playerLeftArm.increaseRotation(0, 0, -2);
+                player.playerRightArm.increaseRotation(new Vector3f(0, 0, -2));
+                player.playerLeftArm.increaseRotation(new Vector3f(0, 0, -2));
 
 
                 //System.out.println(player.playerRightArm.getLocalZRot());
-                if (player.playerLeftArm.getLocalZRot() <= -90) {
+                if (player.playerLeftArm.getLocalRotation().z <= -90) {
                     armsUp = false;
                 }
             }
 
         } else {
-            player.playerRightArm.increaseRotation(0, 0, 2);
-            player.playerLeftArm.increaseRotation(0, 0, 2);
+            player.playerRightArm.increaseRotation(new Vector3f(0, 0, 2));
+            player.playerLeftArm.increaseRotation(new Vector3f(0, 0, 2));
 
-            System.out.println(player.playerRightArm.getLocalZRot());
-            if (player.playerLeftArm.getLocalZRot() >=0) {
+            System.out.println(player.playerRightArm.getLocalRotation().z);
+            if (player.playerLeftArm.getLocalRotation().z >=0) {
                 armsUp = true;
             }
 
         }
 
         if(swingForward) {
-            player.playerRightArm.increaseRotation(3, 0, 0);
-            player.playerLeftArm.increaseRotation(-3, 0, 0);
+            player.playerRightArm.increaseRotation(new Vector3f(3, 0, 0));
+            player.playerLeftArm.increaseRotation(new Vector3f(-3, 0, 0));
 
-            player.playerLeftLeg.increaseRotation(3, 0, 0);
-            player.playerRightLeg.increaseRotation(-3, 0, 0);
+            player.playerLeftLeg.increaseRotation(new Vector3f(3, 0, 0));
+            player.playerRightLeg.increaseRotation(new Vector3f(-3, 0, 0));
 
-            if (player.playerLeftLeg.getLocalXRot() >= 80) {
+            if (player.playerLeftLeg.getLocalRotation().x >= 80) {
                 swingForward = false;
                 swingCount++;
             }
         } else {
-            player.playerRightArm.increaseRotation(-3, 0, 0);
-            player.playerLeftArm.increaseRotation(3, 0, 0);
+            player.playerRightArm.increaseRotation(new Vector3f(-3, 0, 0));
+            player.playerLeftArm.increaseRotation(new Vector3f(3, 0, 0));
 
-            player.playerLeftLeg.increaseRotation(-3, 0, 0);
-            player.playerRightLeg.increaseRotation(3, 0, 0);
+            player.playerLeftLeg.increaseRotation(new Vector3f(-3, 0, 0));
+            player.playerRightLeg.increaseRotation(new Vector3f(3, 0, 0));
 
-            if (player.playerLeftLeg.getLocalXRot() <= -80) {
+            if (player.playerLeftLeg.getLocalRotation().x <= -80) {
                 swingForward = true;
                 swingCount++;
             }

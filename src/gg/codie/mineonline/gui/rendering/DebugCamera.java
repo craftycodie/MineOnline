@@ -7,9 +7,9 @@ public class DebugCamera extends Camera {
 
     @Override
     public void move() {
-        if(Mouse.isButtonDown(0)) {
-            yaw += Mouse.getDX() * 0.3f;
-        }
+//        if(Mouse.isButtonDown(0)) {
+//            yaw += Mouse.getDX() * 0.3f;
+//        }
 
 
         if(Keyboard.isKeyDown(Keyboard.KEY_W)) {

@@ -22,17 +22,17 @@ public class IdlePlayerAnimation implements IPlayerAnimation {
     @Override
     public void animate(PlayerGameObject player) {
         if(swingForward) {
-            player.playerRightArm.increaseRotation(0.01f, 0, 0.01f);
-            player.playerLeftArm.increaseRotation(-0.01f, 0, -0.01f);
+            player.playerRightArm.increaseRotation(new Vector3f(0.01f, 0, 0.01f));
+            player.playerLeftArm.increaseRotation(new Vector3f(-0.01f, 0, -0.01f));
 
-            if (player.playerRightArm.getLocalXRot() >= 3) {
+            if (player.playerRightArm.getLocalRotation().x >= 3) {
                 swingForward = false;
             }
         } else {
-            player.playerRightArm.increaseRotation(-0.01f, 0, -0.01f);
-            player.playerLeftArm.increaseRotation(0.01f, 0, 0.01f);
+            player.playerRightArm.increaseRotation(new Vector3f(-0.01f, 0, -0.01f));
+            player.playerLeftArm.increaseRotation(new Vector3f(0.01f, 0, 0.01f));
 
-            if (player.playerRightArm.getLocalXRot() <= -3) {
+            if (player.playerRightArm.getLocalRotation().x <= -3) {
                 swingForward = true;
             }
         }

@@ -22,23 +22,23 @@ public class WalkPlayerAnimation implements IPlayerAnimation {
     @Override
     public void animate(PlayerGameObject player) {
         if(swingForward) {
-            player.playerRightArm.increaseRotation(2, 0, 0);
-            player.playerLeftArm.increaseRotation(-2, 0, 0);
+            player.playerRightArm.increaseRotation(new Vector3f(2, 0, 0));
+            player.playerLeftArm.increaseRotation(new Vector3f(-2, 0, 0));
 
-            player.playerLeftLeg.increaseRotation(3, 0, 0);
-            player.playerRightLeg.increaseRotation(-3, 0, 0);
+            player.playerLeftLeg.increaseRotation(new Vector3f(3, 0, 0));
+            player.playerRightLeg.increaseRotation(new Vector3f(-3, 0, 0));
 
-            if (player.playerLeftLeg.getLocalXRot() >= 70) {
+            if (player.playerLeftLeg.getLocalRotation().x >= 70) {
                 swingForward = false;
             }
         } else {
-            player.playerRightArm.increaseRotation(-2, 0, 0);
-            player.playerLeftArm.increaseRotation(2, 0, 0);
+            player.playerRightArm.increaseRotation(new Vector3f(-2, 0, 0));
+            player.playerLeftArm.increaseRotation(new Vector3f(2, 0, 0));
 
-            player.playerLeftLeg.increaseRotation(-3, 0, 0);
-            player.playerRightLeg.increaseRotation(3, 0, 0);
+            player.playerLeftLeg.increaseRotation(new Vector3f(-3, 0, 0));
+            player.playerRightLeg.increaseRotation(new Vector3f(3, 0, 0));
 
-            if (player.playerLeftLeg.getLocalXRot() <= -70) {
+            if (player.playerLeftLeg.getLocalRotation().x <= -70) {
                 swingForward = true;
             }
         }

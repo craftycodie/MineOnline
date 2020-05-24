@@ -3,18 +3,8 @@ package gg.codie.mineonline.gui.rendering;
 import gg.codie.mineonline.gui.rendering.models.RawModel;
 import gg.codie.mineonline.gui.rendering.models.TexturedModel;
 import gg.codie.mineonline.gui.rendering.shaders.StaticShader;
-import gg.codie.mineonline.gui.rendering.utils.MathUtils;
-import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.*;
-import org.lwjgl.util.glu.Sphere;
 import org.lwjgl.util.vector.Matrix4f;
-import org.newdawn.slick.Color;
-import org.newdawn.slick.TrueTypeFont;
-
-
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.nio.ByteBuffer;
 
 public class Renderer {
 
@@ -53,7 +43,7 @@ public class Renderer {
         GL30.glBindVertexArray(rawModel.getVaoID());
         GL20.glEnableVertexAttribArray(0);
         GL20.glEnableVertexAttribArray(1);
-        Matrix4f transformationMatrix = MathUtils.createTransformationMatrix(gameObject.getPosition(), gameObject.getRotation().x, gameObject.getRotation().y, gameObject.getRotation().z, gameObject.getScale());
+        Matrix4f transformationMatrix = gameObject.getTransformationMatrix();
         shader.loadTransformationMatrix(transformationMatrix);
 
         GL13.glActiveTexture(GL13.GL_TEXTURE0);
