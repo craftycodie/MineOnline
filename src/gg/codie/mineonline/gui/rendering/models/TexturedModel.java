@@ -12,6 +12,10 @@ public class TexturedModel {
         this.texture = texture;
     }
 
+    public void setTexture(ModelTexture texture) {
+        this.texture = texture;
+    }
+
     public RawModel getRawModel() {
         return rawModel;
     }

@@ -1,25 +1,37 @@
 package gg.codie.mineonline.gui.rendering;
 
+import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.gui.rendering.models.RawModel;
 import gg.codie.mineonline.gui.rendering.models.TexturedModel;
 import gg.codie.mineonline.gui.rendering.shaders.StaticShader;
 import gg.codie.mineonline.gui.rendering.textures.ModelTexture;
 import gg.codie.mineonline.gui.rendering.utils.MathUtils;
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Quaternion;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
+import org.newdawn.slick.opengl.Texture;
+
+import java.io.File;
 
 public class PlayerGameObject extends GameObject {
+
+    public static PlayerGameObject thePlayer;
 
     private final Loader loader;
     private final StaticShader shader;
 
     private final int SKIN_WIDTH = 64;
-    private final int SKIN_HEIGHT = 64;
+    private final int SKIN_HEIGHT = 32;
+
+    private String skinPath = LauncherFiles.TEMPLATE_SKIN_PATH;
+    private String cloakPath = LauncherFiles.TEMPLATE_CLOAK_PATH;
 
     public PlayerGameObject(String name, Loader loader, StaticShader shader, Vector3f localPosition, Vector3f rotation, Vector3f scale)
     {
         super(name);
+
+        thePlayer = this;
 
         this.loader = loader;
         this.shader = shader;
@@ -111,12 +123,40 @@ public class PlayerGameObject extends GameObject {
         this(name, loader, shader, new Vector3f(0, 0, 0), new Vector3f(), new Vector3f(1, 1, 1));
     }
 
+    public void setSkin(String path) {
+        this.skinPath = path;
+        updateSkin = true;
+    }
+
+    public void setCloak(String path) {
+        this.cloakPath = path;
+        updateCloak = true;
+    }
+
+    boolean updateSkin;
+    boolean updateCloak;
+
+    public void update() {
+        if(updateSkin) {
+            loadSkin(skinPath);
+            updateSkin = false;
+        }
+
+        if(updateCloak) {
+            loadCloak(cloakPath);
+            updateCloak = false;
+        }
+    }
+
     private GameObject addBox(String name, Vector3f begin, int width, int height, int depth, Vector3f position, Vector3f pivotPosition, float[] textureCoords) {
         RawModel model = loader.loadBoxToVAO(begin,
                 new Vector3f(begin.x + width, begin.y + height, begin.z + depth),
                 textureCoords);
 
-        ModelTexture modelTexture = new ModelTexture(loader.loadTexture("codie"));
+        ModelTexture modelTexture;
+
+        modelTexture = new ModelTexture(loader.loadTexture(skinPath));
+
         TexturedModel texturedModel =  new TexturedModel(model, modelTexture);
 
         GameObject box = new GameObject(name, texturedModel, position, new Vector3f(), new Vector3f(1, 1, 1));
@@ -134,7 +174,10 @@ public class PlayerGameObject extends GameObject {
                 new Vector3f(begin.x + width, begin.y + height, begin.z + depth),
                 textureCoords);
 
-        ModelTexture modelTexture = new ModelTexture(loader.loadTexture("codie"));
+        ModelTexture modelTexture;
+
+        modelTexture = new ModelTexture(loader.loadTexture(skinPath));
+
         TexturedModel texturedModel =  new TexturedModel(model, modelTexture);
 
         GameObject box = new GameObject(name, texturedModel, new Vector3f(0, -3.5f, 0), new Vector3f(), new Vector3f(1, 1, 1));
@@ -149,7 +192,10 @@ public class PlayerGameObject extends GameObject {
                 new Vector3f(begin.x + width, begin.y + height, begin.z + depth),
                 textureCoords);
 
-        ModelTexture modelTexture = new ModelTexture(loader.loadTexture("cape"));
+        ModelTexture modelTexture;
+
+        modelTexture = new ModelTexture(loader.loadTexture(cloakPath));
+
         TexturedModel texturedModel =  new TexturedModel(model, modelTexture);
 
         GameObject box = new GameObject(name,texturedModel, position, new Vector3f(), new Vector3f(1, 1, 1));
@@ -160,6 +206,30 @@ public class PlayerGameObject extends GameObject {
         pivot.addChild(box);
 
         return pivot;
+    }
+
+    private void loadSkin(String path) {
+        int oldTextureID = playerHead.getChildren().getFirst().getModel().getTexture().getTextureID();
+        ModelTexture skin = new ModelTexture(loader.loadTexture(path));
+
+        playerHead.getChildren().getFirst().getModel().setTexture(skin);
+        playerHead.getChildren().getLast().getModel().setTexture(skin);
+        playerBody.getChildren().getFirst().getModel().setTexture(skin);
+        playerRightArm.getChildren().getFirst().getModel().setTexture(skin);
+        playerLeftArm.getChildren().getFirst().getModel().setTexture(skin);
+        playerRightLeg.getChildren().getFirst().getModel().setTexture(skin);
+        playerLeftLeg.getChildren().getFirst().getModel().setTexture(skin);
+
+        GL11.glDeleteTextures(oldTextureID);
+    }
+
+    private void loadCloak(String path) {
+        int oldTextureID = playerCloak.getChildren().getFirst().getModel().getTexture().getTextureID();
+        ModelTexture cloak = new ModelTexture(loader.loadTexture(path));
+
+        playerCloak.getChildren().getFirst().getModel().setTexture(cloak);
+
+        GL11.glDeleteTextures(oldTextureID);
     }
 
     public GameObject playerHead;

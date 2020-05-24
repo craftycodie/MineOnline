@@ -7,6 +7,20 @@ import org.lwjgl.util.vector.Vector3f;
 
 public class MathUtils {
 
+    public static Matrix4f createTransformationMatrix(Vector3f translation, Vector3f rotation, Vector3f scale) {
+        Matrix4f matrix = new Matrix4f();
+        matrix.setIdentity();
+
+        Matrix4f.translate(translation, matrix, matrix);
+        Matrix4f.rotate((float) Math.toRadians(rotation.x), new Vector3f(1, 0, 0), matrix, matrix);
+        Matrix4f.rotate((float) Math.toRadians(rotation.y), new Vector3f(0, 1, 0), matrix, matrix);
+        Matrix4f.rotate((float) Math.toRadians(rotation.z), new Vector3f(0, 0, 1), matrix, matrix);
+        Matrix4f.scale(scale, matrix, matrix);
+
+        return matrix;
+    }
+
+
     public static Matrix4f createTransformationMatrix(Vector3f position, Quaternion rotation, Vector3f scale) {
         Matrix4f dest = new Matrix4f();
         dest.setIdentity();
@@ -59,31 +73,67 @@ public class MathUtils {
         return q;
     }
 
-    public static Quaternion rotateXYZ(Vector3f rotation, Quaternion dest) {
-        float rx = (float) Math.toRadians(rotation.x);
-        float ry = (float) Math.toRadians(rotation.y);
-        float rz = (float) Math.toRadians(rotation.z);
+    public static Quaternion quaternion(Vector3f rotation) {
+        Quaternion quaternion = new Quaternion();
+        quaternion = rotate(quaternion, rotation);
+        return quaternion;
+    }
 
-        float sx = (float)Math.sin(rx * 0.5f);
-        float cx = cosFromSin(sx, rx * 0.5f);
-        float sy = (float)Math.sin(ry * 0.5f);
-        float cy = cosFromSin(sy, ry * 0.5f);
-        float sz = (float)Math.sin(rz * 0.5f);
-        float cz = cosFromSin(sz, rz * 0.5f);
+//    public static Quaternion rotateXYZ(Vector3f rotation, Quaternion dest) {
+//        float rx = (float) Math.toRadians(rotation.x);
+//        float ry = (float) Math.toRadians(rotation.y);
+//        float rz = (float) Math.toRadians(rotation.z);
+//
+//        float sx = (float)Math.sin(rx * 0.5f);
+//        float cx = cosFromSin(sx, rx * 0.5f);
+//        float sy = (float)Math.sin(ry * 0.5f);
+//        float cy = cosFromSin(sy, ry * 0.5f);
+//        float sz = (float)Math.sin(rz * 0.5f);
+//        float cz = cosFromSin(sz, rz * 0.5f);
+//
+//        float cycz = cy * cz;
+//        float sysz = sy * sz;
+//        float sycz = sy * cz;
+//        float cysz = cy * sz;
+//        float w = cx*cycz - sx*sysz;
+//        float x = sx*cycz + cx*sysz;
+//        float y = cx*sycz - sx*cysz;
+//        float z = cx*cysz + sx*sycz;
+//        // right-multiply
+//        dest.set(fma(dest.w, x, fma(dest.x, w, fma(dest.y, z, -dest.z * y))),
+//                fma(dest.w, y, fma(-dest.x, z, fma(dest.y, w, dest.z * x))),
+//                fma(dest.w, z, fma(dest.x, y, fma(-dest.y, x, dest.z * w))),
+//                fma(dest.w, w, fma(-dest.x, x, fma(-dest.y, y, -dest.z * z))));
+//        return dest;
+//    }
 
-        float cycz = cy * cz;
-        float sysz = sy * sz;
-        float sycz = sy * cz;
-        float cysz = cy * sz;
-        float w = cx*cycz - sx*sysz;
-        float x = sx*cycz + cx*sysz;
-        float y = cx*sycz - sx*cysz;
-        float z = cx*cysz + sx*sycz;
-        // right-multiply
-        dest.set(fma(dest.w, x, fma(dest.x, w, fma(dest.y, z, -dest.z * y))),
-                fma(dest.w, y, fma(-dest.x, z, fma(dest.y, w, dest.z * x))),
-                fma(dest.w, z, fma(dest.x, y, fma(-dest.y, x, dest.z * w))),
-                fma(dest.w, w, fma(-dest.x, x, fma(-dest.y, y, -dest.z * z))));
+    public static Quaternion rotateX(float angle, Quaternion dest) {
+        float sin = (float)Math.sin(angle * 0.5f);
+        float cos = cosFromSin(sin, angle * 0.5f);
+        dest.set(dest.w * sin + dest.x * cos,
+                dest.y * cos + dest.z * sin,
+                dest.z * cos - dest.y * sin,
+                dest.w * cos - dest.x * sin);
+        return dest;
+    }
+
+    public static Quaternion rotateY(float angle, Quaternion dest) {
+        float sin = (float)Math.sin(angle * 0.5f);
+        float cos = cosFromSin(sin, angle * 0.5f);
+        dest.set(dest.x * cos - dest.z * sin,
+                dest.w * sin + dest.y * cos,
+                dest.x * sin + dest.z * cos,
+                dest.w * cos - dest.y * sin);
+        return dest;
+    }
+
+    public static Quaternion rotateZ(float angle, Quaternion dest) {
+        float sin = (float)Math.sin(angle * 0.5f);
+        float cos = cosFromSin(sin, angle * 0.5f);
+        dest.set(dest.x * cos + dest.y * sin,
+                dest.y * cos - dest.x * sin,
+                dest.w * sin + dest.z * cos,
+                dest.w * cos - dest.z * sin);
         return dest;
     }
 

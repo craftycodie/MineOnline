@@ -62,18 +62,6 @@ public class TextureHelper {
             i++;
         }
 
-//        float[] rightPlane = getPlaneTextureCoords(textureDimensions, pixelBegin3, pixelEnd3);
-//
-//        results[i] = rightPlane[1];
-//        results[i + 1] = rightPlane[2];
-//        results[i + 2] = rightPlane[4];
-//        results[i + 3] = rightPlane[3];
-//        results[i + 4] = rightPlane[6];
-//        results[i + 5] = rightPlane[5];
-//        results[i + 6] = rightPlane[7];
-//        results[i + 7] = rightPlane[6];
-//
-//        i+=8;
 
         for(float coord : getXFlippedPlaneTextureCoords(textureDimensions, pixelBegin3, pixelEnd3)) {
             results[i] = coord;

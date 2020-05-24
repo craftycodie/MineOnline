@@ -1,17 +1,18 @@
 package gg.codie.mineonline.gui.rendering;
 
+import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.gui.rendering.models.RawModel;
 import gg.codie.mineonline.gui.rendering.utils.MathUtils;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL15;
-import org.lwjgl.opengl.GL20;
-import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.*;
 import org.lwjgl.util.vector.Vector3f;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 
 import java.io.FileInputStream;
+import java.net.URL;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
@@ -22,6 +23,12 @@ public class Loader {
     private List<Integer> vaos = new ArrayList<Integer>();
     private List<Integer> vbos = new ArrayList<Integer>();
     private List<Integer> textures = new ArrayList<Integer>();
+
+    public final int MISSING_TEXTURE_ID;
+
+    public Loader() {
+        MISSING_TEXTURE_ID = loadTexture(LauncherFiles.MISSING_TEXTURE);
+    }
 
     public RawModel loadToVAO(float[] positions, float[] textureCoordinates, int[] indices) {
         int vaoID = createVAO();
@@ -55,12 +62,17 @@ public class Loader {
         return new RawModel(vaoID, 36);
     }
 
-    public int loadTexture(String fileName) {
+    public int loadTexture(String path) {
         Texture texture = null;
         try {
-            texture = TextureLoader.getTexture("PNG", new FileInputStream("res/" + fileName + ".png"));
+            if(path.startsWith("http")) {
+                texture = TextureLoader.getTexture("PNG", new URL(path).openStream());
+            } else {
+                texture = TextureLoader.getTexture("PNG", new FileInputStream(path));
+            }
         } catch (Exception e) {
             e.printStackTrace();
+            return MISSING_TEXTURE_ID;
         }
 
         int textureID = texture.getTextureID();

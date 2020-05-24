@@ -34,10 +34,7 @@ public class GameObject {
     public GameObject(String name, Vector3f localPosition, Vector3f rotation, Vector3f scale) {
         this.name = name;
 
-        Quaternion rotationQuaterion = new Quaternion();
-        MathUtils.rotate(rotationQuaterion, rotation);
-
-        this.localMatrix = MathUtils.createTransformationMatrix(localPosition, rotationQuaterion, scale);
+        this.localMatrix = MathUtils.createTransformationMatrix(localPosition, rotation, scale);
     }
 
     public GameObject(String name, TexturedModel texturedModel, Vector3f localPosition, Vector3f rotation, Vector3f scale) {
@@ -62,20 +59,22 @@ public class GameObject {
 //    }
 
     public void increaseRotation(Vector3f rotation) {
-        //Quaternion quaternion = Quaternion.setFromMatrix(localMatrix, new Quaternion());
-        //MathUtils.rotateXYZ(rotation, quaternion);
-        //localMatrix = MathUtils.createTransformationMatrix(MathUtils.getPosition(localMatrix), quaternion, MathUtils.getScale(localMatrix));
+//        Quaternion quaternion = new Quaternion();
+//        quaternion = MathUtils.rotateY(rotation.y, quaternion);
+//        quaternion = MathUtils.rotateZ(rotation.z, quaternion);
+//        quaternion = MathUtils.rotateX(rotation.x, quaternion);
+//        localMatrix = MathUtils.createTransformationMatrix(MathUtils.getPosition(localMatrix), quaternion, MathUtils.getScale(localMatrix));
 
-
-        this.localMatrix.rotate((float)Math.toRadians(rotation.x), new Vector3f(1, 0, 0));
         this.localMatrix.rotate((float)Math.toRadians(rotation.y), new Vector3f(0, 1, 0));
-        //this.localMatrix.rotate((float)Math.toRadians(rotation.z), new Vector3f(0, 0, 1));
+        this.localMatrix.rotate((float)Math.toRadians(rotation.x), new Vector3f(1, 0, 0));
+        this.localMatrix.rotate((float)Math.toRadians(rotation.z), new Vector3f(0, 0, 1));
 
     }
 
     public void setLocalRotation(Vector3f rotation) {
         // Kinda dirty solution but I couldn't get other methods to work properly.
-        increaseRotation(new Vector3f(rotation.x - getLocalRotation().x, rotation.y - getLocalRotation().y, rotation.z - getLocalRotation().z));
+        //increaseRotation(new Vector3f(rotation.x - getLocalRotation().x, rotation.y - getLocalRotation().y, rotation.z - getLocalRotation().z));
+        localMatrix = MathUtils.createTransformationMatrix(MathUtils.getPosition(localMatrix), rotation, MathUtils.getScale(localMatrix));
     }
 
 

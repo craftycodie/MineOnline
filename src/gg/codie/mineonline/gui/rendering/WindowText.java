@@ -1,5 +1,6 @@
 package gg.codie.mineonline.gui.rendering;
 
+import gg.codie.mineonline.Session;
 import gg.codie.mineonline.gui.rendering.animation.*;
 import gg.codie.mineonline.gui.rendering.shaders.StaticShader;
 import org.lwjgl.Sys;
@@ -15,25 +16,31 @@ public class WindowText {
     public static void main(String[] args) {
         DisplayManager.createDisplay();
 
-        Loader loader = new Loader();
         StaticShader shader = new StaticShader();
         Renderer renderer = new Renderer(shader);
 
-        GameObject playerPivot = new GameObject("player_origin", new Vector3f(-20, 0, -70), new Vector3f(), new Vector3f(1, 1, 1));
+        Loader loader = new Loader();
+
+
+        GameObject playerPivot = new GameObject("player_origin", new Vector3f(-20, 0, -65), new Vector3f(0, 30, 0), new Vector3f(1, 1, 1));
 
         PlayerGameObject playerGameObject = new PlayerGameObject("player", loader, shader, new Vector3f(0, -16, 0), new Vector3f(), new Vector3f(1, 1, 1));
 
+        Session session = new Session("codie");
+
+
         playerPivot.addChild(playerGameObject);
 
-        Camera camera = new DebugCamera();
+        Camera camera = new Camera();
 
         IPlayerAnimation playerAnimation = new WalkPlayerAnimation();
         playerAnimation.reset(playerGameObject);
 
         // Game Loop
         while(!Display.isCloseRequested()) {
-            //entity.increaseRotation(0, 1, 0);
-            //entity.increasePosition(0, 0, -0.05f);
+            renderer.prepare();
+            // Camera roll lock.
+            // Broken and not necessary.
 
 //            if(playerPivot.getLocalRotation().z > 0) {
 //                playerPivot.increaseRotation(new Vector3f(0, 0, -playerPivot.getLocalRotation().z));
@@ -43,7 +50,10 @@ public class WindowText {
                 Vector3f currentRotation = playerPivot.getLocalRotation();
                 Vector3f rotation = new Vector3f();
 
-                float dy = Mouse.getDY();
+                // Camera pitch rotation with lock.
+                // Currently broken.
+
+//                float dy = Mouse.getDY();
 
 //                if(currentRotation.x + (dy * -0.3f) > 30) {
 //                    rotation.x = 30 - currentRotation.x;
@@ -55,45 +65,21 @@ public class WindowText {
 
                 rotation.y = (Mouse.getDX() * 0.5f);
 
-                System.out.println(rotation.toString());
+//                System.out.println(rotation.toString());
 
                 playerPivot.increaseRotation(rotation);
-//                Vector3f rotation = playerPivot.getLocalRotation();
-
-
-
-//                playerPivot.setLocalRotation(new Vector3f(rotation.x, rotation.y, 0));
-//
-//                if(rotation.x > 30) {
-//                    System.out.println("player: x" + rotation.x + " y" + rotation.y + " z" + rotation.z);
-//                    rotation.x = 30;
-//                    playerPivot.setLocalRotation(rotation);
-//                }
-//
-//                if(rotation.x < -30) {
-//                    System.out.println("player: x" + rotation.x + " y" + rotation.y + " z" + rotation.z);
-//                    rotation.x = -30;
-//                    playerPivot.setLocalRotation(rotation);
-//                }
             }
 
+            playerGameObject.update();
 
             playerAnimation.animate(playerGameObject);
 
             camera.move();
 
-            renderer.prepare();
-
             shader.start();
             shader.loadViewMatrix(camera);
 
             renderer.render(playerGameObject, shader);
-
-//            for(GameObject box : playerModelBoxes) {
-//                renderer.render(box, shader);
-//            }
-
-            //renderer.render(entity, shader);
 
             shader.stop();
 

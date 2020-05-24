@@ -43,7 +43,7 @@ public class ClassicWalkPlayerAnimation implements IPlayerAnimation {
             player.playerRightArm.increaseRotation(new Vector3f(0, 0, 2));
             player.playerLeftArm.increaseRotation(new Vector3f(0, 0, 2));
 
-            System.out.println(player.playerRightArm.getLocalRotation().z);
+//            System.out.println(player.playerRightArm.getLocalRotation().z);
             if (player.playerLeftArm.getLocalRotation().z >=0) {
                 armsUp = true;
             }
