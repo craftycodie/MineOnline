@@ -10,5 +10,8 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="lwjgl" level="project" />
+    <orderEntry type="library" name="intellij" level="project" />
+    <orderEntry type="library" name="slick-util" level="project" />
   </component>
 </module>
