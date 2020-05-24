@@ -8,10 +8,13 @@ public class LauncherFiles {
 
     public static final String MINEONLINE_FOLDER = getMineOnlineDirectory() + File.separator;
 
+    public static final String MINEONLINE_PROPS_FILE = MINEONLINE_FOLDER + "mineonline.properties";
+
     public static final String MINEONLINE_CACHE_FOLDER = MINEONLINE_FOLDER + "cache" + File.separator;
 
     public static final String CACHED_SKIN_PATH = MINEONLINE_CACHE_FOLDER + "skin.png";
     public static final String CACHED_CLOAK_PATH = MINEONLINE_CACHE_FOLDER + "cloak.png";
+    public static final String LAST_LOGIN_PATH = MINEONLINE_CACHE_FOLDER + "lastlogin";
 
     public static final String RESOURCES_FOLDER = "." + File.separator + "res" + File.separator;
 

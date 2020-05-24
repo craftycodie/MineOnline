@@ -161,7 +161,7 @@ public class ProxyThread implements Runnable {
                 clientSocket.getOutputStream().write(responseHeader.getBytes());
 
                 buffer = new byte[bufferSize];
-                while ((bytes_read = is.read(buffer, 0, 4096)) != -1) {
+                while ((bytes_read = is.read(buffer, 0, bufferSize)) != -1) {
                     for(int i = 0; i < bytes_read; i++) {
                         System.out.print(buffer[i]);
                         clientSocket.getOutputStream().write(buffer[i]);

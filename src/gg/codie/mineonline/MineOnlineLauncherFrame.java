@@ -226,22 +226,6 @@ public class MineOnlineLauncherFrame extends JFrame {
             }
         });
 
-        loginButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(!apiDomainTextField.getText().isEmpty() && !usernameTextField.getText().isEmpty() && passwordField.getPassword().length > 0) {
-                    String sessionId = MineOnlineLauncher.login(usernameTextField.getText(), new String(passwordField.getPassword()));
-                    if(sessionId == null) {
-                        JOptionPane.showMessageDialog(null, "Bad login.");
-                    } else {
-                        sessionIdTextField.setText(sessionId);
-                    }
-                } else {
-                    // show alert
-                }
-            }
-        });
-
         getMppassButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -536,29 +520,6 @@ public class MineOnlineLauncherFrame extends JFrame {
                     getMppassButton.setEnabled(false);
             }
         };
-
-        openJoinURLButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String response = JOptionPane.showInputDialog(null,
-                        "Paste server join URL. \neg: http://www.minecraft.net/play.jsp?server=2119e641afa41e6a6364221c1566c560",
-                        "Join Server",
-                        JOptionPane.QUESTION_MESSAGE);
-
-                response = response.substring(response.indexOf("server="));
-                if(response.contains("&"))
-                    response = response.substring(0, response.indexOf('&'));
-                response = response.replace("server=", "");
-
-                try {
-                    String server = MineOnlineLauncher.getServer(response);
-                    serverIPTextField.setText(server.split(":")[0]);
-                    serverPortTextField.setText(server.split(":")[1]);
-                } catch (IOException ioe) {
-                    JOptionPane.showMessageDialog(null, "Failed to locate server.\nThis API might not support MineOnline.");
-                }
-            }
-        });
 
         sessionIdTextField.getDocument().addDocumentListener(mpPassButtonDocumentListner);
         serverIPTextField.getDocument().addDocumentListener(mpPassButtonDocumentListner);

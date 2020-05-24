@@ -1,6 +1,8 @@
 package gg.codie.mineonline.gui.rendering;
 
 import gg.codie.mineonline.LauncherFiles;
+import gg.codie.mineonline.gui.rendering.animation.IPlayerAnimation;
+import gg.codie.mineonline.gui.rendering.animation.IdlePlayerAnimation;
 import gg.codie.mineonline.gui.rendering.models.RawModel;
 import gg.codie.mineonline.gui.rendering.models.TexturedModel;
 import gg.codie.mineonline.gui.rendering.shaders.StaticShader;
@@ -12,6 +14,11 @@ import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 import org.newdawn.slick.opengl.Texture;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 
 public class PlayerGameObject extends GameObject {
@@ -26,6 +33,13 @@ public class PlayerGameObject extends GameObject {
 
     private String skinPath = LauncherFiles.TEMPLATE_SKIN_PATH;
     private String cloakPath = LauncherFiles.TEMPLATE_CLOAK_PATH;
+
+    private IPlayerAnimation playerAnimation = new IdlePlayerAnimation();
+
+    public void setPlayerAnimation(IPlayerAnimation animation) {
+        this.playerAnimation = animation;
+        this.playerAnimation.reset(this);
+    }
 
     public PlayerGameObject(String name, Loader loader, StaticShader shader, Vector3f localPosition, Vector3f rotation, Vector3f scale)
     {
@@ -146,6 +160,9 @@ public class PlayerGameObject extends GameObject {
             loadCloak(cloakPath);
             updateCloak = false;
         }
+
+
+        playerAnimation.animate(this);
     }
 
     private GameObject addBox(String name, Vector3f begin, int width, int height, int depth, Vector3f position, Vector3f pivotPosition, float[] textureCoords) {
@@ -210,7 +227,25 @@ public class PlayerGameObject extends GameObject {
 
     private void loadSkin(String path) {
         int oldTextureID = playerHead.getChildren().getFirst().getModel().getTexture().getTextureID();
-        ModelTexture skin = new ModelTexture(loader.loadTexture(path));
+
+        ModelTexture skin;
+
+        if(!path.startsWith("http")) {
+            try {
+                BufferedImage bufferedImage = ImageIO.read(new File(path));
+                bufferedImage = TextureHelper.cropImage(bufferedImage, 0, 0, 64, 32);
+                ByteArrayOutputStream os = new ByteArrayOutputStream();
+                ImageIO.write(bufferedImage, "png", os);
+                skin = new ModelTexture(loader.loadTexture(new ByteArrayInputStream(os.toByteArray())));
+            } catch(Exception ex) {
+                // The texture loader can handle this error and return the missing texture ID.
+                skin = new ModelTexture(loader.loadTexture(""));
+            }
+        } else {
+            skin = new ModelTexture(loader.loadTexture(path));
+        }
+
+
 
         playerHead.getChildren().getFirst().getModel().setTexture(skin);
         playerHead.getChildren().getLast().getModel().setTexture(skin);
@@ -225,7 +260,23 @@ public class PlayerGameObject extends GameObject {
 
     private void loadCloak(String path) {
         int oldTextureID = playerCloak.getChildren().getFirst().getModel().getTexture().getTextureID();
-        ModelTexture cloak = new ModelTexture(loader.loadTexture(path));
+
+        ModelTexture cloak;
+
+        if(!path.startsWith("http")) {
+            try {
+                BufferedImage bufferedImage = ImageIO.read(new File(path));
+                bufferedImage = TextureHelper.cropImage(bufferedImage, 0, 0, 64, 32);
+                ByteArrayOutputStream os = new ByteArrayOutputStream();
+                ImageIO.write(bufferedImage, "png", os);
+                cloak = new ModelTexture(loader.loadTexture(new ByteArrayInputStream(os.toByteArray())));
+            } catch(Exception ex) {
+                // The texture loader can handle this error and return the missing texture ID.
+                cloak = new ModelTexture(loader.loadTexture(""));
+            }
+        } else {
+            cloak = new ModelTexture(loader.loadTexture(path));
+        }
 
         playerCloak.getChildren().getFirst().getModel().setTexture(cloak);
 

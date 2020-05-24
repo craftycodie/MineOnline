@@ -24,18 +24,18 @@ public class Properties {
     }
 
     public static void loadProperties() {
-        try (InputStream input = new FileInputStream("mineonline.properties")) {
+        try (InputStream input = new FileInputStream(LauncherFiles.MINEONLINE_PROPS_FILE)) {
             // load a properties file
             properties.load(input);
             properties.setProperty("baseUrl", properties.getProperty("baseUrl").replace("_", ":"));
             properties.setProperty("redirectedDomains", properties.getProperty("redirectedDomains").replace("_", ":"));
         } catch (IOException ex) {
-
+            saveProperties();
         }
     }
 
     public  static void saveProperties() {
-        try (OutputStream output = new FileOutputStream("mineonline.properties")) {
+        try (OutputStream output = new FileOutputStream(LauncherFiles.MINEONLINE_PROPS_FILE)) {
             properties.setProperty("baseUrl", properties.getProperty("baseUrl").replace(":", "_"));
             properties.setProperty("redirectedDomains", properties.getProperty("redirectedDomains").replace(":", "_"));
             properties.store(output, null);

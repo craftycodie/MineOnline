@@ -8,6 +8,7 @@ import gg.codie.mineonline.gui.rendering.*;
 import gg.codie.mineonline.gui.rendering.Renderer;
 import gg.codie.mineonline.gui.rendering.animation.IPlayerAnimation;
 import gg.codie.mineonline.gui.rendering.animation.IdlePlayerAnimation;
+import gg.codie.mineonline.gui.rendering.animation.WalkPlayerAnimation;
 import gg.codie.mineonline.gui.rendering.shaders.StaticShader;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Mouse;
@@ -33,6 +34,7 @@ public class MainForm implements IContainerForm {
     private JButton playButton;
     private JLabel logolabel;
     private JLabel playerName;
+    private JLabel offlineModeLabel;
 
     StaticShader shader;
     gg.codie.mineonline.gui.rendering.Renderer renderer;
@@ -142,9 +144,21 @@ public class MainForm implements IContainerForm {
     };
 
     public MainForm() {
-        if(Session.session == null) {
+        if (Session.session == null) {
             FormManager.switchScreen(new LoginForm());
             return;
+        }
+
+        if(PlayerGameObject.thePlayer != null) {
+            PlayerGameObject.thePlayer.setPlayerAnimation(new IdlePlayerAnimation());
+        }
+
+        this.offlineModeLabel.setVisible(false);
+
+        if (!Session.session.isOnline()) {
+            this.changeSkinButton.setVisible(false);
+            this.joinServerButton.setVisible(false);
+            this.offlineModeLabel.setVisible(true);
         }
 
         ImageIcon icon = new ImageIcon("res/mineonlinelogo.png");
@@ -162,17 +176,24 @@ public class MainForm implements IContainerForm {
 //        skinPanel.add(glCanvas, new GridConstraints());
 //        glCanvas.setSize(skinPanel.getSize());
 
-        try {
-            Display.setParent(glCanvas);
-        } catch (LWJGLException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            Display.setParent(glCanvas);
+//        } catch (LWJGLException e) {
+//            e.printStackTrace();
+//        }
 
         logoutButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Session.session.logout();
                 FormManager.switchScreen(new LoginForm());
+            }
+        });
+
+        changeSkinButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                FormManager.switchScreen(new ChangeSkinForm());
             }
         });
 

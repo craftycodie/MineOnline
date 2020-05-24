@@ -10,6 +10,7 @@ import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -70,6 +71,19 @@ public class Loader {
             } else {
                 texture = TextureLoader.getTexture("PNG", new FileInputStream(path));
             }
+        } catch (Exception e) {
+            return MISSING_TEXTURE_ID;
+        }
+
+        int textureID = texture.getTextureID();
+
+        return textureID;
+    }
+
+    public int loadTexture(InputStream stream) {
+        Texture texture = null;
+        try {
+            texture = TextureLoader.getTexture("PNG", stream);
         } catch (Exception e) {
             return MISSING_TEXTURE_ID;
         }

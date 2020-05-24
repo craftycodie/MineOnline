@@ -17,6 +17,11 @@ public class Session {
     }
 
     private String username;
+
+    public String getSessionToken() {
+        return sessionToken;
+    }
+
     private String sessionToken;
 
     public boolean isOnline() {
@@ -42,7 +47,7 @@ public class Session {
         PlayerGameObject.thePlayer.setSkin(LauncherFiles.TEMPLATE_SKIN_PATH);
     }
 
-    private void cacheSkin () {
+    public void cacheSkin () {
         (new Thread() {
             public void run() {
                 Properties.loadProperties();

@@ -26,7 +26,6 @@ public class FormManager {
     static GameObject playerPivot;
     static PlayerGameObject playerGameObject;
     static Camera camera;
-    static IPlayerAnimation playerAnimation;
 
     public static void main(String[] args) throws Exception {
         Properties.loadProperties();
@@ -66,13 +65,20 @@ public class FormManager {
             renderPanel.add(glCanvas, new GridConstraints());
             glCanvas.setSize(renderPanel.getSize());
 
-            gamePrepare.run();
+            if(!gamePrepared) {
+                gamePrepare.run();
+            } else {
+                try {
+                    Display.setParent(glCanvas);
+                } catch (Exception e) {}
+                DisplayManager.createDisplay(glCanvas.getSize().width, glCanvas.getSize().height);
+            }
             EventQueue.invokeLater(gameMainLoop);
         }
     }
 
 
-
+    static boolean gamePrepared;
     public static Runnable gamePrepare = new Runnable() {
         public void run() {
             try {
@@ -80,12 +86,14 @@ public class FormManager {
             } catch (Exception e) {}
             DisplayManager.createDisplay(glCanvas.getSize().width, glCanvas.getSize().height);
 
+            gamePrepared = true;
+
             shader = new StaticShader();
             renderer = new Renderer(shader);
 
             loader = new Loader();
 
-            playerPivot = new GameObject("player_origin", new Vector3f(0, -2    , -40), new Vector3f(0, 30, 0), new Vector3f(1, 1, 1));
+            playerPivot = new GameObject("player_origin", new Vector3f(0, 0, -40), new Vector3f(0, 30, 0), new Vector3f(1, 1, 1));
 
             playerGameObject = new PlayerGameObject("player", loader, shader, new Vector3f(0, -16, 0), new Vector3f(), new Vector3f(1, 1, 1));
 
@@ -95,9 +103,6 @@ public class FormManager {
             playerGameObject.setCloak(LauncherFiles.CACHED_CLOAK_PATH);
 
             camera = new Camera();
-
-            playerAnimation = new IdlePlayerAnimation();
-            playerAnimation.reset(playerGameObject);
         }
     };
 
@@ -138,8 +143,6 @@ public class FormManager {
             }
 
             playerGameObject.update();
-
-            playerAnimation.animate(playerGameObject);
 
             camera.move();
 
