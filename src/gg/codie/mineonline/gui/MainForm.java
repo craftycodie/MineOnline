@@ -16,10 +16,12 @@ import org.lwjgl.util.vector.Vector3f;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
-public class MainFormNew extends JFrame {
+public class MainForm implements IContainerForm {
     private JPanel skinPanel;
     private Canvas glCanvas = new Canvas();
     private JPanel contentPanel;
@@ -37,23 +39,22 @@ public class MainFormNew extends JFrame {
     Loader loader;
     GameObject playerPivot;
     PlayerGameObject playerGameObject;
-    Session session;
     Camera camera;
     IPlayerAnimation playerAnimation;
 
     boolean closing;
 
-    public static void main(String[] args) throws LWJGLException {
-        Properties.loadProperties();
+    public JPanel getContent() {
+        return contentPanel;
+    }
 
-        JFrame frame = new MainFormNew();
-        frame.setVisible(true);
+    public JPanel getRenderPanel() {
+        return skinPanel;
     }
 
     public Runnable gamePrepare = new Runnable() {
         public void run() {
-            setVisible(true);
-            DisplayManager.createDisplay(glCanvas.getSize().width, glCanvas.getSize().height);
+            //DisplayManager.createDisplay(glCanvas.getSize().width, glCanvas.getSize().height);
 
             shader = new StaticShader();
             renderer = new Renderer(shader);
@@ -140,85 +141,40 @@ public class MainFormNew extends JFrame {
         }
     };
 
-    public MainFormNew() throws LWJGLException {
-
-        super("MineOnline Launcher");
-
-        session = new Session("codie");
+    public MainForm() {
+        if(Session.session == null) {
+            FormManager.switchScreen(new LoginForm());
+            return;
+        }
 
         ImageIcon icon = new ImageIcon("res/mineonlinelogo.png");
         logolabel.setIcon(icon);
-//        imagePanel1.setPath("res/mineonlinelogo.png");
-//        imagePanel1.setSize(new Dimension(400, 50));
 
-        this.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowClosing(WindowEvent e) {
-                closing = true;
-                System.exit(0);
-            }
-
-            @Override
-            public void windowClosed(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowIconified(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowDeiconified(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowActivated(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowDeactivated(WindowEvent e) {
-
-            }
-        });
-
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setContentPane(contentPanel);
-
-//        pack(); // Need this, otherwise insets() show as 0.
         contentPanel.setPreferredSize(new Dimension(845, 476));
-        pack();
 
-        playerName.setText(session.getUsername());
+        playerName.setText(Session.session.getUsername());
 
-        //setSize(854 + getInsets().left , 480 + getInsets().top);
-        setResizable(false);
-        setVisible(true);
-
-        //PlayerModelCanvas canvas = new PlayerModelCanvas();
-
-        //skinPanel.add(canvas, new GridConstraints());
-
-        EventQueue.invokeLater(gamePrepare);
-        EventQueue.invokeLater(gameMainLoop);
+//        EventQueue.invokeLater(gamePrepare);
+//        EventQueue.invokeLater(gameMainLoop);
 
         glCanvas.setIgnoreRepaint(true);
 
-        skinPanel.add(glCanvas, new GridConstraints());
-        glCanvas.setSize(skinPanel.getSize());
+//        skinPanel.add(glCanvas, new GridConstraints());
+//        glCanvas.setSize(skinPanel.getSize());
 
         try {
             Display.setParent(glCanvas);
         } catch (LWJGLException e) {
             e.printStackTrace();
         }
+
+        logoutButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Session.session.logout();
+                FormManager.switchScreen(new LoginForm());
+            }
+        });
 
         //JFrame frame = new JFrame("AWTGLCanvas - multisampling");
         //frame.setPreferredSize(new Dimension(640, 480));

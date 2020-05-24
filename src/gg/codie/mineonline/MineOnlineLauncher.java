@@ -149,11 +149,11 @@ public class MineOnlineLauncher {
 		}
 	}
 
-	public static String login(String password) {
+	public static String login(String username, String password) {
 		HttpURLConnection connection = null;
 
 		try {
-			String parameters = "user=" + URLEncoder.encode(Properties.properties.getProperty("username"), "UTF-8") + "&password=" + URLEncoder.encode(password, "UTF-8") + "&version=" + '\f';
+			String parameters = "user=" + URLEncoder.encode(username, "UTF-8") + "&password=" + URLEncoder.encode(password, "UTF-8") + "&version=" + '\f';
 
 			URL url = new URL("http://" + Properties.properties.getProperty("apiDomainName") + "/game/getversion.jsp");
 			connection = (HttpURLConnection) url.openConnection();
