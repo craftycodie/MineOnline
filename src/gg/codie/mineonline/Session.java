@@ -12,6 +12,10 @@ public class Session {
 
     public static Session session;
 
+    public String getUsername() {
+        return username;
+    }
+
     private String username;
     private String sessionToken;
 
@@ -87,8 +91,10 @@ public class Session {
                     // handle exception
                 }
 
-                PlayerGameObject.thePlayer.setCloak(LauncherFiles.CACHED_CLOAK_PATH);
-                PlayerGameObject.thePlayer.setSkin(LauncherFiles.CACHED_SKIN_PATH);
+                if(PlayerGameObject.thePlayer != null) {
+                    PlayerGameObject.thePlayer.setCloak(LauncherFiles.CACHED_CLOAK_PATH);
+                    PlayerGameObject.thePlayer.setSkin(LauncherFiles.CACHED_SKIN_PATH);
+                }
             }
         }).start();
     }
