@@ -1,6 +1,8 @@
 package gg.codie.mineonline.gui.rendering;
 
 import com.intellij.uiDesigner.core.GridConstraints;
+import gg.codie.mineonline.MineOnlineLauncherFrame;
+import gg.codie.mineonline.Properties;
 import org.lwjgl.LWJGLException;
 
 import javax.swing.*;
@@ -9,6 +11,13 @@ import java.awt.*;
 public class SkinFormTest extends JFrame {
     private JPanel skinPanel;
     private JPanel contentPanel;
+
+    public static void main(String[] args) throws LWJGLException {
+        Properties.loadProperties();
+
+        JFrame frame = new SkinFormTest();
+        frame.setVisible(true);
+    }
 
     public SkinFormTest() throws LWJGLException {
 

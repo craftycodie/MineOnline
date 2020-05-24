@@ -10,18 +10,22 @@ public class DisplayManager {
     private static final int FPS = 120;
 
     public static void createDisplay() {
+        createDisplay(WIDTH, HEIGHT);
+    }
+
+    public static void createDisplay(int width, int height) {
 
         ContextAttribs attribs = new ContextAttribs(3,2).withForwardCompatible(true).withProfileCore(true);
 
         try {
-            Display.setDisplayMode(new DisplayMode(WIDTH, HEIGHT));
+            Display.setDisplayMode(new DisplayMode(width, height));
             Display.create(new PixelFormat(32, 0, 24, 0,  0), attribs);
-            Display.setTitle("Skin Renderer Test");
+            Display.setTitle("Player Renderer");
         } catch (LWJGLException e) {
             e.printStackTrace();
         }
 
-        GL11.glViewport(0, 0, WIDTH, HEIGHT);
+        GL11.glViewport(0, 0, width, height);
 
     }
 

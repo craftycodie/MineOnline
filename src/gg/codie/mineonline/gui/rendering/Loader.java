@@ -71,7 +71,6 @@ public class Loader {
                 texture = TextureLoader.getTexture("PNG", new FileInputStream(path));
             }
         } catch (Exception e) {
-            e.printStackTrace();
             return MISSING_TEXTURE_ID;
         }
 

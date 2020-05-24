@@ -5,15 +5,23 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import javax.swing.JFrame;
+import javax.swing.*;
+
+import gg.codie.mineonline.Session;
+import gg.codie.mineonline.gui.rendering.animation.IPlayerAnimation;
+import gg.codie.mineonline.gui.rendering.animation.WalkPlayerAnimation;
+import gg.codie.mineonline.gui.rendering.shaders.StaticShader;
 import org.lwjgl.LWJGLException;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.AWTGLCanvas;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.util.vector.Vector3f;
 
 @SuppressWarnings("serial")
 public class GLInputTest extends JFrame implements MouseListener, MouseMotionListener, KeyListener {
 
     private GLWindow canvas;
+    private final JTextPane textPane = new JTextPane();
 
     public GLInputTest() throws LWJGLException {
         setTitle("Keyboard & Mouse Input Example");
@@ -48,8 +56,36 @@ public class GLInputTest extends JFrame implements MouseListener, MouseMotionLis
 
     class GLWindow extends AWTGLCanvas {
 
+        StaticShader shader;
+        Renderer renderer;
+        Loader loader;
+        GameObject playerPivot;
+        PlayerGameObject playerGameObject;
+        Session session;
+        Camera camera;
+        IPlayerAnimation playerAnimation;
+
         public GLWindow() throws LWJGLException {
             super();
+            shader = new StaticShader();
+            renderer = new Renderer(shader);
+
+            loader = new Loader();
+
+
+            playerPivot = new GameObject("player_origin", new Vector3f(-20, 0, -65), new Vector3f(0, 30, 0), new Vector3f(1, 1, 1));
+
+            playerGameObject = new PlayerGameObject("player", loader, shader, new Vector3f(0, -16, 0), new Vector3f(), new Vector3f(1, 1, 1));
+
+            session = new Session("codie");
+
+
+            playerPivot.addChild(playerGameObject);
+
+            camera = new Camera();
+
+            playerAnimation = new WalkPlayerAnimation();
+            playerAnimation.reset(playerGameObject);
         }
 
         protected void resizeGL(int w, int h) {
@@ -63,36 +99,54 @@ public class GLInputTest extends JFrame implements MouseListener, MouseMotionLis
         }
 
         public void paintGL() {
-            try {
-                makeCurrent();
-//                GL11.glViewport(0, 0, getWidth(), getHeight());
-//                GL11.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-//                GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
-//
-//                // clear the screen
-//                GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_STENCIL_BUFFER_BIT);
 
-                // center square according to screen size
-                GL11.glPushMatrix();
-                GL11.glTranslatef(100/ 2, 200 / 2, 0.0f);
+                renderer.prepare();
+                // Camera roll lock.
+                // Broken and not necessary.
 
-                // rotate square according to angle
-                GL11.glRotatef(0, 0, 0, 1.0f);
+//            if(playerPivot.getLocalRotation().z > 0) {
+//                playerPivot.increaseRotation(new Vector3f(0, 0, -playerPivot.getLocalRotation().z));
+//            }
 
-                // render the square
-                GL11.glBegin(GL11.GL_QUADS);
-                GL11.glVertex2i(-50, -50);
-                GL11.glVertex2i(50, -50);
-                GL11.glVertex2i(50, 50);
-                GL11.glVertex2i(-50, 50);
-                GL11.glEnd();
+                if(Mouse.isButtonDown(0)) {
+                    Vector3f currentRotation = playerPivot.getLocalRotation();
+                    Vector3f rotation = new Vector3f();
 
-                GL11.glPopMatrix();
+                    // Camera pitch rotation with lock.
+                    // Currently broken.
 
-                swapBuffers();
-            } catch (LWJGLException e) {
-                throw new RuntimeException(e);
-            }
+//                float dy = Mouse.getDY();
+
+//                if(currentRotation.x + (dy * -0.3f) > 30) {
+//                    rotation.x = 30 - currentRotation.x;
+//                } else if(currentRotation.x + (dy * -0.3f) < -30) {
+//                    rotation.x = -30 - currentRotation.x;
+//                } else {
+//                    rotation.x = dy * -0.3f;
+//                }
+
+                    rotation.y = (Mouse.getDX() * 0.5f);
+
+//                System.out.println(rotation.toString());
+
+                    playerPivot.increaseRotation(rotation);
+                }
+
+                playerGameObject.update();
+
+                playerAnimation.animate(playerGameObject);
+
+                camera.move();
+
+                shader.start();
+                shader.loadViewMatrix(camera);
+
+                renderer.render(playerGameObject, shader);
+
+                shader.stop();
+
+                DisplayManager.updateDisplay();
+
         }
     }
 

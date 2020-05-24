@@ -11,7 +11,7 @@ import org.lwjgl.util.vector.Vector3f;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WindowText {
+public class PlayerRendererText {
 
     public static void main(String[] args) {
         DisplayManager.createDisplay();

@@ -32,6 +32,12 @@ public class Session {
         cacheSkin();
     }
 
+    public void logout() {
+        session = null;
+        PlayerGameObject.thePlayer.setCloak(LauncherFiles.TEMPLATE_CLOAK_PATH);
+        PlayerGameObject.thePlayer.setSkin(LauncherFiles.TEMPLATE_SKIN_PATH);
+    }
+
     private void cacheSkin () {
         (new Thread() {
             public void run() {

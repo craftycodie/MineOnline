@@ -31,7 +31,7 @@ public class SimpleOGLRenderer {
     }
 
     public static void main(String[] args) {
-        new WindowText();
+        new PlayerRendererText();
     }
 
 }

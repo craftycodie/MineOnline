@@ -27,7 +27,7 @@ public class CanvasTest {
         final JPanel panel_canvas = new JPanel ();
 
         try {
-            panel_canvas.add (canvas = new AWTGLCanvas (new PixelFormat (8, 8, 0, 4)) {
+            panel_canvas.add (canvas = new AWTGLCanvas (new PixelFormat (8, 8, 0, 0)) {
 
                 final Dimension size = new Dimension (100, 100);
 
@@ -53,39 +53,6 @@ public class CanvasTest {
                         glColor3f (1,0,0);
 
                         glBegin (GL_QUADS);
-
-                        //new PlayerGameObject(1, 1).render();
-
-//                        GL11.glColor3f(1.0f,1.0f,0.0f);
-//                        GL11.glVertex3f( 1.0f, 1.0f,-1.0f);
-//                        GL11.glVertex3f(-1.0f, 1.0f,-1.0f);
-//                        GL11.glVertex3f(-1.0f, 1.0f, 1.0f);
-//                        GL11.glVertex3f( 1.0f, 1.0f, 1.0f);
-//                        GL11.glColor3f(1.0f,0.5f,0.0f);
-//                        GL11.glVertex3f( 1.0f,-1.0f, 1.0f);
-//                        GL11.glVertex3f(-1.0f,-1.0f, 1.0f);
-//                        GL11.glVertex3f(-1.0f,-1.0f,-1.0f);
-//                        GL11.glVertex3f( 1.0f,-1.0f,-1.0f);
-//                        GL11.glColor3f(1.0f,0.0f,0.0f);
-//                        GL11.glVertex3f( 1.0f, 1.0f, 1.0f);
-//                        GL11.glVertex3f(-1.0f, 1.0f, 1.0f);
-//                        GL11.glVertex3f(-1.0f,-1.0f, 1.0f);
-//                        GL11.glVertex3f( 1.0f,-1.0f, 1.0f);
-//                        GL11.glColor3f(1.0f,1.0f,0.0f);
-//                        GL11.glVertex3f( 1.0f,-1.0f,-1.0f);
-//                        GL11.glVertex3f(-1.0f,-1.0f,-1.0f);
-//                        GL11.glVertex3f(-1.0f, 1.0f,-1.0f);
-//                        GL11.glVertex3f( 1.0f, 1.0f,-1.0f);
-//                        GL11.glColor3f(0.0f,0.0f,1.0f);
-//                        GL11.glVertex3f(-1.0f, 1.0f, 1.0f);
-//                        GL11.glVertex3f(-1.0f, 1.0f,-1.0f);
-//                        GL11.glVertex3f(-1.0f,-1.0f,-1.0f);
-//                        GL11.glVertex3f(-1.0f,-1.0f, 1.0f);
-//                        GL11.glColor3f(1.0f,0.0f,1.0f);
-//                        GL11.glVertex3f( 1.0f, 1.0f,-1.0f);
-//                        GL11.glVertex3f( 1.0f, 1.0f, 1.0f);
-//                        GL11.glVertex3f( 1.0f,-1.0f, 1.0f);
-//                        GL11.glVertex3f( 1.0f,-1.0f,-1.0f);
 
                         glEnd ();
 
