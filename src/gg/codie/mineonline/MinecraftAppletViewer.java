@@ -23,6 +23,8 @@ public class MinecraftAppletViewer extends Applet implements AppletStub{
     boolean HasPaid=false;
 
     public static void main(String[] args) throws Exception{
+        LibraryManager.updateClasspath();
+
         new MinecraftAppletViewer().runApplet(args);
     }
 
@@ -69,69 +71,54 @@ public class MinecraftAppletViewer extends Applet implements AppletStub{
     //This method handles the task of putting command line args into variables, or displaying the about box if there are no command line args.
     void ParseCommandLine(String[] args){
         int n=1;
-        if (args.length==0){
-            Frame AboutBox = new Frame("About");
-            AboutBox.setLayout(new GridLayout(0,1));
-            AboutBox.add(new Label("Minecraft Applet Launcher",Label.CENTER));
-            AboutBox.addWindowListener(new WindowAdapter(){
-                public void windowClosing(WindowEvent e){
-                    System.exit(0);
+        AppletClassName = args[0];
+        while (n<args.length){
+            System.out.println(args[n]);
+            if (args[n].equalsIgnoreCase("-w")){
+                //Set only the width of the applet, if you like the default height but want a different width.
+                AppletW=Integer.parseInt(args[n+1]);
+                n+=2;
+            } else if (args[n].equalsIgnoreCase("-h")){
+                //Set only the height of the applet, if you like the default width but want a different height.
+                AppletH=Integer.parseInt(args[n+1]);
+                n+=2;
+            } else if (args[n].equalsIgnoreCase("-size")){
+                //Set both the width and height of the applet.
+                AppletW=Integer.parseInt(args[n+1]);
+                AppletH=Integer.parseInt(args[n+2]);
+                n+=3;
+            } else if (args[n].equalsIgnoreCase("-login")){
+                //Set both UserName and SessionID.
+                UserName=args[n+1];
+                n+=2;
+                if (n<args.length && !args[n].startsWith("-")) {
+                    SessionID = args[n];
+                    n += 1;
                 }
-            });
-            AboutBox.setSize(400,120);
-            AboutBox.setResizable(false);
-            AboutBox.setLocationRelativeTo(null);
-            AboutBox.setVisible(true);
-        }else{
-            AppletClassName = args[0];
-            while (n<args.length){
-                System.out.println(args[n]);
-                if (args[n].equalsIgnoreCase("-w")){
-                    //Set only the width of the applet, if you like the default height but want a different width.
-                    AppletW=Integer.parseInt(args[n+1]);
-                    n+=2;
-                } else if (args[n].equalsIgnoreCase("-h")){
-                    //Set only the height of the applet, if you like the default width but want a different height.
-                    AppletH=Integer.parseInt(args[n+1]);
-                    n+=2;
-                } else if (args[n].equalsIgnoreCase("-size")){
-                    //Set both the width and height of the applet.
-                    AppletW=Integer.parseInt(args[n+1]);
-                    AppletH=Integer.parseInt(args[n+2]);
-                    n+=3;
-                } else if (args[n].equalsIgnoreCase("-login")){
-                    //Set both UserName and SessionID.
-                    UserName=args[n+1];
-                    n+=2;
-                    if (n<args.length && !args[n].startsWith("-")) {
-                        SessionID = args[n];
-                        n += 1;
-                    }
-                } else if (args[n].equalsIgnoreCase("-server")){
-                    //Set the address and port of the Minecraft server to connect to, as well as the multiplayer password.
-                    ServerAddr=args[n+1];
-                    n+=2;
-                    if (n<args.length && !args[n].startsWith("-")) {
-                        ServerPort = args[n];
-                        n += 1;
-                    }
-                    if (n<args.length && !args[n].startsWith("-")) {
-                        MPPass = args[n];
-                        n += 1;
-                    }
+            } else if (args[n].equalsIgnoreCase("-server")){
+                //Set the address and port of the Minecraft server to connect to, as well as the multiplayer password.
+                ServerAddr=args[n+1];
+                n+=2;
+                if (n<args.length && !args[n].startsWith("-")) {
+                    ServerPort = args[n];
+                    n += 1;
+                }
+                if (n<args.length && !args[n].startsWith("-")) {
+                    MPPass = args[n];
+                    n += 1;
+                }
 
-                } else if (args[n].equalsIgnoreCase("-paid")){
-                    //This command line switch takes no additional parameters. The HasPaid variable is set to true if this switch is present.
-                    //For some Classic versions of Minecraft, HasPaid must be true in order to enable the server-save slot buttons.
-                    //Server-side saving saves to a minecraft.net URL, not to your local Classic server.
-                    //However that URL is no longer valid so these save slots no longer work. This feature is only included in this launcher for the sake of completeness.
-                    //Also, in addition to setting the "haspaid" applet parameter to true, it sets the "demo" applet parameter to false, for versions that support demo mode.
-                    HasPaid=true;
-                    n++;
-                } else {
-                    //Skip all other command line switches.
-                    n++;
-                }
+            } else if (args[n].equalsIgnoreCase("-paid")){
+                //This command line switch takes no additional parameters. The HasPaid variable is set to true if this switch is present.
+                //For some Classic versions of Minecraft, HasPaid must be true in order to enable the server-save slot buttons.
+                //Server-side saving saves to a minecraft.net URL, not to your local Classic server.
+                //However that URL is no longer valid so these save slots no longer work. This feature is only included in this launcher for the sake of completeness.
+                //Also, in addition to setting the "haspaid" applet parameter to true, it sets the "demo" applet parameter to false, for versions that support demo mode.
+                HasPaid=true;
+                n++;
+            } else {
+                //Skip all other command line switches.
+                n++;
             }
         }
     }
@@ -139,8 +126,8 @@ public class MinecraftAppletViewer extends Applet implements AppletStub{
     void CloseApplet(){
         MinecraftApplet.stop();
         MinecraftApplet.destroy();
-        //System.exit(0);
         AppletFrame.dispose();
+        System.exit(0);
     }
 
 

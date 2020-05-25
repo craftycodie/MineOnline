@@ -24,7 +24,6 @@ import java.io.File;
 
 public class MainForm implements IContainerForm {
     private JPanel skinPanel;
-    private Canvas glCanvas = new Canvas();
     private JPanel contentPanel;
     private JButton joinServerButton;
     private JButton changeSkinButton;
@@ -36,17 +35,7 @@ public class MainForm implements IContainerForm {
     private JLabel playerName;
     private JLabel offlineModeLabel;
 
-    StaticShader shader;
-    gg.codie.mineonline.gui.rendering.Renderer renderer;
-    Loader loader;
-    GameObject playerPivot;
-    PlayerGameObject playerGameObject;
-    Camera camera;
-    IPlayerAnimation playerAnimation;
-
     List<MinecraftInstall> installs;
-
-    boolean closing;
 
     public JPanel getContent() {
         return contentPanel;
@@ -55,99 +44,6 @@ public class MainForm implements IContainerForm {
     public JPanel getRenderPanel() {
         return skinPanel;
     }
-
-    public Runnable gamePrepare = new Runnable() {
-        public void run() {
-            //DisplayManager.createDisplay(glCanvas.getSize().width, glCanvas.getSize().height);
-
-            shader = new StaticShader();
-            renderer = new Renderer(shader);
-
-            loader = new Loader();
-
-            playerPivot = new GameObject("player_origin", new Vector3f(0, -2    , -40), new Vector3f(0, 30, 0), new Vector3f(1, 1, 1));
-
-            playerGameObject = new PlayerGameObject("player", loader, shader, new Vector3f(0, -16, 0), new Vector3f(), new Vector3f(1, 1, 1));
-
-            playerPivot.addChild(playerGameObject);
-
-            try {
-                playerGameObject.setSkin(Paths.get(LauncherFiles.CACHED_SKIN_PATH).toUri().toURL());
-                playerGameObject.setCloak(Paths.get(LauncherFiles.CACHED_CLOAK_PATH).toUri().toURL());
-            } catch (MalformedURLException mx) {
-
-            }
-
-            camera = new Camera();
-
-            playerAnimation = new IdlePlayerAnimation();
-            playerAnimation.reset(playerGameObject);
-        }
-    };
-
-
-
-    public Runnable gameMainLoop = new Runnable() {
-        public void run() {
-            renderer.prepare();
-            // Camera roll lock.
-            // Broken and not necessary.
-
-//            if(playerPivot.getLocalRotation().z > 0) {
-//                playerPivot.increaseRotation(new Vector3f(0, 0, -playerPivot.getLocalRotation().z));
-//            }
-
-            if(Mouse.isButtonDown(0)) {
-                Vector3f currentRotation = playerPivot.getLocalRotation();
-                Vector3f rotation = new Vector3f();
-
-                // Camera pitch rotation with lock.
-                // Currently broken.
-
-//                float dy = Mouse.getDY();
-
-//                if(currentRotation.x + (dy * -0.3f) > 30) {
-//                    rotation.x = 30 - currentRotation.x;
-//                } else if(currentRotation.x + (dy * -0.3f) < -30) {
-//                    rotation.x = -30 - currentRotation.x;
-//                } else {
-//                    rotation.x = dy * -0.3f;
-//                }
-
-                rotation.y = (Mouse.getDX() * 0.5f);
-
-//                System.out.println(rotation.toString());
-
-                playerPivot.increaseRotation(rotation);
-            }
-
-            playerGameObject.update();
-
-            playerAnimation.animate(playerGameObject);
-
-            camera.move();
-
-            shader.start();
-            shader.loadViewMatrix(camera);
-
-            renderer.render(playerGameObject, shader);
-
-            shader.stop();
-
-            //DisplayManager.updateDisplay();
-            Display.update();
-
-            try {
-                Thread.sleep(12);
-            } catch (Exception e) {
-
-            }
-
-            if(!closing) {
-                EventQueue.invokeLater(this);
-            }
-        }
-    };
 
     public MainForm() {
         if (Session.session == null) {
@@ -192,10 +88,12 @@ public class MainForm implements IContainerForm {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    Properties.properties.put("lastPlayedIndex", comboBox1.getSelectedIndex());
-                    Properties.saveProperties();
-
                     ArrayList<String> args = new ArrayList();
+
+                    if(installs.size() < 1) {
+                        JOptionPane.showMessageDialog(null, "You have no Minecraft configurations.\nPlease add one using the Settings screen.");
+                        return;
+                    }
 
                     MinecraftInstall install = installs.get(comboBox1.getSelectedIndex());
 
@@ -203,6 +101,9 @@ public class MainForm implements IContainerForm {
                         JOptionPane.showMessageDialog(null, "This configuration has no jar file,\nor it's jar file could not be found.\nPlease check your settings.");
                         return;
                     }
+
+                    Properties.properties.put("lastPlayedIndex", comboBox1.getSelectedIndex());
+                    Properties.saveProperties();
 
                     if(!install.getMainClass().isEmpty()) {
                         args.add(Session.session.getUsername());
@@ -239,6 +140,7 @@ public class MainForm implements IContainerForm {
                     while(MineOnlineLauncher.gameProcess.isAlive()) {
 
                     }
+                    FormManager.singleton.dispose();
                     System.exit(0);
                 } catch (Exception ex) {
                     ex.printStackTrace();
@@ -246,9 +148,6 @@ public class MainForm implements IContainerForm {
                 }
             }
         });
-
-        glCanvas.setIgnoreRepaint(true);
-
 
         logoutButton.addActionListener(new ActionListener() {
             @Override
@@ -262,6 +161,13 @@ public class MainForm implements IContainerForm {
             @Override
             public void actionPerformed(ActionEvent e) {
                 FormManager.switchScreen(new ChangeSkinForm());
+            }
+        });
+
+        joinServerButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                FormManager.switchScreen(new JoinServerForm());
             }
         });
 

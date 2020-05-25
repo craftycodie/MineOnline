@@ -227,25 +227,6 @@ public class MineOnlineLauncherFrame extends JFrame {
             }
         });
 
-        getMppassButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(!apiDomainTextField.getText().isEmpty() && !usernameTextField.getText().isEmpty() && !serverIPTextField.getText().isEmpty() && !usernameTextField.getText().isEmpty() && !sessionIdTextField.getText().isEmpty()) {
-                    String port = serverPortTextField.getText();
-                    if(port.isEmpty())
-                        port = "25565";
-                    try {
-                        String mpPass = MinecraftAPI.getMpPass(sessionIdTextField.getText(), serverIPTextField.getText(), port);
-                        mppassTextField.setText(mpPass);
-                    } catch (IOException ioe) {
-                        JOptionPane.showMessageDialog(null, "Failed to authenticate.\nThis API might not support MineOnline.");
-                    }
-                } else {
-                    // show alert
-                }
-            }
-        });
-
         useLocalProxyCheckBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

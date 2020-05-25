@@ -15,7 +15,7 @@ import java.util.Locale;
 
 public class MinecraftAPI {
 
-    public static String getMpPass (String sessionId, String serverIP, String serverPort) throws IOException {
+    public static String getMpPass (String sessionId, String serverIP, String serverPort) {
         HttpURLConnection connection = null;
 
         try {
@@ -34,7 +34,7 @@ public class MinecraftAPI {
             rd.close();
 
             return mpPass;
-        } catch (UnsupportedEncodingException e) {
+        } catch (Exception e) {
 
             e.printStackTrace();
             return null;
