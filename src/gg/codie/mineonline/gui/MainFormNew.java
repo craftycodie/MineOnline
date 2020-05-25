@@ -18,6 +18,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.net.MalformedURLException;
+import java.nio.file.Paths;
 
 public class MainFormNew extends JFrame {
     private JPanel skinPanel;
@@ -66,8 +68,12 @@ public class MainFormNew extends JFrame {
 
             playerPivot.addChild(playerGameObject);
 
-            playerGameObject.setSkin(LauncherFiles.CACHED_SKIN_PATH);
-            playerGameObject.setCloak(LauncherFiles.CACHED_CLOAK_PATH);
+            try {
+                playerGameObject.setSkin(Paths.get(LauncherFiles.CACHED_SKIN_PATH).toUri().toURL());
+                playerGameObject.setCloak(Paths.get(LauncherFiles.CACHED_CLOAK_PATH).toUri().toURL());
+            } catch (MalformedURLException mx) {
+
+            }
 
             camera = new Camera();
 

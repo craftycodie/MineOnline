@@ -2,7 +2,6 @@ package gg.codie.mineonline;
 
 import gg.codie.utils.ArrayUtils;
 import gg.codie.utils.OSUtils;
-import org.json.JSONObject;
 
 import java.io.*;
 import java.util.Map;
