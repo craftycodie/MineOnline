@@ -79,7 +79,6 @@ public class Loader {
         return textureID;
     }
 
-
     public int loadTexture(String path) {
         Texture texture = null;
         try {
@@ -109,7 +108,6 @@ public class Loader {
 
         return textureID;
     }
-
 
     private int createVAO() {
         int vaoID = GL30.glGenVertexArrays();

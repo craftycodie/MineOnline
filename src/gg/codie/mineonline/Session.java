@@ -11,7 +11,6 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-
 public class Session {
 
     public static Session session;
@@ -51,7 +50,6 @@ public class Session {
         PlayerGameObject.thePlayer.setSkin(LauncherFiles.TEMPLATE_SKIN_PATH);
     }
 
-
     public void cacheSkin () {
         (new Thread() {
             public void run() {
@@ -80,7 +78,6 @@ public class Session {
                 }
 
                 try (BufferedInputStream in = new BufferedInputStream(new URL("http://" + Properties.properties.getString("apiDomainName") + "/MinecraftCloaks/" + username + ".png").openStream())) {
-
 
                     // Delete the currently cached skin.
                     File cachedCloak = new File(LauncherFiles.CACHED_CLOAK_PATH);

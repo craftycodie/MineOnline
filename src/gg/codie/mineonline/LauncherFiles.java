@@ -3,19 +3,21 @@ package gg.codie.mineonline;
 import gg.codie.utils.OSUtils;
 
 import java.io.File;
-
 import java.net.URL;
-
 
 public class LauncherFiles {
 
     public static final String MINEONLINE_FOLDER = getMineOnlineDirectory() + File.separator;
+
+
     public static final String MINEONLINE_PROPS_FILE = MINEONLINE_FOLDER + "settings.json";
 
     public static final String MINEONLINE_LIBRARY_FOLDER = MINEONLINE_FOLDER + "lib" + File.separator;
+  
     public static final String LWJGL_JAR = MINEONLINE_LIBRARY_FOLDER + "lwjgl.jar";
     public static final String LWJGL_UTILS_JAR = MINEONLINE_LIBRARY_FOLDER + "lwjgl_utils.jar";
     public static final String JINPUT_JAR = MINEONLINE_LIBRARY_FOLDER + "jinput.jar";
+  
     public static final String MINEONLNE_NATIVES_FOLDER = MINEONLINE_LIBRARY_FOLDER + "native" + File.separator + OSUtils.getPlatform().toString();
 
     public static final String MINEONLINE_CACHE_FOLDER = MINEONLINE_FOLDER + "cache" + File.separator;

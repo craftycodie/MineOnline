@@ -5,16 +5,6 @@ import gg.codie.utils.OSUtils;
 import org.json.JSONObject;
 
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Locale;
 import java.util.Map;
 
 public class MineOnlineLauncher {
@@ -40,7 +30,7 @@ public class MineOnlineLauncher {
 					CMD_ARRAY = new String[] { Properties.properties.getString("javaCommand"), CP, "\"" + jarLocation + "\"", mainClass };
 				break;
 			case Game:
-				classpath = classpath + getClasspathSeparator() + jarLocation + getClasspathSeparator() + LauncherFiles.LWJGL_JAR + getClasspathSeparator() + LauncherFiles.LWJGL_UTILS_JAR;
+				classpath = classpath + getClasspathSeparator() + jarLocation + getClasspathSeparator() + LauncherFiles.LWJGL_JAR + getClasspathSeparator() + LauncherFiles.LWJGL_UTIL_JAR;
 				if (Properties.properties.getBoolean("useLocalProxy"))
 					CMD_ARRAY = new String[] { Properties.properties.getString("javaCommand"), proxySet, proxyHost, proxyPortArgument + proxyPort, natives, CP, classpath, mainClass};
 				else
@@ -55,7 +45,7 @@ public class MineOnlineLauncher {
 				if (a_char==':')
 					appletViewerLocation = appletViewerLocation.substring(1);
 
-				classpath = classpath + getClasspathSeparator() + jarLocation + getClasspathSeparator() + LauncherFiles.LWJGL_JAR + getClasspathSeparator() + LauncherFiles.LWJGL_UTILS_JAR + getClasspathSeparator() + appletViewerLocation;
+				classpath = classpath + getClasspathSeparator() + jarLocation + getClasspathSeparator() + appletViewerLocation;
 				if (Properties.properties.getBoolean("useLocalProxy"))
 					CMD_ARRAY = new String[] { Properties.properties.getString("javaCommand"), proxySet, proxyHost, proxyPortArgument + proxyPort, natives, CP, classpath, MinecraftAppletViewer.class.getCanonicalName(), mainClass};
 				else
@@ -87,7 +77,7 @@ public class MineOnlineLauncher {
 
 		MineOnlineLauncher.gameProcess = processBuilder.start();
 
-		Thread closeLauncher = new Thread(() -> MineOnlineLauncher.gameProcess.destroy());
+		Thread closeLauncher = new Thread(() -> MineOnlineLauncher.gameProcess.destroyForcibly());
 
 		Runtime.getRuntime().addShutdownHook(closeLauncher);
 	}
