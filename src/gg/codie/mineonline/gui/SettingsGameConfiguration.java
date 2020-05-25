@@ -178,7 +178,7 @@ public class SettingsGameConfiguration implements IContainerForm {
 
                         if(className.equals("MinecraftApplet")) {
                             minecraftInstall.setAppletClass(classCanonicalName);
-                        } else if(className.equals("MiencraftLauncher")) { ;
+                        } else if(className.equals("MinecraftLauncher")) { ;
                             minecraftInstall.setMainClass(classCanonicalName);
                         } else if(className.equals("Minecraft")) {
                             minecraftInstall.setMainClass(classCanonicalName);
