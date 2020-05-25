@@ -80,7 +80,7 @@ public class LibraryManager {
             });
 
             for(File file : libraries) {
-                method.invoke(sysloader, new Object[]{file.toURL()});
+                method.invoke(sysloader, new Object[]{Paths.get(file.getPath()).toUri().toURL()});
             }
 
         } catch (Throwable t) {
