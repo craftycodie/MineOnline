@@ -12,15 +12,14 @@ public class Server {
 
 	public static void main(String[] args) throws Exception{
         Properties.loadProperties();
-        int port = Proxy.launchProxy();
 
         if(args.length < 2) {
             System.err.println("Too few arguments. Include a jar location and main class. \n Eg minecraft-server.jar com.mojang.minecraft.server.MinecraftServer");
         }
 
-        String[] CMD_ARRAY = Boolean.parseBoolean(Properties.properties.getProperty("useLocalProxy"))
-                ? new String[] {Properties.properties.getProperty("javaCommand"), proxySet, proxyHost, proxyPortArgument + port}
-                : new String[] {Properties.properties.getProperty("javaCommand")};
+        String[] CMD_ARRAY = Properties.properties.getBoolean("useLocalProxy")
+                ? new String[] {Properties.properties.getString("javaCommand"), proxySet, proxyHost, proxyPortArgument + Proxy.getProxyPort()}
+                : new String[] {Properties.properties.getString("javaCommand")};
 
         CMD_ARRAY = ArrayUtils.concatenate(CMD_ARRAY, args);
 

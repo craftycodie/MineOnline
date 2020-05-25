@@ -3,6 +3,8 @@ package gg.codie.mineonline.gui.rendering;
 import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.gui.rendering.models.RawModel;
 import gg.codie.mineonline.gui.rendering.utils.MathUtils;
+import jdk.nashorn.api.scripting.URLReader;
+
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.*;
 import org.lwjgl.util.vector.Vector3f;
@@ -10,6 +12,8 @@ import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 
 import java.io.FileInputStream;
+import java.io.InputStream;
+
 import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -62,6 +66,20 @@ public class Loader {
         return new RawModel(vaoID, 36);
     }
 
+    public int loadTexture(URL url) {
+        Texture texture = null;
+        try {
+            texture = TextureLoader.getTexture("PNG", url.openStream());
+        } catch (Exception e) {
+            return MISSING_TEXTURE_ID;
+        }
+
+        int textureID = texture.getTextureID();
+
+        return textureID;
+    }
+
+
     public int loadTexture(String path) {
         Texture texture = null;
         try {
@@ -78,6 +96,20 @@ public class Loader {
 
         return textureID;
     }
+
+    public int loadTexture(InputStream stream) {
+        Texture texture = null;
+        try {
+            texture = TextureLoader.getTexture("PNG", stream);
+        } catch (Exception e) {
+            return MISSING_TEXTURE_ID;
+        }
+
+        int textureID = texture.getTextureID();
+
+        return textureID;
+    }
+
 
     private int createVAO() {
         int vaoID = GL30.glGenVertexArrays();

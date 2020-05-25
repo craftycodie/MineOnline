@@ -171,12 +171,12 @@ public class MinecraftAppletViewer extends Applet implements AppletStub{
 
     //This sets the document base URL, which would normally be the URL of the webpage in which the applet was embedded.
     public URL getDocumentBase(){
-        return StringToURL("http://" + Properties.properties.getProperty("baseUrl"));
+        return StringToURL("http://" + Properties.properties.getString("baseUrl"));
     }
 
     //This sets the code base URL, which would normally be defined by the codebase attribute of the <applet> tag.
     public URL getCodeBase(){
-        return StringToURL("http://" + Properties.properties.getProperty("baseUrl"));
+        return StringToURL("http://" + Properties.properties.getString("baseUrl"));
     }
 
     //This sets parameters that would normally be set by <param> tags within the applet block defined by <applet> and </applet> tags.

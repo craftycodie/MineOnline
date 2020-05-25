@@ -3,6 +3,8 @@ package gg.codie.mineonline.gui.rendering;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector4f;
 
+import java.awt.image.BufferedImage;
+
 import java.util.Arrays;
 
 public class TextureHelper {
@@ -38,6 +40,11 @@ public class TextureHelper {
                 ((pixelBegin.x + pixelEnd.x) / units.x) / 100, (pixelBegin.y / units.y) / 100,
                 ((pixelBegin.x + pixelEnd.x) / units.x) / 100, ((pixelBegin.y + pixelEnd.y) / units.y) / 100,
         };
+    }
+
+    public static BufferedImage cropImage(BufferedImage bufferedImage, int x, int y, int width, int height){
+        BufferedImage croppedImage = bufferedImage.getSubimage(x, y, width, height);
+        return croppedImage;
     }
 
     public static float[] getCubeTextureCoords(Vector2f textureDimensions,
@@ -83,7 +90,6 @@ public class TextureHelper {
             i++;
         }
 
-        System.out.println(Arrays.toString(results));
         return results;
 
     }

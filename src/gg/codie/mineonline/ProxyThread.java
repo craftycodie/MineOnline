@@ -1,6 +1,7 @@
 package gg.codie.mineonline;
 
 import gg.codie.utils.ArrayUtils;
+import gg.codie.utils.JSONUtils;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -43,8 +44,8 @@ public class ProxyThread implements Runnable {
         running.set(true);
 
         Properties.loadProperties();
-        String[] redirectedDomains = ArrayUtils.fromString(Properties.properties.getProperty("redirectedDomains"));
-        String destination = Properties.properties.getProperty("apiDomainName");
+        String[] redirectedDomains = JSONUtils.getStringArray(Properties.properties.getJSONArray("redirectedDomains"));
+        String destination = Properties.properties.getString("apiDomainName");
 
         Socket clientSocket = null;
 
@@ -161,7 +162,7 @@ public class ProxyThread implements Runnable {
                 clientSocket.getOutputStream().write(responseHeader.getBytes());
 
                 buffer = new byte[bufferSize];
-                while ((bytes_read = is.read(buffer, 0, 4096)) != -1) {
+                while ((bytes_read = is.read(buffer, 0, bufferSize)) != -1) {
                     for(int i = 0; i < bytes_read; i++) {
                         System.out.print(buffer[i]);
                         clientSocket.getOutputStream().write(buffer[i]);

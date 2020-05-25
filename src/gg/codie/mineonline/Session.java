@@ -6,7 +6,11 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 
 public class Session {
 
@@ -17,6 +21,11 @@ public class Session {
     }
 
     private String username;
+
+    public String getSessionToken() {
+        return sessionToken;
+    }
+
     private String sessionToken;
 
     public boolean isOnline() {
@@ -42,12 +51,13 @@ public class Session {
         PlayerGameObject.thePlayer.setSkin(LauncherFiles.TEMPLATE_SKIN_PATH);
     }
 
-    private void cacheSkin () {
+
+    public void cacheSkin () {
         (new Thread() {
             public void run() {
                 Properties.loadProperties();
 
-                try (BufferedInputStream in = new BufferedInputStream(new URL("http://" + Properties.properties.getProperty("apiDomainName") + "/MinecraftSkins/" + username + ".png").openStream())) {
+                try (BufferedInputStream in = new BufferedInputStream(new URL("http://" + Properties.properties.getString("apiDomainName") + "/MinecraftSkins/" + username + ".png").openStream())) {
 
                     // Delete the currently cached skin.
                     File cachedSkin = new File(LauncherFiles.CACHED_SKIN_PATH);
@@ -69,7 +79,8 @@ public class Session {
                     // handle exception
                 }
 
-                try (BufferedInputStream in = new BufferedInputStream(new URL("http://" + Properties.properties.getProperty("apiDomainName") + "/MinecraftCloaks/" + username + ".png").openStream())) {
+                try (BufferedInputStream in = new BufferedInputStream(new URL("http://" + Properties.properties.getString("apiDomainName") + "/MinecraftCloaks/" + username + ".png").openStream())) {
+
 
                     // Delete the currently cached skin.
                     File cachedCloak = new File(LauncherFiles.CACHED_CLOAK_PATH);
@@ -92,8 +103,12 @@ public class Session {
                 }
 
                 if(PlayerGameObject.thePlayer != null) {
-                    PlayerGameObject.thePlayer.setCloak(LauncherFiles.CACHED_CLOAK_PATH);
-                    PlayerGameObject.thePlayer.setSkin(LauncherFiles.CACHED_SKIN_PATH);
+                    try {
+                        PlayerGameObject.thePlayer.setCloak(Paths.get(LauncherFiles.CACHED_CLOAK_PATH).toUri().toURL());
+                        PlayerGameObject.thePlayer.setSkin(Paths.get(LauncherFiles.CACHED_SKIN_PATH).toUri().toURL());
+                    } catch (MalformedURLException mx) {
+
+                    }
                 }
             }
         }).start();
