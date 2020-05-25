@@ -163,7 +163,6 @@ public class PlayerGameObject extends GameObject {
             updateCloak = false;
         }
 
-
         playerAnimation.animate(this);
     }
 
@@ -242,8 +241,6 @@ public class PlayerGameObject extends GameObject {
             // The texture loader can handle this error and return the missing texture ID.
             skin = new ModelTexture(loader.loadTexture(""));
         }
-
-
 
         playerHead.getChildren().getFirst().getModel().setTexture(skin);
         playerHead.getChildren().getLast().getModel().setTexture(skin);

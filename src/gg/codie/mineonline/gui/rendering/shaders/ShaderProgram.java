@@ -1,6 +1,7 @@
 package gg.codie.mineonline.gui.rendering.shaders;
 
 import jdk.nashorn.api.scripting.URLReader;
+
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
@@ -11,6 +12,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
+
 import java.nio.FloatBuffer;
 
 public abstract class ShaderProgram {
@@ -20,7 +22,6 @@ public abstract class ShaderProgram {
     private int fragmentShaderID;
 
     private static FloatBuffer matrixBuffer = BufferUtils.createFloatBuffer(16);
-
 
     public ShaderProgram(URL vertexFile, URL fragmentFile) {
         vertexShaderID = loadShader(vertexFile, GL20.GL_VERTEX_SHADER);
@@ -92,6 +93,7 @@ public abstract class ShaderProgram {
 
         try {
             BufferedReader reader = new BufferedReader(new URLReader(file));
+
             String line;
             while((line = reader.readLine()) != null) {
                 shaderSource.append(line).append("\n");
