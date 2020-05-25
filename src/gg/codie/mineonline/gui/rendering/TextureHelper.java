@@ -89,7 +89,6 @@ public class TextureHelper {
             i++;
         }
 
-        System.out.println(Arrays.toString(results));
         return results;
 
     }

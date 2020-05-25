@@ -4,6 +4,7 @@ import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.MineOnlineLauncher;
 import gg.codie.mineonline.Properties;
 import gg.codie.mineonline.Session;
+import gg.codie.mineonline.api.MinecraftAPI;
 import org.lwjgl.LWJGLException;
 
 import javax.crypto.*;
@@ -13,7 +14,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.*;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Random;
 
 public class LoginForm  implements IContainerForm {
@@ -26,6 +31,7 @@ public class LoginForm  implements IContainerForm {
     private JButton loginButton;
     private JButton playOfflineButton;
     private JLabel errorMessage;
+    private JLabel needAccountLabel;
 
     public JPanel getContent() {
         return contentPanel;
@@ -36,7 +42,7 @@ public class LoginForm  implements IContainerForm {
     }
 
     public LoginForm() {
-        ImageIcon icon = new ImageIcon("res/mineonlinelogo.png");
+        ImageIcon icon = new ImageIcon(LoginForm.class.getResource("/img/mineonlinelogo.png"));
         logolabel.setIcon(icon);
 
         playOfflineButton.setVisible(false);
@@ -63,7 +69,7 @@ public class LoginForm  implements IContainerForm {
                 String failed = null;
                 errorMessage.setText("");
                 try {
-                    String sessionToken = MineOnlineLauncher.login(usernameTextField.getText(), new String(passwordField1.getPassword()));
+                    String sessionToken = MinecraftAPI.login(usernameTextField.getText(), new String(passwordField1.getPassword()));
                     if (sessionToken != null) {
                         new Session(usernameTextField.getText(), sessionToken);
                         writeLastLogin();
@@ -93,7 +99,35 @@ public class LoginForm  implements IContainerForm {
                 FormManager.switchScreen(new MainForm());
             }
         });
+
+        needAccountLabel.setForeground(Color.BLUE.darker());
+        needAccountLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+        needAccountLabel.addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                try {
+                    Properties.loadProperties();
+                    Desktop.getDesktop().browse(new URI("http://" + Properties.properties.getString("apiDomainName") + "/register.jsp"));
+                } catch (IOException | URISyntaxException e1) {
+                    e1.printStackTrace();
+                }
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                // the mouse has entered the label
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                // the mouse has exited the label
+            }
+        });
     }
+
+
 
     private void readLastLogin() {
     try {

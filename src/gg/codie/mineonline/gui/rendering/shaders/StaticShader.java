@@ -4,10 +4,12 @@ import gg.codie.mineonline.gui.rendering.Camera;
 import gg.codie.mineonline.gui.rendering.utils.MathUtils;
 import org.lwjgl.util.vector.Matrix4f;
 
+import java.net.URL;
+
 public class StaticShader extends ShaderProgram {
 
-    private static final String VERTEX_FILE = "src/gg/codie/mineonline/gui/rendering/shaders/vertexShader.txt";
-    private static final String FRAGMENT_FILE = "src/gg/codie/mineonline/gui/rendering/shaders/fragmentShader.txt";
+    private static final URL VERTEX_FILE = StaticShader.class.getResource("/shaders/vertexShader.txt");
+    private static final URL FRAGMENT_FILE = StaticShader.class.getResource("/shaders/fragmentShader.txt");
 
     private int location_transformationMatrix;
     private int location_projectionMatrix;

@@ -1,16 +1,12 @@
 package gg.codie.mineonline.gui;
 
-import com.intellij.uiDesigner.core.GridConstraints;
-import gg.codie.mineonline.LauncherFiles;
-import gg.codie.mineonline.Properties;
-import gg.codie.mineonline.Session;
+import gg.codie.mineonline.*;
 import gg.codie.mineonline.gui.rendering.*;
 import gg.codie.mineonline.gui.rendering.Renderer;
 import gg.codie.mineonline.gui.rendering.animation.IPlayerAnimation;
 import gg.codie.mineonline.gui.rendering.animation.IdlePlayerAnimation;
-import gg.codie.mineonline.gui.rendering.animation.WalkPlayerAnimation;
 import gg.codie.mineonline.gui.rendering.shaders.StaticShader;
-import org.lwjgl.LWJGLException;
+import gg.codie.utils.JSONUtils;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Vector3f;
@@ -19,8 +15,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.io.File;
 
 public class MainForm implements IContainerForm {
     private JPanel skinPanel;
@@ -43,6 +43,8 @@ public class MainForm implements IContainerForm {
     PlayerGameObject playerGameObject;
     Camera camera;
     IPlayerAnimation playerAnimation;
+
+    List<MinecraftInstall> installs;
 
     boolean closing;
 
@@ -69,8 +71,12 @@ public class MainForm implements IContainerForm {
 
             playerPivot.addChild(playerGameObject);
 
-            playerGameObject.setSkin(LauncherFiles.CACHED_SKIN_PATH);
-            playerGameObject.setCloak(LauncherFiles.CACHED_CLOAK_PATH);
+            try {
+                playerGameObject.setSkin(Paths.get(LauncherFiles.CACHED_SKIN_PATH).toUri().toURL());
+                playerGameObject.setCloak(Paths.get(LauncherFiles.CACHED_CLOAK_PATH).toUri().toURL());
+            } catch (MalformedURLException mx) {
+
+            }
 
             camera = new Camera();
 
@@ -161,26 +167,88 @@ public class MainForm implements IContainerForm {
             this.offlineModeLabel.setVisible(true);
         }
 
-        ImageIcon icon = new ImageIcon("res/mineonlinelogo.png");
+        ImageIcon icon = new ImageIcon(MainForm.class.getResource("/img/mineonlinelogo.png"));
         logolabel.setIcon(icon);
 
         contentPanel.setPreferredSize(new Dimension(845, 476));
 
         playerName.setText(Session.session.getUsername());
 
-//        EventQueue.invokeLater(gamePrepare);
-//        EventQueue.invokeLater(gameMainLoop);
+        installs = JSONUtils.getMinecraftInstalls(Properties.properties.getJSONArray("minecraftInstalls"));
+
+        for(MinecraftInstall install : installs) {
+            comboBox1.addItem(install.getName());
+        }
+
+        if (Properties.properties.has("lastPlayedIndex")) {
+            int lastPlayed = Properties.properties.getInt("lastPlayedIndex");
+
+            if (lastPlayed < installs.size() - 1) {
+                comboBox1.setSelectedIndex(lastPlayed);
+            }
+        }
+
+        playButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    Properties.properties.put("lastPlayedIndex", comboBox1.getSelectedIndex());
+                    Properties.saveProperties();
+
+                    ArrayList<String> args = new ArrayList();
+
+                    MinecraftInstall install = installs.get(comboBox1.getSelectedIndex());
+
+                    if(install.jarPath.isEmpty() && !(new File(install.jarPath).exists())) {
+                        JOptionPane.showMessageDialog(null, "This configuration has no jar file,\nor it's jar file could not be found.\nPlease check your settings.");
+                        return;
+                    }
+
+                    if(!install.getMainClass().isEmpty()) {
+                        args.add(Session.session.getUsername());
+
+                        if(Session.session.isOnline())
+                        {
+                            args.add(Session.session.getSessionToken());
+                        }
+
+                        MineOnlineLauncher.launch(installs.get(comboBox1.getSelectedIndex()).getJarPath(), ELaunchType.Game, install.getMainClass(),
+                                args.toArray(new String[0]),
+                                Proxy.getProxyPort());
+                    } else {
+                        String premiumArgument = "-demo";
+                        if(Properties.properties.getBoolean("isPremium")) {
+                            premiumArgument = "-paid";
+                        }
+                        args.add(premiumArgument);
+
+                        args.add("-login");
+                        args.add(Session.session.getUsername());
+
+                        if(Session.session.isOnline())
+                        {
+                            args.add(Session.session.getSessionToken());
+                        }
+
+                        MineOnlineLauncher.launch(installs.get(comboBox1.getSelectedIndex()).getJarPath(), ELaunchType.Applet, install.getAppletClass(),
+                                args.toArray(new String[0]),
+                                Proxy.getProxyPort());
+                    }
+
+                    FormManager.singleton.setVisible(false);
+                    while(MineOnlineLauncher.gameProcess.isAlive()) {
+
+                    }
+                    System.exit(0);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "Failed to launch game.");
+                }
+            }
+        });
 
         glCanvas.setIgnoreRepaint(true);
 
-//        skinPanel.add(glCanvas, new GridConstraints());
-//        glCanvas.setSize(skinPanel.getSize());
-
-//        try {
-//            Display.setParent(glCanvas);
-//        } catch (LWJGLException e) {
-//            e.printStackTrace();
-//        }
 
         logoutButton.addActionListener(new ActionListener() {
             @Override
@@ -197,11 +265,12 @@ public class MainForm implements IContainerForm {
             }
         });
 
-        //JFrame frame = new JFrame("AWTGLCanvas - multisampling");
-        //frame.setPreferredSize(new Dimension(640, 480));
-        //frame.add(skinPanel, new GridConstraints());
-        //frame.pack();
+        settingsButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                FormManager.switchScreen(new SettingsForm());
+            }
+        });
 
-        //frame.setVisible(true);
     }
 }

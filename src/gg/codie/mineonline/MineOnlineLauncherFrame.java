@@ -1,5 +1,6 @@
 package gg.codie.mineonline;
 
+import gg.codie.mineonline.api.MinecraftAPI;
 import gg.codie.utils.FileUtils;
 
 import javax.swing.*;
@@ -94,7 +95,7 @@ public class MineOnlineLauncherFrame extends JFrame {
                     if(jarPathTextField.getText().isEmpty())
                         return;
 
-                    Properties.properties.setProperty("jarFilePath", jarPathTextField.getText());
+                    Properties.properties.put("jarFilePath", jarPathTextField.getText());
                     Properties.saveProperties();
 
                     JarFile jarFile = new JarFile(jarPathTextField.getText());
@@ -234,7 +235,7 @@ public class MineOnlineLauncherFrame extends JFrame {
                     if(port.isEmpty())
                         port = "25565";
                     try {
-                        String mpPass = MineOnlineLauncher.getMpPass(sessionIdTextField.getText(), serverIPTextField.getText(), port);
+                        String mpPass = MinecraftAPI.getMpPass(sessionIdTextField.getText(), serverIPTextField.getText(), port);
                         mppassTextField.setText(mpPass);
                     } catch (IOException ioe) {
                         JOptionPane.showMessageDialog(null, "Failed to authenticate.\nThis API might not support MineOnline.");
@@ -249,25 +250,12 @@ public class MineOnlineLauncherFrame extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(useLocalProxyCheckBox.isSelected()) {
-                    Properties.properties.setProperty("useLocalProxy", "true");
+                    Properties.properties.put("useLocalProxy", true);
                 } else {
-                    Properties.properties.setProperty("useLocalProxy", "false");
+                    Properties.properties.put("useLocalProxy", false);
                 }
                 Properties.saveProperties();
                 useLocalProxyUpdated();
-            }
-        });
-
-        connectToServerCheckBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(connectToServerCheckBox.isSelected()) {
-                    Properties.properties.setProperty("joinServer", "true");
-                } else {
-                    Properties.properties.setProperty("joinServer", "false");
-                }
-                Properties.saveProperties();
-                joinServerUpdated();
             }
         });
 
@@ -275,9 +263,9 @@ public class MineOnlineLauncherFrame extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(hasPaidCheckBox.isSelected()) {
-                    Properties.properties.setProperty("isPremium", "true");
+                    Properties.properties.put("isPremium", true);
                 } else {
-                    Properties.properties.setProperty("isPremium", "false");
+                    Properties.properties.put("isPremium", false);
                 }
                 Properties.saveProperties();
             }
@@ -290,26 +278,7 @@ public class MineOnlineLauncherFrame extends JFrame {
             private void onChange() {
                 if(useLocalProxyCheckBox.isSelected())
                     startProxy();
-                Properties.properties.setProperty("apiDomainName", apiDomainTextField.getText());
-                Properties.saveProperties();
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent evt) {
-                onChange();
-            }
-
-            public void removeUpdate(DocumentEvent e) {
-                onChange();
-            }
-            public void insertUpdate(DocumentEvent e) {
-                onChange();
-            }
-        });
-
-        usernameTextField.getDocument().addDocumentListener(new DocumentListener() {
-            private void onChange() {
-                Properties.properties.setProperty("username", usernameTextField.getText());
+                Properties.properties.put("apiDomainName", apiDomainTextField.getText());
                 Properties.saveProperties();
             }
 
@@ -329,7 +298,7 @@ public class MineOnlineLauncherFrame extends JFrame {
 
         serverIPTextField.getDocument().addDocumentListener(new DocumentListener() {
             private void onChange() {
-                Properties.properties.setProperty("serverIP", serverIPTextField.getText());
+                Properties.properties.put("serverIP", serverIPTextField.getText());
                 Properties.saveProperties();
             }
 
@@ -348,7 +317,7 @@ public class MineOnlineLauncherFrame extends JFrame {
 
         serverPortTextField.getDocument().addDocumentListener(new DocumentListener() {
             private void onChange() {
-                Properties.properties.setProperty("serverPort", serverPortTextField.getText());
+                Properties.properties.put("serverPort", serverPortTextField.getText());
                 Properties.saveProperties();
             }
 
@@ -367,45 +336,7 @@ public class MineOnlineLauncherFrame extends JFrame {
 
         baseURLTextField.getDocument().addDocumentListener(new DocumentListener() {
             private void onChange() {
-                Properties.properties.setProperty("baseUrl", baseURLTextField.getText());
-                Properties.saveProperties();
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent evt) {
-                onChange();
-            }
-
-            public void removeUpdate(DocumentEvent e) {
-                onChange();
-            }
-            public void insertUpdate(DocumentEvent e) {
-                onChange();
-            }
-        });
-
-        sessionIdTextField.getDocument().addDocumentListener(new DocumentListener() {
-            private void onChange() {
-                Properties.properties.setProperty("sessionId", sessionIdTextField.getText());
-                Properties.saveProperties();
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent evt) {
-                onChange();
-            }
-
-            public void removeUpdate(DocumentEvent e) {
-                onChange();
-            }
-            public void insertUpdate(DocumentEvent e) {
-                onChange();
-            }
-        });
-
-        mppassTextField.getDocument().addDocumentListener(new DocumentListener() {
-            private void onChange() {
-                Properties.properties.setProperty("mpPass", mppassTextField.getText());
+                Properties.properties.put("baseUrl", baseURLTextField.getText());
                 Properties.saveProperties();
             }
 
@@ -551,21 +482,17 @@ public class MineOnlineLauncherFrame extends JFrame {
         });
 
 
-        usernameTextField.setText(Properties.properties.getProperty("username"));
-        hasPaidCheckBox.setSelected(Boolean.parseBoolean(Properties.properties.getProperty("isPremium")));
-        jarPathTextField.setText(Properties.properties.getProperty("jarFilePath"));
-        apiDomainTextField.setText(Properties.properties.getProperty("apiDomainName"));
-        useLocalProxyCheckBox.setSelected(Boolean.parseBoolean(Properties.properties.getProperty("useLocalProxy")));
+        hasPaidCheckBox.setSelected(Properties.properties.getBoolean("isPremium"));
+        jarPathTextField.setText(Properties.properties.getString("jarFilePath"));
+        apiDomainTextField.setText(Properties.properties.getString("apiDomainName"));
+        useLocalProxyCheckBox.setSelected(Properties.properties.getBoolean("useLocalProxy"));
         useLocalProxyUpdated();
-        serverIPTextField.setText(Properties.properties.getProperty("serverIP"));
-        serverPortTextField.setText(Properties.properties.getProperty("serverPort"));
-        connectToServerCheckBox.setSelected(Boolean.parseBoolean(Properties.properties.getProperty("joinServer")));
-        baseURLTextField.setText(Properties.properties.getProperty("baseUrl"));
-        sessionIdTextField.setText(Properties.properties.getProperty("sessionId"));
-        mppassTextField.setText(Properties.properties.getProperty("mpPass"));
+        serverIPTextField.setText(Properties.properties.getString("serverIP"));
+        serverPortTextField.setText(Properties.properties.getString("serverPort"));
+        baseURLTextField.setText(Properties.properties.getString("baseUrl"));
         joinServerUpdated();
 
-        if(!usernameTextField.getText().isEmpty() && !sessionIdTextField.getText().isEmpty() && !MineOnlineLauncher.checkSession(usernameTextField.getText(), sessionIdTextField.getText())){
+        if(!usernameTextField.getText().isEmpty() && !sessionIdTextField.getText().isEmpty() && !MinecraftAPI.checkSession(usernameTextField.getText(), sessionIdTextField.getText())){
             sessionIdTextField.setText("");
         }
     }
@@ -582,7 +509,7 @@ public class MineOnlineLauncherFrame extends JFrame {
     }
 
     private void useLocalProxyUpdated() {
-        if(Properties.properties.getProperty("useLocalProxy").equals("true"))
+        if(Properties.properties.getBoolean("useLocalProxy"))
             startProxy();
         else
             killProxy();
@@ -594,9 +521,8 @@ public class MineOnlineLauncherFrame extends JFrame {
         try {
             killProxy();
 
-            proxyPort = Proxy.launchProxy();
             System.getProperties().put("http.proxyHost", "0.0.0.0");
-            System.getProperties().put("http.proxyPort", proxyPort);
+            System.getProperties().put("http.proxyPort", Proxy.getProxyPort());
         } catch (Exception ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(null, "Failed to start proxy.");

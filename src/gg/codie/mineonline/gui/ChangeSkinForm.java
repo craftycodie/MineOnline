@@ -1,6 +1,7 @@
 package gg.codie.mineonline.gui;
 
 import gg.codie.mineonline.*;
+import gg.codie.mineonline.api.MinecraftAPI;
 import gg.codie.mineonline.gui.rendering.PlayerGameObject;
 import gg.codie.mineonline.gui.rendering.TextureHelper;
 import gg.codie.mineonline.gui.rendering.animation.WalkPlayerAnimation;
@@ -19,6 +20,9 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.file.Paths;
 import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -53,7 +57,7 @@ public class ChangeSkinForm implements IContainerForm {
             PlayerGameObject.thePlayer.setPlayerAnimation(new WalkPlayerAnimation());
         }
 
-        ImageIcon icon = new ImageIcon("res/mineonlinelogo.png");
+        ImageIcon icon = new ImageIcon(ChangeSkinForm.class.getResource("/img/mineonlinelogo.png"));
         logolabel.setIcon(icon);
 
         contentPanell.setPreferredSize(new Dimension(845, 476));
@@ -91,7 +95,11 @@ public class ChangeSkinForm implements IContainerForm {
 
                 File skinTexture = new File(skinTextField.getText());
                 if (skinTexture.exists() && PlayerGameObject.thePlayer != null) {
-                    PlayerGameObject.thePlayer.setSkin(skinTexture.getPath());
+                    try {
+                        PlayerGameObject.thePlayer.setSkin(Paths.get(skinTexture.getPath()).toUri().toURL());
+                    } catch (MalformedURLException mx) {
+
+                    }
                 }
             }
 
@@ -116,7 +124,11 @@ public class ChangeSkinForm implements IContainerForm {
 
                 File cloakTexture = new File(cloakTextField.getText());
                 if (cloakTexture.exists() && PlayerGameObject.thePlayer != null) {
-                    PlayerGameObject.thePlayer.setCloak(cloakTexture.getPath());
+                    try {
+                        PlayerGameObject.thePlayer.setCloak(Paths.get(cloakTexture.getPath()).toUri().toURL());
+                    } catch (MalformedURLException mx) {
+
+                    }
                 }
             }
 
@@ -145,7 +157,7 @@ public class ChangeSkinForm implements IContainerForm {
                         ByteArrayOutputStream os = new ByteArrayOutputStream();
                         ImageIO.write(bufferedImage, "png", os);
                         ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
-                        MineOnlineLauncher.uploadSkin(Session.session.getUsername(), Session.session.getSessionToken(), is);
+                        MinecraftAPI.uploadSkin(Session.session.getUsername(), Session.session.getSessionToken(), is);
                     } catch (IOException ex) {
                         JOptionPane.showMessageDialog(null, "Failed to upload skin.");
                         failed = true;
@@ -158,7 +170,7 @@ public class ChangeSkinForm implements IContainerForm {
                         ByteArrayOutputStream os = new ByteArrayOutputStream();
                         ImageIO.write(bufferedImage, "png", os);
                         ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
-                        MineOnlineLauncher.uploadCloak(Session.session.getUsername(), Session.session.getSessionToken(), is);
+                        MinecraftAPI.uploadCloak(Session.session.getUsername(), Session.session.getSessionToken(), is);
                     } catch (IOException ex) {
                         JOptionPane.showMessageDialog(null, "Failed to upload skin.");
                         failed = true;
@@ -200,7 +212,7 @@ public class ChangeSkinForm implements IContainerForm {
         removeCloakButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(MineOnlineLauncher.removecloak(Session.session.getSessionToken())) {
+                if(MinecraftAPI.removecloak(Session.session.getSessionToken())) {
                     if(PlayerGameObject.thePlayer != null) {
                         PlayerGameObject.thePlayer.setCloak(LauncherFiles.TEMPLATE_CLOAK_PATH);
                     }

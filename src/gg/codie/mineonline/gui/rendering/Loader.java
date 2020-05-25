@@ -3,6 +3,7 @@ package gg.codie.mineonline.gui.rendering;
 import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.gui.rendering.models.RawModel;
 import gg.codie.mineonline.gui.rendering.utils.MathUtils;
+import jdk.nashorn.api.scripting.URLReader;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.*;
 import org.lwjgl.util.vector.Vector3f;
@@ -61,6 +62,19 @@ public class Loader {
         storeDataInAttributeList(1, 2, textureCoordinates);
         unbindVAO();
         return new RawModel(vaoID, 36);
+    }
+
+    public int loadTexture(URL url) {
+        Texture texture = null;
+        try {
+            texture = TextureLoader.getTexture("PNG", url.openStream());
+        } catch (Exception e) {
+            return MISSING_TEXTURE_ID;
+        }
+
+        int textureID = texture.getTextureID();
+
+        return textureID;
     }
 
     public int loadTexture(String path) {
