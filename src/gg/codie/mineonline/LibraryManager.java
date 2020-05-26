@@ -31,14 +31,13 @@ public class LibraryManager {
     public static void extractLibraries() throws IOException, URISyntaxException {
         File jarFile = new File(LibraryManager.class.getProtectionDomain().getCodeSource().getLocation().toURI());
 
-        if(!jarFile.exists())
+        if(!jarFile.exists() || jarFile.isDirectory())
             return;
 
         java.util.jar.JarFile jar = new java.util.jar.JarFile(jarFile.getPath());
         java.util.Enumeration enumEntries = jar.entries();
         while (enumEntries.hasMoreElements()) {
             java.util.jar.JarEntry file = (java.util.jar.JarEntry) enumEntries.nextElement();
-            System.out.println(file.getName());
             if(!file.getName().startsWith("lib")) {
                 continue;
             }
@@ -65,11 +64,8 @@ public class LibraryManager {
     }
 
     public static void updateClasspath() throws IOException {
-        URLClassLoader sysloader = (URLClassLoader) ClassLoader.getSystemClassLoader();
-        Class sysclass = URLClassLoader.class;
-
         try {
-            Method method = sysclass.getDeclaredMethod("addURL", new Class[]{URL.class});
+            Method method = URLClassLoader.class.getDeclaredMethod("addURL", new Class[]{URL.class});
             method.setAccessible(true);
 
             File libFolder = new File(LauncherFiles.MINEONLINE_LIBRARY_FOLDER);
@@ -80,8 +76,12 @@ public class LibraryManager {
                 }
             });
 
+
+            method.setAccessible(true);
+
+
             for(File file : libraries) {
-                method.invoke(sysloader, new Object[]{Paths.get(file.getPath()).toUri().toURL()});
+                method.invoke(ClassLoader.getSystemClassLoader(), new Object[]{file.toURI().toURL()});
             }
 
         } catch (Throwable t) {

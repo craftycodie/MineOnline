@@ -1,6 +1,11 @@
 package gg.codie.mineonline;
 
+import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.DisplayMode;
+
 import java.applet.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.net.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -49,6 +54,7 @@ public class MinecraftAppletViewer extends Applet implements AppletStub{
             //And also we now set the width and height of the applet on the screen.
             MinecraftApplet.setStub(this);
             MinecraftApplet.setPreferredSize(new Dimension(AppletW,AppletH));
+            Display.setResizable(true);
 
 
             //This puts the applet into a window so that it can be shown on the screen.
@@ -59,8 +65,30 @@ public class MinecraftAppletViewer extends Applet implements AppletStub{
                     CloseApplet();
                 }
             });
+            AppletFrame.addComponentListener(new ComponentListener() {
+                @Override
+                public void componentResized(ComponentEvent e) {
+                    appletResize(AppletFrame.getWidth(), AppletFrame.getHeight());
+                }
+
+                @Override
+                public void componentMoved(ComponentEvent e) {
+
+                }
+
+                @Override
+                public void componentShown(ComponentEvent e) {
+
+                }
+
+                @Override
+                public void componentHidden(ComponentEvent e) {
+
+                }
+            });
             AppletFrame.setLocationRelativeTo(null);
             AppletFrame.setVisible(true);
+            AppletFrame.setResizable(true);
 
             //And this runs the applet.
             MinecraftApplet.init();
@@ -142,13 +170,73 @@ public class MinecraftAppletViewer extends Applet implements AppletStub{
 
 
 
-    //Below here are the custom applet stub functions. Using these it is possible to set the applet's parameters.
-    //Typically this stuff would be configured in the <applet> and <param> HTML tags.
-    //However, since the Minecraft applet is going to be running outside a browser here, we need a custom stub to configure the applet.
+    // HACKY RESIZING, needs testing.
+    /*
+        Minecraft applets never had any resizing code, so to implement it I've used a lot of reflection.
+        In an ordinary codebase that'd be pretty bad, but with obfuscated code like Minecraft's, it's basically
+        impossible to maintain.
+        That said, we know what minecraft builds look like, so this doesn't need to be maintained,
+        and we can feasibly cover all builds.
 
-    //This would normally perform some action when the applet is resized, but right now it does nothing.
+        As it stands, this method will first search for the Minecraft class.
+        the MinecraftApplet holds an instance of the Minecraft class, and we have the MinecraftApplet,
+        so we can search for it there.
+
+        Searching for it involves:
+        1. Look for a field called "minecrafr". If it's there use it.
+        2. If "minecraft" is not found, find any field within the same package.
+           - In every build I've checked, MinecraftApplet only has 1 instance variable from the same package,
+             and it's Minecraft.
+
+        Then we find the width and height values.
+        These are (seemingly) always the first two public integers in the Minecraft class.
+        These are obfuscated so cannot be found by name.
+
+        If any of these searches fail, resizing should just do nothing.
+    */
     public void appletResize(int width,int height){
-        //do nothing
+        try {
+            Field minecraftField = null;
+
+            try {
+                minecraftField = MinecraftApplet.getClass().getDeclaredField("minecraft");
+            } catch (NoSuchFieldException ne) {
+                for(Field field : MinecraftApplet.getClass().getDeclaredFields()) {
+                    if(field.getType().getPackage() == MinecraftApplet.getClass().getPackage()) {
+                        minecraftField = field;
+                        continue;
+                    }
+                }
+            }
+
+            Class<?> minecraftClass = minecraftField.getType();
+
+            Field widthField = null;
+            Field heightField = null;
+
+            // Since Minecraft is obfuscated we can't just get the width and height fields by name.
+            // Hopefully, they're always the first two ints. Seems likely.
+            for(Field field : minecraftClass.getDeclaredFields()) {
+                if(int.class.equals(field.getType()) || Integer.class.equals(field.getType()) && Modifier.isPublic(field.getModifiers())) {
+                    if (widthField == null) {
+                        widthField = field;
+                    } else if (heightField == null) {
+                        heightField = field;
+                        break;
+                    }
+                }
+            }
+
+            minecraftField.setAccessible(true);
+            widthField.setAccessible(true);
+            heightField.setAccessible(true);
+
+            Object minecraft = minecraftField.get(MinecraftApplet);
+            widthField.setInt(minecraft, width);
+            heightField.setInt(minecraft, height);
+        } catch (Exception e) {
+
+        }
     }
 
     //Tells the applet that it is active.

@@ -7,7 +7,6 @@
       <sourceFolder url="file://$MODULE_DIR$/META-INF" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/res" type="java-resource" />
       <excludeFolder url="file://$MODULE_DIR$/bin" />
-      <excludeFolder url="file://$MODULE_DIR$/jars" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
