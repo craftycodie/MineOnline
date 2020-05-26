@@ -20,14 +20,6 @@ import java.util.jar.JarFile;
 
 public class LibraryManager {
 
-    public static void main(String[] args) throws Exception {
-        extractLibraries();
-        updateClasspath();
-        updateNativesPath();
-
-        FormManager.main(args);
-    }
-
     public static void extractLibraries() throws IOException, URISyntaxException {
         File jarFile = new File(LibraryManager.class.getProtectionDomain().getCodeSource().getLocation().toURI());
 

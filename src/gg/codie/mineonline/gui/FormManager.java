@@ -2,6 +2,7 @@ package gg.codie.mineonline.gui;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import gg.codie.mineonline.LauncherFiles;
+import gg.codie.mineonline.LibraryManager;
 import gg.codie.mineonline.Properties;
 import gg.codie.mineonline.Proxy;
 import gg.codie.mineonline.gui.rendering.*;
@@ -34,6 +35,10 @@ public class FormManager {
     static Camera camera;
 
     public static void main(String[] args) throws Exception {
+        LibraryManager.extractLibraries();
+        LibraryManager.updateClasspath();
+        LibraryManager.updateNativesPath();
+
         Properties.loadProperties();
 
         Proxy.launchProxy();

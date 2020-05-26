@@ -6,21 +6,17 @@ import org.lwjgl.util.vector.Matrix4f;
 
 import java.net.URL;
 
-public class StaticShader extends ShaderProgram {
+public class GUIShader extends StaticShader {
 
-    private static final URL VERTEX_FILE = StaticShader.class.getResource("/shaders/vertexShader.txt");
-    private static final URL FRAGMENT_FILE = StaticShader.class.getResource("/shaders/fragmentShader.txt");
+    private static final URL VERTEX_FILE = GUIShader.class.getResource("/shaders/GUIVertexShader.txt");
+    private static final URL FRAGMENT_FILE = GUIShader.class.getResource("/shaders/GUIFragmentShader.txt");
 
     private int location_transformationMatrix;
     private int location_projectionMatrix;
     private int location_viewMatrix;
 
-    public StaticShader() {
+    public GUIShader() {
         super(VERTEX_FILE, FRAGMENT_FILE);
-    }
-
-    protected StaticShader(URL vertexFile, URL fragmentFile) {
-        super(vertexFile, fragmentFile);
     }
 
     protected void bindAttributes() {

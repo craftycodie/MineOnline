@@ -7,6 +7,7 @@ import jdk.nashorn.api.scripting.URLReader;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.*;
+import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
@@ -41,6 +42,18 @@ public class Loader {
         storeDataInAttributeList(1, 2, textureCoordinates);
         unbindVAO();
         return new RawModel(vaoID, indices.length);
+    }
+
+    public RawModel loadGUIToVAO(Vector2f begin, Vector2f end, float[] textureCoordinates) {
+        int vaoID = createVAO();
+        bindIndicesBuffer(new int[] {
+                0,1,2,
+                2,3,0,
+        });
+        storeDataInAttributeList(0, 3, MathUtils.makePlaneVertices(begin, end));
+        storeDataInAttributeList(1, 2, textureCoordinates);
+        unbindVAO();
+        return new RawModel(vaoID, 6);
     }
 
     public RawModel loadBoxToVAO(Vector3f begin, Vector3f end, float[] textureCoordinates) {

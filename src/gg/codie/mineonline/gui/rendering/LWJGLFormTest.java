@@ -1,19 +1,18 @@
 package gg.codie.mineonline.gui.rendering;
 
+import gg.codie.mineonline.LibraryManager;
 import gg.codie.mineonline.Session;
-import gg.codie.mineonline.gui.rendering.animation.*;
 import gg.codie.mineonline.gui.rendering.shaders.StaticShader;
-import org.lwjgl.Sys;
 import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.*;
+import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Vector3f;
 
-import java.util.ArrayList;
-import java.util.List;
+public class LWJGLFormTest {
 
-public class PlayerRendererText {
+    public static void main(String[] args) throws Exception {
+        LibraryManager.updateClasspath();
+        LibraryManager.updateNativesPath();
 
-    public static void main(String[] args) {
         DisplayManager.createDisplay();
 
         StaticShader shader = new StaticShader();
@@ -32,9 +31,6 @@ public class PlayerRendererText {
         playerPivot.addChild(playerGameObject);
 
         Camera camera = new Camera();
-
-        IPlayerAnimation playerAnimation = new WalkPlayerAnimation();
-        playerAnimation.reset(playerGameObject);
 
         // Game Loop
         while(!Display.isCloseRequested()) {
@@ -71,8 +67,6 @@ public class PlayerRendererText {
             }
 
             playerGameObject.update();
-
-            playerAnimation.animate(playerGameObject);
 
             camera.move();
 
