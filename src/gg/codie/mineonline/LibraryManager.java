@@ -7,6 +7,7 @@ import java.io.FileFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.*;
@@ -27,40 +28,40 @@ public class LibraryManager {
         FormManager.main(args);
     }
 
-    public static void extractLibraries() throws IOException {
-        String resourcePathString = LibraryManager.class.getResource("").getPath();
-        if (resourcePathString.contains("jar!")) {
-            int excl = resourcePathString.lastIndexOf("!");
-            resourcePathString = resourcePathString.substring(0, excl);
-            resourcePathString = resourcePathString.substring("file:/".length());
-            new File(LauncherFiles.MINEONLINE_LIBRARY_FOLDER).mkdirs();
-            Path extractPath = Paths.get(LauncherFiles.MINEONLINE_FOLDER);
-            try (JarFile jarFile = new JarFile(resourcePathString);){
-                Enumeration<JarEntry> entries = jarFile.entries();
-                while (entries.hasMoreElements()) {
-                    JarEntry jarEntry = entries.nextElement();
-                    String name = jarEntry.getName();
+    public static void extractLibraries() throws IOException, URISyntaxException {
+        File jarFile = new File(LibraryManager.class.getProtectionDomain().getCodeSource().getLocation().toURI());
 
-                    if(jarEntry.getName().startsWith("lib")) {
-                        if (jarEntry.isDirectory()) {
-                            Path dir = extractPath.resolve(name);
-                            try {
-                                Files.createDirectory(dir);
-                            } catch (FileAlreadyExistsException fae) {
+        if(!jarFile.exists())
+            return;
 
-                            }
-                        } else {
-                            Path file = extractPath.resolve(name);
-                            try (InputStream is = jarFile.getInputStream(jarEntry)) {
-                                Files.copy(is, file, StandardCopyOption.REPLACE_EXISTING);
-                            }
-                        }
-                    }
-                }
+        java.util.jar.JarFile jar = new java.util.jar.JarFile(jarFile.getPath());
+        java.util.Enumeration enumEntries = jar.entries();
+        while (enumEntries.hasMoreElements()) {
+            java.util.jar.JarEntry file = (java.util.jar.JarEntry) enumEntries.nextElement();
+            System.out.println(file.getName());
+            if(!file.getName().startsWith("lib")) {
+                continue;
             }
-        } else {
 
+            java.io.File f = new java.io.File(LauncherFiles.MINEONLINE_FOLDER + java.io.File.separator + file.getName());
+
+            if(f.exists()){
+                continue;
+            }
+
+            if (file.isDirectory()) { // if its a directory, create it
+                f.mkdir();
+                continue;
+            }
+            java.io.InputStream is = jar.getInputStream(file); // get the input stream
+            java.io.FileOutputStream fos = new java.io.FileOutputStream(f);
+            while (is.available() > 0) {  // write contents of 'is' to 'fos'
+                fos.write(is.read());
+            }
+            fos.close();
+            is.close();
         }
+        jar.close();
     }
 
     public static void updateClasspath() throws IOException {
