@@ -12,25 +12,35 @@ For example, if you wanted to play classic right now, you'd have no way to launc
 
 The program can also run regular desktop versions of the game, and even old launchers.
 
+## Features
+These are features MineOnline will bring to pre-release Minecraft.
+
+- Launcher Authentication and Updates
+
+- Server Authentication (online-mode)
+
+- Skins and Cloaks
+
+- Classic Server List
+
+- Online World Saves
+
+- Resource Files (Sounds)
+
+- Resizable Applets
+
 ## How do I use MineOnline?
 While you can use this launcher just to play applets offline, well It's called MineOnline for a reason.
 The application was build for use with [my Minecraft API project](https://github.com/codieradical/Minecraft-API), it might work with other reimplementations too.
 
-1. Select an API domain name.
-  - This is the API you want Minecraft to talk to. Defaults to "mineonline.codie.gg".
-2. Select your jar.
-  - Select a jar using the browse button or by entering the path. Once it's been found, the applet and game classes should fill up.
-  - If applet and game class are empty, enter the main class into the relevant box. eg com.mojang.minecraft.MinecraftApplet.
-  - Note: in this current prototype release, the launcher expects retro install folders (bin folder containing lwgjl etc and natives).
-3. Select a username.
-- Authentication
-  - If you wish to authenticate to use online features like world saving or online mode servers, enter your password into the password field and press login. This will fetch your Session ID.
-  - THIS IS NOT YOUR MOJANG PASSWORD! You are logging into the specified API. If you're confused, click "Need Acccount?".
-- Joining Servers
-  - If you're using an old applet capable of joining servers, you can enter the details to join.
-  - If the server is online, you will need to get a Server Authentication Token. This requires a session ID and a server IP.
-- Base URL
-  - Some versions of the game require changes to the base URL field. More info on this later.
+1. Register
+  - You can do this at http://mineonline.codie.gg/register.jsp
+  - if you're planning on using a different API endpoint you don't need to register here.
+2. Download a release and login.
+3. Select your jar.
+  - Settings -> Game Configuration to add Minecraft jars.
+3. Play
+  - Press play on the main screen to launch single player or go to the join server screen to play multiplayer.
 
 ## Launching Servers
 If you'd like to launch a server to authenticate using a different API, you can do so with a simple tweak to the typical launch command.
