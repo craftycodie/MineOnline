@@ -7,14 +7,20 @@ public class Proxy {
 
     private static ProxyThread proxyThread = null;
 
-    public static int launchProxy() throws IOException {
-        if (!Boolean.parseBoolean(Properties.properties.getProperty("useLocalProxy")))
-            return 0;
+    public static int getProxyPort() {
+        return proxyPort;
+    }
+
+    private static int proxyPort;
+
+    public static void launchProxy() throws IOException {
+        if (!Properties.properties.getBoolean("useLocalProxy"))
+            proxyPort = 0;
 
         ServerSocket serverSocket = new ServerSocket(0);
         proxyThread = new ProxyThread(serverSocket);
         proxyThread.start();
-        return serverSocket.getLocalPort();
+        proxyPort = serverSocket.getLocalPort();
     }
 
     public static void stopProxy() {

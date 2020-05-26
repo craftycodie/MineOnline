@@ -1,46 +1,71 @@
 package gg.codie.mineonline;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.*;
 import java.util.Arrays;
 
 public class Properties {
 
-    public static java.util.Properties properties = new java.util.Properties();
+    public static JSONObject properties;
 
     static {
-        properties.setProperty("username", "");
-        properties.setProperty("isPremium", "true");
-        properties.setProperty("apiDomainName", "mineonline.codie.gg");
-        properties.setProperty("redirectedDomains", Arrays.toString(new String[] {"www.minecraft.net:-1", "mineraft.net", "www.minecraft.net", "s3.amazonaws.com"}));
-        properties.setProperty("useLocalProxy", "true");
-        properties.setProperty("serverIP", "");
-        properties.setProperty("serverPort", "25565");
-        properties.setProperty("joinServer", "false");
-        properties.setProperty("jarFilePath", "");
-        properties.setProperty("javaCommand", "java");
-        properties.setProperty("baseUrl", "www.minecraft.net:80/game/");
-        properties.setProperty("sessionId", "");
-        properties.setProperty("mpPass", "");
+        if(new File(LauncherFiles.MINEONLINE_PROPS_FILE).exists()) {
+            loadProperties();
+        } else {
+            properties = new JSONObject();
+            properties.put("isPremium", true);
+            properties.put("apiDomainName", "mineonline.codie.gg");
+            properties.put("redirectedDomains", new String[] {"www.minecraft.net:-1", "mineraft.net", "www.minecraft.net", "s3.amazonaws.com"} );
+            properties.put("useLocalProxy", true);
+            properties.put("serverIP", "");
+            properties.put("serverPort", 25565);
+            properties.put("jarFilePath", "");
+            properties.put("javaCommand", "java");
+            properties.put("minecraftInstalls", new JSONArray());
+
+            saveProperties();
+        }
     }
 
     public static void loadProperties() {
-        try (InputStream input = new FileInputStream("mineonline.properties")) {
+        try (FileInputStream input = new FileInputStream(LauncherFiles.MINEONLINE_PROPS_FILE)) {
             // load a properties file
-            properties.load(input);
-            properties.setProperty("baseUrl", properties.getProperty("baseUrl").replace("_", ":"));
-            properties.setProperty("redirectedDomains", properties.getProperty("redirectedDomains").replace("_", ":"));
-        } catch (IOException ex) {
+            byte[] buffer = new byte[8096];
+            int bytes_read = 0;
+            StringBuffer stringBuffer = new StringBuffer();
+            while ((bytes_read = input.read(buffer, 0, 8096)) != -1) {
+                for(int i = 0; i < bytes_read; i++) {
+                    stringBuffer.append((char)buffer[i]);
+                }
+            }
 
+            properties = new JSONObject(stringBuffer.toString());
+        } catch (IOException ex) {
+            saveProperties();
         }
     }
 
     public  static void saveProperties() {
-        try (OutputStream output = new FileOutputStream("mineonline.properties")) {
-            properties.setProperty("baseUrl", properties.getProperty("baseUrl").replace(":", "_"));
-            properties.setProperty("redirectedDomains", properties.getProperty("redirectedDomains").replace(":", "_"));
-            properties.store(output, null);
-            properties.setProperty("baseUrl", properties.getProperty("baseUrl").replace("_", ":"));
-            properties.setProperty("redirectedDomains", properties.getProperty("redirectedDomains").replace("_", ":"));
+        try {
+            FileWriter fileWriter = new FileWriter(LauncherFiles.MINEONLINE_PROPS_FILE);
+            fileWriter.write(properties.toString());
+            fileWriter.close();
+
+            FileInputStream input = new FileInputStream(LauncherFiles.MINEONLINE_PROPS_FILE);
+            byte[] buffer = new byte[8096];
+            int bytes_read = 0;
+            StringBuffer stringBuffer = new StringBuffer();
+            while ((bytes_read = input.read(buffer, 0, 8096)) != -1) {
+                for(int i = 0; i < bytes_read; i++) {
+                    stringBuffer.append((char)buffer[i]);
+                }
+            }
+
+            input.close();
+
+            properties = new JSONObject(stringBuffer.toString());
         } catch (IOException io) {
             io.printStackTrace();
         }

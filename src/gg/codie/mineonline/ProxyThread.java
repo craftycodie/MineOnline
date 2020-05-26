@@ -1,11 +1,9 @@
 package gg.codie.mineonline;
 
 import gg.codie.utils.ArrayUtils;
+import gg.codie.utils.JSONUtils;
 
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -43,8 +41,8 @@ public class ProxyThread implements Runnable {
         running.set(true);
 
         Properties.loadProperties();
-        String[] redirectedDomains = ArrayUtils.fromString(Properties.properties.getProperty("redirectedDomains"));
-        String destination = Properties.properties.getProperty("apiDomainName");
+        String[] redirectedDomains = JSONUtils.getStringArray(Properties.properties.getJSONArray("redirectedDomains"));
+        String destination = Properties.properties.getString("apiDomainName");
 
         Socket clientSocket = null;
 
@@ -101,6 +99,43 @@ public class ProxyThread implements Runnable {
 
 
                 String urlString = pullLinks(requestString).get(0);
+
+                if((urlString.contains("/resources/") && !urlString.endsWith("/resources/")) || (urlString.contains("/MinecraftResources/") && !urlString.endsWith("/MinecraftResources/"))) {
+                    String oggFilePath = urlString;
+
+                    if(urlString.contains("/resources/")) {
+                        oggFilePath = urlString.substring(oggFilePath.indexOf("/resources/")).replace("/resources/", "");
+                    } else if (urlString.contains("/MinecraftResources")) {
+                        oggFilePath = urlString.substring(oggFilePath.indexOf("/resources/")).replace("/resources/", "");
+                    }
+
+                    oggFilePath.replace("/", File.separator);
+
+                    File oggFile = new File(LauncherFiles.MINECRAFT_RESOURCES_PATH + oggFilePath);
+
+                    if(oggFile.exists()) {
+                        System.out.println("Responding already downloaded resource.");
+
+                        String responseHeaders =
+                                "HTTP/1.0 200 OKServer:Werkzeug/1.0.1 Python/3.7.0\r\n" +
+                                        "Content-Length:" + oggFile.length() + "\r\n" +
+                                        "Content-Type:audio/ogg\r\n\r\n";
+                        clientSocket.getOutputStream().write(responseHeaders.getBytes());
+
+                        buffer = new byte[bufferSize];
+                        InputStream in = new FileInputStream(oggFile);
+                        while ((bytes_read = in.read(buffer, 0, bufferSize)) != -1) {
+                            for (int i = 0; i < bytes_read; i++) {
+                                clientSocket.getOutputStream().write(buffer[i]);
+                            }
+                        }
+
+                        clientSocket.getOutputStream().flush();
+                        clientSocket.getOutputStream().close();
+
+                        continue;
+                    }
+                }
 
                 URL url = new URL(urlString);
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -161,9 +196,9 @@ public class ProxyThread implements Runnable {
                 clientSocket.getOutputStream().write(responseHeader.getBytes());
 
                 buffer = new byte[bufferSize];
-                while ((bytes_read = is.read(buffer, 0, 4096)) != -1) {
+                while ((bytes_read = is.read(buffer, 0, bufferSize)) != -1) {
                     for(int i = 0; i < bytes_read; i++) {
-                        System.out.print(buffer[i]);
+                        //System.out.print(buffer[i]);
                         clientSocket.getOutputStream().write(buffer[i]);
                     }
                 }
