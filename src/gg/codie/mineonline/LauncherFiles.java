@@ -7,7 +7,7 @@ import java.net.URL;
 
 public class LauncherFiles {
 
-    public static final String MINEONLINE_FOLDER = getMineOnlineDirectory() + File.separator;
+    public static final String MINEONLINE_FOLDER = getMinecraftDirectory() + File.separator + "mineonline" + File.separator;
 
 
     public static final String MINEONLINE_PROPS_FILE = MINEONLINE_FOLDER + "settings.json";
@@ -26,34 +26,35 @@ public class LauncherFiles {
 
     public static final String LAST_LOGIN_PATH = MINEONLINE_CACHE_FOLDER + "lastlogin";
 
-//    public static final String RESOURCES_FOLDER = "." + File.separator + "res" + File.separator;
+    public static final String MINECRAFT_RESOURCES_PATH = getMinecraftDirectory() + File.separator + "resources" + File.separator;
 
     public static final URL TEMPLATE_SKIN_PATH = LauncherFiles.class.getResource("/img/skin.png");
     public static final URL TEMPLATE_CLOAK_PATH = LauncherFiles.class.getResource("/img/cloak.png");
     public static final URL MISSING_TEXTURE = LauncherFiles.class.getResource("/img/missing.png");
+    public static final URL VERSION_INFO_PATH = LauncherFiles.class.getResource("/version-info.json");
 
 
-    public static File getMineOnlineDirectory() {
+    public static File getMinecraftDirectory() {
         File workingDirectory;
         String applicationData, userHome = System.getProperty("user.home", ".");
 
         switch (OSUtils.getPlatform()) {
             case solaris:
-                workingDirectory = new File(userHome, String.valueOf('.') + "minecraft/mineonline/");
+                workingDirectory = new File(userHome, String.valueOf('.') + "minecraft/");
                 break;
             case windows:
                 applicationData = System.getenv("APPDATA");
                 if (applicationData != null) {
-                    workingDirectory = new File(applicationData, "." + "minecraft/mineonline/");
+                    workingDirectory = new File(applicationData, "." + "minecraft/");
                     break;
                 }
-                workingDirectory = new File(userHome, String.valueOf('.') + "minecraft/mineonline/");
+                workingDirectory = new File(userHome, String.valueOf('.') + "minecraft/");
             break;
                 case macos:
-                workingDirectory = new File(userHome, "Library/Application Support/minecraft/mineonline");
+                workingDirectory = new File(userHome, "Library/Application Support/minecraft/");
                 break;
             default:
-                workingDirectory = new File(userHome, "minecraft/mineonline/"); break;
+                workingDirectory = new File(userHome, "minecraft/"); break;
         }
         if (!workingDirectory.exists() && !workingDirectory.mkdirs())
             throw new RuntimeException("The working directory could not be created: " + workingDirectory);

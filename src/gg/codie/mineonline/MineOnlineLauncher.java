@@ -48,17 +48,6 @@ public class MineOnlineLauncher {
 			case Applet:
 				String appletViewerLocation = MineOnlineLauncher.class.getProtectionDomain().getCodeSource().getLocation().getPath();
 
-				String baseUrl = "http://www.minecraft.net:80/game/";
-
-				String thisChecksum = MD5Checksum.getMD5Checksum(jarLocation);
-
-				for(String checksum : JSONUtils.getStringArray(Properties.properties.getJSONArray("alternateBaseURLChecksums"))) {
-					if(checksum.equals(thisChecksum)) {
-						baseUrl = baseUrl.replace(":80", "");
-						break;
-					}
-				}
-
 				// Fix drive letters.
 				char a_char = appletViewerLocation.charAt(2);
 				if (a_char==':')
@@ -66,9 +55,9 @@ public class MineOnlineLauncher {
 
 				classpath = classpath + getClasspathSeparator() + jarLocation + getClasspathSeparator() + appletViewerLocation;
 				if (Properties.properties.getBoolean("useLocalProxy"))
-					CMD_ARRAY = new String[] { Properties.properties.getString("javaCommand"), legacyMergeSortArg, proxySet, proxyHost, proxyPortArgument + proxyPort, natives, CP, classpath, MinecraftAppletViewer.class.getCanonicalName(), mainClass, "-baseUrl", baseUrl};
+					CMD_ARRAY = new String[] { Properties.properties.getString("javaCommand"), legacyMergeSortArg, proxySet, proxyHost, proxyPortArgument + proxyPort, natives, CP, classpath, MinecraftAppletViewer.class.getCanonicalName(), mainClass, "-md5", MD5Checksum.getMD5Checksum(jarLocation) };
 				else
-					CMD_ARRAY = new String[] { Properties.properties.getString("javaCommand"), legacyMergeSortArg, natives, CP, classpath, MinecraftAppletViewer.class.getCanonicalName(), mainClass, "-baseUrl", baseUrl};
+					CMD_ARRAY = new String[] { Properties.properties.getString("javaCommand"), legacyMergeSortArg, natives, CP, classpath, MinecraftAppletViewer.class.getCanonicalName(), mainClass, "-md5", MD5Checksum.getMD5Checksum(jarLocation)};
 				CMD_ARRAY = ArrayUtils.concatenate(CMD_ARRAY, args);
 				break;
 			case Server:

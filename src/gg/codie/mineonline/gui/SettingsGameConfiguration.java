@@ -107,17 +107,7 @@ public class SettingsGameConfiguration implements IContainerForm {
                         "Rename Configuration",
                         JOptionPane.QUESTION_MESSAGE);
 
-                if(!name.isEmpty()){
-                    int selectedIndex = comboBox1.getSelectedIndex();
-                    comboBox1.removeItemAt(selectedIndex);
-                    comboBox1.insertItemAt(name, selectedIndex);
-                    comboBox1.setSelectedIndex(selectedIndex);
-                    MinecraftInstall minecraftInstall = installs.get(selectedIndex);
-                    minecraftInstall.setName(name);
-                    installs.set(selectedIndex, minecraftInstall);
-                    Properties.properties.put("minecraftInstalls", JSONUtils.setMineraftInstalls(installs));
-                    Properties.saveProperties();
-                }
+                renameInstall(name);
             }
         });
 
@@ -156,9 +146,6 @@ public class SettingsGameConfiguration implements IContainerForm {
                     if(jarPathTextField.getText().isEmpty())
                         return;
 
-                    Properties.properties.put("jarFilePath", jarPathTextField.getText());
-                    Properties.saveProperties();
-
                     JarFile jarFile = new JarFile(jarPathTextField.getText());
                     Enumeration allEntries = jarFile.entries();
                     while (allEntries.hasMoreElements()) {
@@ -188,6 +175,10 @@ public class SettingsGameConfiguration implements IContainerForm {
                     installs.set(selectedIndex, minecraftInstall);
                     Properties.properties.put("minecraftInstalls", JSONUtils.setMineraftInstalls(installs));
                     Properties.saveProperties();
+
+                    if (minecraftInstall.versionName != null && minecraftInstall.name.equals("new configuration")) {
+                        renameInstall(minecraftInstall.versionName);
+                    }
                 } catch (IOException ex) {
 
                 }
@@ -208,8 +199,22 @@ public class SettingsGameConfiguration implements IContainerForm {
         });
     }
 
+    private void renameInstall(String name) {
+        if(!name.isEmpty()){
+            int selectedIndex = comboBox1.getSelectedIndex();
+            comboBox1.removeItemAt(selectedIndex);
+            comboBox1.insertItemAt(name, selectedIndex);
+            comboBox1.setSelectedIndex(selectedIndex);
+            MinecraftInstall minecraftInstall = installs.get(selectedIndex);
+            minecraftInstall.setName(name);
+            installs.set(selectedIndex, minecraftInstall);
+            Properties.properties.put("minecraftInstalls", JSONUtils.setMineraftInstalls(installs));
+            Properties.saveProperties();
+        }
+    }
+
     public void newInstall() {
-        installs.add(new MinecraftInstall("new configutation", "", "", ""));
+        installs.add(new MinecraftInstall("new configuration", "", "", ""));
         Properties.properties.put("minecraftInstalls", JSONUtils.setMineraftInstalls(installs));
         Properties.saveProperties();
         comboBox1.addItem("new configuration");

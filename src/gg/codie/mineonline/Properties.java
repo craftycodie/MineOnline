@@ -24,10 +24,6 @@ public class Properties {
             properties.put("jarFilePath", "");
             properties.put("javaCommand", "java");
             properties.put("minecraftInstalls", new JSONArray());
-            // Jars which don't like the base URL with the port included.
-            properties.put("alternateBaseURLChecksums", new String[] {
-                    "9f59fc113cce4b301ac87a572d6e66b6", //in-20100203
-            });
 
             saveProperties();
         }
@@ -35,7 +31,7 @@ public class Properties {
 
     public static void loadProperties() {
         try (FileInputStream input = new FileInputStream(LauncherFiles.MINEONLINE_PROPS_FILE)) {
-            // load unka properties file
+            // load a properties file
             byte[] buffer = new byte[8096];
             int bytes_read = 0;
             StringBuffer stringBuffer = new StringBuffer();
@@ -56,6 +52,20 @@ public class Properties {
             FileWriter fileWriter = new FileWriter(LauncherFiles.MINEONLINE_PROPS_FILE);
             fileWriter.write(properties.toString());
             fileWriter.close();
+
+            FileInputStream input = new FileInputStream(LauncherFiles.MINEONLINE_PROPS_FILE);
+            byte[] buffer = new byte[8096];
+            int bytes_read = 0;
+            StringBuffer stringBuffer = new StringBuffer();
+            while ((bytes_read = input.read(buffer, 0, 8096)) != -1) {
+                for(int i = 0; i < bytes_read; i++) {
+                    stringBuffer.append((char)buffer[i]);
+                }
+            }
+
+            input.close();
+
+            properties = new JSONObject(stringBuffer.toString());
         } catch (IOException io) {
             io.printStackTrace();
         }

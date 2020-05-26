@@ -26,7 +26,7 @@ public class MinecraftAppletViewer extends Applet implements AppletStub{
     String ServerPort;
     String MPPass;
     boolean HasPaid=false;
-    String baseURL;
+    String md5;
 
     public static void main(String[] args) throws Exception{
         LibraryManager.updateClasspath();
@@ -51,14 +51,14 @@ public class MinecraftAppletViewer extends Applet implements AppletStub{
                 return;
             }
 
-            //Here we set the applet's stub to unka custom stub, rather than letting it use the default.
+            //Here we set the applet's stub to a custom stub, rather than letting it use the default.
             //And also we now set the width and height of the applet on the screen.
             MinecraftApplet.setStub(this);
             MinecraftApplet.setPreferredSize(new Dimension(AppletW,AppletH));
             Display.setResizable(true);
 
 
-            //This puts the applet into unka window so that it can be shown on the screen.
+            //This puts the applet into a window so that it can be shown on the screen.
             AppletFrame.add(MinecraftApplet);
             AppletFrame.pack();
             AppletFrame.addWindowListener(new WindowAdapter(){
@@ -104,11 +104,11 @@ public class MinecraftAppletViewer extends Applet implements AppletStub{
         while (n<args.length){
             System.out.println(args[n]);
             if (args[n].equalsIgnoreCase("-w")){
-                //Set only the width of the applet, if you like the default height but want unka different width.
+                //Set only the width of the applet, if you like the default height but want a different width.
                 AppletW=Integer.parseInt(args[n+1]);
                 n+=2;
             } else if (args[n].equalsIgnoreCase("-h")){
-                //Set only the height of the applet, if you like the default width but want unka different height.
+                //Set only the height of the applet, if you like the default width but want a different height.
                 AppletH=Integer.parseInt(args[n+1]);
                 n+=2;
             } else if (args[n].equalsIgnoreCase("-size")){
@@ -140,14 +140,14 @@ public class MinecraftAppletViewer extends Applet implements AppletStub{
             } else if (args[n].equalsIgnoreCase("-paid")){
                 //This command line switch takes no additional parameters. The HasPaid variable is set to true if this switch is present.
                 //For some Classic versions of Minecraft, HasPaid must be true in order to enable the server-save slot buttons.
-                //Server-side saving saves to unka minecraft.net URL, not to your local Classic server.
+                //Server-side saving saves to a minecraft.net URL, not to your local Classic server.
                 //However that URL is no longer valid so these save slots no longer work. This feature is only included in this launcher for the sake of completeness.
                 //Also, in addition to setting the "haspaid" applet parameter to true, it sets the "demo" applet parameter to false, for versions that support demo mode.
                 HasPaid=true;
                 n++;
-            } else if (args[n].equalsIgnoreCase("-baseURL")){
-                //Set only the height of the applet, if you like the default width but want unka different height.
-                baseURL=args[n+1];
+            } else if (args[n].equalsIgnoreCase("-md5")){
+                //Set only the height of the applet, if you like the default width but want a different height.
+                md5=args[n+1];
                 n+=2;
             } else {
                 //Skip all other command line switches.
@@ -177,7 +177,7 @@ public class MinecraftAppletViewer extends Applet implements AppletStub{
 
     // HACKY RESIZING, needs testing.
     /*
-        Minecraft applets never had any resizing code, so to implement it I've used unka lot of reflection.
+        Minecraft applets never had any resizing code, so to implement it I've used a lot of reflection.
         In an ordinary codebase that'd be pretty bad, but with obfuscated code like Minecraft's, it's basically
         impossible to maintain.
         That said, we know what minecraft builds look like, so this doesn't need to be maintained,
@@ -251,17 +251,21 @@ public class MinecraftAppletViewer extends Applet implements AppletStub{
 
     //This sets the document base URL, which would normally be the URL of the webpage in which the applet was embedded.
     public URL getDocumentBase(){
-        if(baseURL != null) {
-            return StringToURL(baseURL);
-        } else {
-            return StringToURL("http://www.minecraft.net:80/game/");
+        String baseURL = "http://www.minecraft.net:80/game/";
+
+        if(md5 != null) {
+            MinecraftVersionInfo.MinecraftVersion version = MinecraftVersionInfo.getVersionByMD5(md5);
+            if(version != null && version.baseURLHasNoPort) {
+                baseURL = baseURL.replace(":80", "");
+            }
         }
 
+        return StringToURL(baseURL);
     }
 
     //This sets the code base URL, which would normally be defined by the codebase attribute of the <applet> tag.
     public URL getCodeBase(){
-        return StringToURL("http://" + Properties.properties.getString("baseUrl"));
+        return getDocumentBase();
     }
 
     //This sets parameters that would normally be set by <param> tags within the applet block defined by <applet> and </applet> tags.
@@ -310,8 +314,9 @@ public class MinecraftAppletViewer extends Applet implements AppletStub{
             case "mppass":
                 RetVal = MPPass;
                 break;
-            case "baseURL":
-                RetVal = baseURL;
+            case "md5":
+                RetVal = md5;
+                break;
             default:
                 //don't do anything
         }

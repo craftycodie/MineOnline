@@ -79,7 +79,6 @@ public class LibraryManager {
 
             method.setAccessible(true);
 
-
             for(File file : libraries) {
                 method.invoke(ClassLoader.getSystemClassLoader(), new Object[]{file.toURI().toURL()});
             }

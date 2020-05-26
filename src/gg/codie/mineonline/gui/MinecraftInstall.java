@@ -1,5 +1,12 @@
 package gg.codie.mineonline.gui;
 
+import gg.codie.mineonline.LauncherFiles;
+import gg.codie.mineonline.MinecraftVersionInfo;
+import gg.codie.utils.MD5Checksum;
+
+import java.security.AccessController;
+import java.security.PrivilegedExceptionAction;
+
 public class MinecraftInstall {
     public String getName() {
         return name;
@@ -20,6 +27,8 @@ public class MinecraftInstall {
     String name;
     String mainClass;
     String appletClass;
+    String jarMD5;
+    String versionName;
 
     public void setName(String name) {
         this.name = name;
@@ -35,6 +44,24 @@ public class MinecraftInstall {
 
     public void setJarPath(String jarPath) {
         this.jarPath = jarPath;
+
+        try {
+            AccessController.doPrivileged(new PrivilegedExceptionAction<String>() {
+                public String run() throws Exception {
+                    return jarPath;
+                }
+            });
+
+            this.jarMD5 = MD5Checksum.getMD5Checksum(jarPath);
+
+            MinecraftVersionInfo.MinecraftVersion version = MinecraftVersionInfo.getVersionByMD5(jarMD5);
+
+            if(version != null) {
+                versionName = version.name;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     String jarPath;
@@ -44,5 +71,15 @@ public class MinecraftInstall {
         this.mainClass = mainClass;
         this.appletClass = appletClass;
         this.jarPath = jarPath;
+
+        try {
+            this.jarMD5 = MD5Checksum.getMD5Checksum(jarPath);
+
+            MinecraftVersionInfo.MinecraftVersion version = MinecraftVersionInfo.getVersionByMD5(jarMD5);
+
+            if(version != null) {
+                versionName = version.name;
+            }
+        } catch (Exception e) {}
     }
 }

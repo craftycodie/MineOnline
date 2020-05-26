@@ -315,25 +315,6 @@ public class MineOnlineLauncherFrame extends JFrame {
             }
         });
 
-        baseURLTextField.getDocument().addDocumentListener(new DocumentListener() {
-            private void onChange() {
-                Properties.properties.put("baseUrl", baseURLTextField.getText());
-                Properties.saveProperties();
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent evt) {
-                onChange();
-            }
-
-            public void removeUpdate(DocumentEvent e) {
-                onChange();
-            }
-            public void insertUpdate(DocumentEvent e) {
-                onChange();
-            }
-        });
-
         DocumentListener loginButtonEnableListener = new DocumentListener() {
             @Override
             public void changedUpdate(DocumentEvent evt) {
@@ -470,7 +451,6 @@ public class MineOnlineLauncherFrame extends JFrame {
         useLocalProxyUpdated();
         serverIPTextField.setText(Properties.properties.getString("serverIP"));
         serverPortTextField.setText(Properties.properties.getString("serverPort"));
-        baseURLTextField.setText(Properties.properties.getString("baseUrl"));
         joinServerUpdated();
 
         if(!usernameTextField.getText().isEmpty() && !sessionIdTextField.getText().isEmpty() && !MinecraftAPI.checkSession(usernameTextField.getText(), sessionIdTextField.getText())){
