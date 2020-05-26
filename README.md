@@ -29,6 +29,8 @@ These are features MineOnline will bring to pre-release Minecraft.
 
 - Resizable Applets
 
+- Screenshots (F2)
+
 ## How do I use MineOnline?
 While you can use this launcher just to play applets offline, well It's called MineOnline for a reason.
 The application was build for use with [my Minecraft API project](https://github.com/codieradical/Minecraft-API), it might work with other reimplementations too.

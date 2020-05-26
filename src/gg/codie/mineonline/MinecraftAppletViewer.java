@@ -1,15 +1,29 @@
 package gg.codie.mineonline;
 
+import org.lwjgl.BufferUtils;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
+import org.lwjgl.opengl.GL11;
 
+import javax.imageio.ImageIO;
+import javax.swing.*;
 import java.applet.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.net.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.nio.ByteBuffer;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MinecraftAppletViewer extends Applet implements AppletStub{
 
@@ -30,6 +44,7 @@ public class MinecraftAppletViewer extends Applet implements AppletStub{
 
     public static void main(String[] args) throws Exception{
         LibraryManager.updateClasspath();
+        LibraryManager.updateNativesPath();
 
         new MinecraftAppletViewer().runApplet(args);
     }
@@ -91,11 +106,55 @@ public class MinecraftAppletViewer extends Applet implements AppletStub{
             AppletFrame.setVisible(true);
             AppletFrame.setResizable(true);
 
+            AppletFrame.setBackground(Color.black);
+
+
+//            screenshotLabel.setText("Screenshot saved.");
+//            panel.setBackground(Color.black);
+//            screenshotLabel.setBackground(new Color(0,0,0,0));
+//            screenshotLabel.setForeground(Color.white);
+//            screenshotLabel.setSize(120, 16);
+//            screenshotLabel.setFont(new Font("Monospaced", 1, 20));
+
+            //testLabel.setHorizontalAlignment(SwingConstants.CENTER);
+
+
+//            panel.setSize(AppletW, AppletH);
+//            panel.setBounds(0, 0, AppletW, AppletH);
+
+//            AppletFrame.add(screenshotLabel, "Center");
+//            AppletFrame.add(panel);
+
+
+
+            //panel.add(MinecraftApplet);
+
+//            if(md5 != null) {
+//                MinecraftVersionInfo.MinecraftVersion version = MinecraftVersionInfo.getVersionByMD5(md5);
+//                if(version != null && version.doesntHaveScreenshotting) {
+                    EventQueue.invokeLater(runnableScreenshot);
+//                }
+//            }
+
             //And this runs the applet.
             MinecraftApplet.init();
             MinecraftApplet.start();
         }
     }
+
+    boolean f2wasDown = false;
+    public Runnable runnableScreenshot = new Runnable() {
+        public void run() {
+            if(Keyboard.getEventKey() == Keyboard.KEY_F2 && !Keyboard.isRepeatEvent() && Keyboard.getEventKeyState() && !f2wasDown) {
+                screenshot();
+                f2wasDown = true;
+            }
+            if(Keyboard.getEventKey() == Keyboard.KEY_F2 && !Keyboard.isRepeatEvent() && !Keyboard.getEventKeyState()) {
+                f2wasDown = false;
+            }
+            EventQueue.invokeLater(this);
+        }
+    };
 
     //This method handles the task of putting command line args into variables, or displaying the about box if there are no command line args.
     void ParseCommandLine(String[] args){
@@ -203,6 +262,12 @@ public class MinecraftAppletViewer extends Applet implements AppletStub{
         try {
             Field minecraftField = null;
 
+            this.AppletW = width;
+            this.AppletH = height;
+
+            //panel.setSize(new Dimension(width, height));
+            MinecraftApplet.setSize(new Dimension(width, height));
+
             try {
                 minecraftField = MinecraftApplet.getClass().getDeclaredField("minecraft");
             } catch (NoSuchFieldException ne) {
@@ -239,8 +304,57 @@ public class MinecraftAppletViewer extends Applet implements AppletStub{
             Object minecraft = minecraftField.get(MinecraftApplet);
             widthField.setInt(minecraft, width);
             heightField.setInt(minecraft, height);
+
+            //screenshotLabel.setBounds(30, (AppletH - 16) - 30, 204, 20);
         } catch (Exception e) {
 
+        }
+    }
+
+    public void screenshot() {
+        try {
+//            int w = AppletFrame.getWidth();
+//            int h = AppletFrame.getHeight();
+//            BufferedImage bi = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
+//            Graphics2D g = bi.createGraphics();
+//            MinecraftApplet.paint(g);
+
+            File screenshotsFolder = new File(LauncherFiles.MINECRAFT_SCREENSHOTS_PATH);
+            screenshotsFolder.mkdirs();
+
+            File file;
+            String s = (new StringBuilder()).append(new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss").format(new Date())).toString();
+            for(int k = 1; (file = new File(screenshotsFolder, (new StringBuilder()).append(s).append(k != 1 ? (new StringBuilder()).append("_").append(k).toString() : "").append(".png").toString())).exists(); k++) { }
+
+//            //ImageIO.write(bi, "png", image);
+//
+//            ByteBuffer buffer = BufferUtils.createByteBuffer(AppletW * AppletH * 4);
+//            GL11.glReadPixels(0, 0, AppletW, AppletH, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buffer );
+//
+//            BufferedImage image = new BufferedImage(AppletW, AppletH, BufferedImage.TYPE_INT_RGB);
+//
+//            for(int x = 0; x < AppletW; x++)
+//            {
+//                for(int y = 0; y < AppletH; y++)
+//                {
+//                    int i = (x + (AppletW * y)) * 4;
+//                    int r = buffer.get(i) & 0xFF;
+//                    int g = buffer.get(i + 1) & 0xFF;
+//                    int b = buffer.get(i + 2) & 0xFF;
+//                    image.setRGB(x, AppletH - (y + 1), (0xFF << 24) | (r << 16) | (g << 8) | b);
+//                }
+//            }
+
+            Robot robot = new Robot();
+            Rectangle captureRect = new Rectangle(AppletFrame.getX() + AppletFrame.getInsets().left, AppletFrame.getY() + AppletFrame.getInsets().top, (AppletW - AppletFrame.getInsets().left) - AppletFrame.getInsets().right, (AppletH - AppletFrame.getInsets().top) - AppletFrame.getInsets().bottom);
+            BufferedImage screenFullImage = robot.createScreenCapture(captureRect);
+
+            try {
+                ImageIO.write(screenFullImage, "png", file);
+                System.out.println("Screenshot saved to " + file.getPath());
+            } catch (IOException e) { e.printStackTrace(); }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

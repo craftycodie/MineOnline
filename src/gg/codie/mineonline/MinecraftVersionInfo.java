@@ -33,12 +33,14 @@ public class MinecraftVersionInfo {
         public final String name;
         public final String md5;
         public final boolean baseURLHasNoPort;
+        public final boolean doesntHaveScreenshotting;
 
-        private MinecraftVersion(String sha256, String name, String md5, boolean baseURLHasNoPort) {
+        private MinecraftVersion(String sha256, String name, String md5, boolean baseURLHasNoPort, boolean doesntHaveScreenshotting) {
             this.sha256 = sha256;
             this.name = name;
             this.md5 = md5;
             this.baseURLHasNoPort = baseURLHasNoPort;
+            this.doesntHaveScreenshotting = doesntHaveScreenshotting;
         }
     }
 
@@ -65,7 +67,8 @@ public class MinecraftVersionInfo {
                         versionSha256,
                         object.getString("name"),
                         object.getString("md5"),
-                        (object.has("baseURLHasNoPort") && object.getBoolean("baseURLHasNoPort"))
+                        (object.has("baseURLHasNoPort") && object.getBoolean("baseURLHasNoPort")),
+                        (object.has("doesntHaveScreenshotting") && object.getBoolean("doesntHaveScreenshotting"))
                 ));
             }
         } catch (IOException ex) {
