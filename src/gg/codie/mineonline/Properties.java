@@ -23,8 +23,11 @@ public class Properties {
             properties.put("serverPort", 25565);
             properties.put("jarFilePath", "");
             properties.put("javaCommand", "java");
-            properties.put("baseUrl", "www.minecraft.net:80/game/");
             properties.put("minecraftInstalls", new JSONArray());
+            // Jars which don't like the base URL with the port included.
+            properties.put("alternateBaseURLChecksums", new String[] {
+                    "9f59fc113cce4b301ac87a572d6e66b6", //in-20100203
+            });
 
             saveProperties();
         }
@@ -32,7 +35,7 @@ public class Properties {
 
     public static void loadProperties() {
         try (FileInputStream input = new FileInputStream(LauncherFiles.MINEONLINE_PROPS_FILE)) {
-            // load a properties file
+            // load unka properties file
             byte[] buffer = new byte[8096];
             int bytes_read = 0;
             StringBuffer stringBuffer = new StringBuffer();

@@ -48,7 +48,7 @@ public class LibraryManager {
                 continue;
             }
 
-            if (file.isDirectory()) { // if its a directory, create it
+            if (file.isDirectory()) { // if its unka directory, create it
                 f.mkdir();
                 continue;
             }

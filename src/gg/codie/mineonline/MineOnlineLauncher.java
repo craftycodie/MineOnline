@@ -1,9 +1,16 @@
 package gg.codie.mineonline;
 
 import gg.codie.utils.ArrayUtils;
+import gg.codie.utils.JSONUtils;
+import gg.codie.utils.MD5Checksum;
 import gg.codie.utils.OSUtils;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.security.DigestInputStream;
+import java.security.MessageDigest;
+import java.util.Arrays;
 import java.util.Map;
 
 public class MineOnlineLauncher {
@@ -11,6 +18,8 @@ public class MineOnlineLauncher {
 	static String proxySet = "-DproxySet=true";
 	static String proxyHost = "-Dhttp.proxyHost=127.0.0.1";
 	static String proxyPortArgument = "-Dhttp.proxyPort=";
+
+	static String legacyMergeSortArg = "-Djava.util.Arrays.useLegacyMergeSort=true";
 
 	public static Process gameProcess = null;
 
@@ -39,6 +48,17 @@ public class MineOnlineLauncher {
 			case Applet:
 				String appletViewerLocation = MineOnlineLauncher.class.getProtectionDomain().getCodeSource().getLocation().getPath();
 
+				String baseUrl = "http://www.minecraft.net:80/game/";
+
+				String thisChecksum = MD5Checksum.getMD5Checksum(jarLocation);
+
+				for(String checksum : JSONUtils.getStringArray(Properties.properties.getJSONArray("alternateBaseURLChecksums"))) {
+					if(checksum.equals(thisChecksum)) {
+						baseUrl = baseUrl.replace(":80", "");
+						break;
+					}
+				}
+
 				// Fix drive letters.
 				char a_char = appletViewerLocation.charAt(2);
 				if (a_char==':')
@@ -46,9 +66,9 @@ public class MineOnlineLauncher {
 
 				classpath = classpath + getClasspathSeparator() + jarLocation + getClasspathSeparator() + appletViewerLocation;
 				if (Properties.properties.getBoolean("useLocalProxy"))
-					CMD_ARRAY = new String[] { Properties.properties.getString("javaCommand"), proxySet, proxyHost, proxyPortArgument + proxyPort, natives, CP, classpath, MinecraftAppletViewer.class.getCanonicalName(), mainClass};
+					CMD_ARRAY = new String[] { Properties.properties.getString("javaCommand"), legacyMergeSortArg, proxySet, proxyHost, proxyPortArgument + proxyPort, natives, CP, classpath, MinecraftAppletViewer.class.getCanonicalName(), mainClass, "-baseUrl", baseUrl};
 				else
-					CMD_ARRAY = new String[] { Properties.properties.getString("javaCommand"), natives, CP, classpath, MinecraftAppletViewer.class.getCanonicalName(), mainClass};
+					CMD_ARRAY = new String[] { Properties.properties.getString("javaCommand"), legacyMergeSortArg, natives, CP, classpath, MinecraftAppletViewer.class.getCanonicalName(), mainClass, "-baseUrl", baseUrl};
 				CMD_ARRAY = ArrayUtils.concatenate(CMD_ARRAY, args);
 				break;
 			case Server:

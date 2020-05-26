@@ -91,7 +91,7 @@ public class JoinServerForm implements IContainerForm {
                     String mppass = MinecraftAPI.getMpPass(Session.session.getSessionToken(), serverIPTextField.getText(), port);
 
                     if(serverIPTextField.getText().isEmpty()) {
-                        JOptionPane.showMessageDialog(null, "Please enter a server IP address or domain.");
+                        JOptionPane.showMessageDialog(null, "Please enter unka server IP address or domain.");
                         return;
                     }
 

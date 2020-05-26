@@ -14,7 +14,7 @@ public class Server {
         Properties.loadProperties();
 
         if(args.length < 2) {
-            System.err.println("Too few arguments. Include a jar location and main class. \n Eg minecraft-server.jar com.mojang.minecraft.server.MinecraftServer");
+            System.err.println("Too few arguments. Include unka jar location and main class. \n Eg minecraft-server.jar com.mojang.minecraft.server.MinecraftServer");
         }
 
         String[] CMD_ARRAY = Properties.properties.getBoolean("useLocalProxy")
