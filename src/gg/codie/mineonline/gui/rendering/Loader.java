@@ -44,13 +44,21 @@ public class Loader {
         return new RawModel(vaoID, indices.length);
     }
 
-    public RawModel loadGUIToVAO(Vector2f begin, Vector2f end, float[] textureCoordinates) {
+    public RawModel loadGUIToVAO(Vector2f begin, Vector2f size, float[] textureCoordinates) {
+        begin = new Vector2f((begin.x / Display.getWidth()) - 1, (begin.y / Display.getHeight()) - 1);
+        size = new Vector2f(size.x / Display.getWidth(), size.y / Display.getHeight());
+
+        System.out.println(begin);
+        System.out.println(size);
+
+        Vector2f end = new Vector2f(begin.x + size.x, begin.y + size.y);
+
         int vaoID = createVAO();
         bindIndicesBuffer(new int[] {
                 0,1,2,
                 2,3,0,
         });
-        storeDataInAttributeList(0, 3, MathUtils.makePlaneVertices(begin, end));
+        storeDataInAttributeList(0, 3, MathUtils.makePlaneVertices(begin, size));
         storeDataInAttributeList(1, 2, textureCoordinates);
         unbindVAO();
         return new RawModel(vaoID, 6);

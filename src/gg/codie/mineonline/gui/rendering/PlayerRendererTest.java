@@ -49,30 +49,22 @@ public class PlayerRendererTest {
 
         //System.out.println(Arrays.toString(TextureHelper.getPlaneTextureCoords(new Vector2f(32, 32), new Vector2f(0, 0), new Vector2f(32, 32))));
 
-        RawModel model = loader.loadGUIToVAO(new Vector2f(-1, -1), new Vector2f(1, 1), TextureHelper.getPlaneTextureCoords(new Vector2f(32, 32), new Vector2f(0, 0), new Vector2f(32, 32)));
-        ModelTexture modelTexture = new ModelTexture(loader.loadTexture(LauncherFiles.MISSING_TEXTURE));
+        RawModel model = loader.loadGUIToVAO(new Vector2f(0, 0), new Vector2f(2048 * 50 * 2, 1024 * 50), TextureHelper.getYFlippedPlaneTextureCoords(new Vector2f(2048, 1024), new Vector2f(0, 0), new Vector2f(2048, 1024)));
+        ModelTexture modelTexture = new ModelTexture(loader.loadTexture(PlayerRendererTest.class.getResource("/img/background.png")));
         TexturedModel texturedModel =  new TexturedModel(model, modelTexture);
         System.out.println(texturedModel.getTexture().getTextureID());
-        GUIObject backgroundImage = new GUIObject("Background", texturedModel, new Vector3f(0, 0, -1), new Vector3f(), new Vector3f(1, 1, 1));
+        GUIObject backgroundImage = new GUIObject("Background", texturedModel, new Vector3f(-60, -75, -75), new Vector3f(), new Vector3f(1, 1, 1));
 
-        RawModel testButtonModel = loader.loadGUIToVAO(new Vector2f(0, -0.1f), new Vector2f(1, 1), TextureHelper.getPlaneTextureCoords(new Vector2f(32, 32), new Vector2f(0, 0), new Vector2f(32, 32)));
-        ModelTexture testButtonTexture = new ModelTexture(loader.loadTexture(LauncherFiles.MISSING_TEXTURE));
+        RawModel testButtonModel = loader.loadGUIToVAO(new Vector2f(100, Display.getWidth() / 2), new Vector2f(100, 20), TextureHelper.getPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(0, 0), new Vector2f(100, 20)));
+        ModelTexture testButtonTexture = new ModelTexture(loader.loadTexture(PlayerRendererTest.class.getResource("/img/gui.png")));
         TexturedModel texturedTestButtonModel =  new TexturedModel(testButtonModel, testButtonTexture);
         System.out.println(texturedTestButtonModel.getTexture().getTextureID());
-        GUIObject testButton = new GUIObject("Test Button", texturedTestButtonModel, new Vector3f(0, 0, 0), new Vector3f(), new Vector3f(1, 1, 1));
+        GUIObject testButton = new GUIObject("Test Button", texturedTestButtonModel, new Vector3f(Float.parseFloat(new String(Display.getWidth() / 2))), 0, 0), new Vector3f(), new Vector3f(1, 1, 1));
 
 
 
         // Game Loop
         while(!Display.isCloseRequested()) {
-
-            GUIShader guiShader = new GUIShader();
-            guiShader.start();
-            guiShader.loadViewMatrix(camera);
-            renderer.prepareGUI();
-            renderer.renderGUI(backgroundImage, guiShader);
-            guiShader.stop();
-
             renderer.prepare();
             // Camera roll lock.
             // Broken and not necessary.
@@ -112,17 +104,19 @@ public class PlayerRendererTest {
             shader.start();
             shader.loadViewMatrix(camera);
 
+            renderer.render(backgroundImage, shader);
             renderer.render(playerGameObject, shader);
 
             shader.stop();
 
-            DisplayManager.updateDisplay();
-
+            GUIShader guiShader = new GUIShader();
             guiShader.start();
             guiShader.loadViewMatrix(camera);
             renderer.prepareGUI();
             renderer.renderGUI(testButton, guiShader);
             guiShader.stop();
+
+            DisplayManager.updateDisplay();
 
         }
 
