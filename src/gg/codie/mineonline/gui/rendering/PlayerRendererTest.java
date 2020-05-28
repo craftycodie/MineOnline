@@ -49,17 +49,17 @@ public class PlayerRendererTest {
 
         //System.out.println(Arrays.toString(TextureHelper.getPlaneTextureCoords(new Vector2f(32, 32), new Vector2f(0, 0), new Vector2f(32, 32))));
 
-        RawModel model = loader.loadGUIToVAO(new Vector2f(0, 0), new Vector2f(2048 * 50 * 2, 1024 * 50), TextureHelper.getYFlippedPlaneTextureCoords(new Vector2f(2048, 1024), new Vector2f(0, 0), new Vector2f(2048, 1024)));
+        RawModel model = loader.loadPlaneToVAO(new Vector3f(-2, -1, 0), new Vector3f(2, 1, 0), TextureHelper.getYFlippedPlaneTextureCoords(new Vector2f(2048, 1024), new Vector2f(0, 0), new Vector2f(2048, 1024)));
         ModelTexture modelTexture = new ModelTexture(loader.loadTexture(PlayerRendererTest.class.getResource("/img/background.png")));
         TexturedModel texturedModel =  new TexturedModel(model, modelTexture);
         System.out.println(texturedModel.getTexture().getTextureID());
-        GUIObject backgroundImage = new GUIObject("Background", texturedModel, new Vector3f(-60, -75, -75), new Vector3f(), new Vector3f(1, 1, 1));
+        GameObject backgroundImage = new GUIObject("Background", texturedModel, new Vector3f(0, 0, -75), new Vector3f(), new Vector3f(37.5f, 37.5f, 37.5f));
 
-        RawModel testButtonModel = loader.loadGUIToVAO(new Vector2f(100, Display.getWidth() / 2), new Vector2f(100, 20), TextureHelper.getPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(0, 0), new Vector2f(100, 20)));
+        RawModel testButtonModel = loader.loadGUIToVAO(new Vector2f((Display.getWidth() / 2) + 50, Display.getHeight() / 2), new Vector2f(200, 40), TextureHelper.getPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(0, 0), new Vector2f(100, 20)));
         ModelTexture testButtonTexture = new ModelTexture(loader.loadTexture(PlayerRendererTest.class.getResource("/img/gui.png")));
         TexturedModel texturedTestButtonModel =  new TexturedModel(testButtonModel, testButtonTexture);
         System.out.println(texturedTestButtonModel.getTexture().getTextureID());
-        GUIObject testButton = new GUIObject("Test Button", texturedTestButtonModel, new Vector3f(Float.parseFloat(new String(Display.getWidth() / 2))), 0, 0), new Vector3f(), new Vector3f(1, 1, 1));
+        GUIObject testButton = new GUIObject("Test Button", texturedTestButtonModel, new Vector3f(0, 0, 0), new Vector3f(), new Vector3f(1, 1, 1));
 
 
 
@@ -113,6 +113,7 @@ public class PlayerRendererTest {
             guiShader.start();
             guiShader.loadViewMatrix(camera);
             renderer.prepareGUI();
+//            renderer.render(backgroundImage, guiShader);
             renderer.renderGUI(testButton, guiShader);
             guiShader.stop();
 

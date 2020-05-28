@@ -45,11 +45,10 @@ public class Loader {
     }
 
     public RawModel loadGUIToVAO(Vector2f begin, Vector2f size, float[] textureCoordinates) {
-        begin = new Vector2f((begin.x / Display.getWidth()) - 1, (begin.y / Display.getHeight()) - 1);
-        size = new Vector2f(size.x / Display.getWidth(), size.y / Display.getHeight());
-
         System.out.println(begin);
         System.out.println(size);
+        begin = new Vector2f((begin.x / (Display.getWidth() / 2)) -1, (begin.y / (Display.getHeight() / 2)) -1);
+        size = new Vector2f((size.x / (Display.getWidth() / 2)), (size.y / (Display.getHeight() / 2)));
 
         Vector2f end = new Vector2f(begin.x + size.x, begin.y + size.y);
 
@@ -58,11 +57,24 @@ public class Loader {
                 0,1,2,
                 2,3,0,
         });
-        storeDataInAttributeList(0, 3, MathUtils.makePlaneVertices(begin, size));
+        storeDataInAttributeList(0, 3, MathUtils.makePlaneVertices(begin, end));
         storeDataInAttributeList(1, 2, textureCoordinates);
         unbindVAO();
         return new RawModel(vaoID, 6);
     }
+
+    public RawModel loadPlaneToVAO(Vector3f begin, Vector3f end, float[] textureCoordinates) {
+        int vaoID = createVAO();
+        bindIndicesBuffer(new int[] {
+                0,1,2,
+                2,3,0,
+        });
+        storeDataInAttributeList(0, 3, MathUtils.makePlaneVertices(new Vector2f(begin.x, begin.y), new Vector2f(end.x, end.y)));
+        storeDataInAttributeList(1, 2, textureCoordinates);
+        unbindVAO();
+        return new RawModel(vaoID, 36);
+    }
+
 
     public RawModel loadBoxToVAO(Vector3f begin, Vector3f end, float[] textureCoordinates) {
         int vaoID = createVAO();
