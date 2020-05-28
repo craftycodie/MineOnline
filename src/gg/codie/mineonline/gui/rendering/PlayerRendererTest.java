@@ -1,6 +1,5 @@
 package gg.codie.mineonline.gui.rendering;
 
-import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.LibraryManager;
 import gg.codie.mineonline.Session;
 import gg.codie.mineonline.gui.rendering.animation.*;
@@ -9,16 +8,10 @@ import gg.codie.mineonline.gui.rendering.models.TexturedModel;
 import gg.codie.mineonline.gui.rendering.shaders.GUIShader;
 import gg.codie.mineonline.gui.rendering.shaders.StaticShader;
 import gg.codie.mineonline.gui.rendering.textures.ModelTexture;
-import org.lwjgl.Sys;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.*;
-import org.lwjgl.util.glu.GLU;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class PlayerRendererTest {
 
@@ -30,21 +23,12 @@ public class PlayerRendererTest {
 
         StaticShader shader = new StaticShader();
         Renderer renderer = new Renderer(shader);
-
         Loader loader = new Loader();
-
-
         GameObject playerPivot = new GameObject("player_origin", new Vector3f(-20, 0, -65), new Vector3f(0, 30, 0), new Vector3f(1, 1, 1));
-
         PlayerGameObject playerGameObject = new PlayerGameObject("player", loader, shader, new Vector3f(0, -16, 0), new Vector3f(), new Vector3f(1, 1, 1));
-
         Session session = new Session("codie");
-
-
         playerPivot.addChild(playerGameObject);
-
         playerGameObject.setPlayerAnimation(new WalkPlayerAnimation());
-
         Camera camera = new DebugCamera();
 
         //System.out.println(Arrays.toString(TextureHelper.getPlaneTextureCoords(new Vector2f(32, 32), new Vector2f(0, 0), new Vector2f(32, 32))));
@@ -62,9 +46,10 @@ public class PlayerRendererTest {
         GUIObject testButton = new GUIObject("Test Button", texturedTestButtonModel, new Vector3f(0, 0, 0), new Vector3f(), new Vector3f(1, 1, 1));
 
 
+        boolean formopen = true;
 
         // Game Loop
-        while(!Display.isCloseRequested()) {
+        while(!Display.isCloseRequested() && formopen) {
             renderer.prepare();
             // Camera roll lock.
             // Broken and not necessary.
@@ -118,6 +103,15 @@ public class PlayerRendererTest {
             guiShader.stop();
 
             DisplayManager.updateDisplay();
+
+            if (Mouse.isButtonDown(0)) {
+                int x = Mouse.getX();
+                int y = Mouse.getY();
+
+                System.out.println("MOUSE DOWN @ X: " + x + " Y: " + y);
+
+                formopen = false;
+            }
 
         }
 

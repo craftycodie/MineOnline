@@ -2,7 +2,6 @@ package gg.codie.mineonline.gui.rendering;
 
 import gg.codie.mineonline.gui.rendering.models.RawModel;
 import gg.codie.mineonline.gui.rendering.models.TexturedModel;
-import gg.codie.mineonline.gui.rendering.shaders.GUIShader;
 import gg.codie.mineonline.gui.rendering.shaders.StaticShader;
 import org.lwjgl.opengl.*;
 import org.lwjgl.util.glu.GLU;
@@ -34,8 +33,8 @@ public class Renderer {
         GL11.glLoadIdentity();
 
         GL11.glEnable(GL11.GL_DEPTH_TEST);
-        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
-        GL11.glClearColor(0.93f, 0.93f, 0.93f, 0);
+        GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
+        //GL11.glClearColor(0.93f, 0.93f, 0.93f, 0);
     }
 
     public void prepareGUI() {

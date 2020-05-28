@@ -1,31 +1,24 @@
 package gg.codie.mineonline;
 
-import gg.codie.mineonline.gui.rendering.*;
-import gg.codie.mineonline.gui.rendering.animation.IdlePlayerAnimation;
-import gg.codie.mineonline.gui.rendering.animation.WalkPlayerAnimation;
-import gg.codie.mineonline.gui.rendering.shaders.StaticShader;
-import gg.codie.mineonline.lwjgl.OnCreateListener;
-import gg.codie.mineonline.lwjgl.OnUpdateListener;
+import gg.codie.mineonline.gui.rendering.DisplayManager;
+import gg.codie.mineonline.gui.rendering.PlayerRendererTest;
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.Display;
-import org.lwjgl.util.vector.Vector3f;
 
 import javax.imageio.ImageIO;
-import java.applet.*;
+import java.applet.Applet;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.net.*;
-import java.awt.*;
-import java.awt.event.*;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Random;
 
-public class MinecraftAppletViewer extends Applet implements AppletStub{
+public class Minecraft {
 
     Applet MinecraftApplet;
     Frame AppletFrame = new Frame("Minecraft (Applet)");
@@ -42,167 +35,323 @@ public class MinecraftAppletViewer extends Applet implements AppletStub{
     boolean HasPaid=false;
     String md5;
 
-    public static void main(String[] args) throws Exception{
+    String jarPath = "D:\\Projects\\Local\\MinecraftBetaOfflineLauncher\\Binaries\\Old Game\\Old Files\\bin\\minecraft.jar";
+
+    public static void main(String[] args) throws Exception {
         LibraryManager.updateClasspath();
         LibraryManager.updateNativesPath();
+//        DisplayManager.createDisplay();
+//        new Minecraft().runApplet(args);
 
-        new MinecraftAppletViewer().runApplet(args);
+        new Minecraft(args);
     }
 
-    Loader loader = new Loader();
-    GameObject playerPivot = new GameObject("player_origin", new Vector3f(-20, 0, -65), new Vector3f(0, 30, 0), new Vector3f(1, 1, 1));
-    PlayerGameObject playerGameObject = null;
-    Session session = new Session("codie");
-    StaticShader shader;
-    Renderer renderer;
-
-    void runApplet(String[] args){
-        Display.setCreateListener(new OnCreateListener() {
-            @Override
-            public void onCreateEvent() {
-                shader = new StaticShader();
-                renderer = new Renderer(shader);
-
-                playerGameObject = new PlayerGameObject("player", loader, null, new Vector3f(0, -16, 0), new Vector3f(), new Vector3f(1, 1, 1));
-                playerPivot.addChild(playerGameObject);
-                playerGameObject.setPlayerAnimation(new IdlePlayerAnimation());
-            }
-        });
-
-        Class AppletClass;
+    Minecraft(String[] args) throws Exception {
         ParseCommandLine(args);
-        if (args.length>0){
-            try{
-                AppletClass = Class.forName(AppletClassName);
-            } catch (Exception ex){
-                ex.printStackTrace();
-                return;
+
+        startMainThread("Codie", "test", "mc.codie.gg");
+    }
+
+    public void startMainThread(String username, String sessionID, String server) throws Exception
+    {
+        Field minecraftField = null;
+
+//        this.AppletW = width;
+//        this.AppletH = height;
+
+        //panel.setSize(new Dimension(width, height));
+//        MinecraftApplet.setSize(new Dimension(width, height));
+
+        Class AppletClass = Class.forName(AppletClassName);
+
+        try {
+            minecraftField = AppletClass.getDeclaredField("minecraft");
+        } catch (NoSuchFieldException ne) {
+            for(Field field : AppletClass.getDeclaredFields()) {
+                if(field.getType().getPackage() == AppletClass.getPackage()) {
+                    minecraftField = field;
+                    continue;
+                }
             }
-            try{
-                MinecraftApplet = (Applet)AppletClass.newInstance();
-            } catch (Exception ex){
-                ex.printStackTrace();
-                return;
-            }
+        }
 
-            //Here we set the applet's stub to a custom stub, rather than letting it use the default.
-            //And also we now set the width and height of the applet on the screen.
-            MinecraftApplet.setStub(this);
-            MinecraftApplet.setPreferredSize(new Dimension(AppletW,AppletH));
-            Display.setResizable(true);
+        Class minecraftClass = minecraftField.getType();
 
+        Runnable minecraft = null;
+//
+//        try {
+//            minecraft = (Runnable)minecraftClass.getConstructor(
+//                    Canvas.class, AppletClass, int.class, int.class, boolean.class
+//            ).newInstance(null, null, 0, 0, false);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
-            //This puts the applet into a window so that it can be shown on the screen.
-            AppletFrame.add(MinecraftApplet);
-            AppletFrame.pack();
-            AppletFrame.addWindowListener(new WindowAdapter(){
-                public void windowClosing(WindowEvent e){
-                    CloseApplet();
-                }
-            });
-            AppletFrame.addComponentListener(new ComponentListener() {
-                @Override
-                public void componentResized(ComponentEvent e) {
-                    appletResize(AppletFrame.getWidth(), AppletFrame.getHeight());
-                }
+        // CONSTRUCT MINECRAFT
 
-                @Override
-                public void componentMoved(ComponentEvent e) {
+        // Before Desktop
+        // public Minecraft(Canvas var1, MinecraftApplet var2, int var3, int var4, boolean var5) {
 
-                }
+        // After Desktop
+        // public MinecraftImpl(Component component, Canvas canvas, MinecraftApplet minecraftapplet, int i, int j, boolean flag, Frame frame)
 
-                @Override
-                public void componentShown(ComponentEvent e) {
+        boolean flag = false;
 
-                }
+        DisplayManager.init();
 
-                @Override
-                public void componentHidden(ComponentEvent e) {
+        PlayerRendererTest.main(null);
+        DisplayManager.closeDisplay();
 
-                }
-            });
-            AppletFrame.setLocationRelativeTo(null);
-            AppletFrame.setVisible(true);
-            AppletFrame.setResizable(true);
+//        try {
+//            minecraft = (Runnable)minecraftClass.getConstructor(
+//                    Canvas.class, AppletClass, int.class, int.class, boolean.class
+//            ).newInstance(null, null, 0, 0, false);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
-            AppletFrame.setBackground(Color.black);
-
-
-//            screenshotLabel.setText("Screenshot saved.");
-//            panel.setBackground(Color.black);
-//            screenshotLabel.setBackground(new Color(0,0,0,0));
-//            screenshotLabel.setForeground(Color.white);
-//            screenshotLabel.setSize(120, 16);
-//            screenshotLabel.setFont(new Font("Monospaced", 1, 20));
-
-            //testLabel.setHorizontalAlignment(SwingConstants.CENTER);
-
-
-//            panel.setSize(AppletW, AppletH);
-//            panel.setBounds(0, 0, AppletW, AppletH);
-
-//            AppletFrame.add(screenshotLabel, "Center");
-//            AppletFrame.add(panel);
-
-
-
-            //panel.add(MinecraftApplet);
-
-//            if(md5 != null) {
-//                MinecraftVersionInfo.MinecraftVersion version = MinecraftVersionInfo.getVersionByMD5(md5);
-//                if(version != null && version.doesntHaveScreenshotting) {
-                    EventQueue.invokeLater(runnableScreenshot);
+//        try {
+//            File jarFile = new File(jarPath);
+//
+//            if(!jarFile.exists() || jarFile.isDirectory())
+//                return;
+//
+//            java.util.jar.JarFile jar = new java.util.jar.JarFile(jarFile.getPath());
+//            java.util.Enumeration enumEntries = jar.entries();
+//            while (enumEntries.hasMoreElements()) {
+//                java.util.jar.JarEntry file = (java.util.jar.JarEntry) enumEntries.nextElement();
+//                if(!file.getName().endsWith(".class")) {
+//                    continue;
+//                }
+//
+//                Constructor constructor = null;
+//
+//                // Ideally, we'd check if the class extends Minecraft
+//                // But due to obfuscation we have to settle for this.
+//                try {
+//                    Class clazz = Class.forName(file.getName().replace(".class", ""));
+//                    //java.awt.Component,java.awt.Canvas,net.minecraft.client.MinecraftApplet,int,int,boolean,java.awt.Frame
+//                    constructor = clazz.getConstructor(
+//                            Component.class, Canvas.class, AppletClass, int.class, int.class, boolean.class, Frame.class
+//                    );
+//
+//                } catch (Exception e) { }
+//
+//                if(constructor != null) {
+//                    System.out.println("found MinecraftImpl");
+//                    minecraft = (Runnable) constructor.newInstance(null, DisplayManager.getCanvas(), null, 854, 480, false, DisplayManager.getFrame());
+//                    break;
 //                }
 //            }
+//            jar.close();
+//
+//            if(minecraft == null) {
+//                try {
+//                    minecraft = (Runnable)minecraftClass.getConstructor(
+//                            Canvas.class, AppletClass, int.class, int.class, boolean.class
+//                    ).newInstance(DisplayManager.getCanvas(), null, 854, 480, false);
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//        for(Field field : minecraftClass.getDeclaredFields()) {
+//            try {
+//                Constructor constructor = field.getType().getConstructor(
+//                        String.class, String.class
+//                );
+//                if(constructor == null) {
+//                    continue;
+//                }
+//                System.out.println("Found session.");
+//                field.set(minecraft, constructor.newInstance(username, sessionID));
+//                break;
+//            } catch (Exception e) {
+//                continue;
+//            }
+//        }
 
+//        minecraftimpl.minecraftUri = "mc.codie.gg";
+//        if(s3 != null && s1 != null)
+//        {
+//            minecraftimpl.session = new Session(s3, s1);
+//        } else
+//        {
+//            minecraftimpl.session = new Session((new StringBuilder()).append("Player").append(System.currentTimeMillis() % 1000L).toString(), "");
+//        }
+//        if(s2 != null)
+//        {
+//            String as[] = s2.split(":");
+//            minecraftimpl.setServer(as[0], Integer.parseInt(as[1]));
+//        }
+        DisplayManager.getFrame().setVisible(true);
+        //frame.addWindowListener(new GameWindowListener(minecraftimpl, thread));
+        //thread.start();
 
-            //And this runs the applet.
-            MinecraftApplet.init();
-
-
-
-
-
-            Camera camera = new DebugCamera();
-
-            Display.setUpdateListener(new OnUpdateListener() {
-                @Override
-                public void onUpdateEvent() {
-                    if(renderer != null)
-                        renderer.prepare();
-
-                    if(Mouse.isButtonDown(0)) {
-                        Vector3f currentRotation = playerPivot.getLocalRotation();
-                        Vector3f rotation = new Vector3f();
-                        rotation.y = (Mouse.getDX() * 0.5f);
-                        playerPivot.increaseRotation(rotation);
-                    }
-
-                    if(playerGameObject != null)
-                        playerGameObject.update();
-
-                    camera.move();
-
-                    if(shader != null) {
-                        shader.start();
-                        shader.loadViewMatrix(camera);
-                        if (playerGameObject != null)
-                            renderer.render(playerGameObject, shader);
-
-                        shader.stop();
-                    }
-
-                }
-            });
-
-
-            MinecraftApplet.start();
-            shader.cleanup();
-            loader.cleanUp();
-
-
-        }
+//        minecraft.run();
     }
+
+//    void run() {
+//        running = true;
+//        try
+//        {
+//            startGame();
+//        }
+//        catch(Exception exception)
+//        {
+//            exception.printStackTrace();
+//            onMinecraftCrash(new UnexpectedThrowable("Failed to start game", exception));
+//            return;
+//        }
+//        try
+//        {
+//            long l = System.currentTimeMillis();
+//            int i = 0;
+//            do
+//            {
+//                if(!running)
+//                {
+//                    break;
+//                }
+//                try
+//                {
+//                    if(mcApplet != null && !mcApplet.isActive())
+//                    {
+//                        break;
+//                    }
+//                    AxisAlignedBB.clearBoundingBoxPool();
+//                    Vec3D.initialize();
+//                    if(mcCanvas == null && Display.isCloseRequested())
+//                    {
+//                        shutdown();
+//                    }
+//                    if(isGamePaused && theWorld != null)
+//                    {
+//                        float f = timer.renderPartialTicks;
+//                        timer.updateTimer();
+//                        timer.renderPartialTicks = f;
+//                    } else
+//                    {
+//                        timer.updateTimer();
+//                    }
+//                    long l1 = System.nanoTime();
+//                    for(int j = 0; j < timer.elapsedTicks; j++)
+//                    {
+//                        ticksRan++;
+//                        try
+//                        {
+//                            runTick();
+//                            continue;
+//                        }
+//                        catch(MinecraftException minecraftexception1)
+//                        {
+//                            theWorld = null;
+//                        }
+//                        changeWorld1(null);
+//                        displayGuiScreen(new GuiConflictWarning());
+//                    }
+//
+//                    long l2 = System.nanoTime() - l1;
+//                    checkGLError("Pre render");
+//                    RenderBlocks.fancyGrass = gameSettings.fancyGraphics;
+//                    sndManager.func_338_a(thePlayer, timer.renderPartialTicks);
+//                    GL11.glEnable(3553 /*GL_TEXTURE_2D*/);
+//                    if(theWorld != null)
+//                    {
+//                        theWorld.updatingLighting();
+//                    }
+//                    if(!Keyboard.isKeyDown(65))
+//                    {
+//                        Display.update();
+//                    }
+//                    if(thePlayer != null && thePlayer.isEntityInsideOpaqueBlock())
+//                    {
+//                        gameSettings.thirdPersonView = false;
+//                    }
+//                    if(!skipRenderWorld)
+//                    {
+//                        if(playerController != null)
+//                        {
+//                            playerController.setPartialTime(timer.renderPartialTicks);
+//                        }
+//                        entityRenderer.updateCameraAndRender(timer.renderPartialTicks);
+//                    }
+//                    if(!Display.isActive())
+//                    {
+//                        if(fullscreen)
+//                        {
+//                            toggleFullscreen();
+//                        }
+//                        Thread.sleep(10L);
+//                    }
+//                    if(gameSettings.showDebugInfo)
+//                    {
+//                        displayDebugInfo(l2);
+//                    } else
+//                    {
+//                        prevFrameTime = System.nanoTime();
+//                    }
+//                    guiAchievement.updateAchievementWindow();
+//                    Thread.yield();
+//                    if(Keyboard.isKeyDown(65))
+//                    {
+//                        Display.update();
+//                    }
+//                    screenshotListener();
+//                    if(mcCanvas != null && !fullscreen && (mcCanvas.getWidth() != displayWidth || mcCanvas.getHeight() != displayHeight))
+//                    {
+//                        displayWidth = mcCanvas.getWidth();
+//                        displayHeight = mcCanvas.getHeight();
+//                        if(displayWidth <= 0)
+//                        {
+//                            displayWidth = 1;
+//                        }
+//                        if(displayHeight <= 0)
+//                        {
+//                            displayHeight = 1;
+//                        }
+//                        resize(displayWidth, displayHeight);
+//                    }
+//                    checkGLError("Post render");
+//                    i++;
+//                    isGamePaused = !isMultiplayerWorld() && currentScreen != null && currentScreen.doesGuiPauseGame();
+//                    while(System.currentTimeMillis() >= l + 1000L)
+//                    {
+//                        debug = (new StringBuilder()).append(i).append(" fps, ").append(WorldRenderer.chunksUpdated).append(" chunk updates").toString();
+//                        WorldRenderer.chunksUpdated = 0;
+//                        l += 1000L;
+//                        i = 0;
+//                    }
+//                }
+//                catch(MinecraftException minecraftexception)
+//                {
+//                    theWorld = null;
+//                    changeWorld1(null);
+//                    displayGuiScreen(new GuiConflictWarning());
+//                }
+//                catch(OutOfMemoryError outofmemoryerror)
+//                {
+//                    func_28002_e();
+//                    displayGuiScreen(new GuiErrorScreen());
+//                    System.gc();
+//                }
+//            } while(true);
+//        }
+//        catch(MinecraftError minecrafterror) { }
+//        catch(Throwable throwable)
+//        {
+//            func_28002_e();
+//            throwable.printStackTrace();
+//            onMinecraftCrash(new UnexpectedThrowable("Unexpected error", throwable));
+//        }
+//        finally
+//        {
+//            shutdownMinecraftApplet();
+//        }
+//    }
 
     boolean f2wasDown = false;
     public Runnable runnableScreenshot = new Runnable() {
@@ -328,7 +477,7 @@ public class MinecraftAppletViewer extends Applet implements AppletStub{
             this.AppletH = height;
 
             //panel.setSize(new Dimension(width, height));
-            //MinecraftApplet.setSize(new Dimension(width, height));
+            MinecraftApplet.setSize(new Dimension(width, height));
 
             try {
                 minecraftField = MinecraftApplet.getClass().getDeclaredField("minecraft");
@@ -364,8 +513,8 @@ public class MinecraftAppletViewer extends Applet implements AppletStub{
             heightField.setAccessible(true);
 
             Object minecraft = minecraftField.get(MinecraftApplet);
-            widthField.setInt(minecraft, width - AppletFrame.getInsets().left - AppletFrame.getInsets().right);
-            heightField.setInt(minecraft, height - AppletFrame.getInsets().top - AppletFrame.getInsets().bottom);
+            widthField.setInt(minecraft, width);
+            heightField.setInt(minecraft, height);
 
             //screenshotLabel.setBounds(30, (AppletH - 16) - 30, 204, 20);
         } catch (Exception e) {
@@ -448,9 +597,6 @@ public class MinecraftAppletViewer extends Applet implements AppletStub{
     public String getParameter(String name){
         String RetVal=null;
         switch(name){
-            case "stand-alone":
-                RetVal = "true";
-                break;
             case "username":
                 if (UserName==null){
                     break;

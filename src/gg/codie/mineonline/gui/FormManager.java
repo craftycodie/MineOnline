@@ -7,8 +7,6 @@ import gg.codie.mineonline.Properties;
 import gg.codie.mineonline.Proxy;
 import gg.codie.mineonline.gui.rendering.*;
 import gg.codie.mineonline.gui.rendering.Renderer;
-import gg.codie.mineonline.gui.rendering.animation.IPlayerAnimation;
-import gg.codie.mineonline.gui.rendering.animation.IdlePlayerAnimation;
 import gg.codie.mineonline.gui.rendering.shaders.StaticShader;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Mouse;
@@ -20,7 +18,6 @@ import java.awt.*;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.nio.file.Paths;
 
 public class FormManager {

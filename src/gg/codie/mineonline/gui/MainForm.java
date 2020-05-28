@@ -2,22 +2,13 @@ package gg.codie.mineonline.gui;
 
 import gg.codie.mineonline.*;
 import gg.codie.mineonline.gui.rendering.*;
-import gg.codie.mineonline.gui.rendering.Renderer;
-import gg.codie.mineonline.gui.rendering.animation.IPlayerAnimation;
 import gg.codie.mineonline.gui.rendering.animation.IdlePlayerAnimation;
-import gg.codie.mineonline.gui.rendering.shaders.StaticShader;
 import gg.codie.utils.JSONUtils;
-import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.Display;
-import org.lwjgl.util.vector.Vector3f;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.io.File;
