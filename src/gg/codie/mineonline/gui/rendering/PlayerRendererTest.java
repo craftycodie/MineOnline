@@ -29,7 +29,7 @@ public class PlayerRendererTest {
         PlayerGameObject playerGameObject = new PlayerGameObject("player", loader, shader, new Vector3f(0, -16, 0), new Vector3f(), new Vector3f(1, 1, 1));
         Session session = new Session("codie");
         playerPivot.addChild(playerGameObject);
-        playerGameObject.setPlayerAnimation(new WalkPlayerAnimation());
+        playerGameObject.setPlayerAnimation(new IdlePlayerAnimation());
         Camera camera = new DebugCamera();
 
         //System.out.println(Arrays.toString(TextureHelper.getPlaneTextureCoords(new Vector2f(32, 32), new Vector2f(0, 0), new Vector2f(32, 32))));
