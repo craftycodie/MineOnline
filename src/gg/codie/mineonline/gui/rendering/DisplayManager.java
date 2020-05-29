@@ -4,15 +4,18 @@ import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.*;
 import org.lwjgl.opengl.DisplayMode;
 
+import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class DisplayManager {
 
-    public static int getWIDTH() {
+    public static int getWidth() {
         return WIDTH;
     }
 
-    public static int getHEIGHT() {
+    public static int getHeight() {
         return HEIGHT;
     }
 
@@ -37,8 +40,12 @@ public class DisplayManager {
         frame.setLayout(new BorderLayout());
         frame.add(canvas, "Center");
         canvas.setPreferredSize(new Dimension(854, 480));
+        frame.setBackground(Color.black);
         frame.pack();
         frame.setLocationRelativeTo(null);
+
+        Image img = Toolkit.getDefaultToolkit().getImage(DisplayManager.class.getResource("/img/favicon.png"));
+        frame.setIconImage(img);
     }
 
     public static void createDisplay() {
@@ -76,8 +83,8 @@ public class DisplayManager {
     }
 
     public static void closeDisplay() {
-
         Display.destroy();
+        //frame.dispose();
         //frame.setVisible(false);
 
     }

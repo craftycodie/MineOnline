@@ -1,16 +1,10 @@
 package gg.codie.mineonline;
 
 import gg.codie.utils.ArrayUtils;
-import gg.codie.utils.JSONUtils;
 import gg.codie.utils.MD5Checksum;
 import gg.codie.utils.OSUtils;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.security.DigestInputStream;
-import java.security.MessageDigest;
-import java.util.Arrays;
 import java.util.Map;
 
 public class MineOnlineLauncher {
@@ -55,9 +49,9 @@ public class MineOnlineLauncher {
 
 				classpath = classpath + getClasspathSeparator() + jarLocation + getClasspathSeparator() + appletViewerLocation;
 				if (Properties.properties.getBoolean("useLocalProxy"))
-					CMD_ARRAY = new String[] { Properties.properties.getString("javaCommand"), legacyMergeSortArg, proxySet, proxyHost, proxyPortArgument + proxyPort, natives, CP, classpath, MinecraftAppletViewer.class.getCanonicalName(), mainClass, "-md5", MD5Checksum.getMD5Checksum(jarLocation) };
+					CMD_ARRAY = new String[] { Properties.properties.getString("javaCommand"), legacyMergeSortArg, proxySet, proxyHost, proxyPortArgument + proxyPort, natives, CP, classpath, MinecraftLauncher.class.getCanonicalName(), mainClass, "-md5", MD5Checksum.getMD5Checksum(jarLocation) };
 				else
-					CMD_ARRAY = new String[] { Properties.properties.getString("javaCommand"), legacyMergeSortArg, natives, CP, classpath, MinecraftAppletViewer.class.getCanonicalName(), mainClass, "-md5", MD5Checksum.getMD5Checksum(jarLocation)};
+					CMD_ARRAY = new String[] { Properties.properties.getString("javaCommand"), legacyMergeSortArg, natives, CP, classpath, MinecraftLauncher.class.getCanonicalName(), mainClass, "-md5", MD5Checksum.getMD5Checksum(jarLocation)};
 				CMD_ARRAY = ArrayUtils.concatenate(CMD_ARRAY, args);
 				break;
 			case Server:

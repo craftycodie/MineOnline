@@ -254,6 +254,44 @@ public class MinecraftAPI {
         }
     }
 
+    public static boolean listServer(String ip, String port, int users, int maxUsers, String name, boolean onlineMode, String md5) {
+        HttpURLConnection connection = null;
+
+        try {
+            String parameters = "ip=" + URLEncoder.encode(ip, "UTF-8")
+                    + "&port=" + URLEncoder.encode(port, "UTF-8")
+                    + "&users=" + URLEncoder.encode("" + users, "UTF-8")
+                    + "&max=" + URLEncoder.encode("" + maxUsers, "UTF-8")
+                    + "&name=" + URLEncoder.encode(name, "UTF-8")
+                    + "&onlinemode=" + URLEncoder.encode(Boolean.toString(onlineMode), "UTF-8")
+                    + "&md5=" + URLEncoder.encode(md5, "UTF-8");
+
+            URL url = new URL("http://" + Properties.properties.getString("apiDomainName") + "/mineonline/listserver.jsp?" + parameters);
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setDoInput(true);
+            connection.setDoOutput(false);
+            connection.setRequestMethod("POST");
+            connection.connect();
+
+            InputStream is = connection.getInputStream();
+            BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+
+            String res = rd.readLine();
+
+            rd.close();
+
+            return res.equals("ok");
+        } catch (Exception e) {
+
+            e.printStackTrace();
+            return false;
+        } finally {
+
+            if (connection != null)
+                connection.disconnect();
+        }
+    }
+
     public static MineOnlineAccount account(String username, String sessionId) throws IOException, ParseException {
         HttpURLConnection connection = null;
 

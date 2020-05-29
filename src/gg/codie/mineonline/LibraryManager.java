@@ -68,9 +68,6 @@ public class LibraryManager {
                 }
             });
 
-
-            method.setAccessible(true);
-
             for(File file : libraries) {
                 method.invoke(ClassLoader.getSystemClassLoader(), new Object[]{file.toURI().toURL()});
             }
@@ -79,6 +76,18 @@ public class LibraryManager {
             t.printStackTrace();
             throw new IOException("Error, could not add URL to system classloader");
         }//end try catch
+    }
+
+    public static void addJarToClasspath(URL url) {
+        try {
+            Method method = URLClassLoader.class.getDeclaredMethod("addURL", new Class[]{URL.class});
+            method.setAccessible(true);
+            method.invoke(ClassLoader.getSystemClassLoader(), new Object[]{url});
+        } catch (Exception e) {
+            System.err.println("Java Error");
+            e.printStackTrace();
+            System.exit(1);
+        }
     }
 
     public static void updateNativesPath() throws PrivilegedActionException {

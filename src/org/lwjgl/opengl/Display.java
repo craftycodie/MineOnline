@@ -43,6 +43,7 @@ package org.lwjgl.opengl;
  * @author foo
  */
 
+import gg.codie.mineonline.gui.rendering.DisplayManager;
 import gg.codie.mineonline.lwjgl.OnCreateListener;
 import gg.codie.mineonline.lwjgl.OnUpdateListener;
 import org.lwjgl.BufferUtils;
@@ -547,6 +548,9 @@ public final class Display {
      * @param newTitle The new window title
      */
     public static void setTitle(String newTitle) {
+//        if(DisplayManager.getCanvas() != null)
+//            DisplayManager.getFrame().setTitle(newTitle);
+
         synchronized ( GlobalLock.lock ) {
             if ( newTitle == null ) {
                 newTitle = "";

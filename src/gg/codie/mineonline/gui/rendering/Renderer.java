@@ -6,6 +6,12 @@ import gg.codie.mineonline.gui.rendering.shaders.StaticShader;
 import org.lwjgl.opengl.*;
 import org.lwjgl.util.glu.GLU;
 import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector2f;
+import org.newdawn.slick.TrueTypeFont;
+import org.newdawn.slick.util.ResourceLoader;
+
+import java.awt.*;
+import java.io.InputStream;
 
 public class Renderer {
 
@@ -15,11 +21,22 @@ public class Renderer {
 
     private Matrix4f projectionMatrix;
 
+    TrueTypeFont font;
+    Font awtFont;
+
     public Renderer(StaticShader shader) {
         createProjectionMatrix();
         shader.start();
         shader.loadProjectionMatrix(projectionMatrix);
         shader.stop();
+
+        InputStream inputStream = ResourceLoader.getResourceAsStream("font/Minecraft.ttf");
+
+        try {
+            awtFont = Font.createFont(Font.TRUETYPE_FONT, inputStream);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void prepare() {
@@ -46,7 +63,7 @@ public class Renderer {
 
         GL11.glMatrixMode(GL11.GL_MODELVIEW);
         GL11.glLoadIdentity();
-        GL11.glTranslatef(0.375f, 0.375f, 0.0f);
+        //GL11.glTranslatef(0.375f, 0.375f, 0.0f);
 
         GL11.glDisable(GL11.GL_DEPTH_TEST);
 
@@ -139,6 +156,23 @@ public class Renderer {
         GL20.glDisableVertexAttribArray(0);
         GL20.glDisableVertexAttribArray(1);
         GL30.glBindVertexArray(0);
+    }
+
+    public void renderString(Vector2f position, float size, String text, org.newdawn.slick.Color color) {
+
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        font = new TrueTypeFont(awtFont.deriveFont(size), false);
+
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
+
+        GL11.glPushMatrix();
+        font.drawString(position.x + 1, position.y + 1, text, new org.newdawn.slick.Color(0, 0, 0, 0.7f * color.a)); //x, y, string to draw, color
+        font.drawString(position.x, position.y, text, color); //x, y, string to draw, color
+        //GL11.glDisable(GL11.GL_TEXTURE_2D);
+        GL11.glPopMatrix();
+        GL11.glDisable(GL11.GL_BLEND);
     }
 
     private void createProjectionMatrix() {

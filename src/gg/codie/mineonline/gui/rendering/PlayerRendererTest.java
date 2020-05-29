@@ -12,6 +12,7 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.*;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
+import org.newdawn.slick.Color;
 
 public class PlayerRendererTest {
 
@@ -101,6 +102,9 @@ public class PlayerRendererTest {
 //            renderer.render(backgroundImage, guiShader);
             renderer.renderGUI(testButton, guiShader);
             guiShader.stop();
+
+            renderer.renderString(new Vector2f((Display.getWidth() / 2) + 65, (Display.getHeight() / 2) - 32), 18, "Play Minecraft", Color.white);
+
 
             DisplayManager.updateDisplay();
 

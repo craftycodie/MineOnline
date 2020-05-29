@@ -115,7 +115,7 @@ public class MineOnlineLauncherFrame extends JFrame {
                             className = classCanonicalName.substring(classCanonicalName.lastIndexOf(".") + 1);
                         }
 
-                        if(className.equals("MinecraftApplet")) {
+                        if(className.equals("minecraftApplet")) {
                             appletClassNameTextField.setText(classCanonicalName);
                         } else if(className.equals("MiencraftLauncher")) {
                             gameClassNameTextField.setText(classCanonicalName);
