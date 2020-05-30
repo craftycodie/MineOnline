@@ -2,12 +2,15 @@ package gg.codie.mineonline.gui.rendering;
 
 import gg.codie.mineonline.gui.rendering.models.RawModel;
 import gg.codie.mineonline.gui.rendering.models.TexturedModel;
+import gg.codie.mineonline.gui.rendering.shaders.GUIShader;
 import gg.codie.mineonline.gui.rendering.shaders.StaticShader;
 import org.lwjgl.opengl.*;
 import org.lwjgl.util.glu.GLU;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector2f;
+import org.newdawn.slick.AngelCodeFont;
 import org.newdawn.slick.TrueTypeFont;
+import org.newdawn.slick.opengl.TextureImpl;
 import org.newdawn.slick.util.ResourceLoader;
 
 import java.awt.*;
@@ -21,8 +24,7 @@ public class Renderer {
 
     private Matrix4f projectionMatrix;
 
-    TrueTypeFont font;
-    Font awtFont;
+    AngelCodeFont angelCodeFont;
 
     public Renderer(StaticShader shader) {
         createProjectionMatrix();
@@ -34,6 +36,7 @@ public class Renderer {
 
         try {
             awtFont = Font.createFont(Font.TRUETYPE_FONT, inputStream);
+            angelCodeFont = new AngelCodeFont(ResourceLoader.getResource("font/font.fnt").getPath(), ResourceLoader.getResource("font/font.png").getPath());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -73,6 +76,7 @@ public class Renderer {
         for(GameObject child : gameObject.getChildren()) {
             render(child, shader);
         }
+        shader.start();
 
         TexturedModel texturedModel = gameObject.getModel();
 
@@ -111,12 +115,16 @@ public class Renderer {
         GL20.glDisableVertexAttribArray(0);
         GL20.glDisableVertexAttribArray(1);
         GL30.glBindVertexArray(0);
+
+        shader.stop();
     }
 
     public void renderGUI(GUIObject guiObject, StaticShader shader) {
         for(GUIObject child : guiObject.getGUIChildren()) {
             renderGUI(child, shader);
         }
+
+        shader.start();
 
         TexturedModel texturedModel = guiObject.getModel();
 
@@ -156,13 +164,21 @@ public class Renderer {
         GL20.glDisableVertexAttribArray(0);
         GL20.glDisableVertexAttribArray(1);
         GL30.glBindVertexArray(0);
+
+        shader.stop();
     }
 
-    public void renderString(Vector2f position, float size, String text, org.newdawn.slick.Color color) {
-
+    //    InputStream inputStream = ResourceLoader.getResourceAsStream("font/Minecraft.ttf");
+    TrueTypeFont font;
+    Font awtFont;
+    public void renderStringLegacy(Vector2f position, String text, org.newdawn.slick.Color color) {
+//        System.out.println("rendering " + text);
+//        System.out.println(position);
+//        System.out.println(angelCodeFont);
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        font = new TrueTypeFont(awtFont.deriveFont(size), false);
+
+        font = new TrueTypeFont(awtFont.deriveFont(80), false);
 
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
@@ -175,23 +191,41 @@ public class Renderer {
         GL11.glDisable(GL11.GL_BLEND);
     }
 
-    public void renderCenteredString(Vector2f position, float size, String text, org.newdawn.slick.Color color) {
+    public void renderString(Vector2f position, String text, org.newdawn.slick.Color color) {
+//        GL11.glEnable(GL11.GL_BLEND);
+//        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+//
+//        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
+//        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
 
+        int stringWidth = angelCodeFont.getWidth(text);
+
+        //GL11.glPushMatrix();
+        angelCodeFont.drawString(position.x + 2, position.y + 2, text, new org.newdawn.slick.Color(0, 0, 0, 0.7f * color.a)); //x, y, string to draw, color
+        TextureImpl.unbind();
+        angelCodeFont.drawString(position.x , position.y, text, color); //x, y, string to draw, color
+        //GL11.glDisable(GL11.GL_TEXTURE_2D);
+        //GL11.glPopMatrix();
+//        GL11.glDisable(GL11.GL_BLEND);
+        TextureImpl.unbind();
+    }
+
+    public void renderCenteredString(Vector2f position, String text, org.newdawn.slick.Color color) {
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        font = new TrueTypeFont(awtFont.deriveFont(size), false);
 
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
 
-        int stringWidth = font.getWidth(text);
+        int stringWidth = angelCodeFont.getWidth(text);
 
-        GL11.glPushMatrix();
-        font.drawString((position.x + 2) - (stringWidth / 2), position.y + 2, text, new org.newdawn.slick.Color(0, 0, 0, 0.7f * color.a)); //x, y, string to draw, color
-        font.drawString(position.x - (stringWidth / 2), position.y, text, color); //x, y, string to draw, color
+        //GL11.glPushMatrix();
+        angelCodeFont.drawString((position.x + 2) - (stringWidth / 2), position.y + 2, text, new org.newdawn.slick.Color(0, 0, 0, 0.7f * color.a)); //x, y, string to draw, color
+        angelCodeFont.drawString(position.x - (stringWidth / 2), position.y, text, color); //x, y, string to draw, color
         //GL11.glDisable(GL11.GL_TEXTURE_2D);
-        GL11.glPopMatrix();
+        //GL11.glPopMatrix();
         GL11.glDisable(GL11.GL_BLEND);
+        TextureImpl.bindNone();
     }
 
     private void createProjectionMatrix() {

@@ -252,9 +252,6 @@ public class MineOnlineLauncherFrame extends JFrame {
             }
         });
 
-
-        // Todo: Make this one function for all props.
-
         apiDomainTextField.getDocument().addDocumentListener(new DocumentListener() {
             private void onChange() {
                 if(useLocalProxyCheckBox.isSelected())

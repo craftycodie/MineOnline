@@ -31,7 +31,7 @@ public class MediumButton extends GUIObject {
         shader.start();
         renderer.renderGUI(this, shader);
         shader.stop();
-        renderer.renderCenteredString(new Vector2f(position.x + 150, (Display.getHeight() - position.y) - 32), 16, this.name, mouseWasOver ? new Color(1, 1, 0.627f, 1) : Color.white);
+        renderer.renderCenteredString(new Vector2f(position.x + 150, (Display.getHeight() - position.y) - 32), this.name, mouseWasOver ? new Color(1, 1, 0.627f, 1) : Color.white);
      }
 
     boolean mouseWasDown = false;
