@@ -28,8 +28,11 @@ public class Loader {
 
     public final int MISSING_TEXTURE_ID;
 
+    public static Loader singleton;
+
     public Loader() {
         MISSING_TEXTURE_ID = loadTexture(LauncherFiles.MISSING_TEXTURE);
+        singleton = this;
     }
 
     public RawModel loadToVAO(float[] positions, float[] textureCoordinates, int[] indices) {
@@ -42,8 +45,6 @@ public class Loader {
     }
 
     public RawModel loadGUIToVAO(Vector2f begin, Vector2f size, float[] textureCoordinates) {
-        System.out.println(begin);
-        System.out.println(size);
         begin = new Vector2f((begin.x / (Display.getWidth() / 2)) -1, (begin.y / (Display.getHeight() / 2)) -1);
         size = new Vector2f((size.x / (Display.getWidth() / 2)), (size.y / (Display.getHeight() / 2)));
 

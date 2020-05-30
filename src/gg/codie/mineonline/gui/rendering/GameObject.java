@@ -11,7 +11,7 @@ import java.util.LinkedList;
 public class GameObject {
 
     public final String name;
-    private TexturedModel model;
+    protected TexturedModel model;
 
     protected Matrix4f localMatrix;
 

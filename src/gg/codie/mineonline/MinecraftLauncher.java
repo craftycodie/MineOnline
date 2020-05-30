@@ -1,6 +1,7 @@
 package gg.codie.mineonline;
 
 import gg.codie.mineonline.gui.rendering.*;
+import gg.codie.mineonline.gui.rendering.Renderer;
 import gg.codie.mineonline.gui.rendering.shaders.StaticShader;
 import gg.codie.mineonline.lwjgl.OnCreateListener;
 import gg.codie.mineonline.lwjgl.OnUpdateListener;
@@ -11,12 +12,14 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector2f;
 
 import javax.imageio.ImageIO;
+import javax.swing.*;
 import java.applet.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.*;
 import java.awt.*;
@@ -24,6 +27,7 @@ import java.awt.event.*;
 import java.nio.ByteBuffer;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 
 public class MinecraftLauncher extends Applet implements AppletStub{
@@ -52,14 +56,17 @@ public class MinecraftLauncher extends Applet implements AppletStub{
         DisplayManager.closeDisplay();
         new Session("codie", "1213");
 
-        new MinecraftLauncher("D:\\Projects\\Local\\MinecraftBetaOfflineLauncher\\Binaries\\Old Game\\Old Files\\bin\\minecraft.jar", null, null, null).startMinecraft();
+        new MinecraftLauncher("D:\\Projects\\Local\\MinecraftBetaOfflineLauncher\\Binaries\\Old Game\\Old Files\\bin\\c0.30-3.jar", "127.0.0.1", "56197", null).startMinecraft();
     }
 
     public MinecraftLauncher(String jarPath, String serverAddress, String serverPort, String MPPass) {
         this.jarPath = jarPath;
         this.serverAddress = serverAddress;
-        this.serverAddress = serverAddress;
+        this.serverPort = serverPort;
         this.MPPass = MPPass;
+
+        if(serverAddress != null && serverPort == null)
+            this.serverPort = "25565";
 
         minecraftVersion = MinecraftVersionInfo.getVersion(jarPath);
 
@@ -72,7 +79,22 @@ public class MinecraftLauncher extends Applet implements AppletStub{
         }
     }
 
+    boolean firstUpdate = true;
     void startMinecraft() throws Exception {
+
+        fullscreen = Properties.properties.has("fullscreen") ? Properties.properties.getBoolean("fullscreen") : false;
+
+        DisplayManager.getFrame().setResizable(true);
+
+        if(fullscreen) {
+            if (minecraftVersion != null && minecraftVersion.enableFullscreenPatch) {
+                setFullscreen(true);
+            } else {
+                Display.setDisplayMode(Display.getDesktopDisplayMode());
+                Display.setFullscreen(true);
+            }
+        }
+
         String appletClassName = MinecraftVersionInfo.getAppletClass(jarPath);
 
         Frame frame = DisplayManager.getFrame();
@@ -134,7 +156,6 @@ public class MinecraftLauncher extends Applet implements AppletStub{
                     // But due to obfuscation we have to settle for this.
                     try {
                         Class clazz = Class.forName(file.getName().replace(".class", ""));
-                        //java.awt.Component,java.awt.Canvas,net.minecraft.client.minecraftApplet,int,int,boolean,java.awt.Frame
                         constructor = clazz.getConstructor(
                                 Component.class, Canvas.class, appletClass, int.class, int.class, boolean.class, Frame.class
                         );
@@ -144,11 +165,10 @@ public class MinecraftLauncher extends Applet implements AppletStub{
 
                     if (constructor != null) {
                         System.out.println("found MinecraftImpl");
-                        minecraftImpl = (Runnable) constructor.newInstance(null, DisplayManager.getCanvas(), null, DisplayManager.getWidth(), DisplayManager.getHeight(), false, frame);
+                        minecraftImpl = (Runnable) constructor.newInstance(null, DisplayManager.getCanvas(), null, Display.getWidth(), Display.getHeight(), fullscreen, frame);
                     }
 
                     if (minecraftImpl != null) {
-
                         for (Field field : minecraftClass.getDeclaredFields()) {
                             try {
                                 constructor = field.getType().getConstructor(
@@ -161,6 +181,19 @@ public class MinecraftLauncher extends Applet implements AppletStub{
                                 break;
                             } catch (Exception e) {
                                 continue;
+                            }
+                        }
+
+                        if (serverAddress != null && serverPort != null) {
+                            for (Method method : minecraftClass.getMethods()) {
+                                try {
+                                    if (Arrays.equals(method.getParameterTypes(), (new Object[]{String.class, int.class}))) {
+                                        method.invoke(minecraftImpl, serverAddress, Integer.parseInt(serverPort));
+                                        break;
+                                    }
+                                } catch (Exception e) {
+                                    continue;
+                                }
                             }
                         }
                     }
@@ -186,8 +219,6 @@ public class MinecraftLauncher extends Applet implements AppletStub{
             minecraftApplet.setStub(this);
             minecraftApplet.setPreferredSize(new Dimension(Display.getWidth(), Display.getHeight()));
             Display.setResizable(true);
-//
-//            DisplayManager.getCanvas().setVisible(false);
 
             //This puts the applet into a window so that it can be shown on the screen.
             frame.add(minecraftApplet);
@@ -216,15 +247,13 @@ public class MinecraftLauncher extends Applet implements AppletStub{
             @Override
             public void componentHidden(ComponentEvent e) {}
         });
-//        frame.setLocationRelativeTo(null);
-//        frame.setVisible(true);
-//        frame.setResizable(true);
 
         frame.setBackground(Color.black);
 
         //And this runs the applet.
-        if(minecraftApplet != null)
+        if(minecraftApplet != null) {
             minecraftApplet.init();
+        }
 
         Display.setUpdateListener(new OnUpdateListener() {
             @Override
@@ -257,17 +286,22 @@ public class MinecraftLauncher extends Applet implements AppletStub{
                             f2wasDown = false;
                         }
                     }
+                    if (minecraftVersion != null && minecraftVersion.enableFullscreenPatch) {
+                        if (Keyboard.getEventKey() == Keyboard.KEY_F11 && !Keyboard.isRepeatEvent() && Keyboard.getEventKeyState() && !f11WasDown) {
+                            setFullscreen(!fullscreen);
+                            f11WasDown = true;
+                        }
+                        if (Keyboard.getEventKey() == Keyboard.KEY_F11 && !Keyboard.isRepeatEvent() && !Keyboard.getEventKeyState()) {
+                            f11WasDown = false;
+                        }
+                    }
+                }
+
+                if (firstUpdate) {
+                    firstUpdate = false;
                 }
             }
         });
-
-
-
-        if(DEBUG && minecraftVersion != null) {
-            frame.setTitle("Minecraft " + minecraftVersion.name + " (MineOnline Debug)");
-        } else {
-            frame.setTitle("Minecraft");
-        }
 
         if (minecraftImpl != null)
             minecraftImpl.run();
@@ -276,6 +310,7 @@ public class MinecraftLauncher extends Applet implements AppletStub{
     }
 
     boolean f2wasDown = false;
+    boolean f11WasDown = false;
 
     void CloseApplet(){
         if(minecraftApplet != null) {
@@ -369,12 +404,41 @@ public class MinecraftLauncher extends Applet implements AppletStub{
 
             Object minecraft = minecraftField.get(minecraftApplet);
             widthField.setInt(minecraft, width);
-            heightField.setInt(minecraft, height - DisplayManager.getFrame().getInsets().top - DisplayManager.getFrame().getInsets().bottom);
+
+            if (fullscreen){
+                heightField.setInt(minecraft, Display.getDisplayMode().getHeight());
+                widthField.setInt(minecraft, Display.getDisplayMode().getWidth());
+            }
+            else {
+                heightField.setInt(minecraft, height - DisplayManager.getFrame().getInsets().top - DisplayManager.getFrame().getInsets().bottom);
+                widthField.setInt(minecraft, width);
+            }
 
             //screenshotLabel.setBounds(30, (AppletH - 16) - 30, 204, 20);
         } catch (Exception e) {
 
         }
+    }
+
+    boolean fullscreen;
+
+    int widthBeforeFullscreen = Display.getWidth();
+    int heightBeforeFullscreen = Display.getHeight();
+
+    void setFullscreen(boolean newFullscreen) {
+        DisplayManager.fullscreen(newFullscreen);
+        fullscreen = newFullscreen;
+        if(!fullscreen) {
+            appletResize(widthBeforeFullscreen, heightBeforeFullscreen);
+            minecraftApplet.setPreferredSize(new Dimension(widthBeforeFullscreen, heightBeforeFullscreen));
+            minecraftApplet.resize(new Dimension(widthBeforeFullscreen , heightBeforeFullscreen));
+        } else {
+            appletResize(DisplayManager.getFrame().getWidth(), DisplayManager.getFrame().getHeight());
+            minecraftApplet.setPreferredSize(new Dimension(DisplayManager.getFrame().getWidth(), DisplayManager.getFrame().getHeight()));
+            minecraftApplet.resize(new Dimension(DisplayManager.getFrame().getWidth(), DisplayManager.getFrame().getHeight()));
+        }
+
+        DisplayManager.getFrame().pack();
     }
 
     private static ByteBuffer buffer;

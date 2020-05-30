@@ -175,6 +175,25 @@ public class Renderer {
         GL11.glDisable(GL11.GL_BLEND);
     }
 
+    public void renderCenteredString(Vector2f position, float size, String text, org.newdawn.slick.Color color) {
+
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        font = new TrueTypeFont(awtFont.deriveFont(size), false);
+
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
+
+        int stringWidth = font.getWidth(text);
+
+        GL11.glPushMatrix();
+        font.drawString((position.x + 2) - (stringWidth / 2), position.y + 2, text, new org.newdawn.slick.Color(0, 0, 0, 0.7f * color.a)); //x, y, string to draw, color
+        font.drawString(position.x - (stringWidth / 2), position.y, text, color); //x, y, string to draw, color
+        //GL11.glDisable(GL11.GL_TEXTURE_2D);
+        GL11.glPopMatrix();
+        GL11.glDisable(GL11.GL_BLEND);
+    }
+
     private void createProjectionMatrix() {
         float aspectRatio = (float) Display.getWidth() / (float) Display.getHeight();
         float y_scale = (float) ((1f / Math.tan(Math.toRadians(FOV / 2f))) * aspectRatio);

@@ -15,8 +15,16 @@ public class DisplayManager {
         return WIDTH;
     }
 
+    public static int scaledWidth(int width) {
+        return width * (Display.getWidth() / width);
+    }
+
     public static int getHeight() {
         return HEIGHT;
+    }
+
+    public static int scaledHeight(int height) {
+        return height * (Display.getHeight() / height);
     }
 
     private static final int WIDTH = 854;
@@ -46,6 +54,9 @@ public class DisplayManager {
 
         Image img = Toolkit.getDefaultToolkit().getImage(DisplayManager.class.getResource("/img/favicon.png"));
         frame.setIconImage(img);
+
+//        frame.setSize(DisplayManager.getWidth() + frame.getInsets().left + frame.getInsets().right, DisplayManager.getHeight() + frame.getInsets().left + frame.getInsets().right);
+//        frame.pack();
     }
 
     public static void createDisplay() {
@@ -73,10 +84,12 @@ public class DisplayManager {
 
         frame.setVisible(true);
 
+//        frame.setSize(DisplayManager.getWidth() + frame.getInsets().left + frame.getInsets().right, DisplayManager.getHeight() + frame.getInsets().left + frame.getInsets().right);
+//        frame.pack();
+
     }
 
     public static void updateDisplay() {
-
         Display.sync(FPS);
         Display.update();
 
@@ -86,7 +99,29 @@ public class DisplayManager {
         Display.destroy();
         //frame.dispose();
         //frame.setVisible(false);
+    }
 
+    public static void fullscreen(boolean on) {
+        GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        GraphicsDevice dev = env.getDefaultScreenDevice();
+
+//        try {
+//            Display.setDisplayMode(Display.getDesktopDisplayMode());
+//            Display.setFullscreen(on);
+//
+//
+////            frame.setVisible(!on);
+//        } catch (Exception ex) {
+//            //return on;
+//        }
+//        return !on;
+//        frame.setUndecorated(on);
+
+        if(on) {
+            dev.setFullScreenWindow(frame);
+        } else {
+            dev.setFullScreenWindow(null);
+        }
     }
 
 }

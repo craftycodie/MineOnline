@@ -40,8 +40,9 @@ public class MinecraftVersionInfo {
         public final boolean enableScreenshotPatch;
         public final String clientName;
         public final boolean hasHeartbeat;
+        public final boolean enableFullscreenPatch;
 
-        private MinecraftVersion(String sha256, String name, String md5, String type, boolean baseURLHasNoPort, boolean enableScreenshotPatch, String clientName, boolean hasHeartbeat) {
+        private MinecraftVersion(String sha256, String name, String md5, String type, boolean baseURLHasNoPort, boolean enableScreenshotPatch, String clientName, boolean hasHeartbeat, boolean enableFullscreenPatch) {
             this.sha256 = sha256;
             this.name = name;
             this.md5 = md5;
@@ -50,6 +51,7 @@ public class MinecraftVersionInfo {
             this.enableScreenshotPatch = enableScreenshotPatch;
             this.clientName = clientName;
             this.hasHeartbeat = hasHeartbeat;
+            this.enableFullscreenPatch = enableFullscreenPatch;
         }
     }
 
@@ -79,7 +81,8 @@ public class MinecraftVersionInfo {
                         (object.has("baseURLHasNoPort") && object.getBoolean("baseURLHasNoPort")),
                         (object.has("enableScreenshotPatch") && object.getBoolean("enableScreenshotPatch")),
                         (object.has("clientName") ? object.getString("clientName") : null),
-                        (object.has("hasHeartbeat") && object.getBoolean("hasHeartbeat"))
+                        (object.has("hasHeartbeat") && object.getBoolean("hasHeartbeat")),
+                        (object.has("enableFullscreenPatch") && object.getBoolean("enableFullscreenPatch"))
                 ));
             }
         } catch (IOException ex) {
@@ -116,8 +119,7 @@ public class MinecraftVersionInfo {
     public static MinecraftVersion getVersion(String path) {
         try {
             String md5 = MD5Checksum.getMD5Checksum(path);
-            System.out.println(md5);
-            System.out.println(getVersionByMD5(md5).name);
+            System.out.println("MD5: " + md5);
             return getVersionByMD5(md5);
         } catch (Exception e) {
             return null;
