@@ -259,7 +259,7 @@ public class MinecraftLauncher extends Applet implements AppletStub{
             @Override
             public void onUpdateEvent() {
                 if(renderer != null) {
-                    renderer.renderString(new Vector2f(2, 190), "MineOnline Debug", org.newdawn.slick.Color.yellow); //x, y, string to draw, color
+                    //renderer.renderString(new Vector2f(2, 190), "MineOnline Debug", org.newdawn.slick.Color.yellow); //x, y, string to draw, color
                     if (minecraftVersion != null && minecraftVersion.enableScreenshotPatch) {
                         try {
                             float opacityMultiplier = System.currentTimeMillis() - lastScreenshotTime;
@@ -271,8 +271,8 @@ public class MinecraftLauncher extends Applet implements AppletStub{
                                 opacityMultiplier = 1;
                             }
 
-                            if (opacityMultiplier != 0) {
-                                renderer.renderString(new Vector2f(2, 190), "Saved screenshot as " + lastScreenshotName, new org.newdawn.slick.Color(1, 1, 1, 1 * opacityMultiplier)); //x, y, string to draw, color
+                            if (opacityMultiplier > 0) {
+                                renderer.renderStringLegacy(new Vector2f(2, 190), 8,"Saved screenshot as " + lastScreenshotName, new org.newdawn.slick.Color(1, 1, 1, 1 * opacityMultiplier)); //x, y, string to draw, color
                             }
                         } catch (Exception e) {
                             e.printStackTrace();

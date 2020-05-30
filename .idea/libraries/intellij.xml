@@ -2,6 +2,7 @@
   <library name="intellij">
     <CLASSES>
       <root url="jar://$APPLICATION_HOME_DIR$/lib/forms_rt.jar!/" />
+      <root url="jar://$PROJECT_DIR$/res/lib/slick.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

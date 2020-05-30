@@ -24,7 +24,7 @@ public class MineOnline {
 //        DisplayManager.closeDisplay();
         new Session("codie", "5ed2c7eed4c7ad8928b38f97");
 
-        new MinecraftLauncher("D:\\Projects\\GitHub\\MineOnline\\jars\\b1.7.3.jar", "mc.codie.gg", "25565", null).startMinecraft();
+        new MinecraftLauncher("D:\\Projects\\GitHub\\MineOnline\\jars\\c0.0.11a-launcher.jar", null, null, null).startMinecraft();
     }
 
 }
