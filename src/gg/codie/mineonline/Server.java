@@ -93,7 +93,7 @@ public class Server {
                 }
             }
 
-            if (System.currentTimeMillis() - lastPing > 45000) {
+            if (Boolean.parseBoolean(serverProperties.getProperty("dont-list", "false")) && System.currentTimeMillis() - lastPing > 45000) {
                 try {
                     if (!gotProperties) {
                         loadServerProperties(serverProperties, args[0]);
