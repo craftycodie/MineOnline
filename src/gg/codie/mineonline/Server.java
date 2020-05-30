@@ -8,11 +8,14 @@ import java.io.*;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Scanner;
 
 public class Server {
     static String proxySet = "-DproxySet=true";
     static String proxyHost = "-Dhttp.proxyHost=127.0.0.1";
     static String proxyPortArgument = "-Dhttp.proxyPort=";
+
+    static int users = 0;
 
 	public static void main(String[] args) throws Exception{
 	    LibraryManager.extractLibraries();
@@ -33,6 +36,9 @@ public class Server {
         }
 
 	    String md5 = MD5Checksum.getMD5Checksum(jarFile.getPath());
+        MinecraftVersionInfo.MinecraftVersion serverVersion = MinecraftVersionInfo.getVersionByMD5(md5);
+
+        boolean hasHeartbeat = serverVersion != null && serverVersion.hasHeartbeat;
 
         if(args.length < 2) {
             System.err.println("Too few arguments. Include a jar location and main class. \n Eg minecraft-server.jar com.mojang.minecraft.server.MinecraftServer");
@@ -52,9 +58,9 @@ public class Server {
             env.put(prop, props.getProperty(prop));
         }
         processBuilder.directory(new File(System.getProperty("user.dir")));
-        processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
+//        processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
         processBuilder.redirectErrorStream(true);
-        processBuilder.redirectInput(ProcessBuilder.Redirect.INHERIT);
+//        processBuilder.redirectInput(ProcessBuilder.Redirect.INHERIT);
 
         Process serverProcess = processBuilder.start();
 
@@ -67,21 +73,45 @@ public class Server {
 
         Runtime.getRuntime().addShutdownHook(closeLauncher);
 
+        redirectOutput2(serverProcess.getInputStream(), System.out);
+
+        OutputStream stdin = serverProcess.getOutputStream();
+
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(stdin));
+
+        Scanner scanner = new Scanner(System.in);
         long lastPing = System.currentTimeMillis();
         while(serverProcess.isAlive()) {
+            boolean reading = true;
+            while (reading) {
+                if (System.in.available() > 0) {
+                    writer.write(scanner.nextLine());
+                    writer.newLine();
+                    writer.flush();
+                } else {
+                    reading = false;
+                }
+            }
+
             if (System.currentTimeMillis() - lastPing > 45000) {
                 try {
                     if (!gotProperties) {
                         loadServerProperties(serverProperties, args[0]);
                     }
 
+                    if (!hasHeartbeat) {
+                        writer.write("list");
+                        writer.newLine();
+                        writer.flush();
+                    }
+
                     MinecraftAPI.listServer(
                             serverProperties.getProperty("server-ip"),
-                            serverProperties.getProperty("server-port"),
-                            0,
+                            serverProperties.getProperty("server-port", serverProperties.getProperty("port", "25565")),
+                            hasHeartbeat ? -1 : users,
                             Integer.parseInt(serverProperties.getProperty("max-players")),
                             serverProperties.getProperty("server-name", "Untitled Server"),
-                            serverProperties.getProperty("online-mode").equals("true"),
+                            serverProperties.getProperty("online-mode", serverProperties.getProperty("verify-names", "true")).equals("true"),
                             md5
                     );
                 } catch (Exception e) {
@@ -91,9 +121,50 @@ public class Server {
                 lastPing = System.currentTimeMillis();
             }
         }
+//
+        scanner.close();
 
         Proxy.stopProxy();
 	}
+
+    private static void redirectOutput(final InputStream src, final PrintStream dest) {
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    byte[] buffer = new byte[1024];
+                    for (int n = 0; n != -1; n = src.read(buffer)) {
+                        dest.write(buffer, 0, n);
+                    }
+                    dest.flush();
+                } catch (IOException e) { // just exit
+                }
+            }
+        }).start();
+    }
+
+    private static void redirectOutput2(final InputStream src, final PrintStream dest) {
+        new Thread(new Runnable() {
+            public void run() {
+                Scanner inScanner = new Scanner(src);
+                try {
+                    while(true) {
+                        if(inScanner.hasNext()) {
+                            String nextLine = inScanner.nextLine();
+                            if(nextLine.length() > 27 && nextLine.substring(27).startsWith("Connected players: ")) {
+                                users = 0;
+                                if(nextLine.length() > 46){
+                                    users = nextLine.split(",").length;
+                                }
+                            }
+                            dest.write(nextLine.getBytes("UTF-8"));
+                            dest.write("\n".getBytes());
+                        }
+                    }
+                } catch (IOException e) { // just exit
+                }
+            }
+        }).start();
+    }
 
 	static boolean gotProperties = false;
 	private static void loadServerProperties(java.util.Properties properties, String jarPath) throws IOException {

@@ -230,17 +230,8 @@ public class MinecraftLauncher extends Applet implements AppletStub{
             @Override
             public void onUpdateEvent() {
                 if(renderer != null) {
-                    if(DEBUG) {
-                        renderer.renderString(new Vector2f(2, 10), 8, "MineOnline Pre-Release", org.newdawn.slick.Color.white); //x, y, string to draw, color
-                    }
                     if (minecraftVersion != null && minecraftVersion.enableScreenshotPatch) {
                         try {
-                            GL11.glEnable(GL11.GL_BLEND);
-                            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-
-                            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
-                            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
-
                             float opacityMultiplier = System.currentTimeMillis() - lastScreenshotTime;
                             if (opacityMultiplier > 5000) {
                                 opacityMultiplier -= 5000;
@@ -250,8 +241,9 @@ public class MinecraftLauncher extends Applet implements AppletStub{
                                 opacityMultiplier = 1;
                             }
 
-                            if (opacityMultiplier != 0)
+                            if (opacityMultiplier != 0) {
                                 renderer.renderString(new Vector2f(2, 190), 8, "Saved screenshot as " + lastScreenshotName, new org.newdawn.slick.Color(1, 1, 1, 1 * opacityMultiplier)); //x, y, string to draw, color
+                            }
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -272,7 +264,7 @@ public class MinecraftLauncher extends Applet implements AppletStub{
 
 
         if(DEBUG && minecraftVersion != null) {
-            frame.setTitle("Minecraft " + minecraftVersion.name + " Debug");
+            frame.setTitle("Minecraft " + minecraftVersion.name + " (MineOnline Debug)");
         } else {
             frame.setTitle("Minecraft");
         }

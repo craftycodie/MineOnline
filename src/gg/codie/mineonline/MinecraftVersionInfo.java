@@ -38,14 +38,18 @@ public class MinecraftVersionInfo {
         public final String type;
         public final boolean baseURLHasNoPort;
         public final boolean enableScreenshotPatch;
+        public final String clientName;
+        public final boolean hasHeartbeat;
 
-        private MinecraftVersion(String sha256, String name, String md5, String type, boolean baseURLHasNoPort, boolean enableScreenshotPatch) {
+        private MinecraftVersion(String sha256, String name, String md5, String type, boolean baseURLHasNoPort, boolean enableScreenshotPatch, String clientName, boolean hasHeartbeat) {
             this.sha256 = sha256;
             this.name = name;
             this.md5 = md5;
             this.type = type;
             this.baseURLHasNoPort = baseURLHasNoPort;
             this.enableScreenshotPatch = enableScreenshotPatch;
+            this.clientName = clientName;
+            this.hasHeartbeat = hasHeartbeat;
         }
     }
 
@@ -68,12 +72,14 @@ public class MinecraftVersionInfo {
             while (versionIterator.hasNext()) {
                 JSONObject object = (JSONObject)versionIterator.next();
                 versions.add(new MinecraftVersion(
-                        object.getString("sha256"),
+                        (object.has("sha256") ? object.getString("sha256") : null),
                         object.getString("name"),
                         object.getString("md5"),
                         object.getString("type"),
                         (object.has("baseURLHasNoPort") && object.getBoolean("baseURLHasNoPort")),
-                        (object.has("enableScreenshotPatch") && object.getBoolean("enableScreenshotPatch"))
+                        (object.has("enableScreenshotPatch") && object.getBoolean("enableScreenshotPatch")),
+                        (object.has("clientName") ? object.getString("clientName") : null),
+                        (object.has("hasHeartbeat") && object.getBoolean("hasHeartbeat"))
                 ));
             }
         } catch (IOException ex) {

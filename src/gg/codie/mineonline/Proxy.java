@@ -34,7 +34,7 @@ public class Proxy {
         LibraryManager.extractLibraries();
         LibraryManager.updateClasspath();
 
-        launchProxy();
+        //launchProxy();
 
         // Start the proxy as a new process.
         java.util.Properties props = System.getProperties();

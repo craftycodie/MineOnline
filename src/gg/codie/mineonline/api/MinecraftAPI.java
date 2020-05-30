@@ -260,7 +260,7 @@ public class MinecraftAPI {
         try {
             String parameters = "ip=" + URLEncoder.encode(ip, "UTF-8")
                     + "&port=" + URLEncoder.encode(port, "UTF-8")
-                    + "&users=" + URLEncoder.encode("" + users, "UTF-8")
+                    + (users > -1 ? "&users=" + URLEncoder.encode("" + users, "UTF-8") : "")
                     + "&max=" + URLEncoder.encode("" + maxUsers, "UTF-8")
                     + "&name=" + URLEncoder.encode(name, "UTF-8")
                     + "&onlinemode=" + URLEncoder.encode(Boolean.toString(onlineMode), "UTF-8")
