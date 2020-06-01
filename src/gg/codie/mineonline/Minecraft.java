@@ -366,8 +366,8 @@ public class Minecraft extends Applet implements AppletStub {
 
     public void screenshot() {
         try {
-//            int w = AppletFrame.getWidth();
-//            int h = AppletFrame.getHeight();
+//            int w = AppletFrame.getDefaultWidth();
+//            int h = AppletFrame.getDefaultHeight();
 //            BufferedImage bi = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
 //            Graphics2D g = bi.createGraphics();
 //            minecraftApplet.paint(g);

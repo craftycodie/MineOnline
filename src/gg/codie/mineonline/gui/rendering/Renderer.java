@@ -4,6 +4,7 @@ import gg.codie.mineonline.gui.rendering.models.RawModel;
 import gg.codie.mineonline.gui.rendering.models.TexturedModel;
 import gg.codie.mineonline.gui.rendering.shaders.GUIShader;
 import gg.codie.mineonline.gui.rendering.shaders.StaticShader;
+import gg.codie.mineonline.gui.rendering.utils.MathUtils;
 import org.lwjgl.opengl.*;
 import org.lwjgl.util.glu.GLU;
 import org.lwjgl.util.vector.Matrix4f;
@@ -38,6 +39,7 @@ public class Renderer {
 
         try {
             awtFont = Font.createFont(Font.TRUETYPE_FONT, inputStream);
+            font = new TrueTypeFont(awtFont.deriveFont(8), false);
             angelCodeFont = new AngelCodeFont(ResourceLoader.getResource("font/font.fnt").getPath(), ResourceLoader.getResource("font/font.png").getPath());
         } catch (Exception e) {
             e.printStackTrace();
@@ -57,6 +59,9 @@ public class Renderer {
         GL11.glEnable(GL11.GL_DEPTH_TEST);
         GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
         //GL11.glClearColor(0.93f, 0.93f, 0.93f, 0);
+
+        //GL11.glScaled(DisplayManager.getScale(), DisplayManager.getScale(), 0);
+
     }
 
     public void prepareGUI() {
@@ -64,13 +69,16 @@ public class Renderer {
         GL11.glMatrixMode(GL11.GL_PROJECTION);
         GL11.glLoadIdentity();
 
-        GLU.gluOrtho2D(0.0f, Display.getWidth(), Display.getHeight(), 0.0f);
+        GLU.gluOrtho2D(0.0f, DisplayManager.scaledWidth(DisplayManager.getDefaultWidth()), DisplayManager.scaledHeight(DisplayManager.getDefaultHeight()), 0.0f);
 
         GL11.glMatrixMode(GL11.GL_MODELVIEW);
         GL11.glLoadIdentity();
         //GL11.glTranslatef(0.375f, 0.375f, 0.0f);
 
         GL11.glDisable(GL11.GL_DEPTH_TEST);
+
+        //GL11.glScaled(DisplayManager.getScale(), DisplayManager.getScale(), 0);
+
 
     }
 
@@ -117,6 +125,8 @@ public class Renderer {
         GL20.glDisableVertexAttribArray(0);
         GL20.glDisableVertexAttribArray(1);
         GL30.glBindVertexArray(0);
+
+        //renderString(new Vector2f(MathUtils.getPosition(Matrix4f.mul(Matrix4f.mul(gameObject.localMatrix, MathUtils.createViewMatrix(Camera.singleton), null), projectionMatrix, null))), gameObject.name, org.newdawn.slick.Color.white);
 
         shader.stop();
     }
@@ -170,19 +180,16 @@ public class Renderer {
         shader.stop();
     }
 
-    public void renderStringLegacy(Vector2f position, float size, String text, org.newdawn.slick.Color color) {
-//        System.out.println("rendering " + text);
-//        System.out.println(position);
-//        System.out.println(angelCodeFont);
+    public void renderStringIngame(Vector2f position, float size, String text, org.newdawn.slick.Color color) {
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        //TODO: This is very slow and needs to be replaced.
         font = new TrueTypeFont(awtFont.deriveFont(size), false);
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
         GL11.glPushMatrix();
         font.drawString(position.x + 1, position.y + 1, text, new org.newdawn.slick.Color(0, 0, 0, 0.7f * color.a)); //x, y, string to draw, color
         font.drawString(position.x, position.y, text, color); //x, y, string to draw, color
-        //GL11.glDisable(GL11.GL_TEXTURE_2D);
         GL11.glPopMatrix();
         GL11.glDisable(GL11.GL_BLEND);
     }
@@ -194,13 +201,14 @@ public class Renderer {
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
 
-        int stringWidth = angelCodeFont.getWidth(text);
+        float stringWidth = angelCodeFont.getWidth(text);
 
-        //GL11.glPushMatrix();
-        angelCodeFont.drawString(position.x + 2, position.y + 2, text, new org.newdawn.slick.Color(0, 0, 0, 0.7f * color.a)); //x, y, string to draw, color
-        angelCodeFont.drawString(position.x, position.y, text, color); //x, y, string to draw, color
-        //GL11.glDisable(GL11.GL_TEXTURE_2D);
-        //GL11.glPopMatrix();
+        GL11.glPushMatrix();
+        GL11.glScaled(DisplayManager.getScale(), DisplayManager.getScale(), 1);
+        angelCodeFont.drawString(DisplayManager.scaledWidth(position.x) + 2, DisplayManager.scaledHeight(position.y) + 2, text, new org.newdawn.slick.Color(0, 0, 0, 0.7f * color.a)); //x, y, string to draw, color
+        angelCodeFont.drawString(DisplayManager.scaledWidth(position.x), DisplayManager.scaledHeight(position.y), text, color); //x, y, string to draw, color
+        GL11.glPopMatrix();
+
         GL11.glDisable(GL11.GL_BLEND);
         TextureImpl.bindNone();
     }
@@ -212,13 +220,15 @@ public class Renderer {
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
 
-        int stringWidth = angelCodeFont.getWidth(text);
+        float stringWidth = angelCodeFont.getWidth(text);
 
-        //GL11.glPushMatrix();
-        angelCodeFont.drawString((position.x + 2) - (stringWidth / 2), position.y + 2, text, new org.newdawn.slick.Color(0, 0, 0, 0.7f * color.a)); //x, y, string to draw, color
+        GL11.glLoadIdentity();
+        GL11.glPushMatrix();
+        GL11.glScaled((double)Display.getWidth() / DisplayManager.getDefaultWidth(), (double)Display.getHeight() / DisplayManager.getDefaultHeight(), 1);
+        angelCodeFont.drawString(position.x - (stringWidth / 2) + 2, position.y + 2, text, new org.newdawn.slick.Color(0, 0, 0, 0.7f * color.a)); //x, y, string to draw, color
         angelCodeFont.drawString(position.x - (stringWidth / 2), position.y, text, color); //x, y, string to draw, color
-        //GL11.glDisable(GL11.GL_TEXTURE_2D);
-        //GL11.glPopMatrix();
+        GL11.glPopMatrix();
+
         GL11.glDisable(GL11.GL_BLEND);
         TextureImpl.bindNone();
     }

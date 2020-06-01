@@ -1393,8 +1393,8 @@ public final class Display {
      * scaled Display and Mouse coordinates to the correct high resolution value by
      * multiplying them by the pixel scale factor.
      *
-     * e.g. Display.getWidth() * Display.getPixelScaleFactor() will return the high DPI
-     * width of the OpenGL frame buffer. Whereas Display.getWidth() will be the same as
+     * e.g. Display.getDefaultWidth() * Display.getPixelScaleFactor() will return the high DPI
+     * width of the OpenGL frame buffer. Whereas Display.getDefaultWidth() will be the same as
      * the OpenGL frame buffer in non high DPI mode.
      *
      * Where high DPI mode is not available this method will just return 1.0f therefore

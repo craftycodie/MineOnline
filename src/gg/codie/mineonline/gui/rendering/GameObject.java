@@ -10,8 +10,8 @@ import java.util.LinkedList;
 
 public class GameObject {
 
-    public final String name;
-    protected TexturedModel model;
+    public String name;
+    public TexturedModel model;
 
     protected Matrix4f localMatrix;
 
@@ -109,9 +109,9 @@ public class GameObject {
 ////        return MathUtils.getPosition(matrix);
 //    }
 
-//    public void setLocalPosition(Vector3f localPosition) {
-//        this.localPosition = localPosition;
-//    }
+    public void translate(Vector3f localPosition) {
+        localMatrix = localMatrix.translate(localPosition);
+    }
 //
 //    public Matrix4f GetModelMatrix() {
 //        Matrix4f matrix4f = new Matrix4f();
@@ -286,9 +286,9 @@ public class GameObject {
 //        return scale;
 //    }
 //
-//    public void setScale(float scale) {
-//        this.scale = scale;
-//    }
+    public void setScale(Vector3f scale) {
+        //this.localMatrix = MathUtils.createTransformationMatrix(MathUtils.getPosition(localMatrix), getLocalRotation(), scale);
+    }
 
 
 }

@@ -2,45 +2,68 @@ package gg.codie.mineonline.gui.rendering;
 
 import gg.codie.mineonline.LibraryManager;
 import gg.codie.mineonline.Session;
-import gg.codie.mineonline.gui.events.IOnClickListener;
+import gg.codie.mineonline.gui.IMenuScreen;
+import gg.codie.mineonline.gui.MainMenuScreen;
 import gg.codie.mineonline.gui.rendering.animation.*;
-import gg.codie.mineonline.gui.rendering.components.LargeButton;
-import gg.codie.mineonline.gui.rendering.components.MediumButton;
-import gg.codie.mineonline.gui.rendering.components.TinyButton;
 import gg.codie.mineonline.gui.rendering.models.RawModel;
 import gg.codie.mineonline.gui.rendering.models.TexturedModel;
-import gg.codie.mineonline.gui.rendering.shaders.GUIShader;
 import gg.codie.mineonline.gui.rendering.shaders.StaticShader;
 import gg.codie.mineonline.gui.rendering.textures.ModelTexture;
+import gg.codie.mineonline.gui.rendering.utils.MathUtils;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.*;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 import org.newdawn.slick.Color;
 
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
 public class PlayerRendererTest {
 
     static boolean formopen = false;
 
+    public static void setMenuScreen(IMenuScreen menuScreen) {
+        PlayerRendererTest.menuScreen = menuScreen;
+    }
+
+    private static IMenuScreen menuScreen;
+
+    static WindowAdapter closeListener = new WindowAdapter(){
+        public void windowClosing(WindowEvent e){
+            DisplayManager.getFrame().dispose();
+        }
+    };
+
     public static void main(String[] args) throws Exception {
         formopen = true;
 
-        DisplayManager.getFrame().setResizable(false);
+//        DisplayManager.getFrame().setResizable(false);
 
         LibraryManager.updateClasspath();
         LibraryManager.updateNativesPath();
 
+        DisplayManager.init();
+
         DisplayManager.createDisplay();
+
+        DisplayManager.getFrame().addWindowListener(closeListener);
 
         StaticShader shader = new StaticShader();
         Renderer renderer = new Renderer(shader);
         Loader loader = new Loader();
-        GameObject playerPivot = new GameObject("player_origin", new Vector3f(-20, 0, -65), new Vector3f(0, 30, 0), new Vector3f(1, 1, 1));
+        GameObject playerPivot = new GameObject("player_origin", new Vector3f(), new Vector3f(0, 30, 0), new Vector3f(1, 1, 1));
         PlayerGameObject playerGameObject = new PlayerGameObject("player", loader, shader, new Vector3f(0, -21, 0), new Vector3f(), new Vector3f(1, 1, 1));
         new Session("codie");
         playerPivot.addChild(playerGameObject);
+
+        GameObject playerScale = new GameObject("player scale", new Vector3f(-20, 0, -65), new Vector3f(), new Vector3f(1, 1, 1));
+        playerScale.addChild(playerPivot);
+
         playerGameObject.setPlayerAnimation(new IdlePlayerAnimation());
-        Camera camera = new DebugCamera();
+        Camera camera = new Camera();
 
         RawModel model = loader.loadBoxToVAO(new Vector3f(-1, -1, -1), new Vector3f(1, 1, 1), TextureHelper.getCubeTextureCoords(new Vector2f(2048, 1024),
                 new Vector2f(0, 0), new Vector2f(2048, 1024),
@@ -54,27 +77,12 @@ public class PlayerRendererTest {
         TexturedModel texturedModel =  new TexturedModel(model, modelTexture);
         GameObject backgroundImage = new GUIObject("Background", texturedModel, new Vector3f(0, 0, 0), new Vector3f(), new Vector3f(75f, 75f, 75f));
 
-        RawModel logoModel = loader.loadGUIToVAO(new Vector2f((Display.getWidth() / 2) -200, Display.getHeight() - 69), new Vector2f(400, 49), TextureHelper.getYFlippedPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(0, 40), new Vector2f(400, 49)));
-        ModelTexture logoTexture = new ModelTexture(loader.loadTexture(PlayerRendererTest.class.getResource("/img/gui.png")));
-        TexturedModel texuredLogoModel =  new TexturedModel(logoModel, logoTexture);
-        GUIObject logo = new GUIObject("logo", texuredLogoModel, new Vector3f(), new Vector3f(), new Vector3f(1, 1, 1));
+        menuScreen = new MainMenuScreen();
 
+        //playerScale.scale(new Vector3f(1, 0.5f, 1));
 
-
-        MediumButton playButton = new MediumButton("Play", new Vector2f((Display.getWidth() / 2) + 30, (Display.getHeight() / 2) - 40), new IOnClickListener() {
-            @Override
-            public void onClick() {
-                formopen = false;
-            }
-        });
-
-        MediumButton logoutButton = new MediumButton("Join Server", new Vector2f((Display.getWidth() / 2) + 30, (Display.getHeight() / 2) + 8), null);
-
-        MediumButton versionButton = new MediumButton("Version: b1.7.3", new Vector2f((Display.getWidth() / 2) + 30, (Display.getHeight() / 2) + 56), null);
-
-        TinyButton optionsButton = new TinyButton("Options...", new Vector2f((Display.getWidth() / 2) + 30, (Display.getHeight() / 2) + 112), null);
-        TinyButton skinButton = new TinyButton("Change Skin", new Vector2f((Display.getWidth() / 2) + 188, (Display.getHeight() / 2) + 112), null);
-
+        int lastWidth = Display.getWidth();
+        int lastHeight = Display.getHeight();
         // Game Loop
         while(!Display.isCloseRequested() && formopen) {
             renderer.prepare();
@@ -85,7 +93,18 @@ public class PlayerRendererTest {
 //                playerPivot.increaseRotation(new Vector3f(0, 0, -playerPivot.getLocalRotation().z));
 //            }
 
+            if(Display.getWidth() != lastWidth || Display.getHeight() != lastHeight) {
+                menuScreen.resize();
+            }
+
+            lastWidth = Display.getWidth();
+            lastHeight = Display.getHeight();
+
             backgroundImage.increaseRotation(new Vector3f(0, 0.025f, 0));
+
+            Vector3f currentScale = MathUtils.getScale(playerPivot.localMatrix);
+            ///playerPivot.scale(new Vector3f(2 - currentScale.x, 2 - currentScale.y, 2 - currentScale.z));
+            playerPivot.setScale(new Vector3f(1, 2, 1));
 
             if(Mouse.isButtonDown(0)) {
                 Vector3f currentRotation = playerPivot.getLocalRotation();
@@ -106,17 +125,12 @@ public class PlayerRendererTest {
 
                 rotation.y = (Mouse.getDX() * 0.5f);
 
-//                System.out.println(rotation.toString());
-
-                playerPivot.increaseRotation(rotation);
+                if (menuScreen.showPlayer())
+                    playerPivot.increaseRotation(rotation);
             }
 
             playerGameObject.update();
-            playButton.update();
-            logoutButton.update();
-            versionButton.update();
-            optionsButton.update();
-            skinButton.update();
+            menuScreen.update();
 
             camera.move();
 
@@ -124,44 +138,29 @@ public class PlayerRendererTest {
             shader.loadViewMatrix(camera);
 
             renderer.render(backgroundImage, shader);
-            renderer.render(playerGameObject, shader);
+            if (menuScreen.showPlayer())
+                renderer.render(playerGameObject, shader);
 
             shader.stop();
 
-            GUIShader guiShader = new GUIShader();
-            guiShader.start();
-            guiShader.loadViewMatrix(camera);
-            renderer.prepareGUI();
-//            renderer.render(backgroundImage, guiShader);
-            renderer.renderGUI(logo, guiShader);
-            playButton.render(renderer, guiShader);
-            logoutButton.render(renderer, guiShader);
-            versionButton.render(renderer, guiShader);
-            optionsButton.render(renderer, guiShader);
-            skinButton.render(renderer, guiShader);
-            guiShader.stop();
+            menuScreen.render(renderer);
 
-            renderer.renderCenteredString(new Vector2f(250, 100), Session.session.getUsername(), Color.white);
+
+            if (menuScreen.showPlayer())
+                renderer.renderCenteredString(new Vector2f(250, 100), Session.session.getUsername(), Color.white);
 
             renderer.renderString(new Vector2f(2, 10), "MineOnline Debug", org.newdawn.slick.Color.yellow); //x, y, string to draw, color
 
 
             DisplayManager.updateDisplay();
 
-//            if (Mouse.isButtonDown(0)) {
-//                int x = Mouse.getX();
-//                int y = Mouse.getY();
-//
-//                System.out.println("MOUSE DOWN @ X: " + x + " Y: " + y);
-//
-//                formopen = false;
-//            }
-
         }
 
         shader.cleanup();
         loader.cleanUp();
         DisplayManager.closeDisplay();
+
+        DisplayManager.getFrame().removeWindowListener(closeListener);
     }
 
 }

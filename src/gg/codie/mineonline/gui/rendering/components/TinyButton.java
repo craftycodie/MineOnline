@@ -19,11 +19,11 @@ public class TinyButton extends GUIObject {
 
     public TinyButton(String name, Vector2f position, IOnClickListener clickListener) {
         super(name,
-                new TexturedModel(Loader.singleton.loadGUIToVAO(new Vector2f(position.x, Display.getHeight() - position.y), new Vector2f(142, 40), TextureHelper.getPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(0, 109), new Vector2f(71, 20))), new ModelTexture(Loader.singleton.loadTexture(PlayerRendererTest.class.getResource("/img/gui.png")))),
+                new TexturedModel(Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth(position.x), DisplayManager.scaledHeight(DisplayManager.getDefaultHeight() - position.y)), new Vector2f(DisplayManager.scaledWidth(142), DisplayManager.scaledHeight(40)), TextureHelper.getPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(0, 109), new Vector2f(71, 20))), new ModelTexture(Loader.singleton.loadTexture(PlayerRendererTest.class.getResource("/img/gui.png")))),
                 new Vector3f(0, 0, 0), new Vector3f(), new Vector3f(1, 1, 1)
         );
 
-        this.position = new Vector2f(position.x, Display.getHeight() - position.y);
+        this.position = new Vector2f(position.x, position.y);
         this.clickListener = clickListener;
     }
 
@@ -31,7 +31,7 @@ public class TinyButton extends GUIObject {
         shader.start();
         renderer.renderGUI(this, shader);
         shader.stop();
-        renderer.renderCenteredString(new Vector2f(position.x + 71, (Display.getHeight() - position.y) - 32), this.name, mouseWasOver ? new Color(1, 1, 0.627f, 1) : Color.white);
+        renderer.renderCenteredString(new Vector2f(position.x + 71, position.y - 32), this.name, mouseWasOver ? new Color(1, 1, 0.627f, 1) : Color.white);
      }
 
     boolean mouseWasDown = false;
@@ -44,19 +44,19 @@ public class TinyButton extends GUIObject {
             mouseWasDown = false;
         }
 
-        boolean mouseIsOver = x - position.x <= 142 && x - position.x >= 0 && y - position.y <= 40 && y - position.y >= 0;
+        boolean mouseIsOver = x - DisplayManager.scaledWidth(position.x) <= DisplayManager.scaledWidth(142) && x - DisplayManager.scaledWidth(position.x) >= 0 && y - DisplayManager.scaledHeight(DisplayManager.getDefaultHeight() - position.y) <= DisplayManager.scaledHeight(40) && y - DisplayManager.scaledHeight(DisplayManager.getDefaultHeight() - position.y) >= 0;
 
         if (mouseIsOver && !mouseWasOver) {
             mouseWasOver = true;
 
-            RawModel model = Loader.singleton.loadGUIToVAO(new Vector2f(position.x,  position.y), new Vector2f(142, 40), TextureHelper.getPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(71, 109), new Vector2f(71, 20)));
+            RawModel model = Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth(position.x), DisplayManager.scaledHeight(DisplayManager.getDefaultHeight() - position.y)), new Vector2f(DisplayManager.scaledWidth(142), DisplayManager.scaledHeight(40)), TextureHelper.getPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(71, 109), new Vector2f(71, 20)));
             ModelTexture texture = new ModelTexture(Loader.singleton.loadTexture(PlayerRendererTest.class.getResource("/img/gui.png")));
             this.model = new TexturedModel(model, texture);
 
         } else if(!mouseIsOver && mouseWasOver) {
             mouseWasOver = false;
 
-            RawModel model = Loader.singleton.loadGUIToVAO(new Vector2f(position.x, position.y), new Vector2f(142, 40), TextureHelper.getPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(0, 109), new Vector2f(71, 20)));
+            RawModel model = Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth(position.x), DisplayManager.scaledHeight(DisplayManager.getDefaultHeight() - position.y)), new Vector2f(DisplayManager.scaledWidth(142), DisplayManager.scaledHeight(40)), TextureHelper.getPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(0, 109), new Vector2f(71, 20)));
             ModelTexture texture = new ModelTexture(Loader.singleton.loadTexture(PlayerRendererTest.class.getResource("/img/gui.png")));
             this.model = new TexturedModel(model, texture);
         }
@@ -70,6 +70,10 @@ public class TinyButton extends GUIObject {
         if(Mouse.isButtonDown(0) && !mouseWasDown) {
             mouseWasDown = true;
         }
+    }
+
+    public void resize() {
+        this.model.setRawModel(Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth(position.x), DisplayManager.scaledHeight(DisplayManager.getDefaultHeight() - position.y)), new Vector2f(DisplayManager.scaledWidth(142), DisplayManager.scaledHeight(40)), TextureHelper.getPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(0, 109), new Vector2f(71, 20))));
     }
 
 }
