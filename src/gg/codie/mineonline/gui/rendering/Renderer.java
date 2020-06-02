@@ -29,12 +29,7 @@ public class Renderer {
     Font awtFont;
     AngelCodeFont angelCodeFont;
 
-    public Renderer(StaticShader shader) {
-        createProjectionMatrix();
-        shader.start();
-        shader.loadProjectionMatrix(projectionMatrix);
-        shader.stop();
-
+    public Renderer() {
         InputStream inputStream = ResourceLoader.getResourceAsStream("font/Minecraft.ttf");
 
         try {
@@ -83,10 +78,14 @@ public class Renderer {
     }
 
     public void render(GameObject gameObject, StaticShader shader) {
+        createProjectionMatrix();
+
         for(GameObject child : gameObject.getChildren()) {
             render(child, shader);
         }
         shader.start();
+
+        shader.loadProjectionMatrix(projectionMatrix);
 
         TexturedModel texturedModel = gameObject.getModel();
 
@@ -204,7 +203,7 @@ public class Renderer {
         float stringWidth = angelCodeFont.getWidth(text);
 
         GL11.glPushMatrix();
-        GL11.glScaled(DisplayManager.getScale(), DisplayManager.getScale(), 1);
+        //GL11.glScaled(DisplayManager.getScale(), DisplayManager.getScale(), 1);
         angelCodeFont.drawString(DisplayManager.scaledWidth(position.x) + 2, DisplayManager.scaledHeight(position.y) + 2, text, new org.newdawn.slick.Color(0, 0, 0, 0.7f * color.a)); //x, y, string to draw, color
         angelCodeFont.drawString(DisplayManager.scaledWidth(position.x), DisplayManager.scaledHeight(position.y), text, color); //x, y, string to draw, color
         GL11.glPopMatrix();
@@ -224,9 +223,39 @@ public class Renderer {
 
         GL11.glLoadIdentity();
         GL11.glPushMatrix();
-        GL11.glScaled((double)Display.getWidth() / DisplayManager.getDefaultWidth(), (double)Display.getHeight() / DisplayManager.getDefaultHeight(), 1);
-        angelCodeFont.drawString(position.x - (stringWidth / 2) + 2, position.y + 2, text, new org.newdawn.slick.Color(0, 0, 0, 0.7f * color.a)); //x, y, string to draw, color
-        angelCodeFont.drawString(position.x - (stringWidth / 2), position.y, text, color); //x, y, string to draw, color
+        //GL11.glScaled(DisplayManager.getScale(), DisplayManager.getScale(), 1);
+
+//        double widthScale = 1 - (((double)Display.getWidth() / DisplayManager.getDefaultWidth()) - 1);
+//        double heightScale = 1 - (((double)Display.getHeight() / DisplayManager.getDefaultHeight()) - 1);
+//        GL11.glScaled(widthScale, heightScale, 1);
+        int xBuffer = (int)(Display.getWidth() - DisplayManager.scaledWidth(DisplayManager.getDefaultWidth())) / 2;
+        int yBuffer = (int)(Display.getHeight() - DisplayManager.scaledHeight(DisplayManager.getDefaultHeight())) / 2;
+
+        double xTransScale = 1;
+        double yTransScale = 1;
+
+        if(DisplayManager.isWide()) {
+            yTransScale = (double)Display.getWidth() / Display.getHeight();
+            xTransScale = (double)Display.getHeight() / Display.getWidth();
+        } else {
+            xTransScale = (double)Display.getHeight() / Display.getWidth();
+            yTransScale = (double)Display.getWidth() / Display.getHeight();
+        }
+
+//        System.out.println("x scale " + xTransScale + ", y scale " + yTransScale);
+
+        //GL11.glTranslatef(((position.x - (stringWidth / 2)) + xBuffer) * (float)xTransScale, ((position.y) + yBuffer) * (float)yTransScale, 0);
+        GL11.glTranslatef((DisplayManager.scaledWidth(position.x - (stringWidth / 2)) + xBuffer), (DisplayManager.scaledHeight(position.y) + yBuffer), 0);
+        //GL11.glScaled((double)DisplayManager.getDefaultWidth() / Display.getWidth(), (double)DisplayManager.getDefaultHeight() / Display.getHeight() , 1);
+
+        double widthScale = (((double)Display.getWidth() / DisplayManager.getDefaultWidth()) - 1);
+        double heightScale = (((double)Display.getHeight() / DisplayManager.getDefaultHeight()) - 1);
+        //GL11.glScaled(widthScale, heightScale, 1);
+
+        //GL11.glScaled(DisplayManager.getScale(), DisplayManager.getScale(), 1);
+
+        angelCodeFont.drawString(2, 2, text, new org.newdawn.slick.Color(0, 0, 0, 0.7f * color.a)); //x, y, string to draw, color
+        angelCodeFont.drawString(0, 0, text, color); //x, y, string to draw, color
         GL11.glPopMatrix();
 
         GL11.glDisable(GL11.GL_BLEND);

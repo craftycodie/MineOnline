@@ -24,7 +24,7 @@ public class MainMenuScreen implements IMenuScreen {
 
 
     public MainMenuScreen() {
-        RawModel logoModel = Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth((DisplayManager.getDefaultWidth() / 2) -200), DisplayManager.scaledHeight(DisplayManager.getDefaultHeight() - 69)), new Vector2f(DisplayManager.scaledWidth(400), DisplayManager.scaledHeight(49)), TextureHelper.getYFlippedPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(0, 40), new Vector2f(400, 49)));
+        RawModel logoModel = Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth((DisplayManager.getDefaultWidth() / 2) -200) + DisplayManager.getXBuffer(), DisplayManager.scaledHeight(DisplayManager.getDefaultHeight() - 69) + DisplayManager.getYBuffer()), new Vector2f(DisplayManager.scaledWidth(400), DisplayManager.scaledHeight(49)), TextureHelper.getYFlippedPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(0, 40), new Vector2f(400, 49)));
         ModelTexture logoTexture = new ModelTexture(Loader.singleton.loadTexture(PlayerRendererTest.class.getResource("/img/gui.png")));
         TexturedModel texuredLogoModel =  new TexturedModel(logoModel, logoTexture);
         logo = new GUIObject("logo", texuredLogoModel, new Vector3f(0, 10, 0), new Vector3f(), new Vector3f(1, 1, 1));
@@ -50,7 +50,12 @@ public class MainMenuScreen implements IMenuScreen {
             }
         });
 
-        versionButton = new MediumButton("Version: b1.7.3", new Vector2f((DisplayManager.getDefaultWidth() / 2) + 30, (DisplayManager.getDefaultHeight() / 2) + 56), null);
+        versionButton = new MediumButton("Version: b1.7.3", new Vector2f((DisplayManager.getDefaultWidth() / 2) + 30, (DisplayManager.getDefaultHeight() / 2) + 56), new IOnClickListener() {
+            @Override
+            public void onClick() {
+                PlayerRendererTest.setMenuScreen(new SelectVersionMenuScreen());
+            }
+        });
 
         optionsButton = new TinyButton("Options...", new Vector2f((DisplayManager.getDefaultWidth() / 2) + 30, (DisplayManager.getDefaultHeight() / 2) + 112), new IOnClickListener() {
             @Override
@@ -99,6 +104,6 @@ public class MainMenuScreen implements IMenuScreen {
         versionButton.resize();
         optionsButton.resize();
         skinButton.resize();
-        logo.model.setRawModel(Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth((DisplayManager.getDefaultWidth() / 2) -200), DisplayManager.scaledHeight(DisplayManager.getDefaultHeight() - 69)), new Vector2f(DisplayManager.scaledWidth(400), DisplayManager.scaledHeight(49)), TextureHelper.getYFlippedPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(0, 40), new Vector2f(400, 49))));
+        logo.model.setRawModel(Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth((DisplayManager.getDefaultWidth() / 2) -200) + DisplayManager.getXBuffer(), DisplayManager.scaledHeight(DisplayManager.getDefaultHeight() - 69) + DisplayManager.getYBuffer()), new Vector2f(DisplayManager.scaledWidth(400), DisplayManager.scaledHeight(49)), TextureHelper.getYFlippedPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(0, 40), new Vector2f(400, 49))));
     }
 }

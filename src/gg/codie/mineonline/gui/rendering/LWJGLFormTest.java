@@ -16,7 +16,7 @@ public class LWJGLFormTest {
         DisplayManager.createDisplay();
 
         StaticShader shader = new StaticShader();
-        Renderer renderer = new Renderer(shader);
+        Renderer renderer = new Renderer();
 
         Loader loader = new Loader();
 

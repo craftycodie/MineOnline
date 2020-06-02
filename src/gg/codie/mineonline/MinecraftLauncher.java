@@ -99,7 +99,7 @@ public class MinecraftLauncher extends Applet implements AppletStub{
         Display.setCreateListener(new OnCreateListener() {
             @Override
             public void onCreateEvent() {
-                renderer = new Renderer(new StaticShader());
+                renderer = new Renderer();
             }
         });
 

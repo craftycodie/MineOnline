@@ -38,7 +38,7 @@ public class MainForm implements IContainerForm {
 
     public MainForm() {
         if (Session.session == null) {
-            FormManager.switchScreen(new LoginForm());
+            //FormManager.switchScreen(new LoginForm());
             return;
         }
 
@@ -144,7 +144,7 @@ public class MainForm implements IContainerForm {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Session.session.logout();
-                FormManager.switchScreen(new LoginForm());
+                //FormManager.switchScreen(new LoginForm());
             }
         });
 

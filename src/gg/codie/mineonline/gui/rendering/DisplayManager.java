@@ -26,6 +26,14 @@ public class DisplayManager {
         return height * (float)getScale();
     }
 
+    public static int getXBuffer() {
+        return (int)(Display.getWidth() - DisplayManager.scaledWidth(DisplayManager.getDefaultWidth())) / 2;
+    }
+
+    public static int getYBuffer() {
+        return (int)(Display.getHeight() - DisplayManager.scaledHeight(DisplayManager.getDefaultHeight())) / 2;
+    }
+
     public static boolean isTall() {
         return (double)Display.getWidth() / Display.getHeight() > DEFAULT_ASPECT;
     }

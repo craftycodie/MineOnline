@@ -24,14 +24,12 @@ public class JoinServerScreen implements IMenuScreen {
 
 
     public JoinServerScreen() {
-        serverIPField = new InputField("Server IP Input", new Vector2f((Display.getWidth() / 2) - 200, (Display.getHeight() / 2) - 40), Properties.properties.has("lastServer") ? Properties.properties.getString("lastServer") : "");
-
-        aboutButton = new LargeButton("Version: b1.7.3", new Vector2f((Display.getWidth() / 2) - 200, (Display.getHeight() / 2) + 8), null);
-
-        logoutButton = new LargeButton("Connect", new Vector2f((Display.getWidth() / 2) - 200, Display.getHeight() - 66), new IOnClickListener() {
+        serverIPField = new InputField("Server IP Input", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 200, (DisplayManager.getDefaultHeight() / 2) - 40), Properties.properties.has("lastServer") ? Properties.properties.getString("lastServer") : "", new IOnClickListener() {
             @Override
             public void onClick() {
                 try {
+                    Properties.properties.put("lastServer", serverIPField.getValue());
+                    Properties.saveProperties();
                     String[] split = serverIPField.getValue().split(":");
                     String mppass = MinecraftAPI.getMpPass(Session.session.getSessionToken(), split[0], split.length > 1 ? split[1] : "25565");
 
@@ -43,7 +41,26 @@ public class JoinServerScreen implements IMenuScreen {
             }
         });
 
-        doneButton = new LargeButton("Done", new Vector2f((Display.getWidth() / 2) - 200, Display.getHeight() - 20), new IOnClickListener() {
+        aboutButton = new LargeButton("Version: b1.7.3", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 200, (DisplayManager.getDefaultHeight() / 2) + 8), null);
+
+        logoutButton = new LargeButton("Connect", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 200, DisplayManager.getDefaultHeight() - 66), new IOnClickListener() {
+            @Override
+            public void onClick() {
+                try {
+                    Properties.properties.put("lastServer", serverIPField.getValue());
+                    Properties.saveProperties();
+                    String[] split = serverIPField.getValue().split(":");
+                    String mppass = MinecraftAPI.getMpPass(Session.session.getSessionToken(), split[0], split.length > 1 ? split[1] : "25565");
+
+                    //new MinecraftLauncher("D:\\Projects\\GitHub\\MineOnline\\jars\\b1.7.3-modded.jar", null, null, null).startMinecraft();
+                    new MinecraftLauncher("D:\\Projects\\GitHub\\MineOnline\\jars\\b1.7.3.jar", split[0], split.length > 1 ? split[1] : "25565", mppass).startMinecraft();
+
+                    //new MinecraftLauncher("D:\\Projects\\GitHub\\MineOnline\\jars\\c0.0.11a-launcher.jar", null, null, null).startMinecraft();
+                } catch (Exception ex) {}
+            }
+        });
+
+        doneButton = new LargeButton("Cancel", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 200, DisplayManager.getDefaultHeight() - 20), new IOnClickListener() {
             @Override
             public void onClick() {
                 PlayerRendererTest.setMenuScreen(new MainMenuScreen());
@@ -69,7 +86,7 @@ public class JoinServerScreen implements IMenuScreen {
         doneButton.render(renderer, guiShader);
         guiShader.stop();
 
-        renderer.renderCenteredString(new Vector2f(Display.getWidth() / 2, 50), "Play Multiplayer", Color.white); //x, y, string to draw, color
+        renderer.renderCenteredString(new Vector2f(DisplayManager.getDefaultWidth() / 2, 50), "Play Multiplayer", Color.white); //x, y, string to draw, color
     }
 
     public boolean showPlayer() {
@@ -77,7 +94,7 @@ public class JoinServerScreen implements IMenuScreen {
     }
 
     public void resize() {
-        //serverIPField.resize();
+        serverIPField.resize();
         logoutButton.resize();
         aboutButton.resize();
         doneButton.resize();

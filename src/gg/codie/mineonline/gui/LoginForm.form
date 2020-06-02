@@ -5,7 +5,10 @@
     <constraints>
       <xy x="20" y="20" width="500" height="400"/>
     </constraints>
-    <properties/>
+    <properties>
+      <opaque value="false"/>
+      <visible value="true"/>
+    </properties>
     <border type="none"/>
     <children>
       <component id="a217d" class="javax.swing.JLabel" binding="logolabel">
@@ -18,6 +21,20 @@
         </constraints>
         <properties>
           <text value=""/>
+        </properties>
+      </component>
+      <component id="10549" class="javax.swing.JLabel" binding="errorMessage">
+        <constraints>
+          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="2" fill="0" indent="0" use-parent-layout="false">
+            <minimum-size width="-1" height="100"/>
+            <preferred-size width="-1" height="100"/>
+            <maximum-size width="-1" height="100"/>
+          </grid>
+        </constraints>
+        <properties>
+          <foreground color="-4521971"/>
+          <text value=""/>
+          <verticalTextPosition value="3"/>
         </properties>
       </component>
       <grid id="31cef" binding="loginContainer" layout-manager="GridLayoutManager" row-count="4" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
@@ -100,20 +117,6 @@
           </component>
         </children>
       </grid>
-      <component id="10549" class="javax.swing.JLabel" binding="errorMessage">
-        <constraints>
-          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="2" fill="0" indent="0" use-parent-layout="false">
-            <minimum-size width="-1" height="100"/>
-            <preferred-size width="-1" height="100"/>
-            <maximum-size width="-1" height="100"/>
-          </grid>
-        </constraints>
-        <properties>
-          <foreground color="-4521971"/>
-          <text value=""/>
-          <verticalTextPosition value="3"/>
-        </properties>
-      </component>
     </children>
   </grid>
 </form>

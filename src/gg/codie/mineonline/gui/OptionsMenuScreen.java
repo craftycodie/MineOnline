@@ -1,14 +1,11 @@
 package gg.codie.mineonline.gui;
 
 import gg.codie.mineonline.Properties;
+import gg.codie.mineonline.Session;
 import gg.codie.mineonline.gui.events.IOnClickListener;
 import gg.codie.mineonline.gui.rendering.*;
 import gg.codie.mineonline.gui.rendering.components.LargeButton;
-import gg.codie.mineonline.gui.rendering.models.RawModel;
-import gg.codie.mineonline.gui.rendering.models.TexturedModel;
 import gg.codie.mineonline.gui.rendering.shaders.GUIShader;
-import gg.codie.mineonline.gui.rendering.textures.ModelTexture;
-import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Vector2f;
 import org.newdawn.slick.Color;
 
@@ -20,14 +17,9 @@ public class OptionsMenuScreen implements IMenuScreen {
 
 
     public OptionsMenuScreen() {
-        RawModel logoModel = Loader.singleton.loadGUIToVAO(new Vector2f((DisplayManager.getDefaultWidth() / 2) -200, DisplayManager.getDefaultHeight() - 69), new Vector2f(400, 49), TextureHelper.getYFlippedPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(0, 40), new Vector2f(400, 49)));
-        ModelTexture logoTexture = new ModelTexture(Loader.singleton.loadTexture(PlayerRendererTest.class.getResource("/img/gui.png")));
-        TexturedModel texuredLogoModel =  new TexturedModel(logoModel, logoTexture);
-
         fullscreenButton = new LargeButton("Fullscreen: " + (Properties.properties.getBoolean("fullscreen") ? "ON" : "OFF"), new Vector2f((DisplayManager.getDefaultWidth() / 2) - 200, (DisplayManager.getDefaultHeight() / 2) - 40), new IOnClickListener() {
             @Override
             public void onClick() {
-                //formopen = false;
                 boolean fullcreen = !Properties.properties.getBoolean("fullscreen");
                 Properties.properties.put("fullscreen", fullcreen);
                 Properties.saveProperties();
@@ -35,9 +27,19 @@ public class OptionsMenuScreen implements IMenuScreen {
             }
         });
 
-        aboutButton = new LargeButton("About", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 200, (DisplayManager.getDefaultHeight() / 2) + 8), null);
+        aboutButton = new LargeButton("About", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 200, (DisplayManager.getDefaultHeight() / 2) + 8), new IOnClickListener() {
+            @Override
+            public void onClick() {
+                PlayerRendererTest.setMenuScreen(new AboutMenuScreen());
+            }
+        });
 
-        logoutButton = new LargeButton("Logout", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 200, (DisplayManager.getDefaultHeight() / 2) + 56), null);
+        logoutButton = new LargeButton("Logout", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 200, (DisplayManager.getDefaultHeight() / 2) + 56), new IOnClickListener() {
+            @Override
+            public void onClick() {
+                Session.session.logout();
+            }
+        });
 
         doneButton = new LargeButton("Done", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 200, DisplayManager.getDefaultHeight() - 20), new IOnClickListener() {
             @Override

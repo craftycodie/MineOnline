@@ -3,6 +3,7 @@ package gg.codie.mineonline.gui.rendering;
 import gg.codie.mineonline.LibraryManager;
 import gg.codie.mineonline.Session;
 import gg.codie.mineonline.gui.IMenuScreen;
+import gg.codie.mineonline.gui.LoginMenuScreen;
 import gg.codie.mineonline.gui.MainMenuScreen;
 import gg.codie.mineonline.gui.rendering.animation.*;
 import gg.codie.mineonline.gui.rendering.models.RawModel;
@@ -35,6 +36,11 @@ public class PlayerRendererTest {
         public void windowClosing(WindowEvent e){
             DisplayManager.getFrame().dispose();
         }
+
+        @Override
+        public void windowOpened(WindowEvent e) {
+            DisplayManager.getFrame().getOwner().setBackground(java.awt.Color.black);
+        }
     };
 
     public static void main(String[] args) throws Exception {
@@ -52,11 +58,11 @@ public class PlayerRendererTest {
         DisplayManager.getFrame().addWindowListener(closeListener);
 
         StaticShader shader = new StaticShader();
-        Renderer renderer = new Renderer(shader);
+        Renderer renderer = new Renderer();
         Loader loader = new Loader();
         GameObject playerPivot = new GameObject("player_origin", new Vector3f(), new Vector3f(0, 30, 0), new Vector3f(1, 1, 1));
         PlayerGameObject playerGameObject = new PlayerGameObject("player", loader, shader, new Vector3f(0, -21, 0), new Vector3f(), new Vector3f(1, 1, 1));
-        new Session("codie");
+        new Session("codie", "5ed5b83ad4c7ad8928b3a08b");
         playerPivot.addChild(playerGameObject);
 
         GameObject playerScale = new GameObject("player scale", new Vector3f(-20, 0, -65), new Vector3f(), new Vector3f(1, 1, 1));

@@ -22,22 +22,29 @@ public class InputField extends GUIObject {
     }
 
     String value;
+    IOnClickListener onEnterPressed;
 
-    public InputField(String name, Vector2f position, String value) {
+    public InputField(String name, Vector2f position, String value, IOnClickListener onEnterPressed) {
         super(name,
-                new TexturedModel(Loader.singleton.loadGUIToVAO(new Vector2f(position.x, Display.getHeight() - position.y), new Vector2f(400, 40), TextureHelper.getPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(200, 0), new Vector2f(200, 20))), new ModelTexture(Loader.singleton.loadTexture(PlayerRendererTest.class.getResource("/img/gui.png")))),
+                new TexturedModel(Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth(position.x) + DisplayManager.getXBuffer(), DisplayManager.scaledHeight(DisplayManager.getDefaultHeight() - position.y) + DisplayManager.getYBuffer()), new Vector2f(DisplayManager.scaledWidth(400), DisplayManager.scaledHeight(40)), TextureHelper.getPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(200, 0), new Vector2f(200, 20))), new ModelTexture(Loader.singleton.loadTexture(PlayerRendererTest.class.getResource("/img/gui.png")))),
                 new Vector3f(0, 0, 0), new Vector3f(), new Vector3f(1, 1, 1)
         );
 
-        this.position = new Vector2f(position.x, Display.getHeight() - position.y);
+        this.position = new Vector2f(position.x, position.y);
         this.value = value;
+        this.onEnterPressed = onEnterPressed;
     }
 
     public void render(Renderer renderer, GUIShader shader) {
         shader.start();
         renderer.renderGUI(this, shader);
         shader.stop();
-        renderer.renderString(new Vector2f(position.x + 8, (Display.getHeight() - position.y) - 32), this.value, Color.white);
+
+        if(focused && System.currentTimeMillis() % 600 >= 300)
+            renderer.renderString(new Vector2f(position.x + 8, position.y - 32), this.value + "_", Color.white);
+        else
+            renderer.renderString(new Vector2f(position.x + 8,  position.y - 32), this.value, Color.white);
+
     }
 
     boolean focused = true;
@@ -58,6 +65,8 @@ public class InputField extends GUIObject {
                         if (value.length() > 0) {
                             value = value.substring(0, value.length() - 1);
                         }
+                    } else if (Keyboard.getEventKey() == Keyboard.KEY_RETURN && this.onEnterPressed != null) {
+                        this.onEnterPressed.onClick();
                     } else {
                         value += Keyboard.getEventCharacter();
                     }
@@ -65,7 +74,11 @@ public class InputField extends GUIObject {
             }
         }
 
-        boolean mouseIsOver = x - position.x <= 400 && x - position.x >= 0 && y - position.y <= 40 && y - position.y >= 0;
+        boolean mouseIsOver =
+               x - (DisplayManager.scaledWidth(position.x) + DisplayManager.getXBuffer()) <= DisplayManager.scaledWidth(400)
+            && x - (DisplayManager.scaledWidth(position.x) + DisplayManager.getXBuffer()) >= 0
+            && y - DisplayManager.scaledHeight(DisplayManager.getDefaultHeight() - position.y) - DisplayManager.getYBuffer() <= DisplayManager.scaledHeight(40)
+            && y - DisplayManager.scaledHeight(DisplayManager.getDefaultHeight() - position.y) - DisplayManager.getYBuffer() >= 0;
 
         if (mouseIsOver && !mouseWasOver) {
             mouseWasOver = true;
@@ -84,6 +97,10 @@ public class InputField extends GUIObject {
         if(Mouse.isButtonDown(0) && !mouseWasDown) {
             mouseWasDown = true;
         }
+    }
+
+    public void resize() {
+        this.model.setRawModel(Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth(position.x) + DisplayManager.getXBuffer(), DisplayManager.scaledHeight(DisplayManager.getDefaultHeight() - position.y) + DisplayManager.getYBuffer()), new Vector2f(DisplayManager.scaledWidth(400), DisplayManager.scaledHeight(40)), TextureHelper.getPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(200, 0), new Vector2f(200, 20))));
     }
 
 }

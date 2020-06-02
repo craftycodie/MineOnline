@@ -5,6 +5,7 @@ import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.LibraryManager;
 import gg.codie.mineonline.Properties;
 import gg.codie.mineonline.Proxy;
+import gg.codie.mineonline.gui.events.IOnClickListener;
 import gg.codie.mineonline.gui.rendering.*;
 import gg.codie.mineonline.gui.rendering.Renderer;
 import gg.codie.mineonline.gui.rendering.shaders.StaticShader;
@@ -38,7 +39,7 @@ public class FormManager {
 
         Properties.loadProperties();
 
-        Proxy.launchProxy();
+        //Proxy.launchProxy();
 
         JFrame frame = new JFrame();
         frame.setVisible(true);
@@ -84,8 +85,14 @@ public class FormManager {
 
         frame.setSize(new Dimension(845, 476));
         frame.setLocationRelativeTo(null);
+        frame.getOwner().setBackground(Color.black);
 
-        switchScreen(new LoginForm());
+        switchScreen(new LoginForm(new IOnClickListener() {
+            @Override
+            public void onClick() {
+                PlayerRendererTest.setMenuScreen(new MainMenuScreen());
+            }
+        }));
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -94,7 +101,7 @@ public class FormManager {
 
         frame.setLocationRelativeTo(null);
 
-        frame.setResizable(false);
+        //frame.setResizable(false);
         frame.setVisible(true);
 
         glCanvas.setIgnoreRepaint(true);
@@ -117,110 +124,110 @@ public class FormManager {
             renderPanel.add(glCanvas, new GridConstraints());
             glCanvas.setSize(renderPanel.getSize());
 
-            if(!gamePrepared) {
-                gamePrepare.run();
-            } else {
+//            if(!gamePrepared) {
+//                gamePrepare.run();
+//            } else {
                 try {
                     Display.setParent(glCanvas);
                 } catch (Exception e) {}
                 DisplayManager.createDisplay(glCanvas.getSize().width, glCanvas.getSize().height);
-            }
-            EventQueue.invokeLater(gameMainLoop);
+//            }
+//            EventQueue.invokeLater(gameMainLoop);
         }
     }
 
 
-    static boolean gamePrepared;
-    public static Runnable gamePrepare = new Runnable() {
-        public void run() {
-            try {
-                Display.setParent(glCanvas);
-            } catch (Exception e) {}
-            DisplayManager.createDisplay(glCanvas.getSize().width, glCanvas.getSize().height);
-
-            gamePrepared = true;
-
-            shader = new StaticShader();
-            renderer = new Renderer(shader);
-
-            loader = new Loader();
-
-            playerPivot = new GameObject("player_origin", new Vector3f(0, 0, -40), new Vector3f(0, 25, 0), new Vector3f(1, 1, 1));
-
-            playerGameObject = new PlayerGameObject("player", loader, shader, new Vector3f(0, -16, 0), new Vector3f(), new Vector3f(1, 1, 1));
-
-            playerPivot.addChild(playerGameObject);
-
-            try {
-                playerGameObject.setSkin(Paths.get(LauncherFiles.CACHED_SKIN_PATH).toUri().toURL());
-                playerGameObject.setCloak(Paths.get(LauncherFiles.CACHED_CLOAK_PATH).toUri().toURL());
-            } catch (MalformedURLException mx) {
-
-            }
-
-            camera = new Camera();
-        }
-    };
-
-
-
-    public static Runnable gameMainLoop = new Runnable() {
-        public void run() {
-            renderer.prepare();
-            // Camera roll lock.
-            // Broken and not necessary.
-
-//            if(playerPivot.getLocalRotation().z > 0) {
-//                playerPivot.increaseRotation(new Vector3f(0, 0, -playerPivot.getLocalRotation().z));
+//    static boolean gamePrepared;
+//    public static Runnable gamePrepare = new Runnable() {
+//        public void run() {
+//            try {
+//                Display.setParent(glCanvas);
+//            } catch (Exception e) {}
+//            DisplayManager.createDisplay(glCanvas.getSize().width, glCanvas.getSize().height);
+//
+//            gamePrepared = true;
+//
+//            shader = new StaticShader();
+//            renderer = new Renderer();
+//
+//            loader = new Loader();
+//
+//            playerPivot = new GameObject("player_origin", new Vector3f(0, 0, -40), new Vector3f(0, 25, 0), new Vector3f(1, 1, 1));
+//
+//            playerGameObject = new PlayerGameObject("player", loader, shader, new Vector3f(0, -16, 0), new Vector3f(), new Vector3f(1, 1, 1));
+//
+//            playerPivot.addChild(playerGameObject);
+//
+//            try {
+//                playerGameObject.setSkin(Paths.get(LauncherFiles.CACHED_SKIN_PATH).toUri().toURL());
+//                playerGameObject.setCloak(Paths.get(LauncherFiles.CACHED_CLOAK_PATH).toUri().toURL());
+//            } catch (MalformedURLException mx) {
+//
 //            }
-
-            if(Mouse.isButtonDown(0)) {
-                Vector3f currentRotation = playerPivot.getLocalRotation();
-                Vector3f rotation = new Vector3f();
-
-                // Camera pitch rotation with lock.
-                // Currently broken.
-
-//                float dy = Mouse.getDY();
-
-//                if(currentRotation.x + (dy * -0.3f) > 30) {
-//                    rotation.x = 30 - currentRotation.x;
-//                } else if(currentRotation.x + (dy * -0.3f) < -30) {
-//                    rotation.x = -30 - currentRotation.x;
-//                } else {
-//                    rotation.x = dy * -0.3f;
-//                }
-
-                rotation.y = (Mouse.getDX() * 0.5f);
-
-//                System.out.println(rotation.toString());
-
-                playerPivot.increaseRotation(rotation);
-            }
-
-            playerGameObject.update();
-
-            camera.move();
-
-            shader.start();
-            shader.loadViewMatrix(camera);
-
-            renderer.render(playerGameObject, shader);
-
-            shader.stop();
-
-            //DisplayManager.updateDisplay();
-            Display.update();
-
-            try {
-                Thread.sleep(12);
-            } catch (Exception e) {
-
-            }
+//
+//            camera = new Camera();
+//        }
+//    };
 
 
-            EventQueue.invokeLater(this);
-        }
-    };
+
+//    public static Runnable gameMainLoop = new Runnable() {
+//        public void run() {
+//            renderer.prepare();
+//            // Camera roll lock.
+//            // Broken and not necessary.
+//
+////            if(playerPivot.getLocalRotation().z > 0) {
+////                playerPivot.increaseRotation(new Vector3f(0, 0, -playerPivot.getLocalRotation().z));
+////            }
+//
+//            if(Mouse.isButtonDown(0)) {
+//                Vector3f currentRotation = playerPivot.getLocalRotation();
+//                Vector3f rotation = new Vector3f();
+//
+//                // Camera pitch rotation with lock.
+//                // Currently broken.
+//
+////                float dy = Mouse.getDY();
+//
+////                if(currentRotation.x + (dy * -0.3f) > 30) {
+////                    rotation.x = 30 - currentRotation.x;
+////                } else if(currentRotation.x + (dy * -0.3f) < -30) {
+////                    rotation.x = -30 - currentRotation.x;
+////                } else {
+////                    rotation.x = dy * -0.3f;
+////                }
+//
+//                rotation.y = (Mouse.getDX() * 0.5f);
+//
+////                System.out.println(rotation.toString());
+//
+//                playerPivot.increaseRotation(rotation);
+//            }
+//
+//            playerGameObject.update();
+//
+//            camera.move();
+//
+//            shader.start();
+//            shader.loadViewMatrix(camera);
+//
+//            renderer.render(playerGameObject, shader);
+//
+//            shader.stop();
+//
+//            //DisplayManager.updateDisplay();
+//            Display.update();
+//
+//            try {
+//                Thread.sleep(12);
+//            } catch (Exception e) {
+//
+//            }
+//
+//
+//            EventQueue.invokeLater(this);
+//        }
+//    };
 
 }

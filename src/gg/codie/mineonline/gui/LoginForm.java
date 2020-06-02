@@ -5,6 +5,7 @@ import gg.codie.mineonline.MineOnlineLauncher;
 import gg.codie.mineonline.Properties;
 import gg.codie.mineonline.Session;
 import gg.codie.mineonline.api.MinecraftAPI;
+import gg.codie.mineonline.gui.events.IOnClickListener;
 import org.lwjgl.LWJGLException;
 
 import javax.crypto.*;
@@ -32,16 +33,25 @@ public class LoginForm  implements IContainerForm {
     private JButton playOfflineButton;
     private JLabel errorMessage;
     private JLabel needAccountLabel;
+    private JPanel renderPanel;
+
+    private IOnClickListener onLogin;
 
     public JPanel getContent() {
         return contentPanel;
     }
 
     public JPanel getRenderPanel() {
-        return null;
+        return renderPanel;
     }
 
-    public LoginForm() {
+    public boolean hasLoggedIn() {
+        return hasLoggedIn;
+    }
+
+    private boolean hasLoggedIn = false;
+
+    public LoginForm(IOnClickListener onLogin) {
         ImageIcon icon = new ImageIcon(LoginForm.class.getResource("/img/mineonlinelogo.png"));
         logolabel.setIcon(icon);
 
@@ -73,7 +83,8 @@ public class LoginForm  implements IContainerForm {
                     if (sessionToken != null) {
                         new Session(usernameTextField.getText(), sessionToken);
                         writeLastLogin();
-                        FormManager.switchScreen(new MainForm());
+                        if (onLogin != null)
+                            onLogin.onClick();
                     } else {
                         failed = "Failed to login.";
                     }
@@ -96,7 +107,9 @@ public class LoginForm  implements IContainerForm {
                     return;
                 }
                 new Session(usernameTextField.getText());
-                FormManager.switchScreen(new MainForm());
+
+                if (onLogin != null)
+                    onLogin.onClick();
             }
         });
 
