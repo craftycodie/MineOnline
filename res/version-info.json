@@ -26,7 +26,7 @@
   { "name": "in-20100110-2302", "md5": "A2D222CCCCD5D26A9B61D009D1D4584E", "sha256": "FFB5AE343D4BC7D08134861F64FB2C06C9CA1B24D5116A72945C1DB3819B81E1", "type": "client", "enableScreenshotPatch": true },
   { "name": "in-20100124-3", "md5": "FC7AC985A87F6BF8291730845A46FCEF", "sha256": "53B9B8BBED7B774AF14F87A567CB8BADE4372F2876D1BD74E4B85FA1E9A9C49E", "type": "client", "enableScreenshotPatch": true },
   { "name": "in-20100125", "md5": "7E5B33E586314A4DA5CE01EF48529187", "sha256": "F7869DDDE21090095F250228675941F2042F5DA281E3BB713C3CCA1503CB2B5A", "type": "client", "enableScreenshotPatch": true },
-  { "name": "in-20100129-2", "md5": "9F59FC113CCE4B301AC87A572D6E66B6", "sha256": "F39C5299A37A1B5A7F8F5D9160A9593B69B824F1AB357436A9C374BB8AAE9E82", "type": "client", "enableScreenshotPatch": true },
+  { "name": "in-20100129-2", "md5": "9F59FC113CCE4B301AC87A572D6E66B6", "sha256": "F39C5299A37A1B5A7F8F5D9160A9593B69B824F1AB357436A9C374BB8AAE9E82", "type": "client", "enableScreenshotPatch": true, "baseURLHasNoPort": true },
   { "name": "in-20100131-3", "md5": "E3FC0C5A695AA1137DB5819002CC74D3", "sha256": "DBEEE4DE96066C3DAA31413111B3183CEC7CD743C1EDF772C36EC48168E2F9AB", "type": "client", "enableScreenshotPatch": true },
   { "name": "in-20100201-1", "md5": "C4B1E750335C12FF1B833F1F74295ABE", "sha256": "3CE025658642C042AECCD95C3BC1D3EACF3B2AB36B04CEF4FD04B014EAE6C495", "type": "client", "enableScreenshotPatch": true },
   { "name": "in-20100201-2", "md5": "A1105BDBC6C4E0EF936B5E85406006FD", "sha256": "11347C38A9AE4A040A670BF08CF3E6C8FA4518D467FC4E416E2DA8F715038AFC", "type": "client", "enableScreenshotPatch": true },
@@ -156,8 +156,8 @@
   { "name": "b1.9-pre5", "md5": "6258C4F293B939117EFE640EDA76DCA4", "sha256": "F2D96B8D2591CF79A8AF79219E049DBD86D0F3E53D0D9FDB60734C5FC052E4A5", "type": "client" },
   { "name": "b1.9-pre6", "md5": "2468205154374AFE5F9CAABA2FFBF5F8", "sha256": "C6027049918B1F351AFC6AC0DE961C96DE54FECBBBD7AC5573045B27089C2021", "type": "client" },
 
-  { "name": "c1.2", "md5": "B6FC9D2266082B96D428455AE5089D3B", "type": "server", "clientName": "c0.0.16a_02-2", "hasHearbeat": true },
-  { "name": "c1.3", "md5": "0F529321EBED1CE1A3042BCE522B98D4", "type": "server", "hasHearbeat": true },
+  { "name": "c1.2", "md5": "B6FC9D2266082B96D428455AE5089D3B", "type": "server", "clientName": "c0.0.16a_02-2", "hasHeartbeat": true },
+  { "name": "c1.3", "md5": "0F529321EBED1CE1A3042BCE522B98D4", "type": "server", "hasHeartbeat": true },
   { "name": "a0.1.0", "md5": "D9B5FC0024F198347F24FBE2F806DFA4", "sha256": "245C08E96669F8994859242A25AFF69D5E385C21A848F6CE0057E0885DAD3D63", "type": "server" },
   { "name": "a0.1.2_01", "md5": "89B5ECD1083BBD7FC0CF587737A41C7B", "sha256": "DBE695F3BFED64AD31769457B430FE4D400D56D28DE4797B32A705618AAF8B86", "type": "server" },
   { "name": "a0.1.3", "md5": "79D81E15B2CA88BB8E4F023F7D50F0BB", "sha256": "E39843A18E9315582F45FFA8C0C7F71BA87694375EB1CDA7ACB21FA3787D8549", "type": "server" },
@@ -218,5 +218,26 @@
   { "name": "b1.9-pre5", "md5": "69C68380CF198CE50B1F9ECAA8E4681D", "sha256": "A9FCC0CB3966A3202203E574FDA6880FB687ACBBA42FC2A4FE25A70DE3BE2784", "type": "server" },
   { "name": "b1.9-pre6", "md5": "963B90AB757793F10F584FACDCD40A2B", "sha256": "39470BCCC74F90DB68C8F5619840AF8CBA2AC21F3A3715DFBD5FF5D31C310112", "type": "server" },
 
-  { "name": "c1.10.1_ipmod", "md5": "90632803F45C15164587256A08C0ECB4", "type": "server", "clientName": "c0.28 to c0.30", "hasHearbeat": true }
+  { "name": "c1.10.1 IP mod", "md5": "90632803F45C15164587256A08C0ECB4", "type": "server", "clientName": "c0.28 to c0.30", "hasHeartbeat": true },
+
+  { "name":  "Banshee 0.0.5.0", "md5": "B85FBC96DF78464A797AB8A7A474EDDD", "type": "client", "info": "b1.7.3 mod" },
+  { "name":  "Banshee 0.1.1.0", "md5": "A631F9CBC511BC9339FBC54994E62FA9", "type": "client", "info": "b1.7.3 mod" },
+  { "name":  "Banshee 0.1.1.2", "md5": "B13A330252A68443969FD7F541B96999", "type": "client", "info": "b1.7.3 mod" },
+  { "name":  "Banshee 0.1.1.3", "md5": "DD0AF264A6E5DB719F8BD92F8D5CAE42", "type": "client", "info": "b1.7.3 mod" },
+  { "name":  "Banshee 0.1.1.4", "md5": "DF651F4025BADC527D91A05AFA93BD21", "type": "client", "info": "b1.7.3 mod" },
+  { "name":  "Banshee 0.1.1.5", "md5": "210197E5FF27EE4FFF16C04DA4E02181", "type": "client", "info": "b1.7.3 mod" },
+  { "name":  "Banshee 0.1.1.6", "md5": "843D72A3972E369C71B533499141911D", "type": "client", "info": "b1.7.3 mod" },
+
+  { "name":  "Banshee 0.0.5.0", "md5": "27ADBA2B0DD3610E13E117FF18DC60BF", "type": "server", "info": "b1.7.3 mod" },
+  { "name":  "Banshee 0.1.1.0", "md5": "D07AF292AD6873BFB173243EE807F146", "type": "server", "info": "b1.7.3 mod" },
+  { "name":  "Banshee 0.1.1.2", "md5": "B2BCDCE9F18118AD9234743641532336", "type": "server", "info": "b1.7.3 mod" },
+  { "name":  "Banshee 0.1.1.3", "md5": "A4212E714E84121C2E82042AC5CD109D", "type": "server", "info": "b1.7.3 mod" },
+  { "name":  "Banshee 0.1.1.4", "md5": "58616E188132745FCA7ACF6FEF1FEEF1", "type": "server", "info": "b1.7.3 mod" },
+  { "name":  "Banshee 0.1.1.5", "md5": "4A10FA3251CD42B9B3B0F2C6278E5B3F", "type": "server", "info": "b1.7.3 mod" },
+  { "name":  "Banshee 0.1.1.6", "md5": "7E74F5ADE94EF00E5C15BBF2AD908D3B", "type": "server", "info": "b1.7.3 mod" },
+
+  { "name":  "Puucraft 0.1.0.0", "md5": "A19C83410023F4D96CE0DE3DAF613DCF", "type": "client", "info":  "b1.7.3 mod"},
+  { "name":  "Puucraft 0.1.1.0", "md5": "B0D44C2B3B848037705EF6D24B9994C8", "type": "client", "info":  "b1.7.3 mod"},
+  { "name":  "Puucraft 0.2.0.1 (Pre- Release)", "md5": "7ADDA28EB4BBF6FE1E28F2E664E80F7A", "type": "client", "info":  "b1.7.3 mod"},
+  { "name":  "Puucraft 0.2.0.1", "md5": "27EF3CD6AB2DF7A1877840EB64F9DC0B", "type": "client", "info":  "b1.7.3 mod"}
 ]
