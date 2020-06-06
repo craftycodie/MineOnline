@@ -2,6 +2,7 @@ package gg.codie.mineonline;
 
 import gg.codie.mineonline.gui.rendering.*;
 import gg.codie.mineonline.gui.rendering.Renderer;
+import gg.codie.mineonline.gui.rendering.font.TextMaster;
 import gg.codie.mineonline.gui.rendering.shaders.StaticShader;
 import gg.codie.mineonline.lwjgl.OnCreateListener;
 import gg.codie.mineonline.lwjgl.OnUpdateListener;
@@ -13,6 +14,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector2f;
 
 import javax.imageio.ImageIO;
+import javax.swing.*;
 import java.applet.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -112,6 +114,12 @@ public class MinecraftLauncher extends Applet implements AppletStub{
             appletClass = Class.forName(appletClassName);
         } catch (Exception ex) {
             ex.printStackTrace();
+            EventQueue.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    JOptionPane.showMessageDialog(null, "This version is currently unsupported.");
+                }
+            });
             return;
         }
 
@@ -276,11 +284,14 @@ public class MinecraftLauncher extends Applet implements AppletStub{
 
         frame.setBackground(Color.black);
 
+        PlayerRendererTest.formopen = false;
+
         Display.setUpdateListener(new OnUpdateListener() {
             @Override
             public void onUpdateEvent() {
                 if (renderer != null) {
                     //renderer.renderString(new Vector2f(2, 190), "MineOnline Debug", org.newdawn.slick.Color.yellow); //x, y, string to draw, color
+                    TextMaster.render();
                     if (minecraftVersion != null && minecraftVersion.enableScreenshotPatch) {
                         try {
                             float opacityMultiplier = System.currentTimeMillis() - lastScreenshotTime;

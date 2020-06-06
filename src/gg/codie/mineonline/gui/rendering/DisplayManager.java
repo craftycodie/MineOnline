@@ -129,12 +129,12 @@ public class DisplayManager {
             return;
         }
 
-        //ContextAttribs attribs = new ContextAttribs(3,2).withProfileCompatibility(true);
+        ContextAttribs attribs = new ContextAttribs(3,2).withProfileCompatibility(true);
 
         try {
             Display.setParent(canvas);
             Display.setDisplayMode(new DisplayMode(width, height));
-            Display.create();
+            Display.create(new PixelFormat(), attribs);
         } catch (LWJGLException e) {
             e.printStackTrace();
         }

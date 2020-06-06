@@ -115,7 +115,7 @@ public class GUIText {
      *         right.
      */
     public Vector2f getPosition() {
-        return new Vector2f((DisplayManager.scaledWidth(position.x) + DisplayManager.getXBuffer()) / Display.getWidth(), (DisplayManager.scaledHeight(position.y) + DisplayManager.getYBuffer()) / Display.getHeight());
+        return new Vector2f((DisplayManager.scaledWidth(position.x)) / DisplayManager.scaledWidth(DisplayManager.getDefaultWidth()), (DisplayManager.scaledHeight(position.y)) / DisplayManager.scaledHeight(DisplayManager.getDefaultHeight()));
     }
 
     /**
@@ -175,7 +175,7 @@ public class GUIText {
      * @return The maximum length of a line of this text.
      */
     protected float getMaxLineSize() {
-        return (DisplayManager.scaledWidth(lineMaxSize) + DisplayManager.getXBuffer()) / Display.getWidth();
+        return (DisplayManager.scaledWidth(lineMaxSize)) / Display.getWidth();
     }
 
     /**

@@ -1,6 +1,7 @@
 package gg.codie.mineonline.gui.rendering;
 
 import gg.codie.mineonline.LibraryManager;
+import gg.codie.mineonline.MinecraftLauncher;
 import gg.codie.mineonline.Session;
 import gg.codie.mineonline.gui.IMenuScreen;
 import gg.codie.mineonline.gui.MainMenuScreen;
@@ -24,7 +25,7 @@ import java.awt.event.WindowEvent;
 
 public class PlayerRendererTest {
 
-    static boolean formopen = false;
+    public static boolean formopen = false;
 
     public static void setMenuScreen(IMenuScreen menuScreen) {
         PlayerRendererTest.menuScreen = menuScreen;
@@ -90,10 +91,13 @@ public class PlayerRendererTest {
 
         FontType font = new FontType(loader.loadTexture(PlayerRendererTest.class.getResource("/font/font.png")), PlayerRendererTest.class.getResourceAsStream("/font/font.fnt"));
         //FontType font = new FontType(loader.loadTexture(PlayerRendererTest.class.getResource("/font/testfont.png")), PlayerRendererTest.class.getResourceAsStream("/font/testfont.fnt"));
-        GUIText text = new GUIText("MineOnline Debug", 1.5f, font, new Vector2f(2, 10), Display.getWidth(), false);
+        GUIText text = new GUIText("MineOnline Debug", 1.5f, font, new Vector2f(0, 0), DisplayManager.getDefaultWidth(), false);
         text.setColour(1, 1, 1);
 
-        GUIText testString = new GUIText("Test Label", 1.5f, font, new Vector2f((DisplayManager.getDefaultWidth() / 2) + 20, 170), 300f, true);
+        GUIText bottomRight = new GUIText("MineOnline Debug", 1.5f, font, new Vector2f(DisplayManager.getDefaultWidth() - 32, DisplayManager.getDefaultHeight() - 32), Display.getWidth(), false);
+        bottomRight.setColour(1, 1, 1);
+
+        GUIText testString = new GUIText("Test Label", 1.5f, font, new Vector2f((DisplayManager.getDefaultWidth() / 2) + 30, (DisplayManager.getDefaultHeight() / 2) - 40 -32), 300f, true);
         testString.setColour(1, 1, 1);
 
         //playerScale.scale(new Vector3f(1, 0.5f, 1));
@@ -151,6 +155,8 @@ public class PlayerRendererTest {
 
             camera.move();
 
+            if(!formopen) return;
+
             shader.start();
             shader.loadViewMatrix(camera);
 
@@ -166,9 +172,9 @@ public class PlayerRendererTest {
             if (menuScreen.showPlayer())
                 renderer.renderCenteredString(new Vector2f(250, 100), Session.session.getUsername(), Color.white);
 
-            renderer.renderString(new Vector2f(2, 10), "MineOnline Debug", org.newdawn.slick.Color.yellow); //x, y, string to draw, color
+            //renderer.renderString(new Vector2f(2, 10), "MineOnline Debug", org.newdawn.slick.Color.yellow); //x, y, string to draw, color
 
-            //TextMaster.render();
+            TextMaster.render();
 
             DisplayManager.updateDisplay();
 

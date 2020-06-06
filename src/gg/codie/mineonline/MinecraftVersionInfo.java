@@ -143,6 +143,8 @@ public class MinecraftVersionInfo {
                 return true;
             } else if (className.equals("MinecraftLauncher")) {
                 return true;
+            } else if (className.equals("Main")) {
+                return true;
             }
         }
         

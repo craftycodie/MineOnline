@@ -8,6 +8,7 @@ import gg.codie.mineonline.gui.font.GUIText;
 import gg.codie.mineonline.gui.rendering.DisplayManager;
 import gg.codie.mineonline.gui.rendering.shaders.FontShader;
 import org.lwjgl.opengl.*;
+import org.lwjgl.util.vector.Vector2f;
 
 public class FontRenderer {
 
@@ -21,14 +22,11 @@ public class FontRenderer {
         prepare();
         for(FontType font : texts.keySet()){
             GL11.glEnable(GL11.GL_TEXTURE_2D);
-//            GL11.glTexParameteri( GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL12.GL_CLAMP_TO_EDGE );
-//            GL11.glTexParameteri( GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL12.GL_CLAMP_TO_EDGE );
             GL13.glActiveTexture(GL13.GL_TEXTURE0);
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, font.getTextureAtlas());
             GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
             GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
-//            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL12.GL_CLAMP_TO_EDGE);
-//            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL12.GL_CLAMP_TO_EDGE);
+
             for(GUIText text : texts.get(font)){
                 renderText(text);
             }
@@ -44,6 +42,9 @@ public class FontRenderer {
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         GL11.glDisable(GL11.GL_DEPTH_TEST);
+        GL11.glViewport(DisplayManager.getXBuffer(), DisplayManager.getYBuffer(), (int)(DisplayManager.getDefaultWidth() * DisplayManager.getScale()), (int)(DisplayManager.getDefaultHeight() * DisplayManager.getScale()));
+
+        shader = new FontShader();
         shader.start();
     }
 
@@ -51,12 +52,10 @@ public class FontRenderer {
         GL30.glBindVertexArray(text.getMesh());
         GL20.glEnableVertexAttribArray(0);
         GL20.glEnableVertexAttribArray(1);
+
         shader.loadColour(text.getColour());
         shader.loadTranslation(text.getPosition());
-        double widthScale = 1 - (((double)Display.getWidth() / DisplayManager.getDefaultWidth()) - 1);
-        double heightScale = 1 - (((double)Display.getHeight() / DisplayManager.getDefaultHeight()) - 1);
-        GL11.glScaled(widthScale, heightScale, 1);
-        System.out.println("x: " + widthScale + ", y: " + heightScale);
+
         GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, text.getVertexCount());
         GL20.glDisableVertexAttribArray(0);
         GL20.glDisableVertexAttribArray(1);

@@ -2,16 +2,12 @@ package gg.codie.mineonline.gui.rendering;
 
 import gg.codie.mineonline.gui.rendering.models.RawModel;
 import gg.codie.mineonline.gui.rendering.models.TexturedModel;
-import gg.codie.mineonline.gui.rendering.shaders.GUIShader;
 import gg.codie.mineonline.gui.rendering.shaders.StaticShader;
-import gg.codie.mineonline.gui.rendering.utils.MathUtils;
 import org.lwjgl.opengl.*;
 import org.lwjgl.util.glu.GLU;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector2f;
-import org.newdawn.slick.AngelCodeFont;
 import org.newdawn.slick.TrueTypeFont;
-import org.newdawn.slick.opengl.TextureImpl;
 import org.newdawn.slick.util.ResourceLoader;
 
 import java.awt.*;
@@ -27,7 +23,6 @@ public class Renderer {
 
     TrueTypeFont font;
     Font awtFont;
-    AngelCodeFont angelCodeFont;
 
     public Renderer() {
         InputStream inputStream = ResourceLoader.getResourceAsStream("font/Minecraft.ttf");
@@ -35,7 +30,6 @@ public class Renderer {
         try {
             awtFont = Font.createFont(Font.TRUETYPE_FONT, inputStream);
             font = new TrueTypeFont(awtFont.deriveFont(8), false);
-            angelCodeFont = new AngelCodeFont(ResourceLoader.getResource("font/font.fnt").getPath(), ResourceLoader.getResource("font/font.png").getPath());
         } catch (Exception e) {
             e.printStackTrace();
         }
