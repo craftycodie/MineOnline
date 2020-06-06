@@ -5,9 +5,11 @@ import gg.codie.mineonline.gui.rendering.*;
 import gg.codie.mineonline.gui.rendering.models.RawModel;
 import gg.codie.mineonline.gui.rendering.models.TexturedModel;
 import gg.codie.mineonline.gui.rendering.shaders.GUIShader;
+import gg.codie.mineonline.gui.rendering.shaders.SelectableVersionShader;
 import gg.codie.mineonline.gui.rendering.textures.ModelTexture;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 import org.newdawn.slick.Color;
@@ -18,8 +20,11 @@ public class SelectableVersion extends GUIObject {
 
     String versionName;
     String path;
+    String info;
 
-    public SelectableVersion(String name, Vector2f position, String versionName, String path) {
+    private SelectableVersionList parent;
+
+    public SelectableVersion(String name, Vector2f position, String versionName, String path, String info, SelectableVersionList parent) {
         super(name,
                 new TexturedModel(Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth(position.x) + DisplayManager.getXBuffer(), DisplayManager.scaledHeight(DisplayManager.getDefaultHeight() - position.y) + DisplayManager.getYBuffer()), new Vector2f(DisplayManager.scaledWidth(440), DisplayManager.scaledHeight(72)), TextureHelper.getPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(0, 130), new Vector2f(220, 36))), new ModelTexture(Loader.singleton.loadTexture(PlayerRendererTest.class.getResource("/img/gui.png")))),
                 new Vector3f(0, 0, 0), new Vector3f(), new Vector3f(1, 1, 1)
@@ -28,21 +33,30 @@ public class SelectableVersion extends GUIObject {
         this.position = new Vector2f(position.x, position.y);
         this.versionName = versionName;
         this.path = path;
+        this.parent = parent;
+        this.info = info;
     }
 
     public void render(Renderer renderer, GUIShader shader) {
-//        if(focused) {
-            shader.start();
-            renderer.renderGUI(this, shader);
-            shader.stop();
-//        }
+        if(focused) {
+            SelectableVersionShader selectableVersionShader = new SelectableVersionShader();
+            selectableVersionShader.start();
+            selectableVersionShader.loadViewMatrix(Camera.singleton);
+            renderer.renderGUI(this, selectableVersionShader);
+            selectableVersionShader.stop();
+        }
         //renderer.renderCenteredString(new Vector2f(position.x + 202, (Display.getDefaultHeight() - position.y) - 31), 16, this.name, Color.black);
-        renderer.renderString(new Vector2f(position.x + 8,  position.y - 70), this.versionName, mouseWasOver ? new Color(1, 1, 0.627f, 1) : Color.white);
-        renderer.renderString(new Vector2f(position.x + 8,  position.y - 48), this.path, mouseWasOver ? new Color(1, 1, 0.627f, 1) : Color.gray);
+        renderer.renderString(new Vector2f(position.x + 8,  position.y - 70), this.versionName, Color.white);
+        if(this.info != null) {
+            renderer.renderString(new Vector2f(position.x + 8, position.y - 48), this.info, Color.lightGray);
+            renderer.renderString(new Vector2f(position.x + 8, position.y - 26), this.path, Color.gray);
+        } else {
+            renderer.renderString(new Vector2f(position.x + 8, position.y - 48), this.path, Color.gray);
+        }
     }
 
     public void resize() {
-        this.model.setRawModel(Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth(position.x) + DisplayManager.getXBuffer(), DisplayManager.scaledHeight(DisplayManager.getDefaultHeight() - position.y) + DisplayManager.getYBuffer()), new Vector2f(DisplayManager.scaledWidth(400), DisplayManager.scaledHeight(40)), TextureHelper.getPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(0, 20), new Vector2f(200, 20))));
+        this.model.setRawModel(Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth(position.x) + DisplayManager.getXBuffer(), DisplayManager.scaledHeight(DisplayManager.getDefaultHeight() - position.y) + DisplayManager.getYBuffer()), new Vector2f(DisplayManager.scaledWidth(440), DisplayManager.scaledHeight(72)), TextureHelper.getPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(0, 130), new Vector2f(220, 36))));
     }
 
     boolean focused = false;
@@ -57,9 +71,9 @@ public class SelectableVersion extends GUIObject {
         }
 
         boolean mouseIsOver =
-                x - (DisplayManager.scaledWidth(position.x) + DisplayManager.getXBuffer()) <= DisplayManager.scaledWidth(400)
+                x - (DisplayManager.scaledWidth(position.x) + DisplayManager.getXBuffer()) <= DisplayManager.scaledWidth(440)
                         && x - (DisplayManager.scaledWidth(position.x) + DisplayManager.getXBuffer()) >= 0
-                        && y - DisplayManager.scaledHeight(DisplayManager.getDefaultHeight() - position.y) - DisplayManager.getYBuffer() <= DisplayManager.scaledHeight(40)
+                        && y - DisplayManager.scaledHeight(DisplayManager.getDefaultHeight() - position.y) - DisplayManager.getYBuffer() <= DisplayManager.scaledHeight(72)
                         && y - DisplayManager.scaledHeight(DisplayManager.getDefaultHeight() - position.y) - DisplayManager.getYBuffer() >= 0;
 
         if (mouseIsOver && !mouseWasOver) {
@@ -71,9 +85,7 @@ public class SelectableVersion extends GUIObject {
         if (mouseWasDown || !Mouse.isButtonDown(0)) return;
 
         if(Mouse.isButtonDown(0) && mouseIsOver) {
-            focused = true;
-        } else if (Mouse.isButtonDown(0) && !mouseIsOver) {
-            focused = false;
+            parent.selectVersion(path);
         }
 
         if(Mouse.isButtonDown(0) && !mouseWasDown) {
@@ -81,4 +93,9 @@ public class SelectableVersion extends GUIObject {
         }
     }
 
+    @Override
+    public void translate(Vector3f localPosition) {
+        super.translate(localPosition);
+        position = position.translate(localPosition.x, -localPosition.y * 200);
+    }
 }

@@ -254,7 +254,7 @@ public class MinecraftAPI {
         }
     }
 
-    public static boolean listServer(String ip, String port, int users, int maxUsers, String name, boolean onlineMode, String md5) {
+    public static boolean listServer(String ip, String port, int users, int maxUsers, String name, boolean onlineMode, String md5, boolean isPrivate) {
         HttpURLConnection connection = null;
 
         try {
@@ -264,7 +264,8 @@ public class MinecraftAPI {
                     + "&max=" + URLEncoder.encode("" + maxUsers, "UTF-8")
                     + "&name=" + URLEncoder.encode(name, "UTF-8")
                     + "&onlinemode=" + URLEncoder.encode(Boolean.toString(onlineMode), "UTF-8")
-                    + "&md5=" + URLEncoder.encode(md5, "UTF-8");
+                    + "&md5=" + URLEncoder.encode(md5, "UTF-8")
+                    + "&private=" + URLEncoder.encode(Boolean.toString(isPrivate), "UTF-8");
 
             URL url = new URL("http://" + Properties.properties.getString("apiDomainName") + "/mineonline/listserver.jsp?" + parameters);
             connection = (HttpURLConnection) url.openConnection();

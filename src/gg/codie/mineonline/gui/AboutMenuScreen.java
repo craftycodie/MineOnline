@@ -78,7 +78,7 @@ public class AboutMenuScreen implements IMenuScreen {
 
         renderer.renderString(new Vector2f((DisplayManager.getDefaultWidth() / 2) - 200, (DisplayManager.getDefaultHeight() / 2) - 100), "MineOnline Pre-Release by @codieradical.", Color.lightGray);
 
-        renderer.renderCenteredString(new Vector2f(DisplayManager.getDefaultWidth() / 2, 50), "About", Color.white); //x, y, string to draw, color
+        renderer.renderCenteredString(new Vector2f(DisplayManager.getDefaultWidth() / 2, 40), "About", Color.white); //x, y, string to draw, color
     }
 
     public boolean showPlayer() {

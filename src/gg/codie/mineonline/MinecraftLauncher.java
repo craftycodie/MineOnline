@@ -5,6 +5,7 @@ import gg.codie.mineonline.gui.rendering.Renderer;
 import gg.codie.mineonline.gui.rendering.shaders.StaticShader;
 import gg.codie.mineonline.lwjgl.OnCreateListener;
 import gg.codie.mineonline.lwjgl.OnUpdateListener;
+import gg.codie.utils.MD5Checksum;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
@@ -81,7 +82,9 @@ public class MinecraftLauncher extends Applet implements AppletStub{
     boolean firstUpdate = true;
     public void startMinecraft() throws Exception {
 
-        fullscreen = Properties.properties.has("fullscreen") ? Properties.properties.getBoolean("fullscreen") : false;
+        System.out.println("Launching Jar, MD5: " + MD5Checksum.getMD5Checksum(jarPath));
+
+        fullscreen = Properties.properties.has("fullscreen") && Properties.properties.getBoolean("fullscreen");
 
         if (fullscreen) {
             if (minecraftVersion != null && minecraftVersion.enableFullscreenPatch) {
@@ -242,6 +245,7 @@ public class MinecraftLauncher extends Applet implements AppletStub{
 
             //This puts the applet into a window so that it can be shown on the screen.
             frame.add(minecraftApplet);
+            frame.pack();
 
             DisplayManager.getCanvas().setVisible(false);
         }

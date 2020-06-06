@@ -105,6 +105,13 @@ public class Server {
                         writer.flush();
                     }
 
+                    boolean isPrivate = false;
+                    if (serverProperties.containsKey("whitelist-enabled")) {
+                        isPrivate = serverProperties.getProperty("whitelist-enabled").equals("true");
+                    } else if (serverProperties.containsKey("public")) {
+                        isPrivate = serverProperties.getProperty("public").equals("false");
+                    }
+
                     MinecraftAPI.listServer(
                             serverProperties.getProperty("server-ip"),
                             serverProperties.getProperty("server-port", serverProperties.getProperty("port", "25565")),
@@ -112,7 +119,8 @@ public class Server {
                             Integer.parseInt(serverProperties.getProperty("max-players")),
                             serverProperties.getProperty("server-name", "Untitled Server"),
                             serverProperties.getProperty("online-mode", serverProperties.getProperty("verify-names", "true")).equals("true"),
-                            md5
+                            md5,
+                            isPrivate
                     );
                 } catch (Exception e) {
                     e.printStackTrace();

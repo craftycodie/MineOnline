@@ -17,7 +17,7 @@ public class Properties {
             properties = new JSONObject();
             properties.put("isPremium", true);
             properties.put("apiDomainName", "mineonline.codie.gg");
-            properties.put("redirectedDomains", new String[] {"www.minecraft.net:-1", "mineraft.net", "www.minecraft.net", "s3.amazonaws.com"} );
+            properties.put("redirectedDomains", new String[] {"www.minecraft.net:-1", "skins.minecraft.net", "mineraft.net", "www.minecraft.net", "s3.amazonaws.com", "banshee.alex231.com", "mcauth-alex231.rhcloud.com"} );
             properties.put("useLocalProxy", true);
             properties.put("serverIP", "");
             properties.put("serverPort", 25565);

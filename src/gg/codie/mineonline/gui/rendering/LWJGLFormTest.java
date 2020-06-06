@@ -81,7 +81,7 @@ public class LWJGLFormTest {
 
         }
 
-        shader.cleanup();
+        shader.cleanUp();
         loader.cleanUp();
         DisplayManager.closeDisplay();
     }

@@ -197,6 +197,8 @@ public class ProxyThread implements Runnable {
                 clientSocket.getOutputStream().flush();
                 clientSocket.getOutputStream().close();
 
+            } catch (FileNotFoundException ex) {
+                System.err.println("Got a 404 for: " + ex.getMessage());
             } catch (IOException ex) {
                 System.out.println("Something went very wrong.");
                 ex.printStackTrace();

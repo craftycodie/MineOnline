@@ -1,6 +1,8 @@
 package gg.codie.mineonline.gui;
 
 import gg.codie.mineonline.MinecraftLauncher;
+import gg.codie.mineonline.MinecraftVersionInfo;
+import gg.codie.mineonline.Properties;
 import gg.codie.mineonline.Session;
 import gg.codie.mineonline.gui.events.IOnClickListener;
 import gg.codie.mineonline.gui.rendering.*;
@@ -13,6 +15,8 @@ import gg.codie.mineonline.gui.rendering.textures.ModelTexture;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
+
+import java.io.File;
 
 public class MainMenuScreen implements IMenuScreen {
     GUIObject logo;
@@ -27,16 +31,17 @@ public class MainMenuScreen implements IMenuScreen {
         RawModel logoModel = Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth((DisplayManager.getDefaultWidth() / 2) -200) + DisplayManager.getXBuffer(), DisplayManager.scaledHeight(DisplayManager.getDefaultHeight() - 69) + DisplayManager.getYBuffer()), new Vector2f(DisplayManager.scaledWidth(400), DisplayManager.scaledHeight(49)), TextureHelper.getYFlippedPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(0, 40), new Vector2f(400, 49)));
         ModelTexture logoTexture = new ModelTexture(Loader.singleton.loadTexture(PlayerRendererTest.class.getResource("/img/gui.png")));
         TexturedModel texuredLogoModel =  new TexturedModel(logoModel, logoTexture);
-        logo = new GUIObject("logo", texuredLogoModel, new Vector3f(0, 10, 0), new Vector3f(), new Vector3f(1, 1, 1));
+        logo = new GUIObject("logo", texuredLogoModel, new Vector3f(), new Vector3f(), new Vector3f(1, 1, 1));
 
-
+        Properties.loadProperties();
+        String jarPath = Properties.properties.has("selectedJar") ? Properties.properties.getString("selectedJar") : null;
 
         playButton = new MediumButton("Play", new Vector2f((DisplayManager.getDefaultWidth() / 2) + 30, (DisplayManager.getDefaultHeight() / 2) - 40), new IOnClickListener() {
             @Override
             public void onClick() {
                 try {
                     //new MinecraftLauncher("D:\\Projects\\GitHub\\MineOnline\\jars\\b1.7.3-modded.jar", null, null, null).startMinecraft();
-                    new MinecraftLauncher("D:\\Projects\\GitHub\\MineOnline\\jars\\b1.7.3.jar", null, null, null).startMinecraft();
+                    new MinecraftLauncher(jarPath, null, null, null).startMinecraft();
 
                     //new MinecraftLauncher("D:\\Projects\\GitHub\\MineOnline\\jars\\c0.0.11a-launcher.jar", null, null, null).startMinecraft();
                 } catch (Exception ex) {}
@@ -50,7 +55,13 @@ public class MainMenuScreen implements IMenuScreen {
             }
         });
 
-        versionButton = new MediumButton("Version: b1.7.3", new Vector2f((DisplayManager.getDefaultWidth() / 2) + 30, (DisplayManager.getDefaultHeight() / 2) + 56), new IOnClickListener() {
+        String jarName = jarPath != null ? new File(jarPath).getName() : null;
+        MinecraftVersionInfo.MinecraftVersion version = null;
+        if(jarPath != null) {
+            version = MinecraftVersionInfo.getVersion(jarPath);
+        }
+
+        versionButton = new MediumButton(jarPath != null ? (version != null ? "Version: " + version.name : jarName) : "Select Version", new Vector2f((DisplayManager.getDefaultWidth() / 2) + 30, (DisplayManager.getDefaultHeight() / 2) + 56), new IOnClickListener() {
             @Override
             public void onClick() {
                 PlayerRendererTest.setMenuScreen(new SelectVersionMenuScreen());

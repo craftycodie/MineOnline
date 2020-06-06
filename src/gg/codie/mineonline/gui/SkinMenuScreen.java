@@ -216,7 +216,7 @@ public class SkinMenuScreen implements IMenuScreen {
         doneButton.render(renderer, guiShader);
         guiShader.stop();
 
-        renderer.renderCenteredString(new Vector2f(DisplayManager.getDefaultWidth() / 2, 50), "Change Skin", Color.white); //x, y, string to draw, color
+        renderer.renderCenteredString(new Vector2f(DisplayManager.getDefaultWidth() / 2, 40), "Change Skin", Color.white); //x, y, string to draw, color
     }
 
     public boolean showPlayer() {

@@ -41,8 +41,9 @@ public class MinecraftVersionInfo {
         public final String clientName;
         public final boolean hasHeartbeat;
         public final boolean enableFullscreenPatch;
+        public final String info;
 
-        private MinecraftVersion(String sha256, String name, String md5, String type, boolean baseURLHasNoPort, boolean enableScreenshotPatch, String clientName, boolean hasHeartbeat, boolean enableFullscreenPatch) {
+        private MinecraftVersion(String sha256, String name, String md5, String type, boolean baseURLHasNoPort, boolean enableScreenshotPatch, String clientName, boolean hasHeartbeat, boolean enableFullscreenPatch, String info) {
             this.sha256 = sha256;
             this.name = name;
             this.md5 = md5;
@@ -52,6 +53,7 @@ public class MinecraftVersionInfo {
             this.clientName = clientName;
             this.hasHeartbeat = hasHeartbeat;
             this.enableFullscreenPatch = enableFullscreenPatch;
+            this.info = info;
         }
     }
 
@@ -82,7 +84,8 @@ public class MinecraftVersionInfo {
                         (object.has("enableScreenshotPatch") && object.getBoolean("enableScreenshotPatch")),
                         (object.has("clientName") ? object.getString("clientName") : null),
                         (object.has("hasHeartbeat") && object.getBoolean("hasHeartbeat")),
-                        (object.has("enableFullscreenPatch") && object.getBoolean("enableFullscreenPatch"))
+                        (object.has("enableFullscreenPatch") && object.getBoolean("enableFullscreenPatch")),
+                        (object.has("info") ? object.getString("info") : null)
                 ));
             }
         } catch (IOException ex) {
@@ -116,10 +119,45 @@ public class MinecraftVersionInfo {
         return null;
     }
 
+    public static boolean isRunnableJar(String path) throws IOException {
+        JarFile jarFile = new JarFile(path);
+        Enumeration allEntries = jarFile.entries();
+        while (allEntries.hasMoreElements()) {
+            JarEntry entry = (JarEntry) allEntries.nextElement();
+            String classCanonicalName = entry.getName();
+
+            if(!classCanonicalName.contains(".class"))
+                continue;
+
+            classCanonicalName = classCanonicalName.replace("/", ".");
+            classCanonicalName = classCanonicalName.replace(".class", "");
+
+            String className = classCanonicalName;
+            if(classCanonicalName.lastIndexOf(".") > -1) {
+                className = classCanonicalName.substring(classCanonicalName.lastIndexOf(".") + 1);
+            }
+
+            if (className.equals("MinecraftApplet")) {
+                return true;
+            } else if (className.equals("Minecraft")) {
+                return true;
+            } else if (className.equals("MinecraftLauncher")) {
+                return true;
+            }
+        }
+        
+        try {
+            System.out.println("Incompatible Jar MD5: " + MD5Checksum.getMD5Checksum(path));
+        } catch (Exception ex) {
+
+        }
+
+        return false;
+    }
+
     public static MinecraftVersion getVersion(String path) {
         try {
             String md5 = MD5Checksum.getMD5Checksum(path);
-            System.out.println("MD5: " + md5);
             return getVersionByMD5(md5);
         } catch (Exception e) {
             return null;

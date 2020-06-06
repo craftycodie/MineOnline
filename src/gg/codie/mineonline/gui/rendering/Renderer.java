@@ -180,86 +180,100 @@ public class Renderer {
     }
 
     public void renderStringIngame(Vector2f position, float size, String text, org.newdawn.slick.Color color) {
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        //TODO: This is very slow and needs to be replaced.
-        font = new TrueTypeFont(awtFont.deriveFont(size), false);
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
-        GL11.glPushMatrix();
-        font.drawString(position.x + 1, position.y + 1, text, new org.newdawn.slick.Color(0, 0, 0, 0.7f * color.a)); //x, y, string to draw, color
-        font.drawString(position.x, position.y, text, color); //x, y, string to draw, color
-        GL11.glPopMatrix();
-        GL11.glDisable(GL11.GL_BLEND);
+//        GL11.glEnable(GL11.GL_BLEND);
+//        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+//        //TODO: This is very slow and needs to be replaced.
+//        font = new TrueTypeFont(awtFont.deriveFont(size), false);
+//        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
+//        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
+//        GL11.glPushMatrix();
+//        font.drawString(position.x + 1, position.y + 1, text, new org.newdawn.slick.Color(0, 0, 0, 0.7f * color.a)); //x, y, string to draw, color
+//        font.drawString(position.x, position.y, text, color); //x, y, string to draw, color
+//        GL11.glPopMatrix();
+//        GL11.glDisable(GL11.GL_BLEND);
     }
 
     public void renderString(Vector2f position, String text, org.newdawn.slick.Color color) {
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
-
-        float stringWidth = angelCodeFont.getWidth(text);
-
-        GL11.glPushMatrix();
-        //GL11.glScaled(DisplayManager.getScale(), DisplayManager.getScale(), 1);
-        angelCodeFont.drawString(DisplayManager.scaledWidth(position.x) + 2, DisplayManager.scaledHeight(position.y) + 2, text, new org.newdawn.slick.Color(0, 0, 0, 0.7f * color.a)); //x, y, string to draw, color
-        angelCodeFont.drawString(DisplayManager.scaledWidth(position.x), DisplayManager.scaledHeight(position.y), text, color); //x, y, string to draw, color
-        GL11.glPopMatrix();
-
-        GL11.glDisable(GL11.GL_BLEND);
-        TextureImpl.bindNone();
+//        GL11.glEnable(GL11.GL_BLEND);
+//        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+//
+//        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
+//        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
+//
+//        GL11.glPushMatrix();
+//
+//        int xBuffer = (int)(Display.getWidth() - DisplayManager.scaledWidth(DisplayManager.getDefaultWidth())) / 2;
+//        int yBuffer = (int)(Display.getHeight() - DisplayManager.scaledHeight(DisplayManager.getDefaultHeight())) / 2;
+//
+//        GL11.glTranslatef((DisplayManager.scaledWidth(position.x)), (DisplayManager.scaledHeight(position.y)), 0);
+//        GL11.glTranslatef(xBuffer, yBuffer, 0);
+//        GL11.glScaled(DisplayManager.getScale(), DisplayManager.getScale(), 1);
+//
+//
+//
+////        angelCodeFont.drawString(2, 2, text, new org.newdawn.slick.Color(0, 0, 0, 0.7f * color.a)); //x, y, string to draw, color
+////        angelCodeFont.drawString(0, 0, text, color); //x, y, string to draw, color
+//        GL11.glPopMatrix();
+//
+//        GL11.glDisable(GL11.GL_BLEND);
+//        TextureImpl.bindNone();
     }
 
     public void renderCenteredString(Vector2f position, String text, org.newdawn.slick.Color color) {
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
-
-        float stringWidth = angelCodeFont.getWidth(text);
-
-        GL11.glLoadIdentity();
-        GL11.glPushMatrix();
-        //GL11.glScaled(DisplayManager.getScale(), DisplayManager.getScale(), 1);
-
-//        double widthScale = 1 - (((double)Display.getWidth() / DisplayManager.getDefaultWidth()) - 1);
-//        double heightScale = 1 - (((double)Display.getHeight() / DisplayManager.getDefaultHeight()) - 1);
-//        GL11.glScaled(widthScale, heightScale, 1);
-        int xBuffer = (int)(Display.getWidth() - DisplayManager.scaledWidth(DisplayManager.getDefaultWidth())) / 2;
-        int yBuffer = (int)(Display.getHeight() - DisplayManager.scaledHeight(DisplayManager.getDefaultHeight())) / 2;
-
-        double xTransScale = 1;
-        double yTransScale = 1;
-
-        if(DisplayManager.isWide()) {
-            yTransScale = (double)Display.getWidth() / Display.getHeight();
-            xTransScale = (double)Display.getHeight() / Display.getWidth();
-        } else {
-            xTransScale = (double)Display.getHeight() / Display.getWidth();
-            yTransScale = (double)Display.getWidth() / Display.getHeight();
-        }
-
-//        System.out.println("x scale " + xTransScale + ", y scale " + yTransScale);
-
-        //GL11.glTranslatef(((position.x - (stringWidth / 2)) + xBuffer) * (float)xTransScale, ((position.y) + yBuffer) * (float)yTransScale, 0);
-        GL11.glTranslatef((DisplayManager.scaledWidth(position.x - (stringWidth / 2)) + xBuffer), (DisplayManager.scaledHeight(position.y) + yBuffer), 0);
-        //GL11.glScaled((double)DisplayManager.getDefaultWidth() / Display.getWidth(), (double)DisplayManager.getDefaultHeight() / Display.getHeight() , 1);
-
-        double widthScale = (((double)Display.getWidth() / DisplayManager.getDefaultWidth()) - 1);
-        double heightScale = (((double)Display.getHeight() / DisplayManager.getDefaultHeight()) - 1);
-        //GL11.glScaled(widthScale, heightScale, 1);
-
-        //GL11.glScaled(DisplayManager.getScale(), DisplayManager.getScale(), 1);
-
-        angelCodeFont.drawString(2, 2, text, new org.newdawn.slick.Color(0, 0, 0, 0.7f * color.a)); //x, y, string to draw, color
-        angelCodeFont.drawString(0, 0, text, color); //x, y, string to draw, color
-        GL11.glPopMatrix();
-
-        GL11.glDisable(GL11.GL_BLEND);
-        TextureImpl.bindNone();
+//        GL11.glEnable(GL11.GL_BLEND);
+//        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+//
+//        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
+//        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
+//
+//        float stringWidth = angelCodeFont.getWidth(text);
+//
+//        GL11.glPushMatrix();
+//        //GL11.glScaled(DisplayManager.getScale(), DisplayManager.getScale(), 1);
+//
+////        double widthScale = 1 - (((double)Display.getWidth() / DisplayManager.getDefaultWidth()) - 1);
+////        double heightScale = 1 - (((double)Display.getHeight() / DisplayManager.getDefaultHeight()) - 1);
+////        GL11.glScaled(widthScale, heightScale, 1);
+//        int xBuffer = (int)(Display.getWidth() - DisplayManager.scaledWidth(DisplayManager.getDefaultWidth())) / 2;
+//        int yBuffer = (int)(Display.getHeight() - DisplayManager.scaledHeight(DisplayManager.getDefaultHeight())) / 2;
+//
+//        double xTransScale = 1;
+//        double yTransScale = 1;
+//
+//        if(DisplayManager.isWide()) {
+//            yTransScale = (double)Display.getWidth() / Display.getHeight();
+//            xTransScale = (double)Display.getHeight() / Display.getWidth();
+//        } else {
+//            xTransScale = (double)Display.getHeight() / Display.getWidth();
+//            yTransScale = (double)Display.getWidth() / Display.getHeight();
+//        }
+//
+////        System.out.println("x scale " + xTransScale + ", y scale " + yTransScale);
+//
+//        //GL11.glTranslatef(((position.x - (stringWidth / 2)) + xBuffer) * (float)xTransScale, ((position.y) + yBuffer) * (float)yTransScale, 0);
+//
+//        //GL11.glScaled(DisplayManager.getScale(), DisplayManager.getScale(), 1);
+//
+//        GL11.glTranslatef((DisplayManager.scaledWidth(position.x)), (DisplayManager.scaledHeight(position.y)), 0);
+//        GL11.glTranslatef(-(stringWidth / 2), 0, 0);
+//        GL11.glTranslatef(xBuffer, yBuffer, 0);
+//
+//        ///angelCodeFont.
+//
+//        //GL11.glScaled((double)DisplayManager.getDefaultWidth() / Display.getWidth(), (double)DisplayManager.getDefaultHeight() / Display.getHeight() , 1);
+//
+//        double widthScale = (((double)Display.getWidth() / DisplayManager.getDefaultWidth()) - 1);
+//        double heightScale = (((double)Display.getHeight() / DisplayManager.getDefaultHeight()) - 1);
+//        //GL11.glScaled(widthScale, heightScale, 1);
+//
+//        //GL11.glScaled(DisplayManager.getScale(), DisplayManager.getScale(), 1);
+//
+////        angelCodeFont.drawString(2, 2, text, new org.newdawn.slick.Color(0, 0, 0, 0.7f * color.a)); //x, y, string to draw, color
+////        angelCodeFont.drawString(0, 0, text, color); //x, y, string to draw, color
+//        GL11.glPopMatrix();
+//
+//        GL11.glDisable(GL11.GL_BLEND);
+//        TextureImpl.bindNone();
     }
 
     private void createProjectionMatrix() {

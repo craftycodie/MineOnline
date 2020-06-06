@@ -15,7 +15,7 @@ public class GameObject {
 
     protected Matrix4f localMatrix;
 
-    private GameObject parent;
+    protected GameObject parent;
 
     public LinkedList<GameObject> getChildren() {
         return children;
@@ -111,6 +111,15 @@ public class GameObject {
 
     public void translate(Vector3f localPosition) {
         localMatrix = localMatrix.translate(localPosition);
+    }
+
+    // Buggy.
+    public void setLocalPosition(Vector3f localPosition) {
+        localMatrix = MathUtils.createTransformationMatrix(localPosition, MathUtils.getRotation(localMatrix), MathUtils.getScale(localMatrix));
+    }
+
+    public Vector3f getLocalPosition() {
+        return MathUtils.getPosition(localMatrix);
     }
 //
 //    public Matrix4f GetModelMatrix() {

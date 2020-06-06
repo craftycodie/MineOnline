@@ -67,7 +67,7 @@ public class OptionsMenuScreen implements IMenuScreen {
         doneButton.render(renderer, guiShader);
         guiShader.stop();
 
-        renderer.renderCenteredString(new Vector2f(DisplayManager.getDefaultWidth() / 2, 50), "Options", Color.white); //x, y, string to draw, color
+        renderer.renderCenteredString(new Vector2f(DisplayManager.getDefaultWidth() / 2, 40), "Options", Color.white); //x, y, string to draw, color
     }
 
     public boolean showPlayer() {

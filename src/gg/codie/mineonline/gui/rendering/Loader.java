@@ -35,6 +35,14 @@ public class Loader {
         singleton = this;
     }
 
+    public int loadToVAO(float[] positions, float[] textureCoords) {
+        int vaoID = createVAO();
+        storeDataInAttributeList(0, 2, positions);
+        storeDataInAttributeList(1, 2, textureCoords);
+        unbindVAO();
+        return vaoID;
+    }
+
     public RawModel loadToVAO(float[] positions, float[] textureCoordinates, int[] indices) {
         int vaoID = createVAO();
         bindIndicesBuffer(indices);

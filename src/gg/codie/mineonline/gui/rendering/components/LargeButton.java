@@ -6,6 +6,7 @@ import gg.codie.mineonline.gui.rendering.models.RawModel;
 import gg.codie.mineonline.gui.rendering.models.TexturedModel;
 import gg.codie.mineonline.gui.rendering.shaders.GUIShader;
 import gg.codie.mineonline.gui.rendering.textures.ModelTexture;
+import gg.codie.mineonline.gui.sound.ClickSound;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Vector2f;
@@ -73,6 +74,7 @@ public class LargeButton extends GUIObject {
         if (mouseWasDown || !Mouse.isButtonDown(0)) return;
 
         if(mouseIsOver && clickListener != null) {
+            ClickSound.play();
             clickListener.onClick();
         }
 

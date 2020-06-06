@@ -3,9 +3,11 @@ package gg.codie.mineonline.gui.rendering;
 import gg.codie.mineonline.LibraryManager;
 import gg.codie.mineonline.Session;
 import gg.codie.mineonline.gui.IMenuScreen;
-import gg.codie.mineonline.gui.LoginMenuScreen;
 import gg.codie.mineonline.gui.MainMenuScreen;
+import gg.codie.mineonline.gui.font.FontType;
+import gg.codie.mineonline.gui.font.GUIText;
 import gg.codie.mineonline.gui.rendering.animation.*;
+import gg.codie.mineonline.gui.rendering.font.TextMaster;
 import gg.codie.mineonline.gui.rendering.models.RawModel;
 import gg.codie.mineonline.gui.rendering.models.TexturedModel;
 import gg.codie.mineonline.gui.rendering.shaders.StaticShader;
@@ -17,8 +19,6 @@ import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 import org.newdawn.slick.Color;
 
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -62,7 +62,7 @@ public class PlayerRendererTest {
         Loader loader = new Loader();
         GameObject playerPivot = new GameObject("player_origin", new Vector3f(), new Vector3f(0, 30, 0), new Vector3f(1, 1, 1));
         PlayerGameObject playerGameObject = new PlayerGameObject("player", loader, shader, new Vector3f(0, -21, 0), new Vector3f(), new Vector3f(1, 1, 1));
-        new Session("codie", "5ed5b83ad4c7ad8928b3a08b");
+        new Session("codie", "5eda032fd4c7ad8928b3ba11");
         playerPivot.addChild(playerGameObject);
 
         GameObject playerScale = new GameObject("player scale", new Vector3f(-20, 0, -65), new Vector3f(), new Vector3f(1, 1, 1));
@@ -84,6 +84,17 @@ public class PlayerRendererTest {
         GameObject backgroundImage = new GUIObject("Background", texturedModel, new Vector3f(0, 0, 0), new Vector3f(), new Vector3f(75f, 75f, 75f));
 
         menuScreen = new MainMenuScreen();
+
+
+        TextMaster.init(loader);
+
+        FontType font = new FontType(loader.loadTexture(PlayerRendererTest.class.getResource("/font/font.png")), PlayerRendererTest.class.getResourceAsStream("/font/font.fnt"));
+        //FontType font = new FontType(loader.loadTexture(PlayerRendererTest.class.getResource("/font/testfont.png")), PlayerRendererTest.class.getResourceAsStream("/font/testfont.fnt"));
+        GUIText text = new GUIText("MineOnline Debug", 1.5f, font, new Vector2f(2, 10), Display.getWidth(), false);
+        text.setColour(1, 1, 1);
+
+        GUIText testString = new GUIText("Test Label", 1.5f, font, new Vector2f((DisplayManager.getDefaultWidth() / 2) + 20, 170), 300f, true);
+        testString.setColour(1, 1, 1);
 
         //playerScale.scale(new Vector3f(1, 0.5f, 1));
 
@@ -157,13 +168,15 @@ public class PlayerRendererTest {
 
             renderer.renderString(new Vector2f(2, 10), "MineOnline Debug", org.newdawn.slick.Color.yellow); //x, y, string to draw, color
 
+            //TextMaster.render();
 
             DisplayManager.updateDisplay();
 
         }
 
-        shader.cleanup();
+        shader.cleanUp();
         loader.cleanUp();
+        TextMaster.cleanUp();
         DisplayManager.closeDisplay();
 
         DisplayManager.getFrame().removeWindowListener(closeListener);
