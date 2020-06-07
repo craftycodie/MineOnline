@@ -1,7 +1,9 @@
 package gg.codie.mineonline.gui.rendering.components;
 
 import gg.codie.mineonline.gui.events.IOnClickListener;
+import gg.codie.mineonline.gui.font.GUIText;
 import gg.codie.mineonline.gui.rendering.*;
+import gg.codie.mineonline.gui.rendering.font.TextMaster;
 import gg.codie.mineonline.gui.rendering.models.RawModel;
 import gg.codie.mineonline.gui.rendering.models.TexturedModel;
 import gg.codie.mineonline.gui.rendering.shaders.GUIShader;
@@ -17,6 +19,7 @@ public class LargeButton extends GUIObject {
 
     Vector2f position;
     IOnClickListener clickListener;
+    GUIText guiText;
 
     public LargeButton(String name, Vector2f position, IOnClickListener clickListener) {
         super(name,
@@ -26,6 +29,8 @@ public class LargeButton extends GUIObject {
 
         this.position = new Vector2f(position.x, position.y);
         this.clickListener = clickListener;
+
+        guiText = new GUIText(name, 1.5f, TextMaster.minecraftFont, new Vector2f(position.x, position.y - 32), 400f, true);
     }
 
     public void render(Renderer renderer, GUIShader shader) {
@@ -33,7 +38,11 @@ public class LargeButton extends GUIObject {
         renderer.renderGUI(this, shader);
         shader.stop();
         //renderer.renderCenteredString(new Vector2f(position.x + 202, (Display.getDefaultHeight() - position.y) - 31), 16, this.name, Color.black);
-        renderer.renderCenteredString(new Vector2f(position.x + 200,  position.y - 32), this.name, mouseWasOver ? new Color(1, 1, 0.627f, 1) : Color.white);
+        if(mouseWasOver) {
+            guiText.setColour(1, 1, 0.627f);
+        } else {
+            guiText.setColour(1,1,1);
+        }
     }
 
     public void resize() {
@@ -83,4 +92,14 @@ public class LargeButton extends GUIObject {
         }
     }
 
+    public void cleanUp() {
+        guiText.remove();
+    }
+
+    @Override
+    public void setName(String name) {
+        guiText.remove();
+        super.setName(name);
+        guiText = new GUIText(name, 1.5f, TextMaster.minecraftFont, new Vector2f(position.x, position.y - 32), 400f, true);
+    }
 }

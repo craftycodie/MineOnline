@@ -7,4 +7,5 @@ public interface IMenuScreen {
     void render(Renderer renderer);
     boolean showPlayer();
     void resize();
+    void cleanUp();
 }

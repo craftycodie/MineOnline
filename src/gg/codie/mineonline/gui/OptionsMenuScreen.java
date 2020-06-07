@@ -3,8 +3,10 @@ package gg.codie.mineonline.gui;
 import gg.codie.mineonline.Properties;
 import gg.codie.mineonline.Session;
 import gg.codie.mineonline.gui.events.IOnClickListener;
+import gg.codie.mineonline.gui.font.GUIText;
 import gg.codie.mineonline.gui.rendering.*;
 import gg.codie.mineonline.gui.rendering.components.LargeButton;
+import gg.codie.mineonline.gui.rendering.font.TextMaster;
 import gg.codie.mineonline.gui.rendering.shaders.GUIShader;
 import org.lwjgl.util.vector.Vector2f;
 import org.newdawn.slick.Color;
@@ -14,6 +16,7 @@ public class OptionsMenuScreen implements IMenuScreen {
     LargeButton aboutButton;
     LargeButton logoutButton;
     LargeButton doneButton;
+    GUIText label;
 
 
     public OptionsMenuScreen() {
@@ -23,7 +26,7 @@ public class OptionsMenuScreen implements IMenuScreen {
                 boolean fullcreen = !Properties.properties.getBoolean("fullscreen");
                 Properties.properties.put("fullscreen", fullcreen);
                 Properties.saveProperties();
-                fullscreenButton.name = "Fullscreen: " + (Properties.properties.getBoolean("fullscreen") ? "ON" : "OFF");
+                fullscreenButton.setName("Fullscreen: " + (Properties.properties.getBoolean("fullscreen") ? "ON" : "OFF"));
             }
         });
 
@@ -47,6 +50,8 @@ public class OptionsMenuScreen implements IMenuScreen {
                 PlayerRendererTest.setMenuScreen(new MainMenuScreen());
             }
         });
+
+        label = new GUIText("Options", 1.5f, TextMaster.minecraftFont, new Vector2f(0, 40), DisplayManager.getDefaultWidth(), true);
     }
 
     public void update() {
@@ -66,8 +71,6 @@ public class OptionsMenuScreen implements IMenuScreen {
         logoutButton.render(renderer, guiShader);
         doneButton.render(renderer, guiShader);
         guiShader.stop();
-
-        renderer.renderCenteredString(new Vector2f(DisplayManager.getDefaultWidth() / 2, 40), "Options", Color.white); //x, y, string to draw, color
     }
 
     public boolean showPlayer() {
@@ -79,5 +82,14 @@ public class OptionsMenuScreen implements IMenuScreen {
         aboutButton.resize();
         logoutButton.resize();
         doneButton.resize();
+    }
+
+    @Override
+    public void cleanUp() {
+        fullscreenButton.cleanUp();
+        aboutButton.cleanUp();
+        logoutButton.cleanUp();
+        doneButton.cleanUp();
+        label.remove();
     }
 }

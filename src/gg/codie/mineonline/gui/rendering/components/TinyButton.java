@@ -1,7 +1,9 @@
 package gg.codie.mineonline.gui.rendering.components;
 
 import gg.codie.mineonline.gui.events.IOnClickListener;
+import gg.codie.mineonline.gui.font.GUIText;
 import gg.codie.mineonline.gui.rendering.*;
+import gg.codie.mineonline.gui.rendering.font.TextMaster;
 import gg.codie.mineonline.gui.rendering.models.RawModel;
 import gg.codie.mineonline.gui.rendering.models.TexturedModel;
 import gg.codie.mineonline.gui.rendering.shaders.GUIShader;
@@ -17,6 +19,7 @@ public class TinyButton extends GUIObject {
 
     Vector2f position;
     IOnClickListener clickListener;
+    GUIText guiText;
 
     public TinyButton(String name, Vector2f position, IOnClickListener clickListener) {
         super(name,
@@ -26,14 +29,21 @@ public class TinyButton extends GUIObject {
 
         this.position = new Vector2f(position.x, position.y);
         this.clickListener = clickListener;
+
+        guiText = new GUIText(name, 1.5f, TextMaster.minecraftFont, new Vector2f(position.x, position.y - 32), 142f, true);
     }
 
     public void render(Renderer renderer, GUIShader shader) {
         shader.start();
         renderer.renderGUI(this, shader);
         shader.stop();
-        renderer.renderCenteredString(new Vector2f(position.x + 71, position.y - 32), this.name, mouseWasOver ? new Color(1, 1, 0.627f, 1) : Color.white);
-     }
+
+        if(mouseWasOver) {
+            guiText.setColour(1, 1, 0.627f);
+        } else {
+            guiText.setColour(1,1,1);
+        }
+    }
 
     boolean mouseWasDown = false;
     boolean mouseWasOver = false;
@@ -80,6 +90,10 @@ public class TinyButton extends GUIObject {
 
     public void resize() {
         this.model.setRawModel(Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth(position.x) + DisplayManager.getXBuffer(), DisplayManager.scaledHeight(DisplayManager.getDefaultHeight() - position.y) + DisplayManager.getYBuffer()), new Vector2f(DisplayManager.scaledWidth(142), DisplayManager.scaledHeight(40)), TextureHelper.getPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(0, 109), new Vector2f(71, 20))));
+    }
+
+    public void cleanUp() {
+        guiText.remove();
     }
 
 }

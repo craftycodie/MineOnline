@@ -1,32 +1,29 @@
 package gg.codie.mineonline.gui;
 
-import gg.codie.mineonline.Properties;
-import gg.codie.mineonline.gui.IMenuScreen;
-import gg.codie.mineonline.gui.MainMenuScreen;
 import gg.codie.mineonline.gui.events.IOnClickListener;
+import gg.codie.mineonline.gui.font.GUIText;
 import gg.codie.mineonline.gui.rendering.Camera;
 import gg.codie.mineonline.gui.rendering.DisplayManager;
 import gg.codie.mineonline.gui.rendering.PlayerRendererTest;
 import gg.codie.mineonline.gui.rendering.Renderer;
 import gg.codie.mineonline.gui.rendering.components.LargeButton;
-import gg.codie.mineonline.gui.rendering.models.RawModel;
-import gg.codie.mineonline.gui.rendering.models.TexturedModel;
+import gg.codie.mineonline.gui.rendering.font.TextMaster;
 import gg.codie.mineonline.gui.rendering.shaders.GUIShader;
-import gg.codie.mineonline.gui.rendering.textures.ModelTexture;
 import org.lwjgl.util.vector.Vector2f;
-import org.newdawn.slick.Color;
 
 import java.awt.*;
 import java.net.URI;
 
 public class AboutMenuScreen implements IMenuScreen {
-    LargeButton aboutButton;
-    LargeButton logoutButton;
+    LargeButton discordButton;
+    LargeButton websiteButton;
     LargeButton doneButton;
+    GUIText label;
+    GUIText info;
 
 
     public AboutMenuScreen() {
-        aboutButton = new LargeButton("Discord", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 200, (DisplayManager.getDefaultHeight() / 2) + 8), new IOnClickListener() {
+        discordButton = new LargeButton("Discord", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 200, (DisplayManager.getDefaultHeight() / 2) + 8), new IOnClickListener() {
             @Override
             public void onClick() {
                 if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
@@ -39,7 +36,7 @@ public class AboutMenuScreen implements IMenuScreen {
             }
         });
 
-        logoutButton = new LargeButton("Website", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 200, (DisplayManager.getDefaultHeight() / 2) + 56), new IOnClickListener() {
+        websiteButton = new LargeButton("Website", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 200, (DisplayManager.getDefaultHeight() / 2) + 56), new IOnClickListener() {
             @Override
             public void onClick() {
                 if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
@@ -58,11 +55,14 @@ public class AboutMenuScreen implements IMenuScreen {
                 PlayerRendererTest.setMenuScreen(new MainMenuScreen());
             }
         });
+
+        label = new GUIText("About", 1.5f, TextMaster.minecraftFont, new Vector2f(0, 40), DisplayManager.getDefaultWidth(), true);
+        info = new GUIText("MineOnline Pre-Release by @codieradical.", 1.5f, TextMaster.minecraftFont, new Vector2f((DisplayManager.getDefaultWidth() / 2) - 200, (DisplayManager.getDefaultHeight() / 2) - 100), 400, true);
     }
 
     public void update() {
-        aboutButton.update();
-        logoutButton.update();
+        discordButton.update();
+        websiteButton.update();
         doneButton.update();
     }
 
@@ -71,14 +71,10 @@ public class AboutMenuScreen implements IMenuScreen {
         guiShader.start();
         guiShader.loadViewMatrix(Camera.singleton);
         renderer.prepareGUI();
-        aboutButton.render(renderer, guiShader);
-        logoutButton.render(renderer, guiShader);
+        discordButton.render(renderer, guiShader);
+        websiteButton.render(renderer, guiShader);
         doneButton.render(renderer, guiShader);
         guiShader.stop();
-
-        renderer.renderString(new Vector2f((DisplayManager.getDefaultWidth() / 2) - 200, (DisplayManager.getDefaultHeight() / 2) - 100), "MineOnline Pre-Release by @codieradical.", Color.lightGray);
-
-        renderer.renderCenteredString(new Vector2f(DisplayManager.getDefaultWidth() / 2, 40), "About", Color.white); //x, y, string to draw, color
     }
 
     public boolean showPlayer() {
@@ -86,8 +82,17 @@ public class AboutMenuScreen implements IMenuScreen {
     }
 
     public void resize() {
-        aboutButton.resize();
-        logoutButton.resize();
+        discordButton.resize();
+        websiteButton.resize();
         doneButton.resize();
+    }
+
+    @Override
+    public void cleanUp() {
+        doneButton.cleanUp();
+        websiteButton.cleanUp();
+        discordButton.cleanUp();
+        label.remove();
+        info.remove();
     }
 }

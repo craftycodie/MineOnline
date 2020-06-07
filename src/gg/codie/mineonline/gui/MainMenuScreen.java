@@ -117,4 +117,13 @@ public class MainMenuScreen implements IMenuScreen {
         skinButton.resize();
         logo.model.setRawModel(Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth((DisplayManager.getDefaultWidth() / 2) -200) + DisplayManager.getXBuffer(), DisplayManager.scaledHeight(DisplayManager.getDefaultHeight() - 69) + DisplayManager.getYBuffer()), new Vector2f(DisplayManager.scaledWidth(400), DisplayManager.scaledHeight(49)), TextureHelper.getYFlippedPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(0, 40), new Vector2f(400, 49))));
     }
+
+    @Override
+    public void cleanUp() {
+        playButton.cleanUp();
+        joinServerButton.cleanUp();
+        versionButton.cleanUp();
+        skinButton.cleanUp();
+        optionsButton.cleanUp();
+    }
 }

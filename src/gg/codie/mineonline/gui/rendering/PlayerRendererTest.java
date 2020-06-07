@@ -27,8 +27,19 @@ public class PlayerRendererTest {
 
     public static boolean formopen = false;
 
+    private static GUIText playerName;
     public static void setMenuScreen(IMenuScreen menuScreen) {
+
+        if(PlayerRendererTest.menuScreen != null)
+            PlayerRendererTest.menuScreen.cleanUp();
+
         PlayerRendererTest.menuScreen = menuScreen;
+
+        if(playerName != null)
+            playerName.remove();
+
+        if(menuScreen.showPlayer())
+            playerName = new GUIText(Session.session.getUsername(), 1.5f, TextMaster.minecraftFont, new Vector2f(168, 100), 160, true);
     }
 
     private static IMenuScreen menuScreen;
@@ -61,6 +72,8 @@ public class PlayerRendererTest {
         StaticShader shader = new StaticShader();
         Renderer renderer = new Renderer();
         Loader loader = new Loader();
+        TextMaster.init(loader);
+
         GameObject playerPivot = new GameObject("player_origin", new Vector3f(), new Vector3f(0, 30, 0), new Vector3f(1, 1, 1));
         PlayerGameObject playerGameObject = new PlayerGameObject("player", loader, shader, new Vector3f(0, -21, 0), new Vector3f(), new Vector3f(1, 1, 1));
         new Session("codie", "5eda032fd4c7ad8928b3ba11");
@@ -84,21 +97,12 @@ public class PlayerRendererTest {
         TexturedModel texturedModel =  new TexturedModel(model, modelTexture);
         GameObject backgroundImage = new GUIObject("Background", texturedModel, new Vector3f(0, 0, 0), new Vector3f(), new Vector3f(75f, 75f, 75f));
 
-        menuScreen = new MainMenuScreen();
-
-
-        TextMaster.init(loader);
+        setMenuScreen(new MainMenuScreen());
 
         FontType font = new FontType(loader.loadTexture(PlayerRendererTest.class.getResource("/font/font.png")), PlayerRendererTest.class.getResourceAsStream("/font/font.fnt"));
         //FontType font = new FontType(loader.loadTexture(PlayerRendererTest.class.getResource("/font/testfont.png")), PlayerRendererTest.class.getResourceAsStream("/font/testfont.fnt"));
         GUIText text = new GUIText("MineOnline Debug", 1.5f, font, new Vector2f(0, 0), DisplayManager.getDefaultWidth(), false);
-        text.setColour(1, 1, 1);
-
-        GUIText bottomRight = new GUIText("MineOnline Debug", 1.5f, font, new Vector2f(DisplayManager.getDefaultWidth() - 32, DisplayManager.getDefaultHeight() - 32), Display.getWidth(), false);
-        bottomRight.setColour(1, 1, 1);
-
-        GUIText testString = new GUIText("Test Label", 1.5f, font, new Vector2f((DisplayManager.getDefaultWidth() / 2) + 30, (DisplayManager.getDefaultHeight() / 2) - 40 -32), 300f, true);
-        testString.setColour(1, 1, 1);
+        text.setColour(1, 1, 0);
 
         //playerScale.scale(new Vector3f(1, 0.5f, 1));
 
@@ -167,10 +171,6 @@ public class PlayerRendererTest {
             shader.stop();
 
             menuScreen.render(renderer);
-
-
-            if (menuScreen.showPlayer())
-                renderer.renderCenteredString(new Vector2f(250, 100), Session.session.getUsername(), Color.white);
 
             //renderer.renderString(new Vector2f(2, 10), "MineOnline Debug", org.newdawn.slick.Color.yellow); //x, y, string to draw, color
 

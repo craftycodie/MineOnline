@@ -15,8 +15,11 @@ public class TextMaster {
     private static Loader loader;
     private static Map<FontType, List<GUIText>> texts = new HashMap<FontType, List<GUIText>>();
     private static FontRenderer renderer;
+    public static FontType minecraftFont;
+
 
     public static void init(Loader theLoader){
+        minecraftFont = new FontType(theLoader.loadTexture(TextMaster.class.getResource("/font/font.png")), TextMaster.class.getResourceAsStream("/font/font.fnt"));
         renderer = new FontRenderer();
         loader = theLoader;
     }

@@ -1,7 +1,9 @@
 package gg.codie.mineonline.gui.rendering.components;
 
 import gg.codie.mineonline.gui.events.IOnClickListener;
+import gg.codie.mineonline.gui.font.GUIText;
 import gg.codie.mineonline.gui.rendering.*;
+import gg.codie.mineonline.gui.rendering.font.TextMaster;
 import gg.codie.mineonline.gui.rendering.models.RawModel;
 import gg.codie.mineonline.gui.rendering.models.TexturedModel;
 import gg.codie.mineonline.gui.rendering.shaders.GUIShader;
@@ -22,6 +24,10 @@ public class SelectableVersion extends GUIObject {
     String path;
     String info;
 
+    GUIText nameText;
+    GUIText pathText;
+    GUIText infoText;
+
     private SelectableVersionList parent;
 
     public SelectableVersion(String name, Vector2f position, String versionName, String path, String info, SelectableVersionList parent) {
@@ -35,6 +41,19 @@ public class SelectableVersion extends GUIObject {
         this.path = path;
         this.parent = parent;
         this.info = info;
+
+        nameText = new GUIText(this.versionName, 1.5f, TextMaster.minecraftFont, new Vector2f(position.x + 8, position.y - 70), 440, false);
+
+        if(this.info != null) {
+            infoText = new GUIText(this.info, 1.5f, TextMaster.minecraftFont, new Vector2f(position.x + 8, position.y - 48), 440, false);
+            infoText.setColour(0.7F, 0.7F, 0.7F);
+
+            pathText = new GUIText(this.path, 1.5f, TextMaster.minecraftFont, new Vector2f(position.x + 8, position.y - 26), 440, false);
+            pathText.setColour(0.5F, 0.5F, 0.5F);
+        } else {
+            pathText = new GUIText(this.path, 1.5f, TextMaster.minecraftFont, new Vector2f(position.x + 8, position.y - 48), 440, false);
+            pathText.setColour(0.5F, 0.5F, 0.5F);
+        }
     }
 
     public void render(Renderer renderer, GUIShader shader) {
@@ -44,14 +63,6 @@ public class SelectableVersion extends GUIObject {
             selectableVersionShader.loadViewMatrix(Camera.singleton);
             renderer.renderGUI(this, selectableVersionShader);
             selectableVersionShader.stop();
-        }
-        //renderer.renderCenteredString(new Vector2f(position.x + 202, (Display.getDefaultHeight() - position.y) - 31), 16, this.name, Color.black);
-        renderer.renderString(new Vector2f(position.x + 8,  position.y - 70), this.versionName, Color.white);
-        if(this.info != null) {
-            renderer.renderString(new Vector2f(position.x + 8, position.y - 48), this.info, Color.lightGray);
-            renderer.renderString(new Vector2f(position.x + 8, position.y - 26), this.path, Color.gray);
-        } else {
-            renderer.renderString(new Vector2f(position.x + 8, position.y - 48), this.path, Color.gray);
         }
     }
 
@@ -97,5 +108,12 @@ public class SelectableVersion extends GUIObject {
     public void translate(Vector3f localPosition) {
         super.translate(localPosition);
         position = position.translate(localPosition.x, -localPosition.y * 200);
+    }
+
+    public void cleanUp() {
+        nameText.remove();
+        pathText.remove();
+        if (infoText != null)
+            infoText.remove();
     }
 }

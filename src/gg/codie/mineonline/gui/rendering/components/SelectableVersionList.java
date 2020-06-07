@@ -126,4 +126,10 @@ public class SelectableVersionList extends GUIObject {
         }
         return null;
     }
+
+    public void cleanUp() {
+        for(SelectableVersion version : getVersions()) {
+            version.cleanUp();
+        }
+    }
 }

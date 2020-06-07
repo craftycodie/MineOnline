@@ -8,7 +8,9 @@ import gg.codie.mineonline.gui.font.GUIText;
 import gg.codie.mineonline.gui.rendering.DisplayManager;
 import gg.codie.mineonline.gui.rendering.shaders.FontShader;
 import org.lwjgl.opengl.*;
+import org.lwjgl.util.Color;
 import org.lwjgl.util.vector.Vector2f;
+import org.lwjgl.util.vector.Vector3f;
 
 public class FontRenderer {
 
@@ -53,10 +55,16 @@ public class FontRenderer {
         GL20.glEnableVertexAttribArray(0);
         GL20.glEnableVertexAttribArray(1);
 
-        shader.loadColour(text.getColour());
-        shader.loadTranslation(text.getPosition());
-
+        shader.loadColour(new Vector3f());
+        shader.loadAlpha(0.5f);
+        shader.loadTranslation(new Vector2f(text.getPosition().x + (2 / (float)DisplayManager.getDefaultWidth()), text.getPosition().y + (2 / (float)DisplayManager.getDefaultHeight())));
         GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, text.getVertexCount());
+
+        shader.loadColour(text.getColour());
+        shader.loadAlpha(1);
+        shader.loadTranslation(text.getPosition());
+        GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, text.getVertexCount());
+
         GL20.glDisableVertexAttribArray(0);
         GL20.glDisableVertexAttribArray(1);
         GL30.glBindVertexArray(0);

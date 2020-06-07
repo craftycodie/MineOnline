@@ -1,7 +1,9 @@
 package gg.codie.mineonline.gui.rendering.components;
 
 import gg.codie.mineonline.gui.events.IOnClickListener;
+import gg.codie.mineonline.gui.font.GUIText;
 import gg.codie.mineonline.gui.rendering.*;
+import gg.codie.mineonline.gui.rendering.font.TextMaster;
 import gg.codie.mineonline.gui.rendering.models.RawModel;
 import gg.codie.mineonline.gui.rendering.models.TexturedModel;
 import gg.codie.mineonline.gui.rendering.shaders.GUIShader;
@@ -23,6 +25,7 @@ public class InputField extends GUIObject {
 
     String value;
     IOnClickListener onEnterPressed;
+    GUIText guiText;
 
     public InputField(String name, Vector2f position, String value, IOnClickListener onEnterPressed) {
         super(name,
@@ -33,6 +36,8 @@ public class InputField extends GUIObject {
         this.position = new Vector2f(position.x, position.y);
         this.value = value;
         this.onEnterPressed = onEnterPressed;
+
+        guiText = new GUIText(value, 1.5f, TextMaster.minecraftFont, new Vector2f(position.x, position.y - 32), 400f, false);
     }
 
     public void render(Renderer renderer, GUIShader shader) {
@@ -40,10 +45,13 @@ public class InputField extends GUIObject {
         renderer.renderGUI(this, shader);
         shader.stop();
 
-        if(focused && System.currentTimeMillis() % 600 >= 300)
-            renderer.renderString(new Vector2f(position.x + 8, position.y - 32), this.value + "_", Color.white);
-        else
-            renderer.renderString(new Vector2f(position.x + 8,  position.y - 32), this.value, Color.white);
+        if(focused && System.currentTimeMillis() % 600 >= 300 && !this.guiText.textString.equals(this.value + "_")) {
+            guiText.remove();
+            guiText = new GUIText(this.value + "_", 1.5f, TextMaster.minecraftFont, new Vector2f(position.x, position.y - 32), 400f, false);
+        } else if (!this.guiText.textString.equals(this.value)) {
+            guiText.remove();
+            guiText = new GUIText(value, 1.5f, TextMaster.minecraftFont, new Vector2f(position.x, position.y - 32), 400f, false);
+        }
 
     }
 
@@ -101,6 +109,10 @@ public class InputField extends GUIObject {
 
     public void resize() {
         this.model.setRawModel(Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth(position.x) + DisplayManager.getXBuffer(), DisplayManager.scaledHeight(DisplayManager.getDefaultHeight() - position.y) + DisplayManager.getYBuffer()), new Vector2f(DisplayManager.scaledWidth(400), DisplayManager.scaledHeight(40)), TextureHelper.getPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(200, 0), new Vector2f(200, 20))));
+    }
+
+    public void cleanUp() {
+        this.guiText.remove();
     }
 
 }

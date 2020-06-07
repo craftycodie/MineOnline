@@ -14,7 +14,7 @@ import org.lwjgl.util.vector.Vector3f;
  */
 public class GUIText {
 
-    private String textString;
+    public final String textString;
     private float fontSize;
 
     private int textMeshVao;
@@ -62,6 +62,8 @@ public class GUIText {
         this.position = position;
         this.lineMaxSize = maxLineLength;
         this.centerText = centered;
+        this.colour = new Vector3f(1, 1, 1);
+        this.setNumberOfLines(1);
         TextMaster.loadText(this);
     }
 
@@ -175,7 +177,7 @@ public class GUIText {
      * @return The maximum length of a line of this text.
      */
     protected float getMaxLineSize() {
-        return (DisplayManager.scaledWidth(lineMaxSize)) / Display.getWidth();
+        return (lineMaxSize) / DisplayManager.getDefaultWidth();
     }
 
     /**

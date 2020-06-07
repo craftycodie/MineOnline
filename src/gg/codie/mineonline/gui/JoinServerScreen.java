@@ -5,9 +5,11 @@ import gg.codie.mineonline.Properties;
 import gg.codie.mineonline.Session;
 import gg.codie.mineonline.api.MinecraftAPI;
 import gg.codie.mineonline.gui.events.IOnClickListener;
+import gg.codie.mineonline.gui.font.GUIText;
 import gg.codie.mineonline.gui.rendering.*;
 import gg.codie.mineonline.gui.rendering.components.InputField;
 import gg.codie.mineonline.gui.rendering.components.LargeButton;
+import gg.codie.mineonline.gui.rendering.font.TextMaster;
 import gg.codie.mineonline.gui.rendering.models.RawModel;
 import gg.codie.mineonline.gui.rendering.models.TexturedModel;
 import gg.codie.mineonline.gui.rendering.shaders.GUIShader;
@@ -21,6 +23,7 @@ public class JoinServerScreen implements IMenuScreen {
     LargeButton aboutButton;
     LargeButton logoutButton;
     LargeButton doneButton;
+    GUIText label;
 
 
     public JoinServerScreen() {
@@ -66,6 +69,8 @@ public class JoinServerScreen implements IMenuScreen {
                 PlayerRendererTest.setMenuScreen(new MainMenuScreen());
             }
         });
+
+        label = new GUIText("Play Multiplayer", 1.5f, TextMaster.minecraftFont, new Vector2f(0, 40), DisplayManager.getDefaultWidth(), true);
     }
 
     public void update() {
@@ -85,8 +90,6 @@ public class JoinServerScreen implements IMenuScreen {
         logoutButton.render(renderer, guiShader);
         doneButton.render(renderer, guiShader);
         guiShader.stop();
-
-        renderer.renderCenteredString(new Vector2f(DisplayManager.getDefaultWidth() / 2, 50), "Play Multiplayer", Color.white); //x, y, string to draw, color
     }
 
     public boolean showPlayer() {
@@ -98,5 +101,14 @@ public class JoinServerScreen implements IMenuScreen {
         logoutButton.resize();
         aboutButton.resize();
         doneButton.resize();
+    }
+
+    @Override
+    public void cleanUp() {
+        label.remove();
+        serverIPField.cleanUp();
+        logoutButton.cleanUp();
+        aboutButton.cleanUp();
+        doneButton.cleanUp();
     }
 }

@@ -10,7 +10,15 @@ import java.util.LinkedList;
 
 public class GameObject {
 
-    public String name;
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    private String name;
     public TexturedModel model;
 
     protected Matrix4f localMatrix;

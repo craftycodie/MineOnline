@@ -4,12 +4,14 @@ import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.Session;
 import gg.codie.mineonline.api.MinecraftAPI;
 import gg.codie.mineonline.gui.events.IOnClickListener;
+import gg.codie.mineonline.gui.font.GUIText;
 import gg.codie.mineonline.gui.rendering.*;
 import gg.codie.mineonline.gui.rendering.Renderer;
 import gg.codie.mineonline.gui.rendering.animation.IdlePlayerAnimation;
 import gg.codie.mineonline.gui.rendering.animation.WalkPlayerAnimation;
 import gg.codie.mineonline.gui.rendering.components.LargeButton;
 import gg.codie.mineonline.gui.rendering.components.MediumButton;
+import gg.codie.mineonline.gui.rendering.font.TextMaster;
 import gg.codie.mineonline.gui.rendering.models.RawModel;
 import gg.codie.mineonline.gui.rendering.models.TexturedModel;
 import gg.codie.mineonline.gui.rendering.shaders.GUIShader;
@@ -39,6 +41,7 @@ public class SkinMenuScreen implements IMenuScreen {
     MediumButton submitButton;
     LargeButton doneButton;
     JFileChooser fileChooser = new JFileChooser();
+    GUIText label;
 
     String skinPath = new String();
     String cloakPath = new String();
@@ -78,7 +81,7 @@ public class SkinMenuScreen implements IMenuScreen {
 
                         if (returnVal == JFileChooser.APPROVE_OPTION) {
                             File file = fileChooser.getSelectedFile();
-                            skinButton.name = "Skin: " + file.getName();
+                            skinButton.setName("Skin: " + file.getName());
 
                             skinPath = file.getPath();
 
@@ -111,7 +114,7 @@ public class SkinMenuScreen implements IMenuScreen {
 
                         if (returnVal == JFileChooser.APPROVE_OPTION) {
                             File file = fileChooser.getSelectedFile();
-                            cloakButton.name = "Cloak: " + file.getName();
+                            cloakButton.setName("Cloak: " + file.getName());
 
                             cloakPath = file.getPath();
 
@@ -194,6 +197,9 @@ public class SkinMenuScreen implements IMenuScreen {
                 PlayerGameObject.thePlayer.setPlayerAnimation(new IdlePlayerAnimation());
             }
         });
+
+        label = new GUIText("Change Skin", 1.5f, TextMaster.minecraftFont, new Vector2f(0, 40), DisplayManager.getDefaultWidth(), true);
+
     }
 
     public void update() {
@@ -215,8 +221,6 @@ public class SkinMenuScreen implements IMenuScreen {
         submitButton.render(renderer, guiShader);
         doneButton.render(renderer, guiShader);
         guiShader.stop();
-
-        renderer.renderCenteredString(new Vector2f(DisplayManager.getDefaultWidth() / 2, 40), "Change Skin", Color.white); //x, y, string to draw, color
     }
 
     public boolean showPlayer() {
@@ -229,5 +233,15 @@ public class SkinMenuScreen implements IMenuScreen {
         resetCloakButton.resize();
         submitButton.resize();
         doneButton.resize();
+    }
+
+    @Override
+    public void cleanUp() {
+        skinButton.cleanUp();
+        cloakButton.cleanUp();
+        resetCloakButton.cleanUp();
+        submitButton.cleanUp();
+        doneButton.cleanUp();
+        label.remove();
     }
 }

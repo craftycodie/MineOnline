@@ -33,4 +33,8 @@ public class LoginMenuScreen implements IMenuScreen {
     public void resize() {
 
     }
+
+    public void cleanUp() {
+
+    }
 }
