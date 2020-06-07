@@ -18,6 +18,9 @@ public class TextMeshCreator {
 
     protected TextMeshData createTextMesh(GUIText text) {
         List<Line> lines = createStructure(text);
+        if (text.getNumberOfLines() < lines.size()) {
+            lines = lines.subList(lines.size() - text.getNumberOfLines(), lines.size());
+        }
         TextMeshData data = createQuadVertices(text, lines);
         return data;
     }
@@ -30,6 +33,17 @@ public class TextMeshCreator {
         for (char c : chars) {
             int ascii = (int) c;
             if (ascii == SPACE_ASCII) {
+                boolean added = currentLine.attemptToAddWord(currentWord);
+                if (!added) {
+                    lines.add(currentLine);
+                    currentLine = new Line(metaData.getSpaceWidth(), text.getFontSize(), text.getMaxLineSize());
+                    currentLine.attemptToAddWord(currentWord);
+                }
+                currentWord = new Word(text.getFontSize());
+                continue;
+            } else if (ascii == 47 || ascii == 92) {
+                Character character = metaData.getCharacter(ascii);
+                currentWord.addCharacter(character);
                 boolean added = currentLine.attemptToAddWord(currentWord);
                 if (!added) {
                     lines.add(currentLine);
@@ -51,7 +65,7 @@ public class TextMeshCreator {
         if (!added) {
             lines.add(currentLine);
             currentLine = new Line(metaData.getSpaceWidth(), text.getFontSize(), text.getMaxLineSize());
-            currentLine.attemptToAddWord(currentWord);
+            currentLine.addWord(currentWord);
         }
         lines.add(currentLine);
     }

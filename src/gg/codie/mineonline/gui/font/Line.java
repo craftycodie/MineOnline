@@ -53,6 +53,13 @@ public class Line {
         }
     }
 
+    protected void addWord(Word word) {
+        double additionalLength = word.getWordWidth();
+        additionalLength += !words.isEmpty() ? spaceSize : 0;
+        words.add(word);
+        currentLineLength += additionalLength;
+    }
+
     /**
      * @return The max length of the line.
      */

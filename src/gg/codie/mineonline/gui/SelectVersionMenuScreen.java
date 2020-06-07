@@ -95,7 +95,7 @@ public class SelectVersionMenuScreen implements IMenuScreen {
                             if(minecraftVersion != null) {
                                 versionToAdd = new String[] { minecraftVersion.name, file.getPath(), minecraftVersion.info };
                             } else {
-                                versionToAdd = new String[] { "Unknown Version (" + file.getName() + ")", file.getPath(), null };
+                                versionToAdd = new String[] { "Unknown Version", file.getPath(), null };
                             }
                         }
                     }
@@ -123,7 +123,7 @@ public class SelectVersionMenuScreen implements IMenuScreen {
             if(minecraftVersion != null) {
                 selectableVersionList.addVersion(minecraftVersion.name, file.getPath(), minecraftVersion.info);
             } else {
-                selectableVersionList.addVersion("Unknown Version (" + file.getName() + ")", file.getPath(), null);
+                selectableVersionList.addVersion("Unknown Version", file.getPath(), null);
             }
         }
 

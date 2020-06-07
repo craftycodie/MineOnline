@@ -13,6 +13,8 @@ public class FontShader extends ShaderProgram{
     private int location_colour;
     private int location_translation;
     private int location_alpha;
+    private int location_yMin;
+    private int location_yMax;
 
     public FontShader() {
         super(VERTEX_FILE, FRAGMENT_FILE);
@@ -23,6 +25,8 @@ public class FontShader extends ShaderProgram{
         location_colour = super.getUniformLocation("colour");
         location_alpha = super.getUniformLocation("alpha");
         location_translation = super.getUniformLocation("translation");
+        location_yMin = super.getUniformLocation("yMin");
+        location_yMax = super.getUniformLocation("yMax");
     }
 
     @Override
@@ -43,5 +47,9 @@ public class FontShader extends ShaderProgram{
         super.loadVector(location_translation, translation);
     }
 
+    public void loadYBounds(int min, int max) {
+        super.loadInt(location_yMin, min);
+        super.loadInt(location_yMax, max);
+    }
 
 }

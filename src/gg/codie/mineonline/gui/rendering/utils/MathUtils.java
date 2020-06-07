@@ -212,11 +212,15 @@ public class MathUtils {
             return new Vector3f(x, y, z);
         }
 
+        // This should work until things get complicated (eg negative scale) which shouldn't happen for thisd
         public static Vector3f getScale(Matrix4f matrix4f) {
             Vector3f dest = new Vector3f();
-            dest.x = (float)Math.sqrt(matrix4f.m00 * matrix4f.m00 + matrix4f.m01 * matrix4f.m01 + matrix4f.m02 * matrix4f.m02);
-            dest.y = (float)Math.sqrt(matrix4f.m10 * matrix4f.m10 + matrix4f.m11 * matrix4f.m11 + matrix4f.m12 * matrix4f.m12);
-            dest.z = (float)Math.sqrt(matrix4f.m20 * matrix4f.m20 + matrix4f.m21 * matrix4f.m21 + matrix4f.m22 * matrix4f.m22);
+            dest.x = (float)Math.sqrt(Math.pow(matrix4f.m00, 2) + Math.pow(matrix4f.m01, 2) + Math.pow(matrix4f.m02, 2));
+            dest.y = (float)Math.sqrt(Math.pow(matrix4f.m10, 2) + Math.pow(matrix4f.m11, 2) + Math.pow(matrix4f.m12, 2));
+            dest.z = (float)Math.sqrt(Math.pow(matrix4f.m20, 2) + Math.pow(matrix4f.m21, 2) + Math.pow(matrix4f.m22, 2));
+//            float sx = length(new Vector3f(matrix4f.m11, matrix4f.m12, matrix4f.m13));
+//            float sy = length(new Vector3f(matrix4f.m21, matrix4f.m22, matrix4f.m23));
+//            float sz = length(new Vector3f(matrix4f.m31, matrix4f.m32, matrix4f.m33));
             return dest;
         }
 

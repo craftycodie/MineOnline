@@ -22,6 +22,7 @@ import org.newdawn.slick.Color;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Random;
 
 public class PlayerRendererTest {
 
@@ -83,17 +84,19 @@ public class PlayerRendererTest {
         playerScale.addChild(playerPivot);
 
         playerGameObject.setPlayerAnimation(new IdlePlayerAnimation());
-        Camera camera = new Camera();
+        Camera camera = new DebugCamera();
 
-        RawModel model = loader.loadBoxToVAO(new Vector3f(-1, -1, -1), new Vector3f(1, 1, 1), TextureHelper.getCubeTextureCoords(new Vector2f(2048, 1024),
-                new Vector2f(0, 0), new Vector2f(2048, 1024),
-                new Vector2f(0, 0), new Vector2f(2048, 1024),
-                new Vector2f(0, 0), new Vector2f(2048, 1024),
-                new Vector2f(0, 0), new Vector2f(2048, 1024),
-                new Vector2f(0, 0), new Vector2f(2048, 1024),
-                new Vector2f(0, 0), new Vector2f(2048, 1024)
+        String[] panoramaNames = new String[] {"midnight", "sunset"};
+
+        RawModel model = loader.loadBoxToVAO(new Vector3f(-1, -1, -1), new Vector3f(1, 1, 1), TextureHelper.getCubeTextureCoords(new Vector2f(8192, 4096),
+                new Vector2f(4161, 0), new Vector2f(1387, 1387),
+                new Vector2f(1387, 0), new Vector2f(1387, 1387),
+                new Vector2f(2774, 0), new Vector2f(1387, 1387),
+                new Vector2f(0, 0), new Vector2f(1387, 1387),
+                new Vector2f(0, 1387), new Vector2f(1387, 1387),
+                new Vector2f(1387, 1387), new Vector2f(1387, 1387)
         ));
-        ModelTexture modelTexture = new ModelTexture(loader.loadTexture(PlayerRendererTest.class.getResource("/img/background.png")));
+        ModelTexture modelTexture = new ModelTexture(loader.loadTexture(PlayerRendererTest.class.getResource("/img/panorama_" + panoramaNames[new Random().nextInt(panoramaNames.length)] + ".png")));
         TexturedModel texturedModel =  new TexturedModel(model, modelTexture);
         GameObject backgroundImage = new GUIObject("Background", texturedModel, new Vector3f(0, 0, 0), new Vector3f(), new Vector3f(75f, 75f, 75f));
 
@@ -111,9 +114,9 @@ public class PlayerRendererTest {
         // Game Loop
         while(!Display.isCloseRequested() && formopen) {
             renderer.prepare();
+
             // Camera roll lock.
             // Broken and not necessary.
-
 //            if(playerPivot.getLocalRotation().z > 0) {
 //                playerPivot.increaseRotation(new Vector3f(0, 0, -playerPivot.getLocalRotation().z));
 //            }
@@ -127,9 +130,23 @@ public class PlayerRendererTest {
 
             backgroundImage.increaseRotation(new Vector3f(0, 0.025f, 0));
 
-            Vector3f currentScale = MathUtils.getScale(playerPivot.localMatrix);
+            // Handle player resizing.
+            float maxScale = 1;
+            if(DisplayManager.isTall()){
+                maxScale = Display.getWidth() / (float)DisplayManager.getDefaultWidth();
+            } else {
+                maxScale = Display.getHeight() / (float)DisplayManager.getDefaultHeight();
+            }
+            if(maxScale > 1) {
+                playerScale.setScale(new Vector3f((1 / maxScale) * (float)DisplayManager.getScale(), (1 / maxScale) * (float)DisplayManager.getScale(), (1 / maxScale) * (float)DisplayManager.getScale()));
+            }
+            float xScale = Display.getWidth() / (float)DisplayManager.getDefaultWidth();
+            if(xScale > 1) {
+                playerScale.setLocalPosition(new Vector3f(-20 * (1 / xScale) * (float)DisplayManager.getScale(), 0, -65));
+            }
+
             ///playerPivot.scale(new Vector3f(2 - currentScale.x, 2 - currentScale.y, 2 - currentScale.z));
-            playerPivot.setScale(new Vector3f(1, 2, 1));
+            //playerPivot.setScale(new Vector3f((float)DisplayManager.getScale(), (float)DisplayManager.getScale(), (float)DisplayManager.getScale()));
 
             if(Mouse.isButtonDown(0)) {
                 Vector3f currentRotation = playerPivot.getLocalRotation();
@@ -165,8 +182,12 @@ public class PlayerRendererTest {
             shader.loadViewMatrix(camera);
 
             renderer.render(backgroundImage, shader);
-            if (menuScreen.showPlayer())
+
+            if (menuScreen.showPlayer()) {
+                GL11.glPushMatrix();
                 renderer.render(playerGameObject, shader);
+                GL11.glPopMatrix();
+            }
 
             shader.stop();
 

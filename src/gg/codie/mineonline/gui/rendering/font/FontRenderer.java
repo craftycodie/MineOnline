@@ -57,11 +57,14 @@ public class FontRenderer {
 
         shader.loadColour(new Vector3f());
         shader.loadAlpha(0.5f);
+        shader.loadYBounds(DisplayManager.getYBuffer() + (int)DisplayManager.scaledHeight(text.getYBounds().x), Display.getHeight() - (DisplayManager.getYBuffer() + (int)DisplayManager.scaledHeight(text.getYBounds().y)));
         shader.loadTranslation(new Vector2f(text.getPosition().x + (2 / (float)DisplayManager.getDefaultWidth()), text.getPosition().y + (2 / (float)DisplayManager.getDefaultHeight())));
+
         GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, text.getVertexCount());
 
         shader.loadColour(text.getColour());
         shader.loadAlpha(1);
+        shader.loadYBounds(DisplayManager.getYBuffer() + (int)DisplayManager.scaledHeight(text.getYBounds().x), Display.getHeight() - (DisplayManager.getYBuffer() + (int)DisplayManager.scaledHeight(text.getYBounds().y)));
         shader.loadTranslation(text.getPosition());
         GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, text.getVertexCount());
 

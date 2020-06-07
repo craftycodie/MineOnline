@@ -19,7 +19,7 @@ public class GUIText {
 
     private int textMeshVao;
     private int vertexCount;
-    private Vector3f colour = new Vector3f(0f, 0f, 0f);
+    private Vector3f colour = new Vector3f(1f, 1f, 1f);
 
     private Vector2f position;
     private float lineMaxSize;
@@ -27,7 +27,17 @@ public class GUIText {
 
     private FontType font;
 
-    private boolean centerText = false;
+    private boolean centerText;
+
+    public Vector2f getYBounds() {
+        return yBounds;
+    }
+
+    public void setYBounds(Vector2f yBounds) {
+        this.yBounds = yBounds;
+    }
+
+    private Vector2f yBounds = new Vector2f();
 
     /**
      * Creates a new text, loads the text's quads into a VAO, and adds the text
@@ -62,7 +72,6 @@ public class GUIText {
         this.position = position;
         this.lineMaxSize = maxLineLength;
         this.centerText = centered;
-        this.colour = new Vector3f(1, 1, 1);
         this.setNumberOfLines(1);
         TextMaster.loadText(this);
     }

@@ -304,6 +304,9 @@ public class GameObject {
 //    }
 //
     public void setScale(Vector3f scale) {
+        Vector3f currentScale = MathUtils.getScale(localMatrix);
+        localMatrix.scale(new Vector3f(1 / currentScale.x, 1 / currentScale.y, 1 / currentScale.z));
+        localMatrix.scale(scale);
         //this.localMatrix = MathUtils.createTransformationMatrix(MathUtils.getPosition(localMatrix), getLocalRotation(), scale);
     }
 

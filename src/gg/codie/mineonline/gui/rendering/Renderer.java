@@ -154,11 +154,11 @@ public class Renderer {
 
         GL11.glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_NICEST);
         GL11.glEnable(GL13.GL_MULTISAMPLE);
-        //GL11.glEnable(GL11.GL_BLEND);
+        GL11.glEnable(GL11.GL_BLEND);
         GL11.glEnable(GL13.GL_SAMPLE_ALPHA_TO_COVERAGE);
         GL11.glEnable(GL11.GL_ALPHA_TEST);
         GL11.glBlendFunc ( GL11.GL_SRC_ALPHA, GL11.GL_ONE );
-        //GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
         try {
             GL11.glDrawElements(GL11.GL_TRIANGLES, rawModel.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);

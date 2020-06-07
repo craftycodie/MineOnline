@@ -16,6 +16,8 @@ import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 import org.newdawn.slick.Color;
 
+import java.nio.file.Paths;
+
 public class SelectableVersion extends GUIObject {
 
     Vector2f position;
@@ -43,16 +45,23 @@ public class SelectableVersion extends GUIObject {
         this.info = info;
 
         nameText = new GUIText(this.versionName, 1.5f, TextMaster.minecraftFont, new Vector2f(position.x + 8, position.y - 70), 440, false);
+        nameText.setYBounds(new Vector2f(69 , 69));
+
+        String jarName = Paths.get(path).getFileName().toString();
 
         if(this.info != null) {
             infoText = new GUIText(this.info, 1.5f, TextMaster.minecraftFont, new Vector2f(position.x + 8, position.y - 48), 440, false);
             infoText.setColour(0.7F, 0.7F, 0.7F);
+            infoText.setYBounds(new Vector2f(69 , 69));
 
-            pathText = new GUIText(this.path, 1.5f, TextMaster.minecraftFont, new Vector2f(position.x + 8, position.y - 26), 440, false);
+            pathText = new GUIText(jarName, 1.5f, TextMaster.minecraftFont, new Vector2f(position.x + 8, position.y - 26), 440, false);
             pathText.setColour(0.5F, 0.5F, 0.5F);
+            pathText.setYBounds(new Vector2f(69 , 69));
+
         } else {
-            pathText = new GUIText(this.path, 1.5f, TextMaster.minecraftFont, new Vector2f(position.x + 8, position.y - 48), 440, false);
+            pathText = new GUIText(jarName, 1.5f, TextMaster.minecraftFont, new Vector2f(position.x + 8, position.y - 48), 440, false);
             pathText.setColour(0.5F, 0.5F, 0.5F);
+            pathText.setYBounds(new Vector2f(69 , 69));
         }
     }
 

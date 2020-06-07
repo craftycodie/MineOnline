@@ -59,6 +59,7 @@ public class DisplayManager {
 //    }
 
     public static double getScale() {
+        //return 1.25;
         double xScale = (double) Display.getWidth() / DEFAULT_WIDTH;
         double yScale = (double) Display.getHeight() / DEFAULT_HEIGHT;
 
