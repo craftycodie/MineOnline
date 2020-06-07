@@ -291,7 +291,7 @@ public class MinecraftLauncher extends Applet implements AppletStub{
             public void onUpdateEvent() {
                 if (renderer != null) {
                     //renderer.renderString(new Vector2f(2, 190), "MineOnline Debug", org.newdawn.slick.Color.yellow); //x, y, string to draw, color
-                    TextMaster.render();
+                    //TextMaster.render();
                     if (minecraftVersion != null && minecraftVersion.enableScreenshotPatch) {
                         try {
                             float opacityMultiplier = System.currentTimeMillis() - lastScreenshotTime;
