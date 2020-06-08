@@ -1,5 +1,6 @@
-package gg.codie.mineonline.gui.rendering.components;
+package gg.codie.mineonline.gui.components;
 
+import gg.codie.mineonline.api.MineOnlineServer;
 import gg.codie.mineonline.gui.MouseHandler;
 import gg.codie.mineonline.gui.events.IOnClickListener;
 import gg.codie.mineonline.gui.font.GUIText;
@@ -14,25 +15,25 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
-import java.nio.file.Paths;
-
-public class SelectableVersion extends GUIObject {
+public class SelectableServer extends GUIObject {
 
     Vector2f originalPosition;
     Vector2f currentPosition;
 
     String versionName;
-    String path;
-    String info;
+    String info1;
+    String info2;
 
     GUIText nameText;
-    GUIText pathText;
-    GUIText infoText;
+    GUIText info1Text;
+    GUIText info2Text;
 
-    private SelectableVersionList parent;
+    private SelectableServerList parent;
     private IOnClickListener doubleClickListener;
 
-    public SelectableVersion(String name, Vector2f position, String versionName, String path, String info, SelectableVersionList parent, IOnClickListener doubleClickListener) {
+    public final MineOnlineServer server;
+
+    public SelectableServer(String name, Vector2f position, String versionName, String info1, String info2, MineOnlineServer server, SelectableServerList parent, IOnClickListener doubleClickListener) {
         super(name,
                 new TexturedModel(Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth(position.x) + DisplayManager.getXBuffer(), DisplayManager.scaledHeight(DisplayManager.getDefaultHeight() - position.y) + DisplayManager.getYBuffer()), new Vector2f(DisplayManager.scaledWidth(440), DisplayManager.scaledHeight(72)), TextureHelper.getPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(0, 130), new Vector2f(220, 36))), new ModelTexture(Loader.singleton.loadTexture(PlayerRendererTest.class.getResource("/img/gui.png")))),
                 new Vector3f(0, 0, 0), new Vector3f(), new Vector3f(1, 1, 1)
@@ -41,29 +42,23 @@ public class SelectableVersion extends GUIObject {
         this.originalPosition = new Vector2f(position.x, position.y);
         this.currentPosition = position;
         this.versionName = versionName;
-        this.path = path;
+        this.info1 = info1;
         this.parent = parent;
-        this.info = info;
+        this.info2 = info2;
         this.doubleClickListener = doubleClickListener;
+        this.server = server;
 
         nameText = new GUIText(this.versionName, 1.5f, TextMaster.minecraftFont, new Vector2f(currentPosition.x + 8, currentPosition.y - 70), 440, false, true);
         nameText.setYBounds(new Vector2f(69 , 69));
 
-        String jarName = Paths.get(path).getFileName().toString();
+        info1Text = new GUIText(this.info1, 1.5f, TextMaster.minecraftFont, new Vector2f(currentPosition.x + 8, currentPosition.y - 48), 440, false, true);
+        info1Text.setColour(0.5F, 0.5F, 0.5F);
+        info1Text.setYBounds(new Vector2f(69 , 69));
 
-        if(this.info != null) {
-            infoText = new GUIText(this.info, 1.5f, TextMaster.minecraftFont, new Vector2f(currentPosition.x + 8, currentPosition.y - 48), 440, false, true);
-            infoText.setColour(0.7F, 0.7F, 0.7F);
-            infoText.setYBounds(new Vector2f(69 , 69));
-
-            pathText = new GUIText(jarName, 1.5f, TextMaster.minecraftFont, new Vector2f(currentPosition.x + 8, currentPosition.y - 26), 440, false, true);
-            pathText.setColour(0.5F, 0.5F, 0.5F);
-            pathText.setYBounds(new Vector2f(69 , 69));
-
-        } else {
-            pathText = new GUIText(jarName, 1.5f, TextMaster.minecraftFont, new Vector2f(currentPosition.x + 8, currentPosition.y - 48), 440, false, true);
-            pathText.setColour(0.5F, 0.5F, 0.5F);
-            pathText.setYBounds(new Vector2f(69 , 69));
+        if(this.info2 != null) {
+            info2Text = new GUIText(this.info2, 1.5f, TextMaster.minecraftFont, new Vector2f(currentPosition.x + 8, currentPosition.y - 26), 440, false, true);
+            info2Text.setColour(0.7F, 0.7F, 0.7F);
+            info2Text.setYBounds(new Vector2f(69, 69));
         }
     }
 
@@ -108,7 +103,7 @@ public class SelectableVersion extends GUIObject {
         }
 
         if(MouseHandler.didClick() && mouseIsOver) {
-            parent.selectVersion(path);
+            parent.selectServer(server);
 
             if(System.currentTimeMillis() - lastClickTime < 350 && doubleClickListener != null) {
                 doubleClickListener.onClick();
@@ -125,35 +120,28 @@ public class SelectableVersion extends GUIObject {
 
 
         nameText.remove();
-        if (infoText != null)
-            infoText.remove();
-        pathText.remove();
+        if (info2Text != null)
+            info2Text.remove();
+        info1Text.remove();
 
         nameText = new GUIText(this.versionName, 1.5f, TextMaster.minecraftFont, new Vector2f(currentPosition.x + 8, currentPosition.y - 70), 440, false, true);
         nameText.setYBounds(new Vector2f(69 , 69));
 
-        String jarName = Paths.get(path).getFileName().toString();
+        info1Text = new GUIText(this.info1, 1.5f, TextMaster.minecraftFont, new Vector2f(currentPosition.x + 8, currentPosition.y - 48), 440, false, true);
+        info1Text.setColour(0.5F, 0.5F, 0.5F);
+        info1Text.setYBounds(new Vector2f(69 , 69));
 
-        if(this.info != null) {
-            infoText = new GUIText(this.info, 1.5f, TextMaster.minecraftFont, new Vector2f(currentPosition.x + 8, currentPosition.y - 48), 440, false, true);
-            infoText.setColour(0.7F, 0.7F, 0.7F);
-            infoText.setYBounds(new Vector2f(69 , 69));
-
-            pathText = new GUIText(jarName, 1.5f, TextMaster.minecraftFont, new Vector2f(currentPosition.x + 8, currentPosition.y - 26), 440, false, true);
-            pathText.setColour(0.5F, 0.5F, 0.5F);
-            pathText.setYBounds(new Vector2f(69 , 69));
-
-        } else {
-            pathText = new GUIText(jarName, 1.5f, TextMaster.minecraftFont, new Vector2f(currentPosition.x + 8, currentPosition.y - 48), 440, false, true);
-            pathText.setColour(0.5F, 0.5F, 0.5F);
-            pathText.setYBounds(new Vector2f(69 , 69));
+        if(this.info2 != null) {
+            info2Text = new GUIText(this.info2, 1.5f, TextMaster.minecraftFont, new Vector2f(currentPosition.x + 8, currentPosition.y - 26), 440, false, true);
+            info2Text.setColour(0.7F, 0.7F, 0.7F);
+            info2Text.setYBounds(new Vector2f(69, 69));
         }
     }
 
     public void cleanUp() {
         nameText.remove();
-        pathText.remove();
-        if (infoText != null)
-            infoText.remove();
+        info1Text.remove();
+        if (info2Text != null)
+            info2Text.remove();
     }
 }

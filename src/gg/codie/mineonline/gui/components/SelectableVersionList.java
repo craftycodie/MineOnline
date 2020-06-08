@@ -1,6 +1,5 @@
-package gg.codie.mineonline.gui.rendering.components;
+package gg.codie.mineonline.gui.components;
 
-import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.MinecraftVersionInfo;
 import gg.codie.mineonline.Properties;
 import gg.codie.mineonline.gui.events.IOnClickListener;
@@ -12,15 +11,12 @@ import gg.codie.mineonline.gui.rendering.models.RawModel;
 import gg.codie.mineonline.gui.rendering.models.TexturedModel;
 import gg.codie.mineonline.gui.rendering.shaders.GUIShader;
 import gg.codie.mineonline.gui.rendering.textures.ModelTexture;
-import gg.codie.utils.ArrayUtils;
 import gg.codie.utils.JSONUtils;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
-import org.lwjgl.util.vector.Vector4f;
 
-import javax.swing.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DnDConstants;
@@ -29,10 +25,6 @@ import java.awt.dnd.DropTargetAdapter;
 import java.awt.dnd.DropTargetDropEvent;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.List;
 

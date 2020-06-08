@@ -1,4 +1,4 @@
-package gg.codie.mineonline.gui.rendering.components;
+package gg.codie.mineonline.gui.components;
 
 import gg.codie.mineonline.MinecraftVersionInfo;
 import gg.codie.mineonline.Properties;
@@ -19,16 +19,9 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
-import java.awt.dnd.DnDConstants;
-import java.awt.dnd.DropTarget;
-import java.awt.dnd.DropTargetAdapter;
-import java.awt.dnd.DropTargetDropEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
-import java.util.List;
 
 public class SelectableServerList extends GUIObject {
 

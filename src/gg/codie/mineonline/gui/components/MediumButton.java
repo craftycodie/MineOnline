@@ -1,4 +1,4 @@
-package gg.codie.mineonline.gui.rendering.components;
+package gg.codie.mineonline.gui.components;
 
 import gg.codie.mineonline.gui.MouseHandler;
 import gg.codie.mineonline.gui.events.IOnClickListener;
@@ -11,10 +11,8 @@ import gg.codie.mineonline.gui.rendering.shaders.GUIShader;
 import gg.codie.mineonline.gui.rendering.textures.ModelTexture;
 import gg.codie.mineonline.gui.sound.ClickSound;
 import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
-import org.newdawn.slick.Color;
 
 public class MediumButton extends GUIObject {
 

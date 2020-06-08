@@ -9,8 +9,8 @@ import gg.codie.mineonline.gui.rendering.*;
 import gg.codie.mineonline.gui.rendering.Renderer;
 import gg.codie.mineonline.gui.rendering.animation.IdlePlayerAnimation;
 import gg.codie.mineonline.gui.rendering.animation.WalkPlayerAnimation;
-import gg.codie.mineonline.gui.rendering.components.LargeButton;
-import gg.codie.mineonline.gui.rendering.components.MediumButton;
+import gg.codie.mineonline.gui.components.LargeButton;
+import gg.codie.mineonline.gui.components.MediumButton;
 import gg.codie.mineonline.gui.rendering.font.TextMaster;
 import gg.codie.mineonline.gui.rendering.models.RawModel;
 import gg.codie.mineonline.gui.rendering.models.TexturedModel;
@@ -20,7 +20,6 @@ import gg.codie.utils.FileUtils;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
-import org.newdawn.slick.Color;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;

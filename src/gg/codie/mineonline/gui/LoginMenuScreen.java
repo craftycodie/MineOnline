@@ -1,23 +1,20 @@
 package gg.codie.mineonline.gui;
 
-import gg.codie.mineonline.MinecraftLauncher;
-import gg.codie.mineonline.MinecraftVersionInfo;
 import gg.codie.mineonline.Properties;
 import gg.codie.mineonline.Session;
 import gg.codie.mineonline.api.MinecraftAPI;
 import gg.codie.mineonline.gui.events.IOnClickListener;
 import gg.codie.mineonline.gui.font.GUIText;
 import gg.codie.mineonline.gui.rendering.*;
-import gg.codie.mineonline.gui.rendering.components.InputField;
-import gg.codie.mineonline.gui.rendering.components.LargeButton;
-import gg.codie.mineonline.gui.rendering.components.SmallInputField;
-import gg.codie.mineonline.gui.rendering.components.SmallPasswordInputField;
+import gg.codie.mineonline.gui.components.InputField;
+import gg.codie.mineonline.gui.components.LargeButton;
+import gg.codie.mineonline.gui.components.SmallInputField;
+import gg.codie.mineonline.gui.components.SmallPasswordInputField;
 import gg.codie.mineonline.gui.rendering.font.TextMaster;
 import gg.codie.mineonline.gui.rendering.models.RawModel;
 import gg.codie.mineonline.gui.rendering.models.TexturedModel;
 import gg.codie.mineonline.gui.rendering.shaders.GUIShader;
 import gg.codie.mineonline.gui.rendering.textures.ModelTexture;
-import gg.codie.mineonline.gui.sound.ClickSound;
 import gg.codie.utils.LastLogin;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
@@ -25,10 +22,7 @@ import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
 import java.awt.*;
-import java.io.File;
-import java.net.InetAddress;
 import java.net.URI;
-import java.net.UnknownHostException;
 
 public class LoginMenuScreen implements IMenuScreen {
     GUIObject logo;

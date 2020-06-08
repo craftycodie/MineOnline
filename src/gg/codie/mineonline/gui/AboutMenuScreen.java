@@ -6,7 +6,7 @@ import gg.codie.mineonline.gui.rendering.Camera;
 import gg.codie.mineonline.gui.rendering.DisplayManager;
 import gg.codie.mineonline.gui.rendering.PlayerRendererTest;
 import gg.codie.mineonline.gui.rendering.Renderer;
-import gg.codie.mineonline.gui.rendering.components.LargeButton;
+import gg.codie.mineonline.gui.components.LargeButton;
 import gg.codie.mineonline.gui.rendering.font.TextMaster;
 import gg.codie.mineonline.gui.rendering.shaders.GUIShader;
 import org.lwjgl.util.vector.Vector2f;

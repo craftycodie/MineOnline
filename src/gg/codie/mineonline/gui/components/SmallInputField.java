@@ -1,4 +1,4 @@
-package gg.codie.mineonline.gui.rendering.components;
+package gg.codie.mineonline.gui.components;
 
 import gg.codie.mineonline.gui.MouseHandler;
 import gg.codie.mineonline.gui.events.IOnClickListener;
@@ -13,7 +13,7 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
-public class SmallPasswordInputField extends GUIObject {
+public class SmallInputField extends GUIObject {
 
     Vector2f position;
 
@@ -25,7 +25,7 @@ public class SmallPasswordInputField extends GUIObject {
     IOnClickListener onEnterPressed;
     GUIText guiText;
 
-    public SmallPasswordInputField(String name, Vector2f position, String value, IOnClickListener onEnterPressed) {
+    public SmallInputField(String name, Vector2f position, String value, IOnClickListener onEnterPressed) {
         super(name,
                 new TexturedModel(Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth(position.x) + DisplayManager.getXBuffer(), DisplayManager.scaledHeight(DisplayManager.getDefaultHeight() - position.y) + DisplayManager.getYBuffer()), new Vector2f(DisplayManager.scaledWidth(200), DisplayManager.scaledHeight(44)), TextureHelper.getYFlippedPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(0, 188), new Vector2f(101, 22))), new ModelTexture(Loader.singleton.loadTexture(PlayerRendererTest.class.getResource("/img/gui.png")))),
                 new Vector3f(0, 0, 0), new Vector3f(), new Vector3f(1, 1, 1)
@@ -35,7 +35,7 @@ public class SmallPasswordInputField extends GUIObject {
         this.value = value;
         this.onEnterPressed = onEnterPressed;
 
-        guiText = new GUIText(this.value.replaceAll(".", "*"), 1.5f, TextMaster.minecraftFont, new Vector2f(position.x + 12, position.y - 32), 200f, false, true);
+        guiText = new GUIText(value, 1.5f, TextMaster.minecraftFont, new Vector2f(position.x + 12, position.y - 32), 200f, false, true);
     }
 
     public void render(Renderer renderer, GUIShader shader) {
@@ -45,12 +45,12 @@ public class SmallPasswordInputField extends GUIObject {
 
         long diff = System.currentTimeMillis() % 600;
 
-        if(focused && diff >= 300 && !this.guiText.textString.equals(this.value.replaceAll(".", "*") + "_")) {
+        if(focused && diff >= 300 && !this.guiText.textString.equals(this.value + "_")) {
             guiText.remove();
-            guiText = new GUIText(this.value.replaceAll(".", "*") + "_", 1.5f, TextMaster.minecraftFont, new Vector2f(position.x + 12, position.y - 32), 200f, false, true);
-        } else if (diff < 300 && !this.guiText.textString.equals(this.value.replaceAll(".", "*"))) {
+            guiText = new GUIText(this.value + "_", 1.5f, TextMaster.minecraftFont, new Vector2f(position.x + 12, position.y - 32), 200f, false, true);
+        } else if (diff < 300 && !this.guiText.textString.equals(this.value)) {
             guiText.remove();
-            guiText = new GUIText(this.value.replaceAll(".", "*"), 1.5f, TextMaster.minecraftFont, new Vector2f(position.x + 12, position.y - 32), 200f, false, true);
+            guiText = new GUIText(value, 1.5f, TextMaster.minecraftFont, new Vector2f(position.x + 12, position.y - 32), 200f, false, true);
         }
 
     }
@@ -88,6 +88,7 @@ public class SmallPasswordInputField extends GUIObject {
         } else if(!mouseIsOver && mouseWasOver) {
             mouseWasOver = false;
         }
+
 
         if(MouseHandler.didClick() && mouseIsOver) {
             focused = true;
