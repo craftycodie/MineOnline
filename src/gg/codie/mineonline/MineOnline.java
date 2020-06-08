@@ -1,8 +1,6 @@
 package gg.codie.mineonline;
 
-import gg.codie.mineonline.gui.rendering.PlayerRendererTest;
-
-import java.awt.*;
+import gg.codie.mineonline.gui.MenuManager;
 
 public class MineOnline {
     public static void main(String[] args) throws Exception{
@@ -13,6 +11,6 @@ public class MineOnline {
         System.setProperty("http.proxyHost", "0.0.0.0");
         System.setProperty("http.proxyPort", "" + args[0]);
 
-        PlayerRendererTest.main(null);
+        MenuManager.main(null);
     }
 }

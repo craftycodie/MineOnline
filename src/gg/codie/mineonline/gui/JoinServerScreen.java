@@ -69,10 +69,10 @@ public class JoinServerScreen implements IMenuScreen {
                     public void onClick() {
                         Properties.properties.put("selectedJar", selectVersionMenuScreen.getSelectedPath());
                         Properties.saveProperties();
-                        PlayerRendererTest.setMenuScreen(new JoinServerScreen(serverIPField.getValue()));
+                        MenuManager.setMenuScreen(new JoinServerScreen(serverIPField.getValue()));
                     }
                 }, null);
-                PlayerRendererTest.setMenuScreen(selectVersionMenuScreen);
+                MenuManager.setMenuScreen(selectVersionMenuScreen);
             }
         });
 
@@ -108,7 +108,7 @@ public class JoinServerScreen implements IMenuScreen {
             @Override
             public void onClick() {
                 try {
-                    PlayerRendererTest.setMenuScreen(new ServerListMenuScreen());
+                    MenuManager.setMenuScreen(new ServerListMenuScreen());
                 } catch (Exception ex) {}
             }
         });
@@ -120,7 +120,7 @@ public class JoinServerScreen implements IMenuScreen {
         doneButton = new LargeButton("Cancel", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 200, DisplayManager.getDefaultHeight() - 20), new IOnClickListener() {
             @Override
             public void onClick() {
-                PlayerRendererTest.setMenuScreen(new MainMenuScreen());
+                MenuManager.setMenuScreen(new MainMenuScreen());
             }
         });
 

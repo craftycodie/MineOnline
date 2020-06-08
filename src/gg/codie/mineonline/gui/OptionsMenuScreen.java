@@ -43,7 +43,7 @@ public class OptionsMenuScreen implements IMenuScreen {
                     DisplayManager.setGuiScale(DisplayManager.getGuiScale() + 1);
                 }
 
-                PlayerRendererTest.resizeMenu();
+                MenuManager.resizeMenu();
 
                 guiScaleButton.setName("GUI Scale: " + guiScales[DisplayManager.getGuiScale()]);
             }
@@ -59,7 +59,7 @@ public class OptionsMenuScreen implements IMenuScreen {
         aboutButton = new MediumButton("About", new Vector2f((DisplayManager.getDefaultWidth() / 2) + 8, (DisplayManager.getDefaultHeight() / 2) - 40), new IOnClickListener() {
             @Override
             public void onClick() {
-                PlayerRendererTest.setMenuScreen(new AboutMenuScreen());
+                MenuManager.setMenuScreen(new AboutMenuScreen());
             }
         });
 
@@ -68,14 +68,14 @@ public class OptionsMenuScreen implements IMenuScreen {
             public void onClick() {
                 LastLogin.deleteLastLogin();
                 Session.session.logout();
-                PlayerRendererTest.setMenuScreen(new LoginMenuScreen(false));
+                MenuManager.setMenuScreen(new LoginMenuScreen(false));
             }
         });
 
         doneButton = new LargeButton("Done", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 200, DisplayManager.getDefaultHeight() - 20), new IOnClickListener() {
             @Override
             public void onClick() {
-                PlayerRendererTest.setMenuScreen(new MainMenuScreen());
+                MenuManager.setMenuScreen(new MainMenuScreen());
             }
         });
 

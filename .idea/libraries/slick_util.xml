@@ -1,5 +1,5 @@
 <component name="libraryTable">
-  <library name="slick">
+  <library name="slick-util">
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/res/lib/slick-util.jar!/" />
     </CLASSES>

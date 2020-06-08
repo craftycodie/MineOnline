@@ -1,9 +1,8 @@
 package gg.codie.mineonline;
 
+import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.gui.rendering.*;
 import gg.codie.mineonline.gui.rendering.Renderer;
-import gg.codie.mineonline.gui.rendering.font.TextMaster;
-import gg.codie.mineonline.gui.rendering.shaders.StaticShader;
 import gg.codie.mineonline.lwjgl.OnCreateListener;
 import gg.codie.mineonline.lwjgl.OnUpdateListener;
 import gg.codie.utils.MD5Checksum;
@@ -53,7 +52,7 @@ public class MinecraftLauncher extends Applet implements AppletStub{
 
         DisplayManager.init();
 
-        PlayerRendererTest.main(null);
+        MenuManager.main(null);
 
         DisplayManager.closeDisplay();
         new Session("codie", "1213");
@@ -284,7 +283,7 @@ public class MinecraftLauncher extends Applet implements AppletStub{
 
         frame.setBackground(Color.black);
 
-        PlayerRendererTest.formopen = false;
+        MenuManager.formopen = false;
 
         Display.setUpdateListener(new OnUpdateListener() {
             @Override

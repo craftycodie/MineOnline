@@ -1,7 +1,5 @@
 package gg.codie.mineonline;
 
-import gg.codie.mineonline.gui.rendering.PlayerRendererTest;
-
 import java.io.*;
 import java.net.*;
 import java.util.Map;

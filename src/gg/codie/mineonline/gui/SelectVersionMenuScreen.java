@@ -102,7 +102,7 @@ public class SelectVersionMenuScreen implements IMenuScreen {
             public void onClick() {
                 Properties.properties.put("selectedJar", selectableVersionList.getSelected());
                 Properties.saveProperties();
-                PlayerRendererTest.setMenuScreen(new MainMenuScreen());
+                MenuManager.setMenuScreen(new MainMenuScreen());
             }
         });
 

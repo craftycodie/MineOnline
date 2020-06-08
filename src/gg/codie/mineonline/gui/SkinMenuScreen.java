@@ -48,7 +48,7 @@ public class SkinMenuScreen implements IMenuScreen {
 
     public SkinMenuScreen() {
         RawModel logoModel = Loader.singleton.loadGUIToVAO(new Vector2f((DisplayManager.getDefaultWidth() / 2) -200, Display.getHeight() - 69), new Vector2f(400, 49), TextureHelper.getYFlippedPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(0, 40), new Vector2f(400, 49)));
-        ModelTexture logoTexture = new ModelTexture(Loader.singleton.loadTexture(PlayerRendererTest.class.getResource("/img/gui.png")));
+        ModelTexture logoTexture = new ModelTexture(Loader.singleton.loadTexture(MenuManager.class.getResource("/img/gui.png")));
         TexturedModel texuredLogoModel =  new TexturedModel(logoModel, logoTexture);
 
         PlayerGameObject.thePlayer.translate(new Vector3f(0, 6, 0));
@@ -188,7 +188,7 @@ public class SkinMenuScreen implements IMenuScreen {
                     Session.session.cacheSkin();
                 }
 
-                PlayerRendererTest.setMenuScreen(new MainMenuScreen());
+                MenuManager.setMenuScreen(new MainMenuScreen());
                 PlayerGameObject.thePlayer.scale(new Vector3f(1.25f, 1.25f, 1.25f));
                 PlayerGameObject.thePlayer.translate(new Vector3f(0, -6, 0));
                 PlayerGameObject.thePlayer.setPlayerAnimation(new IdlePlayerAnimation());

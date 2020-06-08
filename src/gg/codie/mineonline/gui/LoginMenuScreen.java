@@ -6,7 +6,6 @@ import gg.codie.mineonline.api.MinecraftAPI;
 import gg.codie.mineonline.gui.events.IOnClickListener;
 import gg.codie.mineonline.gui.font.GUIText;
 import gg.codie.mineonline.gui.rendering.*;
-import gg.codie.mineonline.gui.components.InputField;
 import gg.codie.mineonline.gui.components.LargeButton;
 import gg.codie.mineonline.gui.components.SmallInputField;
 import gg.codie.mineonline.gui.components.SmallPasswordInputField;
@@ -52,7 +51,7 @@ public class LoginMenuScreen implements IMenuScreen {
         passwordInput = new SmallPasswordInputField("Password Input", new Vector2f((DisplayManager.getDefaultWidth() / 2) + 4, (DisplayManager.getDefaultHeight() / 2) + 34 ), password, null);
 
         RawModel logoModel = Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth((DisplayManager.getDefaultWidth() / 2) -200) + DisplayManager.getXBuffer(), Display.getHeight() - DisplayManager.scaledHeight(69)), new Vector2f(DisplayManager.scaledWidth(400), DisplayManager.scaledHeight(49)), TextureHelper.getYFlippedPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(0, 40), new Vector2f(400, 49)));
-        ModelTexture logoTexture = new ModelTexture(Loader.singleton.loadTexture(PlayerRendererTest.class.getResource("/img/gui.png")));
+        ModelTexture logoTexture = new ModelTexture(Loader.singleton.loadTexture(MenuManager.class.getResource("/img/gui.png")));
         TexturedModel texuredLogoModel =  new TexturedModel(logoModel, logoTexture);
         logo = new GUIObject("logo", texuredLogoModel, new Vector3f(), new Vector3f(), new Vector3f(1, 1, 1));
 
@@ -61,7 +60,7 @@ public class LoginMenuScreen implements IMenuScreen {
                 @Override
                 public void onClick() {
                     try {
-                        PlayerRendererTest.setMenuScreen(new ServerListMenuScreen());
+                        MenuManager.setMenuScreen(new ServerListMenuScreen());
                     } catch (Exception ex) {
                     }
                 }
@@ -76,7 +75,7 @@ public class LoginMenuScreen implements IMenuScreen {
                     if (sessionToken != null) {
                         new Session(usernameInput.getValue(), sessionToken);
                         LastLogin.writeLastLogin(usernameInput.getValue(), passwordInput.getValue());
-                        PlayerRendererTest.setMenuScreen(new MainMenuScreen());
+                        MenuManager.setMenuScreen(new MainMenuScreen());
                     } else {
                         if (errorText != null)
                             errorText.remove();
@@ -105,7 +104,7 @@ public class LoginMenuScreen implements IMenuScreen {
                             public void onClick() {
                                 try {
                                     new Session(usernameInput.getValue());
-                                    PlayerRendererTest.setMenuScreen(new MainMenuScreen());
+                                    MenuManager.setMenuScreen(new MainMenuScreen());
                                 } catch (Exception ex) {
                                 }
                             }

@@ -4,7 +4,6 @@ import gg.codie.mineonline.gui.events.IOnClickListener;
 import gg.codie.mineonline.gui.font.GUIText;
 import gg.codie.mineonline.gui.rendering.Camera;
 import gg.codie.mineonline.gui.rendering.DisplayManager;
-import gg.codie.mineonline.gui.rendering.PlayerRendererTest;
 import gg.codie.mineonline.gui.rendering.Renderer;
 import gg.codie.mineonline.gui.components.LargeButton;
 import gg.codie.mineonline.gui.rendering.font.TextMaster;
@@ -52,12 +51,12 @@ public class AboutMenuScreen implements IMenuScreen {
         doneButton = new LargeButton("Done", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 200, DisplayManager.getDefaultHeight() - 20), new IOnClickListener() {
             @Override
             public void onClick() {
-                PlayerRendererTest.setMenuScreen(new MainMenuScreen());
+                MenuManager.setMenuScreen(new MainMenuScreen());
             }
         });
 
         label = new GUIText("About", 1.5f, TextMaster.minecraftFont, new Vector2f(0, 40), DisplayManager.getDefaultWidth(), true, true);
-        info = new GUIText("MineOnline Pre-Release by @codieradical.", 1.5f, TextMaster.minecraftFont, new Vector2f((DisplayManager.getDefaultWidth() / 2) - 200, (DisplayManager.getDefaultHeight() / 2) - 100), 400, true, true);
+        info = new GUIText("MineOnline Pre-Release 3 by @codieradical.", 1.5f, TextMaster.minecraftFont, new Vector2f((DisplayManager.getDefaultWidth() / 2) - 200, (DisplayManager.getDefaultHeight() / 2) - 100), 400, true, true);
     }
 
     public void update() {

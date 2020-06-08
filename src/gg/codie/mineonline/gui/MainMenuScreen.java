@@ -30,7 +30,7 @@ public class MainMenuScreen implements IMenuScreen {
 
     public MainMenuScreen() {
         RawModel logoModel = Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth((DisplayManager.getDefaultWidth() / 2) -200) + DisplayManager.getXBuffer(), Display.getHeight() - DisplayManager.scaledHeight(69)), new Vector2f(DisplayManager.scaledWidth(400), DisplayManager.scaledHeight(49)), TextureHelper.getYFlippedPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(0, 40), new Vector2f(400, 49)));
-        ModelTexture logoTexture = new ModelTexture(Loader.singleton.loadTexture(PlayerRendererTest.class.getResource("/img/gui.png")));
+        ModelTexture logoTexture = new ModelTexture(Loader.singleton.loadTexture(MenuManager.class.getResource("/img/gui.png")));
         TexturedModel texuredLogoModel =  new TexturedModel(logoModel, logoTexture);
         logo = new GUIObject("logo", texuredLogoModel, new Vector3f(), new Vector3f(), new Vector3f(1, 1, 1));
 
@@ -52,7 +52,7 @@ public class MainMenuScreen implements IMenuScreen {
         joinServerButton = new MediumButton("Join Server", new Vector2f((DisplayManager.getDefaultWidth() / 2) + 30, (DisplayManager.getDefaultHeight() / 2) + 8), new IOnClickListener() {
             @Override
             public void onClick() {
-                PlayerRendererTest.setMenuScreen(new JoinServerScreen(null));
+                MenuManager.setMenuScreen(new JoinServerScreen(null));
             }
         });
 
@@ -74,24 +74,24 @@ public class MainMenuScreen implements IMenuScreen {
                     public void onClick() {
                         Properties.properties.put("selectedJar", selectVersionMenuScreen.getSelectedPath());
                         Properties.saveProperties();
-                        PlayerRendererTest.setMenuScreen(new MainMenuScreen());
+                        MenuManager.setMenuScreen(new MainMenuScreen());
                     }
                 }, null);
-                PlayerRendererTest.setMenuScreen(selectVersionMenuScreen);
+                MenuManager.setMenuScreen(selectVersionMenuScreen);
             }
         });
 
         optionsButton = new TinyButton("Options...", new Vector2f((DisplayManager.getDefaultWidth() / 2) + 30, (DisplayManager.getDefaultHeight() / 2) + 112), new IOnClickListener() {
             @Override
             public void onClick() {
-                PlayerRendererTest.setMenuScreen(new OptionsMenuScreen());
+                MenuManager.setMenuScreen(new OptionsMenuScreen());
             }
         });
 
         skinButton = new TinyButton("Change Skin", new Vector2f((DisplayManager.getDefaultWidth() / 2) + 188, (DisplayManager.getDefaultHeight() / 2) + 112), new IOnClickListener() {
             @Override
             public void onClick() {
-                PlayerRendererTest.setMenuScreen(new SkinMenuScreen());
+                MenuManager.setMenuScreen(new SkinMenuScreen());
             }
         });
 

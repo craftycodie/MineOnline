@@ -9,7 +9,6 @@ import gg.codie.mineonline.gui.events.IOnClickListener;
 import gg.codie.mineonline.gui.font.GUIText;
 import gg.codie.mineonline.gui.rendering.Camera;
 import gg.codie.mineonline.gui.rendering.DisplayManager;
-import gg.codie.mineonline.gui.rendering.PlayerRendererTest;
 import gg.codie.mineonline.gui.rendering.Renderer;
 import gg.codie.mineonline.gui.components.MediumButton;
 import gg.codie.mineonline.gui.components.SelectableServer;
@@ -74,7 +73,7 @@ public class ServerListMenuScreen implements IMenuScreen {
                         selectVersionMenuScreen = new SelectVersionMenuScreen(new IOnClickListener() {
                             @Override
                             public void onClick() {
-                                PlayerRendererTest.setMenuScreen(new ServerListMenuScreen());
+                                MenuManager.setMenuScreen(new ServerListMenuScreen());
                             }
                         }, new IOnClickListener() {
                             @Override
@@ -91,7 +90,7 @@ public class ServerListMenuScreen implements IMenuScreen {
                             }
                         }, "Play");
 
-                        PlayerRendererTest.setMenuScreen(selectVersionMenuScreen);
+                        MenuManager.setMenuScreen(selectVersionMenuScreen);
 
                         //new MinecraftLauncher("D:\\Projects\\GitHub\\MineOnline\\jars\\b1.7.3-modded.jar", null, null, null).startMinecraft();
 
@@ -109,7 +108,7 @@ public class ServerListMenuScreen implements IMenuScreen {
         backButton = new MediumButton("Back", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 308, DisplayManager.getDefaultHeight() - 20), new IOnClickListener() {
             @Override
             public void onClick() {
-                PlayerRendererTest.setMenuScreen(new JoinServerScreen(null));
+                MenuManager.setMenuScreen(new JoinServerScreen(null));
             }
         });
 

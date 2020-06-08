@@ -1,16 +1,12 @@
-package gg.codie.mineonline.gui.rendering;
+package gg.codie.mineonline.gui;
 
 import gg.codie.mineonline.LibraryManager;
 import gg.codie.mineonline.Session;
 import gg.codie.mineonline.api.MinecraftAPI;
-import gg.codie.mineonline.gui.IMenuScreen;
-import gg.codie.mineonline.gui.LoginMenuScreen;
-import gg.codie.mineonline.gui.MainMenuScreen;
-import gg.codie.mineonline.gui.MouseHandler;
 import gg.codie.mineonline.gui.font.FontType;
 import gg.codie.mineonline.gui.font.GUIText;
+import gg.codie.mineonline.gui.rendering.*;
 import gg.codie.mineonline.gui.rendering.animation.*;
-import gg.codie.mineonline.gui.components.LargeButton;
 import gg.codie.mineonline.gui.rendering.font.TextMaster;
 import gg.codie.mineonline.gui.rendering.models.RawModel;
 import gg.codie.mineonline.gui.rendering.models.TexturedModel;
@@ -26,17 +22,17 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Random;
 
-public class PlayerRendererTest {
+public class MenuManager {
 
     public static boolean formopen = false;
 
     private static GUIText playerName;
     public static void setMenuScreen(IMenuScreen menuScreen) {
 
-        if(PlayerRendererTest.menuScreen != null)
-            PlayerRendererTest.menuScreen.cleanUp();
+        if(MenuManager.menuScreen != null)
+            MenuManager.menuScreen.cleanUp();
 
-        PlayerRendererTest.menuScreen = menuScreen;
+        MenuManager.menuScreen = menuScreen;
 
         if(playerName != null)
             playerName.remove();
@@ -55,6 +51,7 @@ public class PlayerRendererTest {
     static WindowAdapter closeListener = new WindowAdapter(){
         public void windowClosing(WindowEvent e){
             DisplayManager.getFrame().dispose();
+            System.exit(0);
         }
 
         @Override
@@ -86,7 +83,6 @@ public class PlayerRendererTest {
 
         GameObject playerPivot = new GameObject("player_origin", new Vector3f(), new Vector3f(0, 30, 0), new Vector3f(1, 1, 1));
         PlayerGameObject playerGameObject = new PlayerGameObject("player", loader, shader, new Vector3f(0, -21, 0), new Vector3f(), new Vector3f(1, 1, 1));
-        new Session("Alex231", "5eddffd6d4c7ad8928b3d218");
         playerPivot.addChild(playerGameObject);
 
         playerScale = new GameObject("player scale", new Vector3f(-20, 0, -65), new Vector3f(), new Vector3f(1, 1, 1));
@@ -106,7 +102,7 @@ public class PlayerRendererTest {
                 new Vector2f(0, 1387), new Vector2f(1387, 1387),
                 new Vector2f(1387, 1387), new Vector2f(1387, 1387)
         ));
-        ModelTexture modelTexture = new ModelTexture(loader.loadTexture(PlayerRendererTest.class.getResource("/img/panorama_" + panoramaNames[new Random().nextInt(panoramaNames.length)] + ".png")));
+        ModelTexture modelTexture = new ModelTexture(loader.loadTexture(MenuManager.class.getResource("/img/panorama_" + panoramaNames[new Random().nextInt(panoramaNames.length)] + ".png")));
         TexturedModel texturedModel =  new TexturedModel(model, modelTexture);
         GameObject backgroundImage = new GUIObject("Background", texturedModel, new Vector3f(0, 0, 0), new Vector3f(), new Vector3f(75f, 75f, 75f));
 
@@ -124,12 +120,9 @@ public class PlayerRendererTest {
             setMenuScreen(new LoginMenuScreen(false));
         }
 
-        FontType font = new FontType(loader.loadTexture(PlayerRendererTest.class.getResource("/font/font.png")), PlayerRendererTest.class.getResourceAsStream("/font/font.fnt"));
-        //FontType font = new FontType(loader.loadTexture(PlayerRendererTest.class.getResource("/font/testfont.png")), PlayerRendererTest.class.getResourceAsStream("/font/testfont.fnt"));
-        GUIText text = new GUIText("MineOnline Pre-Release", 1.5f, font, new Vector2f(0, 0), DisplayManager.getDefaultWidth(), false, true);
-        text.setColour(0.33f, 0.33f, 0.33f);
-
-        //playerScale.scale(new Vector3f(1, 0.5f, 1));
+//        FontType font = new FontType(loader.loadTexture(MenuManager.class.getResource("/font/font.png")), MenuManager.class.getResourceAsStream("/font/font.fnt"));
+//        GUIText text = new GUIText("MineOnline Pre-Release", 1.5f, font, new Vector2f(0, 0), DisplayManager.getDefaultWidth(), false, true);
+//        text.setColour(0.33f, 0.33f, 0.33f);
 
         int lastWidth = Display.getWidth();
         int lastHeight = Display.getHeight();
@@ -215,8 +208,6 @@ public class PlayerRendererTest {
             shader.stop();
 
             menuScreen.render(renderer);
-
-            //renderer.renderString(new Vector2f(2, 10), "MineOnline Debug", org.newdawn.slick.Color.yellow); //x, y, string to draw, color
 
             TextMaster.render();
 

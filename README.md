@@ -43,5 +43,5 @@ becomes
 
 ## Credit
 
-- I wouldn't have been able to make this LWJGL UI without [ThinMatrix](https://twitter.com/thinmatrix?lang=en)'s LWJGL 2 tutorial.
+- I wouldn't have been able to make this LWJGL UI without [ThinMatrix](https://twitter.com/thinmatrix)'s LWJGL 2 tutorial.
 - Version information retrieved from Omniarchive.
