@@ -1,5 +1,6 @@
 package gg.codie.mineonline.gui.rendering.components;
 
+import gg.codie.mineonline.gui.MouseHandler;
 import gg.codie.mineonline.gui.events.IOnClickListener;
 import gg.codie.mineonline.gui.font.GUIText;
 import gg.codie.mineonline.gui.rendering.*;
@@ -20,6 +21,8 @@ public class MediumButton extends GUIObject {
     Vector2f position;
     IOnClickListener clickListener;
     GUIText guiText;
+
+    boolean disabled;
 
     public MediumButton(String name, Vector2f position, IOnClickListener clickListener) {
         super(name,
@@ -44,17 +47,28 @@ public class MediumButton extends GUIObject {
             guiText.setColour(1,1,1);
         }
 
-     }
+    }
 
-    boolean mouseWasDown = false;
+    public boolean getDisabled() {
+        return disabled;
+    }
+
+    public void setDisabled(boolean value) {
+        this.disabled = value;
+        if(this.disabled) {
+            this.model.setRawModel(Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth(position.x) + DisplayManager.getXBuffer(), DisplayManager.scaledHeight(DisplayManager.getDefaultHeight() - position.y) + DisplayManager.getYBuffer()), new Vector2f(DisplayManager.scaledWidth(300), DisplayManager.scaledHeight(40)), TextureHelper.getYFlippedPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(300, 89), new Vector2f(150, 20))));
+        } else {
+            this.model.setRawModel(Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth(position.x) + DisplayManager.getXBuffer(), DisplayManager.scaledHeight(DisplayManager.getDefaultHeight() - position.y) + DisplayManager.getYBuffer()), new Vector2f(DisplayManager.scaledWidth(300), DisplayManager.scaledHeight(40)), TextureHelper.getYFlippedPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(0, 89), new Vector2f(150, 20))));
+        }
+    }
+
     boolean mouseWasOver = false;
     public void update() {
+        if (disabled)
+            return;
+
         int x = Mouse.getX();
         int y = Mouse.getY();
-
-        if(!Mouse.isButtonDown(0) && mouseWasDown) {
-            mouseWasDown = false;
-        }
 
         boolean mouseIsOver =
                 x - (DisplayManager.scaledWidth(position.x) + DisplayManager.getXBuffer()) <= DisplayManager.scaledWidth(300)
@@ -66,26 +80,18 @@ public class MediumButton extends GUIObject {
             mouseWasOver = true;
 
             RawModel model = Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth(position.x) + DisplayManager.getXBuffer(), DisplayManager.scaledHeight(DisplayManager.getDefaultHeight() - position.y) + DisplayManager.getYBuffer()), new Vector2f(DisplayManager.scaledWidth(300), DisplayManager.scaledHeight(40)), TextureHelper.getYFlippedPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(150, 89), new Vector2f(150, 20)));
-            ModelTexture texture = new ModelTexture(Loader.singleton.loadTexture(PlayerRendererTest.class.getResource("/img/gui.png")));
-            this.model = new TexturedModel(model, texture);
+            this.model.setRawModel(model);
 
         } else if(!mouseIsOver && mouseWasOver) {
             mouseWasOver = false;
 
             RawModel model = Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth(position.x) + DisplayManager.getXBuffer(), DisplayManager.scaledHeight(DisplayManager.getDefaultHeight() - position.y) + DisplayManager.getYBuffer()), new Vector2f(DisplayManager.scaledWidth(300), DisplayManager.scaledHeight(40)), TextureHelper.getYFlippedPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(0, 89), new Vector2f(150, 20)));
-            ModelTexture texture = new ModelTexture(Loader.singleton.loadTexture(PlayerRendererTest.class.getResource("/img/gui.png")));
-            this.model = new TexturedModel(model, texture);
+            this.model.setRawModel(model);
         }
 
-        if (mouseWasDown || !Mouse.isButtonDown(0)) return;
-
-        if(mouseIsOver && clickListener != null) {
+        if(MouseHandler.didClick() && mouseIsOver && clickListener != null) {
             ClickSound.play();
             clickListener.onClick();
-        }
-
-        if(Mouse.isButtonDown(0) && !mouseWasDown) {
-            mouseWasDown = true;
         }
     }
 

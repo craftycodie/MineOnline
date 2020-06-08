@@ -106,28 +106,6 @@ public class SelectVersionMenuScreen implements IMenuScreen {
             }
         });
 
-        Properties.loadProperties();
-        String[] minecraftJars = Properties.properties.has("minecraftJars") ? JSONUtils.getStringArray(Properties.properties.getJSONArray("minecraftJars")) : new String[0];
-        for (String path : minecraftJars) {
-            File file = new File(path);
-
-            MinecraftVersionInfo.MinecraftVersion minecraftVersion = MinecraftVersionInfo.getVersion(path);
-
-            try {
-                if (!MinecraftVersionInfo.isRunnableJar(file.getPath())) {
-                    continue;
-                }
-            } catch (IOException ex) {
-                continue;
-            }
-
-            if(minecraftVersion != null) {
-                selectableVersionList.addVersion(minecraftVersion.name, file.getPath(), minecraftVersion.info);
-            } else {
-                selectableVersionList.addVersion("Unknown Version", file.getPath(), null);
-            }
-        }
-
         label = new GUIText("Select Version", 1.5f, TextMaster.minecraftFont, new Vector2f(0, 40), DisplayManager.getDefaultWidth(), true, true);
 
     }

@@ -1,5 +1,6 @@
 package gg.codie.mineonline.gui.rendering.components;
 
+import gg.codie.mineonline.gui.MouseHandler;
 import gg.codie.mineonline.gui.events.IOnClickListener;
 import gg.codie.mineonline.gui.font.GUIText;
 import gg.codie.mineonline.gui.rendering.*;
@@ -81,16 +82,11 @@ public class SelectableVersion extends GUIObject {
     }
 
     boolean focused = false;
-    boolean mouseWasDown = false;
     long lastClickTime;
     boolean mouseWasOver = false;
     public void update() {
         int x = Mouse.getX();
         int y = Mouse.getY();
-
-        if(!Mouse.isButtonDown(0) && mouseWasDown) {
-            mouseWasDown = false;
-        }
 
         float viewportHeight = Display.getHeight() - DisplayManager.scaledHeight(138) - (DisplayManager.getYBuffer() * 2);
         float viewportStartY = DisplayManager.getYBuffer() + DisplayManager.scaledHeight(69) + viewportHeight;
@@ -111,14 +107,8 @@ public class SelectableVersion extends GUIObject {
             mouseWasOver = false;
         }
 
-        if (mouseWasDown || !Mouse.isButtonDown(0)) return;
-
-        if(Mouse.isButtonDown(0) && mouseIsOver) {
+        if(MouseHandler.didClick() && mouseIsOver) {
             parent.selectVersion(path);
-        }
-
-        if(Mouse.isButtonDown(0) && !mouseWasDown) {
-            mouseWasDown = true;
 
             if(System.currentTimeMillis() - lastClickTime < 350 && doubleClickListener != null) {
                 doubleClickListener.onClick();

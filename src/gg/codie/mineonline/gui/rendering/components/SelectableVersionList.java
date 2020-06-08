@@ -1,5 +1,6 @@
 package gg.codie.mineonline.gui.rendering.components;
 
+import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.MinecraftVersionInfo;
 import gg.codie.mineonline.Properties;
 import gg.codie.mineonline.gui.events.IOnClickListener;
@@ -11,6 +12,7 @@ import gg.codie.mineonline.gui.rendering.models.RawModel;
 import gg.codie.mineonline.gui.rendering.models.TexturedModel;
 import gg.codie.mineonline.gui.rendering.shaders.GUIShader;
 import gg.codie.mineonline.gui.rendering.textures.ModelTexture;
+import gg.codie.utils.ArrayUtils;
 import gg.codie.utils.JSONUtils;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
@@ -27,6 +29,10 @@ import java.awt.dnd.DropTargetAdapter;
 import java.awt.dnd.DropTargetDropEvent;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -158,6 +164,33 @@ public class SelectableVersionList extends GUIObject {
         emptyText = new GUIText("Browse to find a minecraft jar, or drag and drop jars onto the window!", 1.5f, TextMaster.minecraftFont, new Vector2f(200, (DisplayManager.getDefaultHeight() / 2) - 32 ), DisplayManager.getDefaultWidth() - 400, true, true);
         emptyText.setMaxLines(0);
         emptyText.setColour(0.5f, 0.5f, 0.5f);
+
+        Properties.loadProperties();
+        String[] minecraftJars = Properties.properties.has("minecraftJars") ? JSONUtils.getStringArray(Properties.properties.getJSONArray("minecraftJars")) : new String[0];
+        for (String path : minecraftJars) {
+            File file = new File(path);
+
+            MinecraftVersionInfo.MinecraftVersion minecraftVersion = MinecraftVersionInfo.getVersion(path);
+
+            try {
+                if (!MinecraftVersionInfo.isRunnableJar(file.getPath())) {
+                    continue;
+                }
+            } catch (IOException ex) {
+                continue;
+            }
+
+            if(minecraftVersion != null) {
+                addVersion(minecraftVersion.name, file.getPath(), minecraftVersion.info);
+            } else {
+                addVersion("Unknown Version", file.getPath(), null);
+            }
+        }
+
+        String selectedJar = Properties.properties.has("selectedJar") ? Properties.properties.getString("selectedJar") : null;
+        if (selectedJar != null && !selectedJar.isEmpty()) {
+            selectVersion(selectedJar);
+        }
     }
 
     public void addVersion(String name, String path, String info) {
@@ -266,8 +299,39 @@ public class SelectableVersionList extends GUIObject {
             } else if(holdingScroll) {
                 holdingScroll = false;
             }
-        } else if(holdingScroll) {
-            holdingScroll = false;
+        } else {
+            if (holdingScroll) {
+                holdingScroll = false;
+            }
+
+            float scrollWheel = (float)(Mouse.getDWheel())/10;
+
+            if(scrollWheel != 0) {
+                //System.out.println(dy / scrollableHeight);
+                scrollbarPosition -= scrollWheel / scrollableHeight;
+
+                if (scrollbarPosition < 0) {
+                    scrollbarPosition = 0;
+                } else if (scrollbarPosition > 1) {
+                    scrollbarPosition = 1;
+                }
+
+                resize();
+
+                // This is how much the content items have been scrolled up in pixels.
+                // scrollbarPosition (eg 0.9) multiplied by the height content which is offscreen.
+                float contentOffsetPx = (contentHeight - viewportHeight) * scrollbarPosition;
+//                    System.out.println(contentHeight);
+//                    System.out.println(contentOffsetPx);
+
+                LinkedList<SelectableVersion> children = getVersions();
+                for (int i = 0; i < children.size(); i++) {
+                    children.get(i).scroll(
+                            -(contentOffsetPx - 1)
+                    );
+                    //System.out.println(-((float)((i * 72) + contentOffsetPx) / DisplayManager.getDefaultHeight()));
+                }
+            }
         }
 
 

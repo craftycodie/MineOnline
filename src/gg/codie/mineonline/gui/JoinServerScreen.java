@@ -100,6 +100,10 @@ public class JoinServerScreen implements IMenuScreen {
             }
         });
 
+        if(jarName == null) {
+            connectButton.setDisabled(true);
+        }
+
         serverListButton = new LargeButton("Server List", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 200, (DisplayManager.getDefaultHeight() / 2) + 56), new IOnClickListener() {
             @Override
             public void onClick() {
@@ -108,6 +112,10 @@ public class JoinServerScreen implements IMenuScreen {
                 } catch (Exception ex) {}
             }
         });
+
+        if (!Session.session.isOnline()) {
+            serverListButton.setDisabled(true);
+        }
 
         doneButton = new LargeButton("Cancel", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 200, DisplayManager.getDefaultHeight() - 20), new IOnClickListener() {
             @Override
@@ -120,6 +128,12 @@ public class JoinServerScreen implements IMenuScreen {
     }
 
     public void update() {
+        if (serverIPField.getValue().isEmpty() && !connectButton.getDisabled()) {
+            connectButton.setDisabled(true);
+        } else if (!serverIPField.getValue().isEmpty() && connectButton.getDisabled()) {
+            connectButton.setDisabled(false);
+        }
+
         serverIPField.update();
         versionButton.update();
         connectButton.update();

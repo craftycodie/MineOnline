@@ -54,7 +54,8 @@ public class TextMeshCreator {
 //                continue;
 //            }
             Character character = metaData.getCharacter(ascii);
-            currentWord.addCharacter(character);
+            if(character != null)
+                currentWord.addCharacter(character);
         }
         completeStructure(lines, currentLine, currentWord, text);
         return lines;

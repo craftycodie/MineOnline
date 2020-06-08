@@ -4,7 +4,6 @@ import gg.codie.mineonline.MinecraftLauncher;
 import gg.codie.mineonline.MinecraftVersionInfo;
 import gg.codie.mineonline.Properties;
 import gg.codie.mineonline.Session;
-import gg.codie.mineonline.api.MineOnlineServer;
 import gg.codie.mineonline.api.MinecraftAPI;
 import gg.codie.mineonline.gui.events.IOnClickListener;
 import gg.codie.mineonline.gui.font.GUIText;
@@ -15,22 +14,18 @@ import gg.codie.mineonline.gui.rendering.Renderer;
 import gg.codie.mineonline.gui.rendering.components.MediumButton;
 import gg.codie.mineonline.gui.rendering.components.SelectableServer;
 import gg.codie.mineonline.gui.rendering.components.SelectableServerList;
-import gg.codie.mineonline.gui.rendering.components.SelectableVersionList;
 import gg.codie.mineonline.gui.rendering.font.TextMaster;
 import gg.codie.mineonline.gui.rendering.shaders.GUIShader;
 import gg.codie.utils.JSONUtils;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
-import javax.swing.*;
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.LinkedList;
 
 public class ServerListMenuScreen implements IMenuScreen {
-    MediumButton doneButton;
-    MediumButton browseButton;
+    MediumButton connectButton;
+    MediumButton backButton;
     GUIText label;
 
     SelectableServerList selectableServerList;
@@ -108,9 +103,10 @@ public class ServerListMenuScreen implements IMenuScreen {
             }
         };
 
-        doneButton = new MediumButton("Connect", new Vector2f((DisplayManager.getDefaultWidth() / 2) + 8, DisplayManager.getDefaultHeight() - 20), selectListener);
+        connectButton = new MediumButton("Connect", new Vector2f((DisplayManager.getDefaultWidth() / 2) + 8, DisplayManager.getDefaultHeight() - 20), selectListener);
+        connectButton.setDisabled(true);
 
-        browseButton = new MediumButton("Back", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 308, DisplayManager.getDefaultHeight() - 20), new IOnClickListener() {
+        backButton = new MediumButton("Back", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 308, DisplayManager.getDefaultHeight() - 20), new IOnClickListener() {
             @Override
             public void onClick() {
                 PlayerRendererTest.setMenuScreen(new JoinServerScreen(null));
@@ -124,8 +120,11 @@ public class ServerListMenuScreen implements IMenuScreen {
     }
 
     public void update() {
-        doneButton.update();
-        browseButton.update();
+        if(this.connectButton.getDisabled() && selectableServerList.getSelected() != null)
+            this.connectButton.setDisabled(false);
+
+        connectButton.update();
+        backButton.update();
         selectableServerList.update();
     }
 
@@ -135,8 +134,8 @@ public class ServerListMenuScreen implements IMenuScreen {
         guiShader.loadViewMatrix(Camera.singleton);
         renderer.prepareGUI();
 
-        doneButton.render(renderer, guiShader);
-        browseButton.render(renderer, guiShader);
+        connectButton.render(renderer, guiShader);
+        backButton.render(renderer, guiShader);
         selectableServerList.render(renderer, guiShader);
     }
 
@@ -145,15 +144,15 @@ public class ServerListMenuScreen implements IMenuScreen {
     }
 
     public void resize() {
-        doneButton.resize();
-        browseButton.resize();
+        connectButton.resize();
+        backButton.resize();
         selectableServerList.resize();
     }
 
     @Override
     public void cleanUp() {
-        doneButton.cleanUp();
-        browseButton.cleanUp();
+        connectButton.cleanUp();
+        backButton.cleanUp();
         selectableServerList.cleanUp();
         label.remove();
     }

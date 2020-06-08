@@ -62,6 +62,10 @@ public class MainMenuScreen implements IMenuScreen {
             version = MinecraftVersionInfo.getVersion(jarPath);
         }
 
+        if(jarName == null) {
+            playButton.setDisabled(true);
+        }
+
         versionButton = new MediumButton(jarPath != null ? (version != null ? "Version: " + version.name : jarName) : "Select Version", new Vector2f((DisplayManager.getDefaultWidth() / 2) + 30, (DisplayManager.getDefaultHeight() / 2) + 56), new IOnClickListener() {
             @Override
             public void onClick() {
@@ -90,6 +94,10 @@ public class MainMenuScreen implements IMenuScreen {
                 PlayerRendererTest.setMenuScreen(new SkinMenuScreen());
             }
         });
+
+        if (!Session.session.isOnline()) {
+            skinButton.setDisabled(true);
+        }
     }
 
     public void update() {

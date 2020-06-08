@@ -70,8 +70,8 @@ public class FontRenderer {
             GL11.glViewport(0, 0, (int) (DisplayManager.getDefaultWidth() * scale), (int) ((DisplayManager.getDefaultHeight() * scale)));
         }
 
-        shader.loadColour(new Vector3f());
-        shader.loadAlpha(0.5f);
+        shader.loadColour(new Vector3f(text.getColour().x / 5, text.getColour().y / 5, text.getColour().z / 5));
+        shader.loadAlpha(0.66f);
         shader.loadYBounds(DisplayManager.getYBuffer() + (int)DisplayManager.scaledHeight(text.getYBounds().x), Display.getHeight() - (DisplayManager.getYBuffer() + (int)DisplayManager.scaledHeight(text.getYBounds().y)));
         shader.loadTranslation(new Vector2f(text.getPosition().x + (2 / (float)DisplayManager.getDefaultWidth()), text.getPosition().y + (2 / (float)DisplayManager.getDefaultHeight())));
 

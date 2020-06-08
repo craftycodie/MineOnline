@@ -3,18 +3,23 @@ package gg.codie.mineonline.gui.rendering;
 import gg.codie.mineonline.LibraryManager;
 import gg.codie.mineonline.MinecraftLauncher;
 import gg.codie.mineonline.Session;
+import gg.codie.mineonline.api.MinecraftAPI;
 import gg.codie.mineonline.gui.IMenuScreen;
 import gg.codie.mineonline.gui.LoginMenuScreen;
 import gg.codie.mineonline.gui.MainMenuScreen;
+import gg.codie.mineonline.gui.MouseHandler;
+import gg.codie.mineonline.gui.events.IOnClickListener;
 import gg.codie.mineonline.gui.font.FontType;
 import gg.codie.mineonline.gui.font.GUIText;
 import gg.codie.mineonline.gui.rendering.animation.*;
+import gg.codie.mineonline.gui.rendering.components.LargeButton;
 import gg.codie.mineonline.gui.rendering.font.TextMaster;
 import gg.codie.mineonline.gui.rendering.models.RawModel;
 import gg.codie.mineonline.gui.rendering.models.TexturedModel;
 import gg.codie.mineonline.gui.rendering.shaders.StaticShader;
 import gg.codie.mineonline.gui.rendering.textures.ModelTexture;
 import gg.codie.mineonline.gui.rendering.utils.MathUtils;
+import gg.codie.utils.LastLogin;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.*;
 import org.lwjgl.util.vector.Vector2f;
@@ -85,7 +90,7 @@ public class PlayerRendererTest {
 
         GameObject playerPivot = new GameObject("player_origin", new Vector3f(), new Vector3f(0, 30, 0), new Vector3f(1, 1, 1));
         PlayerGameObject playerGameObject = new PlayerGameObject("player", loader, shader, new Vector3f(0, -21, 0), new Vector3f(), new Vector3f(1, 1, 1));
-        new Session("Player", "5eddffd6d4c7ad8928b3d218");
+        new Session("Alex231", "5eddffd6d4c7ad8928b3d218");
         playerPivot.addChild(playerGameObject);
 
         playerScale = new GameObject("player scale", new Vector3f(-20, 0, -65), new Vector3f(), new Vector3f(1, 1, 1));
@@ -94,8 +99,8 @@ public class PlayerRendererTest {
         playerGameObject.setPlayerAnimation(new IdlePlayerAnimation());
         Camera camera = new Camera();
 
-        //String[] panoramaNames = new String[] {"midnight", "sunset"};
-        String[] panoramaNames = new String[] {"sunset"};
+        String[] panoramaNames = new String[] {"sunset", "sunset", "sunset", "sunset", "sunset", "midnight", "midnight", "midnight", "sunset", "noon"};
+        //String[] panoramaNames = new String[] {"noon"};
 
         RawModel model = loader.loadBoxToVAO(new Vector3f(-1, -1, -1), new Vector3f(1, 1, 1), TextureHelper.getCubeTextureCoords(new Vector2f(8192, 4096),
                 new Vector2f(4161, 0), new Vector2f(1387, 1387),
@@ -109,12 +114,24 @@ public class PlayerRendererTest {
         TexturedModel texturedModel =  new TexturedModel(model, modelTexture);
         GameObject backgroundImage = new GUIObject("Background", texturedModel, new Vector3f(0, 0, 0), new Vector3f(), new Vector3f(75f, 75f, 75f));
 
-        setMenuScreen(new LoginMenuScreen());
+        LastLogin lastLogin = LastLogin.readLastLogin();
+        if(lastLogin != null ) {
+            String sessionToken = MinecraftAPI.login(lastLogin.username, lastLogin.password);
+            if (sessionToken != null) {
+                new Session(lastLogin.username, sessionToken);
+                LastLogin.writeLastLogin(lastLogin.username, lastLogin.password);
+                setMenuScreen(new MainMenuScreen());
+            } else {
+                setMenuScreen(new LoginMenuScreen(false));
+            }
+        } else {
+            setMenuScreen(new LoginMenuScreen(false));
+        }
 
         FontType font = new FontType(loader.loadTexture(PlayerRendererTest.class.getResource("/font/font.png")), PlayerRendererTest.class.getResourceAsStream("/font/font.fnt"));
         //FontType font = new FontType(loader.loadTexture(PlayerRendererTest.class.getResource("/font/testfont.png")), PlayerRendererTest.class.getResourceAsStream("/font/testfont.fnt"));
-        GUIText text = new GUIText("MineOnline Pre-Release", 1.5f, font, new Vector2f(0, 0), DisplayManager.getDefaultWidth(), false, false);
-        text.setColour(1, 1, 0);
+        GUIText text = new GUIText("MineOnline Pre-Release", 1.5f, font, new Vector2f(0, 0), DisplayManager.getDefaultWidth(), false, true);
+        text.setColour(0.33f, 0.33f, 0.33f);
 
         //playerScale.scale(new Vector3f(1, 0.5f, 1));
 
@@ -122,6 +139,7 @@ public class PlayerRendererTest {
         int lastHeight = Display.getHeight();
         // Game Loop
         while(!Display.isCloseRequested() && formopen) {
+            MouseHandler.update();
             renderer.prepare();
 
             // Camera roll lock.

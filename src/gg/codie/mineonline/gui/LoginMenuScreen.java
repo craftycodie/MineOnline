@@ -1,72 +1,179 @@
 package gg.codie.mineonline.gui;
 
+import gg.codie.mineonline.MinecraftLauncher;
+import gg.codie.mineonline.MinecraftVersionInfo;
 import gg.codie.mineonline.Properties;
+import gg.codie.mineonline.Session;
+import gg.codie.mineonline.api.MinecraftAPI;
 import gg.codie.mineonline.gui.events.IOnClickListener;
+import gg.codie.mineonline.gui.font.GUIText;
 import gg.codie.mineonline.gui.rendering.*;
-import gg.codie.mineonline.gui.rendering.Renderer;
+import gg.codie.mineonline.gui.rendering.components.InputField;
 import gg.codie.mineonline.gui.rendering.components.LargeButton;
+import gg.codie.mineonline.gui.rendering.components.SmallInputField;
+import gg.codie.mineonline.gui.rendering.components.SmallPasswordInputField;
+import gg.codie.mineonline.gui.rendering.font.TextMaster;
 import gg.codie.mineonline.gui.rendering.models.RawModel;
 import gg.codie.mineonline.gui.rendering.models.TexturedModel;
 import gg.codie.mineonline.gui.rendering.shaders.GUIShader;
 import gg.codie.mineonline.gui.rendering.textures.ModelTexture;
+import gg.codie.mineonline.gui.sound.ClickSound;
+import gg.codie.utils.LastLogin;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector2f;
-import org.newdawn.slick.Color;
-import org.newdawn.slick.opengl.Texture;
-import org.newdawn.slick.util.BufferedImageUtil;
+import org.lwjgl.util.vector.Vector3f;
 
-import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.util.Arrays;
+import java.io.File;
+import java.net.InetAddress;
+import java.net.URI;
+import java.net.UnknownHostException;
 
 public class LoginMenuScreen implements IMenuScreen {
-    LoginForm2 loginForm2;
-    public LoginMenuScreen() {
-        this.loginForm2 = new LoginForm2(DisplayManager.getFrame());
-        //PopupMenu popupMenu = new PopupMenu();
-        DisplayManager.getFrame().add(loginForm2);
-        loginForm2.setSize(DisplayManager.getDefaultWidth(), DisplayManager.getDefaultHeight());
-        //
+    GUIObject logo;
+    SmallInputField usernameInput;
+    SmallPasswordInputField passwordInput;
+    LargeButton loginButton;
+    LargeButton playOfflineButton;
+    GUIText errorText;
+    GUIText needAccount;
+    GUIText usernameLabel;
+    GUIText passwordLabel;
+    boolean offline;
+
+    static SelectVersionMenuScreen selectVersionMenuScreen = null;
+
+    public LoginMenuScreen(boolean _offline) {
+        this.offline = _offline;
+
+        String username = "";
+        String password = "";
+        LastLogin lastLogin = LastLogin.readLastLogin();
+        if(lastLogin != null) {
+            username = lastLogin.username;
+            password = lastLogin.password;
+        }
+        usernameInput = new SmallInputField("Username Input", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 204, (DisplayManager.getDefaultHeight() / 2) + 34), username, null);
+        passwordInput = new SmallPasswordInputField("Password Input", new Vector2f((DisplayManager.getDefaultWidth() / 2) + 4, (DisplayManager.getDefaultHeight() / 2) + 34 ), password, null);
+
+        RawModel logoModel = Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth((DisplayManager.getDefaultWidth() / 2) -200) + DisplayManager.getXBuffer(), Display.getHeight() - DisplayManager.scaledHeight(69)), new Vector2f(DisplayManager.scaledWidth(400), DisplayManager.scaledHeight(49)), TextureHelper.getYFlippedPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(0, 40), new Vector2f(400, 49)));
+        ModelTexture logoTexture = new ModelTexture(Loader.singleton.loadTexture(PlayerRendererTest.class.getResource("/img/gui.png")));
+        TexturedModel texuredLogoModel =  new TexturedModel(logoModel, logoTexture);
+        logo = new GUIObject("logo", texuredLogoModel, new Vector3f(), new Vector3f(), new Vector3f(1, 1, 1));
+
+        if(offline) {
+            playOfflineButton = new LargeButton("Play Offline", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 200, (DisplayManager.getDefaultHeight() / 2) + 132), new IOnClickListener() {
+                @Override
+                public void onClick() {
+                    try {
+                        PlayerRendererTest.setMenuScreen(new ServerListMenuScreen());
+                    } catch (Exception ex) {
+                    }
+                }
+            });
+        }
+
+        loginButton = new LargeButton("Login", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 200, (DisplayManager.getDefaultHeight() / 2) + 86), new IOnClickListener() {
+            @Override
+            public void onClick() {
+                try {
+                    String sessionToken = MinecraftAPI.login(usernameInput.getValue(), passwordInput.getValue());
+                    if (sessionToken != null) {
+                        new Session(usernameInput.getValue(), sessionToken);
+                        LastLogin.writeLastLogin(usernameInput.getValue(), passwordInput.getValue());
+                        PlayerRendererTest.setMenuScreen(new MainMenuScreen());
+                    } else {
+                        if (errorText != null)
+                            errorText.remove();
+
+                        errorText = new GUIText("Incorrect username or password.", 1.5f, TextMaster.minecraftFont, new Vector2f(0, (DisplayManager.getDefaultHeight() / 2) - 80), DisplayManager.getDefaultWidth(), true, true);
+                        errorText.setColour(1, 0.33f, 0.33f);
+                    }
+                } catch (Exception ex) {
+                    String errorMessage = ex.getMessage();
+                    if (errorMessage.startsWith("Bad login")) {
+                        errorMessage = "Incorrect username or password.";
+                    }
+
+                    if (errorText != null)
+                        errorText.remove();
+
+                    System.out.println(ex.getMessage());
+
+                    errorText = new GUIText(errorMessage, 1.5f, TextMaster.minecraftFont, new Vector2f(0, (DisplayManager.getDefaultHeight() / 2) - 80), DisplayManager.getDefaultWidth(), true, true);
+                    errorText.setColour(1, 0.33f, 0.33f);
+
+                    offline = true;
+                    if(playOfflineButton == null)
+                        playOfflineButton = new LargeButton("Play Offline", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 200, (DisplayManager.getDefaultHeight() / 2) + 132), new IOnClickListener() {
+                            @Override
+                            public void onClick() {
+                                try {
+                                    new Session(usernameInput.getValue());
+                                    PlayerRendererTest.setMenuScreen(new MainMenuScreen());
+                                } catch (Exception ex) {
+                                }
+                            }
+                        });
+                }
+            }
+        });
+
+        usernameLabel = new GUIText("Username", 1.5f, TextMaster.minecraftFont, new Vector2f((DisplayManager.getDefaultWidth() / 2) - 204, (DisplayManager.getDefaultHeight() / 2) - 36), 200, false, true);
+        passwordLabel = new GUIText("Password", 1.5f, TextMaster.minecraftFont, new Vector2f((DisplayManager.getDefaultWidth() / 2) + 4, (DisplayManager.getDefaultHeight() / 2) - 36 ), 200, false, true);
+
+
+        needAccount = new GUIText("Need Account?", 1.5f, TextMaster.minecraftFont, new Vector2f(0, DisplayManager.getDefaultHeight() - 40), DisplayManager.getDefaultWidth(), true, true);
+        needAccount.setColour(0.33f, 0.33f, 0.66f);
     }
 
     public void update() {
+        if ((usernameInput.getValue().isEmpty() || passwordInput.getValue().isEmpty()) && !loginButton.getDisabled()) {
+            loginButton.setDisabled(true);
+        } else if (!(usernameInput.getValue().isEmpty() || passwordInput.getValue().isEmpty()) && loginButton.getDisabled()) {
+            loginButton.setDisabled(false);
+        }
 
+        usernameInput.update();
+        passwordInput.update();
+        loginButton.update();
+        if(playOfflineButton != null)
+            playOfflineButton.update();
+
+        int x = Mouse.getX();
+        int y = Mouse.getY();
+
+        boolean mouseIsOver =
+                x - ((Display.getWidth() / 2) - DisplayManager.scaledWidth(75)) <= DisplayManager.scaledWidth(150)
+                        && x - ((Display.getWidth() / 2) - DisplayManager.scaledWidth(75)) >= 0
+                        && y - DisplayManager.scaledHeight(18) - DisplayManager.getYBuffer() <= DisplayManager.scaledHeight(22)
+                        && y - DisplayManager.scaledHeight(18) - DisplayManager.getYBuffer() >= 0;
+
+        if(mouseIsOver)
+            System.out.println("over");
+
+        if(MouseHandler.didClick() && mouseIsOver) {
+            try {
+                Desktop.getDesktop().browse(new URI("http://" + Properties.properties.getString("apiDomainName") + "/register.jsp"));
+            } catch (Exception ex) {
+
+            }
+        }
     }
 
     public void render(Renderer renderer) {
-//        int w = Display.getWidth();
-//        int h = Display.getHeight();
-//        BufferedImage bi = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
-//        Graphics2D g = bi.createGraphics();
-//        loginForm2.paint(g);
-        try {
-//            Texture texture = BufferedImageUtil.getTexture("", bi);
-//
-//            GL11.glLoadIdentity();
-//
-//            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
-//            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
-//
-//            GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture.getTextureID());
-//            GL11.glBegin(GL11.GL_QUADS);
-//            GL11.glTexCoord2f(0, 0);
-//            GL11.glVertex2i(0, 0);
-//
-//            GL11.glTexCoord2f(1, 0);
-//            GL11.glVertex2i(512, 0);
-//
-//            GL11.glTexCoord2f(1, 1);;
-//            GL11.glVertex2i(512, 512);
-//
-//            GL11.glTexCoord2f(0, 1);
-//            GL11.glVertex2i(0, 512);
-//            GL11.glEnd();
-        } catch (Exception e) {
-
-        }
-
+        GUIShader guiShader = new GUIShader();
+        guiShader.start();
+        guiShader.loadViewMatrix(Camera.singleton);
+        renderer.prepareGUI();
+        renderer.renderGUI(logo, guiShader);
+        usernameInput.render(renderer, guiShader);
+        passwordInput.render(renderer, guiShader);
+        loginButton.render(renderer, guiShader);
+        if(offline && playOfflineButton != null)
+            playOfflineButton.render(renderer, guiShader);
+        guiShader.stop();
     }
 
     public boolean showPlayer() {
@@ -74,10 +181,26 @@ public class LoginMenuScreen implements IMenuScreen {
     }
 
     public void resize() {
-
+        usernameInput.resize();
+        passwordInput.resize();
+        loginButton.resize();
+        if(playOfflineButton != null)
+            playOfflineButton.resize();
+        logo.model.setRawModel(Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth((DisplayManager.getDefaultWidth() / 2) -200) + DisplayManager.getXBuffer(), Display.getHeight() - DisplayManager.scaledHeight(69)), new Vector2f(DisplayManager.scaledWidth(400), DisplayManager.scaledHeight(49)), TextureHelper.getYFlippedPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(0, 40), new Vector2f(400, 49))));
     }
 
+    @Override
     public void cleanUp() {
-
+        if(errorText != null)
+            errorText.remove();
+        needAccount.remove();
+        usernameInput.cleanUp();
+        passwordInput.cleanUp();
+        loginButton.cleanUp();
+        usernameLabel.remove();
+        passwordLabel.remove();
+        needAccount.remove();
+        if(playOfflineButton != null)
+            playOfflineButton.cleanUp();
     }
 }

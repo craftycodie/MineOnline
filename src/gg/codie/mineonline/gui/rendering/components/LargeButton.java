@@ -1,5 +1,6 @@
 package gg.codie.mineonline.gui.rendering.components;
 
+import gg.codie.mineonline.gui.MouseHandler;
 import gg.codie.mineonline.gui.events.IOnClickListener;
 import gg.codie.mineonline.gui.font.GUIText;
 import gg.codie.mineonline.gui.rendering.*;
@@ -21,6 +22,8 @@ public class LargeButton extends GUIObject {
     IOnClickListener clickListener;
     GUIText guiText;
 
+    boolean disabled;
+
     public LargeButton(String name, Vector2f position, IOnClickListener clickListener) {
         super(name,
                 new TexturedModel(Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth(position.x) + DisplayManager.getXBuffer(), DisplayManager.scaledHeight(DisplayManager.getDefaultHeight() - position.y) + DisplayManager.getYBuffer()), new Vector2f(DisplayManager.scaledWidth(400), DisplayManager.scaledHeight(40)), TextureHelper.getYFlippedPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(0, 20), new Vector2f(200, 20))), new ModelTexture(Loader.singleton.loadTexture(PlayerRendererTest.class.getResource("/img/gui.png")))),
@@ -31,6 +34,19 @@ public class LargeButton extends GUIObject {
         this.clickListener = clickListener;
 
         guiText = new GUIText(name, 1.5f, TextMaster.minecraftFont, new Vector2f(position.x, position.y - 32), 400f, true, true);
+    }
+
+    public boolean getDisabled() {
+        return disabled;
+    }
+
+    public void setDisabled(boolean value) {
+        this.disabled = value;
+        if(this.disabled) {
+            this.model.setRawModel(Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth(position.x) + DisplayManager.getXBuffer(), DisplayManager.scaledHeight(DisplayManager.getDefaultHeight() - position.y) + DisplayManager.getYBuffer()), new Vector2f(DisplayManager.scaledWidth(400), DisplayManager.scaledHeight(40)), TextureHelper.getYFlippedPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(200, 0), new Vector2f(200, 20))));
+        } else {
+            this.model.setRawModel(Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth(position.x) + DisplayManager.getXBuffer(), DisplayManager.scaledHeight(DisplayManager.getDefaultHeight() - position.y) + DisplayManager.getYBuffer()), new Vector2f(DisplayManager.scaledWidth(400), DisplayManager.scaledHeight(40)), TextureHelper.getYFlippedPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(0, 20), new Vector2f(200, 20))));
+        }
     }
 
     public void render(Renderer renderer, GUIShader shader) {
@@ -49,15 +65,13 @@ public class LargeButton extends GUIObject {
         this.model.setRawModel(Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth(position.x) + DisplayManager.getXBuffer(), DisplayManager.scaledHeight(DisplayManager.getDefaultHeight() - position.y) + DisplayManager.getYBuffer()), new Vector2f(DisplayManager.scaledWidth(400), DisplayManager.scaledHeight(40)), TextureHelper.getYFlippedPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(0, 20), new Vector2f(200, 20))));
     }
 
-    boolean mouseWasDown = false;
     boolean mouseWasOver = false;
     public void update() {
+        if (disabled)
+            return;
+
         int x = Mouse.getX();
         int y = Mouse.getY();
-
-        if(!Mouse.isButtonDown(0) && mouseWasDown) {
-            mouseWasDown = false;
-        }
 
         boolean mouseIsOver =
                    x - (DisplayManager.scaledWidth(position.x) + DisplayManager.getXBuffer()) <= DisplayManager.scaledWidth(400)
@@ -80,15 +94,9 @@ public class LargeButton extends GUIObject {
             this.model = new TexturedModel(model, texture);
         }
 
-        if (mouseWasDown || !Mouse.isButtonDown(0)) return;
-
-        if(mouseIsOver && clickListener != null) {
+        if(MouseHandler.didClick() && mouseIsOver && clickListener != null) {
             ClickSound.play();
             clickListener.onClick();
-        }
-
-        if(Mouse.isButtonDown(0) && !mouseWasDown) {
-            mouseWasDown = true;
         }
     }
 

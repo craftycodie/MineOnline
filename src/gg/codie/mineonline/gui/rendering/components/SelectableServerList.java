@@ -227,8 +227,39 @@ public class SelectableServerList extends GUIObject {
             } else if(holdingScroll) {
                 holdingScroll = false;
             }
-        } else if(holdingScroll) {
-            holdingScroll = false;
+        } else {
+            if (holdingScroll) {
+                holdingScroll = false;
+            }
+
+            float scrollWheel = (float)(Mouse.getDWheel())/10;
+
+            if(scrollWheel != 0) {
+                //System.out.println(dy / scrollableHeight);
+                scrollbarPosition -= scrollWheel / scrollableHeight;
+
+                if (scrollbarPosition < 0) {
+                    scrollbarPosition = 0;
+                } else if (scrollbarPosition > 1) {
+                    scrollbarPosition = 1;
+                }
+
+                resize();
+
+                // This is how much the content items have been scrolled up in pixels.
+                // scrollbarPosition (eg 0.9) multiplied by the height content which is offscreen.
+                float contentOffsetPx = (contentHeight - viewportHeight) * scrollbarPosition;
+//                    System.out.println(contentHeight);
+//                    System.out.println(contentOffsetPx);
+
+                LinkedList<SelectableServer> children = getServers();
+                for (int i = 0; i < children.size(); i++) {
+                    children.get(i).scroll(
+                            -(contentOffsetPx - 1)
+                    );
+                    //System.out.println(-((float)((i * 72) + contentOffsetPx) / DisplayManager.getDefaultHeight()));
+                }
+            }
         }
     }
 

@@ -9,6 +9,7 @@ import gg.codie.mineonline.gui.rendering.components.LargeButton;
 import gg.codie.mineonline.gui.rendering.components.MediumButton;
 import gg.codie.mineonline.gui.rendering.font.TextMaster;
 import gg.codie.mineonline.gui.rendering.shaders.GUIShader;
+import gg.codie.utils.LastLogin;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Vector2f;
 import org.newdawn.slick.Color;
@@ -18,6 +19,7 @@ public class OptionsMenuScreen implements IMenuScreen {
     MediumButton guiScaleButton;
     MediumButton aboutButton;
     MediumButton logoutButton;
+    MediumButton resetSettings;
     LargeButton doneButton;
     GUIText label;
 
@@ -37,9 +39,6 @@ public class OptionsMenuScreen implements IMenuScreen {
         guiScaleButton = new MediumButton("GUI Scale: " + guiScales[DisplayManager.getGuiScale()], new Vector2f((DisplayManager.getDefaultWidth() / 2) - 308, (DisplayManager.getDefaultHeight() / 2) + 8), new IOnClickListener() {
             @Override
             public void onClick() {
-//                boolean fullcreen = !Properties.properties.getBoolean("fullscreen");
-//                Properties.properties.put("fullscreen", fullcreen);
-//                Properties.saveProperties();
                 if (DisplayManager.getGuiScale() == guiScales.length - 1) {
                     DisplayManager.setGuiScale(0);
                 } else {
@@ -49,6 +48,13 @@ public class OptionsMenuScreen implements IMenuScreen {
                 PlayerRendererTest.resizeMenu();
 
                 guiScaleButton.setName("GUI Scale: " + guiScales[DisplayManager.getGuiScale()]);
+            }
+        });
+
+        resetSettings = new MediumButton("Reset Settings", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 308, (DisplayManager.getDefaultHeight() / 2) + 56), new IOnClickListener() {
+            @Override
+            public void onClick() {
+                Properties.resetSettings();
             }
         });
 
@@ -62,7 +68,9 @@ public class OptionsMenuScreen implements IMenuScreen {
         logoutButton = new MediumButton("Logout", new Vector2f((DisplayManager.getDefaultWidth() / 2) + 8, (DisplayManager.getDefaultHeight() / 2) + 8), new IOnClickListener() {
             @Override
             public void onClick() {
+                LastLogin.deleteLastLogin();
                 Session.session.logout();
+                PlayerRendererTest.setMenuScreen(new LoginMenuScreen(false));
             }
         });
 
@@ -82,6 +90,7 @@ public class OptionsMenuScreen implements IMenuScreen {
         logoutButton.update();
         guiScaleButton.update();
         doneButton.update();
+        resetSettings.update();
     }
 
     public void render(Renderer renderer) {
@@ -94,6 +103,7 @@ public class OptionsMenuScreen implements IMenuScreen {
         logoutButton.render(renderer, guiShader);
         doneButton.render(renderer, guiShader);
         guiScaleButton.render(renderer, guiShader);
+        resetSettings.render(renderer, guiShader);
         guiShader.stop();
     }
 
@@ -107,6 +117,7 @@ public class OptionsMenuScreen implements IMenuScreen {
         logoutButton.resize();
         doneButton.resize();
         guiScaleButton.resize();
+        resetSettings.resize();
     }
 
     @Override
@@ -117,5 +128,6 @@ public class OptionsMenuScreen implements IMenuScreen {
         doneButton.cleanUp();
         guiScaleButton.cleanUp();
         label.remove();
+        resetSettings.cleanUp();
     }
 }

@@ -85,12 +85,12 @@ public class FormManager {
 
         frame.setSize(new Dimension(845, 476));
         frame.setLocationRelativeTo(null);
-        frame.getOwner().setBackground(Color.black);
+        //frame.getOwner().setBackground(Color.black);
 
         switchScreen(new LoginForm(new IOnClickListener() {
             @Override
             public void onClick() {
-                PlayerRendererTest.setMenuScreen(new MainMenuScreen());
+                switchScreen(new MainForm());
             }
         }));
 
