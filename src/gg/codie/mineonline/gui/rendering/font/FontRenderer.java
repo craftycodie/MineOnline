@@ -44,7 +44,6 @@ public class FontRenderer {
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         GL11.glDisable(GL11.GL_DEPTH_TEST);
-        GL11.glViewport(DisplayManager.getXBuffer(), DisplayManager.getYBuffer(), (int)(DisplayManager.getDefaultWidth() * DisplayManager.getScale()), (int)(DisplayManager.getDefaultHeight() * DisplayManager.getScale()));
 
         shader = new FontShader();
         shader.start();
@@ -54,6 +53,22 @@ public class FontRenderer {
         GL30.glBindVertexArray(text.getMesh());
         GL20.glEnableVertexAttribArray(0);
         GL20.glEnableVertexAttribArray(1);
+
+        GL11.glPushMatrix();
+
+        if (text.isCenterAnchored()) {
+            GL11.glViewport(DisplayManager.getXBuffer(), DisplayManager.getYBuffer(), (int) (DisplayManager.getDefaultWidth() * DisplayManager.getScale()), (int) (DisplayManager.getDefaultHeight() * DisplayManager.getScale()));
+        } else {
+            double xScale = (double) Display.getWidth() / DisplayManager.getDefaultWidth();
+            double yScale = (double) Display.getHeight() / DisplayManager.getDefaultHeight();
+
+            double scale = yScale;
+
+            if(xScale < yScale)
+                scale = xScale;
+
+            GL11.glViewport(0, 0, (int) (DisplayManager.getDefaultWidth() * scale), (int) ((DisplayManager.getDefaultHeight() * scale)));
+        }
 
         shader.loadColour(new Vector3f());
         shader.loadAlpha(0.5f);
@@ -67,6 +82,8 @@ public class FontRenderer {
         shader.loadYBounds(DisplayManager.getYBuffer() + (int)DisplayManager.scaledHeight(text.getYBounds().x), Display.getHeight() - (DisplayManager.getYBuffer() + (int)DisplayManager.scaledHeight(text.getYBounds().y)));
         shader.loadTranslation(text.getPosition());
         GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, text.getVertexCount());
+
+        GL11.glPopMatrix();
 
         GL20.glDisableVertexAttribArray(0);
         GL20.glDisableVertexAttribArray(1);

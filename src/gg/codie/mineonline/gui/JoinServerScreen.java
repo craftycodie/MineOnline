@@ -70,7 +70,7 @@ public class JoinServerScreen implements IMenuScreen {
             }
         });
 
-        label = new GUIText("Play Multiplayer", 1.5f, TextMaster.minecraftFont, new Vector2f(0, 40), DisplayManager.getDefaultWidth(), true);
+        label = new GUIText("Play Multiplayer", 1.5f, TextMaster.minecraftFont, new Vector2f(0, 40), DisplayManager.getDefaultWidth(), true, true);
     }
 
     public void update() {

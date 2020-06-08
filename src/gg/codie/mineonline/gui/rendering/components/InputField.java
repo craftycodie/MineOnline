@@ -37,7 +37,7 @@ public class InputField extends GUIObject {
         this.value = value;
         this.onEnterPressed = onEnterPressed;
 
-        guiText = new GUIText(value, 1.5f, TextMaster.minecraftFont, new Vector2f(position.x, position.y - 32), 400f, false);
+        guiText = new GUIText(value, 1.5f, TextMaster.minecraftFont, new Vector2f(position.x, position.y - 32), 400f, false, true);
     }
 
     public void render(Renderer renderer, GUIShader shader) {
@@ -47,10 +47,10 @@ public class InputField extends GUIObject {
 
         if(focused && System.currentTimeMillis() % 600 >= 300 && !this.guiText.textString.equals(this.value + "_")) {
             guiText.remove();
-            guiText = new GUIText(this.value + "_", 1.5f, TextMaster.minecraftFont, new Vector2f(position.x, position.y - 32), 400f, false);
+            guiText = new GUIText(this.value + "_", 1.5f, TextMaster.minecraftFont, new Vector2f(position.x, position.y - 32), 400f, false, true);
         } else if (!this.guiText.textString.equals(this.value)) {
             guiText.remove();
-            guiText = new GUIText(value, 1.5f, TextMaster.minecraftFont, new Vector2f(position.x, position.y - 32), 400f, false);
+            guiText = new GUIText(value, 1.5f, TextMaster.minecraftFont, new Vector2f(position.x, position.y - 32), 400f, false, true);
         }
 
     }

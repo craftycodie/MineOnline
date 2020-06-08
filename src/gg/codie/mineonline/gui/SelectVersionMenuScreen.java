@@ -2,34 +2,22 @@ package gg.codie.mineonline.gui;
 
 import gg.codie.mineonline.MinecraftVersionInfo;
 import gg.codie.mineonline.Properties;
-import gg.codie.mineonline.Session;
 import gg.codie.mineonline.gui.events.IOnClickListener;
 import gg.codie.mineonline.gui.font.GUIText;
 import gg.codie.mineonline.gui.rendering.*;
 import gg.codie.mineonline.gui.rendering.Renderer;
-import gg.codie.mineonline.gui.rendering.animation.IdlePlayerAnimation;
-import gg.codie.mineonline.gui.rendering.components.LargeButton;
 import gg.codie.mineonline.gui.rendering.components.MediumButton;
-import gg.codie.mineonline.gui.rendering.components.SelectableVersion;
 import gg.codie.mineonline.gui.rendering.components.SelectableVersionList;
 import gg.codie.mineonline.gui.rendering.font.TextMaster;
-import gg.codie.mineonline.gui.rendering.models.RawModel;
-import gg.codie.mineonline.gui.rendering.models.TexturedModel;
 import gg.codie.mineonline.gui.rendering.shaders.GUIShader;
-import gg.codie.mineonline.gui.rendering.textures.ModelTexture;
 import gg.codie.utils.JSONUtils;
-import javafx.util.Pair;
-import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
-import org.newdawn.slick.Color;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.Map;
 
 public class SelectVersionMenuScreen implements IMenuScreen {
     MediumButton doneButton;
@@ -53,7 +41,7 @@ public class SelectVersionMenuScreen implements IMenuScreen {
             }
         });
 
-        browseButton = new MediumButton("Browse...", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 8 - 300, DisplayManager.getDefaultHeight() - 20), new IOnClickListener() {
+        browseButton = new MediumButton("Browse...", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 308, DisplayManager.getDefaultHeight() - 20), new IOnClickListener() {
             @Override
             public void onClick() {
                 EventQueue.invokeLater(new Runnable() {
@@ -127,7 +115,7 @@ public class SelectVersionMenuScreen implements IMenuScreen {
             }
         }
 
-        label = new GUIText("Select Version", 1.5f, TextMaster.minecraftFont, new Vector2f(0, 40), DisplayManager.getDefaultWidth(), true);
+        label = new GUIText("Select Version", 1.5f, TextMaster.minecraftFont, new Vector2f(0, 40), DisplayManager.getDefaultWidth(), true, true);
 
     }
 

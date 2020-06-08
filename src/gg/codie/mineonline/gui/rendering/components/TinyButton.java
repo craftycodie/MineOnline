@@ -30,7 +30,7 @@ public class TinyButton extends GUIObject {
         this.position = new Vector2f(position.x, position.y);
         this.clickListener = clickListener;
 
-        guiText = new GUIText(name, 1.5f, TextMaster.minecraftFont, new Vector2f(position.x, position.y - 32), 142f, true);
+        guiText = new GUIText(name, 1.5f, TextMaster.minecraftFont, new Vector2f(position.x, position.y - 32), 142f, true, true);
     }
 
     public void render(Renderer renderer, GUIShader shader) {

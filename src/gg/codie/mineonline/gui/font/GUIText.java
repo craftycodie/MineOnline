@@ -15,6 +15,7 @@ import org.lwjgl.util.vector.Vector3f;
 public class GUIText {
 
     public final String textString;
+    private float unscaledFontSize;
     private float fontSize;
 
     private int textMeshVao;
@@ -28,6 +29,12 @@ public class GUIText {
     private FontType font;
 
     private boolean centerText;
+
+    public boolean isCenterAnchored() {
+        return centerAnchored;
+    }
+
+    private boolean centerAnchored = true;
 
     public Vector2f getYBounds() {
         return yBounds;
@@ -45,7 +52,7 @@ public class GUIText {
      *
      * @param text
      *            - the text.
-     * @param fontSize
+     * @param unscaledFontSize
      *            - the font size of the text, where a font size of 1 is the
      *            default size.
      * @param font
@@ -64,16 +71,51 @@ public class GUIText {
      * @param centered
      *            - whether the text should be centered or not.
      */
-    public GUIText(String text, float fontSize, FontType font, Vector2f position, float maxLineLength,
-                   boolean centered) {
+    public GUIText(String text, float unscaledFontSize, FontType font, Vector2f position, float maxLineLength,
+                   boolean centered, boolean centerAnchored) {
         this.textString = text;
-        this.fontSize = fontSize;
+        this.unscaledFontSize = unscaledFontSize;
+        this.fontSize = unscaledFontSize;
         this.font = font;
         this.position = position;
         this.lineMaxSize = maxLineLength;
         this.centerText = centered;
+        this.centerAnchored = centerAnchored;
         this.setNumberOfLines(1);
+
+        if(!this.centerAnchored) {
+            double xScale = (double) Display.getWidth() / DisplayManager.getDefaultWidth();
+            double yScale = (double) Display.getHeight() / DisplayManager.getDefaultHeight();
+
+            double scale = yScale;
+
+            if(xScale < yScale)
+                scale = xScale;
+
+            fontSize = unscaledFontSize * (1 / (float)scale);
+            fontSize = fontSize * (float)DisplayManager.getScale();
+        }
+
         TextMaster.loadText(this);
+    }
+
+    public void resize() {
+        if(!this.centerAnchored) {
+            remove();
+
+            double xScale = (double) Display.getWidth() / DisplayManager.getDefaultWidth();
+            double yScale = (double) Display.getHeight() / DisplayManager.getDefaultHeight();
+
+            double scale = yScale;
+
+            if(xScale < yScale)
+                scale = xScale;
+
+            fontSize = unscaledFontSize * (1 / (float)scale);
+            fontSize = fontSize * (float)DisplayManager.getScale();
+
+            TextMaster.loadText(this);
+        }
     }
 
     /**

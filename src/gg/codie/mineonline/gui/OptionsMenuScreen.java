@@ -6,21 +6,25 @@ import gg.codie.mineonline.gui.events.IOnClickListener;
 import gg.codie.mineonline.gui.font.GUIText;
 import gg.codie.mineonline.gui.rendering.*;
 import gg.codie.mineonline.gui.rendering.components.LargeButton;
+import gg.codie.mineonline.gui.rendering.components.MediumButton;
 import gg.codie.mineonline.gui.rendering.font.TextMaster;
 import gg.codie.mineonline.gui.rendering.shaders.GUIShader;
+import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Vector2f;
 import org.newdawn.slick.Color;
 
 public class OptionsMenuScreen implements IMenuScreen {
-    LargeButton fullscreenButton;
-    LargeButton aboutButton;
-    LargeButton logoutButton;
+    MediumButton fullscreenButton;
+    MediumButton guiScaleButton;
+    MediumButton aboutButton;
+    MediumButton logoutButton;
     LargeButton doneButton;
     GUIText label;
 
+    private static final String[] guiScales = new String[] { "Auto", "Small", "Normal", "Large" };
 
     public OptionsMenuScreen() {
-        fullscreenButton = new LargeButton("Fullscreen: " + (Properties.properties.getBoolean("fullscreen") ? "ON" : "OFF"), new Vector2f((DisplayManager.getDefaultWidth() / 2) - 200, (DisplayManager.getDefaultHeight() / 2) - 40), new IOnClickListener() {
+        fullscreenButton = new MediumButton("Fullscreen: " + (Properties.properties.getBoolean("fullscreen") ? "ON" : "OFF"), new Vector2f((DisplayManager.getDefaultWidth() / 2) - 308, (DisplayManager.getDefaultHeight() / 2) - 40), new IOnClickListener() {
             @Override
             public void onClick() {
                 boolean fullcreen = !Properties.properties.getBoolean("fullscreen");
@@ -30,14 +34,34 @@ public class OptionsMenuScreen implements IMenuScreen {
             }
         });
 
-        aboutButton = new LargeButton("About", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 200, (DisplayManager.getDefaultHeight() / 2) + 8), new IOnClickListener() {
+        guiScaleButton = new MediumButton("GUI Scale: " + guiScales[DisplayManager.getGuiScale()], new Vector2f((DisplayManager.getDefaultWidth() / 2) - 308, (DisplayManager.getDefaultHeight() / 2) + 8), new IOnClickListener() {
+            @Override
+            public void onClick() {
+//                boolean fullcreen = !Properties.properties.getBoolean("fullscreen");
+//                Properties.properties.put("fullscreen", fullcreen);
+//                Properties.saveProperties();
+                if (DisplayManager.getGuiScale() == guiScales.length - 1) {
+                    DisplayManager.setGuiScale(0);
+                } else {
+                    DisplayManager.setGuiScale(DisplayManager.getGuiScale() + 1);
+                }
+
+                PlayerRendererTest.resizeMenu();
+
+                System.out.println(DisplayManager.getGuiScale());
+
+                guiScaleButton.setName("GUI Scale: " + guiScales[DisplayManager.getGuiScale()]);
+            }
+        });
+
+        aboutButton = new MediumButton("About", new Vector2f((DisplayManager.getDefaultWidth() / 2) + 8, (DisplayManager.getDefaultHeight() / 2) - 40), new IOnClickListener() {
             @Override
             public void onClick() {
                 PlayerRendererTest.setMenuScreen(new AboutMenuScreen());
             }
         });
 
-        logoutButton = new LargeButton("Logout", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 200, (DisplayManager.getDefaultHeight() / 2) + 56), new IOnClickListener() {
+        logoutButton = new MediumButton("Logout", new Vector2f((DisplayManager.getDefaultWidth() / 2) + 8, (DisplayManager.getDefaultHeight() / 2) + 8), new IOnClickListener() {
             @Override
             public void onClick() {
                 Session.session.logout();
@@ -51,13 +75,14 @@ public class OptionsMenuScreen implements IMenuScreen {
             }
         });
 
-        label = new GUIText("Options", 1.5f, TextMaster.minecraftFont, new Vector2f(0, 40), DisplayManager.getDefaultWidth(), true);
+        label = new GUIText("Options", 1.5f, TextMaster.minecraftFont, new Vector2f(0, 40), DisplayManager.getDefaultWidth(), true, true);
     }
 
     public void update() {
         fullscreenButton.update();
         aboutButton.update();
         logoutButton.update();
+        guiScaleButton.update();
         doneButton.update();
     }
 
@@ -70,6 +95,7 @@ public class OptionsMenuScreen implements IMenuScreen {
         aboutButton.render(renderer, guiShader);
         logoutButton.render(renderer, guiShader);
         doneButton.render(renderer, guiShader);
+        guiScaleButton.render(renderer, guiShader);
         guiShader.stop();
     }
 
@@ -82,6 +108,7 @@ public class OptionsMenuScreen implements IMenuScreen {
         aboutButton.resize();
         logoutButton.resize();
         doneButton.resize();
+        guiScaleButton.resize();
     }
 
     @Override
@@ -90,6 +117,7 @@ public class OptionsMenuScreen implements IMenuScreen {
         aboutButton.cleanUp();
         logoutButton.cleanUp();
         doneButton.cleanUp();
+        guiScaleButton.cleanUp();
         label.remove();
     }
 }

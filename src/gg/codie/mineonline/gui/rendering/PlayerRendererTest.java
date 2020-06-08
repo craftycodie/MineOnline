@@ -40,7 +40,12 @@ public class PlayerRendererTest {
             playerName.remove();
 
         if(menuScreen.showPlayer())
-            playerName = new GUIText(Session.session.getUsername(), 1.5f, TextMaster.minecraftFont, new Vector2f(168, 100), 160, true);
+            playerName = new GUIText(Session.session.getUsername(), 1.5f, TextMaster.minecraftFont, new Vector2f(168, 100), 160, true, true);
+    }
+
+    public static void resizeMenu() {
+        if(menuScreen != null)
+            menuScreen.resize();
     }
 
     private static IMenuScreen menuScreen;
@@ -86,7 +91,8 @@ public class PlayerRendererTest {
         playerGameObject.setPlayerAnimation(new IdlePlayerAnimation());
         Camera camera = new DebugCamera();
 
-        String[] panoramaNames = new String[] {"midnight", "sunset"};
+        //String[] panoramaNames = new String[] {"midnight", "sunset"};
+        String[] panoramaNames = new String[] {"sunset"};
 
         RawModel model = loader.loadBoxToVAO(new Vector3f(-1, -1, -1), new Vector3f(1, 1, 1), TextureHelper.getCubeTextureCoords(new Vector2f(8192, 4096),
                 new Vector2f(4161, 0), new Vector2f(1387, 1387),
@@ -104,7 +110,7 @@ public class PlayerRendererTest {
 
         FontType font = new FontType(loader.loadTexture(PlayerRendererTest.class.getResource("/font/font.png")), PlayerRendererTest.class.getResourceAsStream("/font/font.fnt"));
         //FontType font = new FontType(loader.loadTexture(PlayerRendererTest.class.getResource("/font/testfont.png")), PlayerRendererTest.class.getResourceAsStream("/font/testfont.fnt"));
-        GUIText text = new GUIText("MineOnline Debug", 1.5f, font, new Vector2f(0, 0), DisplayManager.getDefaultWidth(), false);
+        GUIText text = new GUIText("MineOnline Debug", 1.5f, font, new Vector2f(0, 0), DisplayManager.getDefaultWidth(), false, false);
         text.setColour(1, 1, 0);
 
         //playerScale.scale(new Vector3f(1, 0.5f, 1));

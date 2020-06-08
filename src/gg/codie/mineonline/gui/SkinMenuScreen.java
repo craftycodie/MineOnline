@@ -43,8 +43,8 @@ public class SkinMenuScreen implements IMenuScreen {
     JFileChooser fileChooser = new JFileChooser();
     GUIText label;
 
-    String skinPath = new String();
-    String cloakPath = new String();
+    String skinPath = "";
+    String cloakPath = "";
     private boolean unsavedChanges = false;
 
     public SkinMenuScreen() {
@@ -81,7 +81,6 @@ public class SkinMenuScreen implements IMenuScreen {
 
                         if (returnVal == JFileChooser.APPROVE_OPTION) {
                             File file = fileChooser.getSelectedFile();
-                            skinButton.setName("Skin: " + file.getName());
 
                             skinPath = file.getPath();
 
@@ -114,7 +113,6 @@ public class SkinMenuScreen implements IMenuScreen {
 
                         if (returnVal == JFileChooser.APPROVE_OPTION) {
                             File file = fileChooser.getSelectedFile();
-                            cloakButton.setName("Cloak: " + file.getName());
 
                             cloakPath = file.getPath();
 
@@ -198,11 +196,17 @@ public class SkinMenuScreen implements IMenuScreen {
             }
         });
 
-        label = new GUIText("Change Skin", 1.5f, TextMaster.minecraftFont, new Vector2f(0, 40), DisplayManager.getDefaultWidth(), true);
+        label = new GUIText("Change Skin", 1.5f, TextMaster.minecraftFont, new Vector2f(0, 40), DisplayManager.getDefaultWidth(), true, true);
 
     }
 
     public void update() {
+        if(!skinPath.isEmpty() && skinButton.getName() != "Skin: " + Paths.get(skinPath).getFileName().toString())
+            skinButton.setName("Skin: " + Paths.get(skinPath).getFileName().toString());
+
+        if(!cloakPath.isEmpty() && cloakButton.getName() != "Cloak: " + Paths.get(cloakPath).getFileName().toString())
+            cloakButton.setName("Skin: " + Paths.get(cloakPath).getFileName().toString());
+
         skinButton.update();
         cloakButton.update();
         resetCloakButton.update();

@@ -1,6 +1,8 @@
 package gg.codie.mineonline.gui.rendering.components;
 
+import gg.codie.mineonline.gui.font.GUIText;
 import gg.codie.mineonline.gui.rendering.*;
+import gg.codie.mineonline.gui.rendering.font.TextMaster;
 import gg.codie.mineonline.gui.rendering.models.RawModel;
 import gg.codie.mineonline.gui.rendering.models.TexturedModel;
 import gg.codie.mineonline.gui.rendering.shaders.GUIShader;
@@ -13,23 +15,29 @@ import org.lwjgl.util.vector.Vector4f;
 
 import java.util.LinkedList;
 
-public class SelectableVersionList extends GUIObject {
+public class SelectableVersionList2 extends GUIObject {
 
     GUIObject scrollBarBackground;
     GUIObject scrollBar;
     GUIObject background;
 
-    public SelectableVersionList(String name, Vector3f localPosition, Vector3f rotation, Vector3f scale) {
+    public SelectableVersionList2(String name, Vector3f localPosition, Vector3f rotation, Vector3f scale) {
         super(name, localPosition, rotation, scale);
 
-        float viewportHeight = DisplayManager.scaledHeight(DisplayManager.getDefaultHeight() - 138);
+        float viewportHeight = DisplayManager.getDefaultHeight() - (69 * 2);
+//        float contentHeight = 72 * (getGUIChildren().size());
+
 
         RawModel scrollBackgroundModel = Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth((DisplayManager.getDefaultWidth() / 2) + 240), DisplayManager.scaledHeight(69) + DisplayManager.getYBuffer()), new Vector2f(DisplayManager.scaledWidth(10), viewportHeight), TextureHelper.getPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(0, 129), new Vector2f(1, 1)));
         ModelTexture scrollBackgroundTexture = new ModelTexture(Loader.singleton.loadTexture(PlayerRendererTest.class.getResource("/img/gui.png")));
         TexturedModel texuredScrollBackgroundModel =  new TexturedModel(scrollBackgroundModel, scrollBackgroundTexture);
         scrollBarBackground = new GUIObject("scroll", texuredScrollBackgroundModel, new Vector3f(), new Vector3f(), new Vector3f(1, 1, 1));
 
-        RawModel scrollModel = Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth((DisplayManager.getDefaultWidth() / 2) + 240), DisplayManager.scaledHeight(69) + DisplayManager.getYBuffer()), new Vector2f(DisplayManager.scaledWidth(10), viewportHeight), TextureHelper.getPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(1, 129), new Vector2f(1, 1)));
+//        System.out.println(viewportHeight);
+//        System.out.println(contentHeight);
+//        System.out.println(viewportHeight / contentHeight);
+
+        RawModel scrollModel = Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth((DisplayManager.getDefaultWidth() / 2) + 240) + DisplayManager.getXBuffer(), DisplayManager.scaledHeight(69) + DisplayManager.getYBuffer()), new Vector2f(DisplayManager.scaledWidth(10), 0), TextureHelper.getPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(1, 129), new Vector2f(1, 1)));
         ModelTexture scrollTexture = new ModelTexture(Loader.singleton.loadTexture(PlayerRendererTest.class.getResource("/img/gui.png")));
         TexturedModel texuredScrollModel =  new TexturedModel(scrollModel, scrollTexture);
         scrollBar = new GUIObject("scroll", texuredScrollModel, new Vector3f(), new Vector3f(), new Vector3f(1, 1, 1));
@@ -40,11 +48,11 @@ public class SelectableVersionList extends GUIObject {
         background = new GUIObject("background", texuredBackgroundModel, new Vector3f(), new Vector3f(), new Vector3f(1, 1, 1));
     }
 
-    public void addVersion(String name, String path) {
+    public void addVersion(String name, String path, String info) {
         int buffer = (72) * getVersions().size();
-        super.addChild(
-            new SelectableVersion(path, new Vector2f((DisplayManager.getDefaultWidth() / 2) - 220, DisplayManager.scaledHeight(140 + buffer)), name, path, this)
-        );
+//        super.addChild(
+//                new SelectableVersion(path, new Vector2f((DisplayManager.getDefaultWidth() / 2) - 220, DisplayManager.scaledHeight(140) + buffer), name, path, info,this)
+//        );
 
         resize();
     }
@@ -56,6 +64,9 @@ public class SelectableVersionList extends GUIObject {
         }
         return guiObjects;
     }
+
+    GUIText debug1;
+    GUIText debug2;
 
     float position = 0;
     boolean holdingScroll = false;
@@ -91,10 +102,10 @@ public class SelectableVersionList extends GUIObject {
 ////            System.out.println(scroll);
 //        }
 //
-//        for(SelectableVersion child : getVersions()) {
-//            child.update();
+        for(SelectableVersion child : getVersions()) {
+            child.update();
 //            child.translate(new Vector3f(0f, scroll, 0f));;
-//        }
+        }
 //
 //        scrollBar.setLocalPosition(new Vector3f(0, -DisplayManager.scaledHeight(((position * (viewportHeight - (viewportHeight / contentHeight) * viewportHeight)) / maxPosition) / DisplayManager.getDefaultHeight()) * 2, 0));
 //
@@ -103,10 +114,16 @@ public class SelectableVersionList extends GUIObject {
         int x = Mouse.getX();
         int y = Mouse.getY();
 
+        ///System.out.println(position);
+
         Vector2f scrollBarStart = new Vector2f(
                 DisplayManager.scaledWidth((DisplayManager.getDefaultWidth() / 2) + 240) + DisplayManager.getXBuffer(),
-                DisplayManager.scaledHeight(DisplayManager.getDefaultHeight() -(69 + (position * (viewportHeight - (viewportHeight / contentHeight) * viewportHeight)) / maxPosition) -(viewportHeight / contentHeight) * viewportHeight)
+                69 + (viewportHeight + (position / 2 * viewportHeight)) - ((viewportHeight / contentHeight) * viewportHeight)
         );
+        //System.out.println(240 + (position / 2 * viewportHeight));
+
+//        System.out.println(viewportHeight);
+//        System.out.println(contentHeight);
         Vector2f scrollBarSize = new Vector2f(DisplayManager.scaledWidth(10), (viewportHeight / contentHeight) * viewportHeight);
 
         // Max Position: -2.7368422
@@ -120,11 +137,23 @@ public class SelectableVersionList extends GUIObject {
         //System.out.println(scrollBarSize);
 //        System.out.println(new Vector2f(x - (scrollBarStart.x + DisplayManager.getXBuffer()), (y - (DisplayManager.getDefaultHeight() - scrollBarStart.y) - DisplayManager.getYBuffer())));
 
+        //System.out.println(scrollBarStart);
+//        System.out.println(contentHeight);
+//        System.out.println(viewportHeight / contentHeight);
+
+//        if(debug1 != null) {
+//            debug1.remove();
+//            debug2.remove();
+//        }
+//
+//        debug1 = new GUIText("-", 1, TextMaster.minecraftFont, new Vector2f(scrollBarStart.x, scrollBarStart.y - DisplayManager.getYBuffer()), 300, false, true);
+//        debug2 = new GUIText("-", 1, TextMaster.minecraftFont, new Vector2f(scrollBarStart.x, scrollBarStart.y - scrollBarSize.y - DisplayManager.getYBuffer()), 300, false, true);
+
         boolean mouseIsOver =
-               x - (scrollBarStart.x + DisplayManager.getXBuffer()) <= scrollBarSize.x
-            && x - (scrollBarStart.x + DisplayManager.getXBuffer()) >= 0
-            && y - (scrollBarStart.y) + DisplayManager.getYBuffer() <= scrollBarSize.y
-            && y - (scrollBarStart.y) + DisplayManager.getYBuffer() >= 0;
+                x - scrollBarStart.x <= scrollBarSize.x
+                        && x - scrollBarStart.x >= 0
+                        && y - scrollBarStart.y <= scrollBarSize.y
+                        && y - scrollBarStart.y >= 0;
 
         if(mouseIsOver || holdingScroll) {
             //System.out.println("over!");
@@ -136,25 +165,62 @@ public class SelectableVersionList extends GUIObject {
 //                System.out.println(Mouse.getDY());
                 //scrollBar.translate(new Vector3f(0, (Mouse.getDY() * scale) , 0));
                 int dy = Mouse.getDY();
-                scrollBar.translate(new Vector3f(0, DisplayManager.scaledHeight((float)(dy)) / Display.getHeight() * 2, 0));
-                position += DisplayManager.scaledHeight((float)(dy)) / Display.getHeight() * 2;
 
-                LinkedList<SelectableVersion> children = getVersions();
+                if(dy != 0) {
 
-                int scrollOffsetPx = (int)(((-scrollBar.getLocalPosition().y) * DisplayManager.getDefaultHeight()) / 2);
-                float scrollOffset = scrollOffsetPx  / (viewportHeight -(viewportHeight / contentHeight) * viewportHeight);
-                int contentOffsetPx = (int)(contentHeight * scrollOffset);
-                float contentOffset = (((float)contentOffsetPx / DisplayManager.getDefaultHeight()) / 2) * maxPosition;
-                position = contentOffset;
+//                scrollBar.translate(new Vector3f(0, DisplayManager.scaledHeight((float)(dy)) / Display.getHeight() * 2, 0));
+                    System.out.println(scrollBarStart.y );
+                    System.out.println(scrollBarStart.y / (float) Display.getHeight());
+                    System.out.println((scrollBarStart.y / (float) Display.getHeight()) + ((-dy * 2) / (float)Display.getHeight()));
+                    //scrollBar.translate(new Vector3f(0, DisplayManager.scaledHeight((float)(dy)) / Display.getHeight() * 2, 0));
 
-                //System.out.println(contentOffsetPx);
+                    position += dy / (float)Display.getHeight() * 5;
+
+                    scrollBarStart = new Vector2f(
+                            DisplayManager.scaledWidth((DisplayManager.getDefaultWidth() / 2) + 240) + DisplayManager.getXBuffer(),
+                            (viewportHeight + (position / 2 * viewportHeight)) - ((viewportHeight / contentHeight) * viewportHeight) - (69 * 2)
+                    );
+
+                    scrollBar.setLocalPosition(new Vector3f(scrollBar.getLocalPosition().x, (scrollBarStart.y / (float) Display.getHeight()) , 0));
+
+//
+                    if (scrollBar.getLocalPosition().y > 0) {
+                        scrollBar.setLocalPosition(new Vector3f(scrollBar.getLocalPosition().x, 0, 0));
+                        position = 0;
+                    }
+
+//                System.out.println((viewportHeight - (viewportHeight / contentHeight) * viewportHeight)/ Display.getHeight());
+//                System.out.println(scrollBar.getLocalPosition().y);
+
+                    if (scrollBar.getLocalPosition().y < -((viewportHeight - (viewportHeight / contentHeight) * viewportHeight) / Display.getHeight()) * 2) {
+                        position = -((viewportHeight - (viewportHeight / contentHeight) * viewportHeight) / Display.getHeight() * 2);
+                        scrollBarStart = new Vector2f(
+                                DisplayManager.scaledWidth((DisplayManager.getDefaultWidth() / 2) + 240) + DisplayManager.getXBuffer(),
+                                (viewportHeight + (position / 2 * viewportHeight)) - ((viewportHeight / contentHeight) * viewportHeight)
+                        );
+
+                        scrollBar.setLocalPosition(new Vector3f(scrollBar.getLocalPosition().x, (scrollBarStart.y / (float) Display.getHeight()) , 0));
+                    }
+
+                    LinkedList<SelectableVersion> children = getVersions();
+
+                    int scrollOffsetPx = (int) (((-scrollBar.getLocalPosition().y) * DisplayManager.getDefaultHeight()) / 2);
+                    float scrollOffset = scrollOffsetPx / (viewportHeight - (viewportHeight / contentHeight) * viewportHeight);
+                    int contentOffsetPx = (int) (contentHeight * scrollOffset);
+                    float contentOffset = (((float) contentOffsetPx / DisplayManager.getDefaultHeight()) / 2) * maxPosition;
+//                    position = contentOffset;
+
+                    //System.out.println(contentOffsetPx);
 
 
-                //System.out.println(scrollOffset);
+                    //System.out.println(scrollOffset);
 
-                for (int i = 0; i < children.size(); i++) {
-                    children.get(i).setLocalPosition(new Vector3f(0, (((i * DisplayManager.scaledWidth(0)) + contentOffsetPx) / DisplayManager.getDefaultHeight()), 0));
-                    //System.out.println(-((float)((i * 72) + contentOffsetPx) / DisplayManager.getDefaultHeight()));
+                    for (int i = 0; i < children.size(); i++) {
+                        children.get(i).scroll(
+                                (float) -(contentOffsetPx / 2) + 1
+                        );
+                        //System.out.println(-((float)((i * 72) + contentOffsetPx) / DisplayManager.getDefaultHeight()));
+                    }
                 }
                 //System.out.println(DisplayManager.scaledHeight((float)(dy)) / Display.getHeight() * 2);
             } else if(holdingScroll) {
@@ -181,8 +247,14 @@ public class SelectableVersionList extends GUIObject {
         float viewportHeight = DisplayManager.scaledHeight(DisplayManager.getDefaultHeight() - 138);
         float contentHeight = 72 * this.getVersions().size();
         float scrollBarY = DisplayManager.scaledHeight((DisplayManager.getDefaultHeight() - 69) + contentHeight * position) + DisplayManager.getYBuffer();
-        scrollBar.model.setRawModel(Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth((DisplayManager.getDefaultWidth() / 2) + 240), scrollBarY), new Vector2f(DisplayManager.scaledWidth(10), -(viewportHeight / contentHeight) * viewportHeight), TextureHelper.getPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(1, 129), new Vector2f(1, 1))));
-//        scrollBar.model.setRawModel();
+
+//        System.out.println(viewportHeight);
+//        System.out.println(contentHeight);
+//        System.out.println(viewportHeight / contentHeight);
+
+        scrollBar.model.setRawModel(Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth((DisplayManager.getDefaultWidth() / 2) + 240) + DisplayManager.getXBuffer(), scrollBarY), new Vector2f(DisplayManager.scaledWidth(10), (viewportHeight / contentHeight) * -viewportHeight), TextureHelper.getPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(1, 129), new Vector2f(1, 1))));
+        scrollBarBackground.model.setRawModel(Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth((DisplayManager.getDefaultWidth() / 2) + 240) + DisplayManager.getXBuffer(), DisplayManager.scaledHeight(69) + DisplayManager.getYBuffer()), new Vector2f(DisplayManager.scaledWidth(10), viewportHeight), TextureHelper.getPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(0, 129), new Vector2f(1, 1))));
+        //        scrollBar.model.setRawModel();
     }
 
     public void render(Renderer renderer, GUIShader shader) {
@@ -218,5 +290,11 @@ public class SelectableVersionList extends GUIObject {
             }
         }
         return null;
+    }
+
+    public void cleanUp() {
+        for(SelectableVersion version : getVersions()) {
+            version.cleanUp();
+        }
     }
 }

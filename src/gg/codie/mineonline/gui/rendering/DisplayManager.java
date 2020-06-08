@@ -34,6 +34,14 @@ public class DisplayManager {
         return (int)(Display.getHeight() - DisplayManager.scaledHeight(DisplayManager.getDefaultHeight())) / 2;
     }
 
+    public static int getDefaultScaleXBuffer() {
+        return (int)(getXBuffer() * (1 / getScale()));
+    }
+
+    public static int getDefaultScaleYBuffer() {
+        return (int)(getYBuffer() * (1 / getScale()));
+    }
+
     public static boolean isTall() {
         return (double)Display.getWidth() / Display.getHeight() > DEFAULT_ASPECT;
     }
@@ -58,15 +66,44 @@ public class DisplayManager {
 //        return multiplier;
 //    }
 
+    public static int getGuiScale() {
+        return guiScale;
+    }
+
+    public static void setGuiScale(int guiScale) {
+        DisplayManager.guiScale = guiScale;
+    }
+
+    static int guiScale = 0;
+
     public static double getScale() {
-        //return 1.25;
         double xScale = (double) Display.getWidth() / DEFAULT_WIDTH;
         double yScale = (double) Display.getHeight() / DEFAULT_HEIGHT;
 
+        double scale = yScale;
+
         if(xScale < yScale)
-            return xScale;
-        else
-            return yScale;
+            scale = xScale;
+
+        if(guiScale == 1 && scale > 0.5) {
+            return 0.5;
+        } else if(guiScale == 2 && scale > 1) {
+            return 1;
+        } else if (guiScale == 3 && scale > 1.5) {
+            return 1.5;
+        }
+
+        // Scale is rounded down to nearest half.
+        // Easiest way to do this is double, floor, half.
+        scale = scale * 2;
+        scale = Math.floor(scale);
+        scale = scale / 2;
+
+        // Don't allow 0 scale.
+        if (scale < 0.5)
+            scale = 0.5;
+
+        return scale;
     }
 
     private static final double DEFAULT_ASPECT = 1.77916666667;

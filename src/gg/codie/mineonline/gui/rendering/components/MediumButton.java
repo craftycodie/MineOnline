@@ -30,7 +30,7 @@ public class MediumButton extends GUIObject {
         this.position = new Vector2f(position.x,  position.y);
         this.clickListener = clickListener;
 
-        guiText = new GUIText(name, 1.5f, TextMaster.minecraftFont, new Vector2f(position.x, position.y - 32), 300f, true);
+        guiText = new GUIText(name, 1.5f, TextMaster.minecraftFont, new Vector2f(position.x, position.y - 32), 300f, true, true);
     }
 
     public void render(Renderer renderer, GUIShader shader) {
@@ -91,6 +91,7 @@ public class MediumButton extends GUIObject {
 
     public void resize() {
         model.setRawModel(Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth(position.x) + DisplayManager.getXBuffer(), DisplayManager.scaledHeight(DisplayManager.getDefaultHeight() - position.y) + DisplayManager.getYBuffer()), new Vector2f(DisplayManager.scaledWidth(300), DisplayManager.scaledHeight(40)), TextureHelper.getPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(0, 89), new Vector2f(150, 20))));
+        guiText.resize();
     }
 
     public void cleanUp() {
@@ -101,7 +102,7 @@ public class MediumButton extends GUIObject {
     public void setName(String name) {
         guiText.remove();
         super.setName(name);
-        guiText = new GUIText(name, 1.5f, TextMaster.minecraftFont, new Vector2f(position.x, position.y - 32), 300f, true);
+        guiText = new GUIText(name, 1.5f, TextMaster.minecraftFont, new Vector2f(position.x, position.y - 32), 300f, true, true);
     }
 
 }

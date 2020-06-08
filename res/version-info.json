@@ -220,24 +220,24 @@
 
   { "name": "c1.10.1 IP mod", "md5": "90632803F45C15164587256A08C0ECB4", "type": "server", "clientName": "c0.28 to c0.30", "hasHeartbeat": true },
 
-  { "name":  "Banshee 0.0.5.0", "md5": "B85FBC96DF78464A797AB8A7A474EDDD", "type": "client", "info": "b1.7.3 mod" },
-  { "name":  "Banshee 0.1.1.0", "md5": "A631F9CBC511BC9339FBC54994E62FA9", "type": "client", "info": "b1.7.3 mod" },
-  { "name":  "Banshee 0.1.1.2", "md5": "B13A330252A68443969FD7F541B96999", "type": "client", "info": "b1.7.3 mod" },
-  { "name":  "Banshee 0.1.1.3", "md5": "DD0AF264A6E5DB719F8BD92F8D5CAE42", "type": "client", "info": "b1.7.3 mod" },
-  { "name":  "Banshee 0.1.1.4", "md5": "DF651F4025BADC527D91A05AFA93BD21", "type": "client", "info": "b1.7.3 mod" },
-  { "name":  "Banshee 0.1.1.5", "md5": "210197E5FF27EE4FFF16C04DA4E02181", "type": "client", "info": "b1.7.3 mod" },
-  { "name":  "Banshee 0.1.1.6", "md5": "843D72A3972E369C71B533499141911D", "type": "client", "info": "b1.7.3 mod" },
+  { "name": "Banshee 0.0.5.0", "md5": "B85FBC96DF78464A797AB8A7A474EDDD", "type": "client", "info": "Beta 1.7.3 mod" },
+  { "name": "Banshee 0.1.1.0", "md5": "A631F9CBC511BC9339FBC54994E62FA9", "type": "client", "info": "Beta 1.7.3 mod" },
+  { "name": "Banshee 0.1.1.2", "md5": "B13A330252A68443969FD7F541B96999", "type": "client", "info": "Beta 1.7.3 mod" },
+  { "name": "Banshee 0.1.1.3", "md5": "DD0AF264A6E5DB719F8BD92F8D5CAE42", "type": "client", "info": "Beta 1.7.3 mod" },
+  { "name": "Banshee 0.1.1.4", "md5": "DF651F4025BADC527D91A05AFA93BD21", "type": "client", "info": "Beta 1.7.3 mod" },
+  { "name": "Banshee 0.1.1.5", "md5": "210197E5FF27EE4FFF16C04DA4E02181", "type": "client", "info": "Beta 1.7.3 mod" },
+  { "name": "Banshee 0.1.1.6", "md5": "843D72A3972E369C71B533499141911D", "type": "client", "info": "Beta 1.7.3 mod" },
 
-  { "name":  "Banshee 0.0.5.0", "md5": "27ADBA2B0DD3610E13E117FF18DC60BF", "type": "server", "info": "b1.7.3 mod" },
-  { "name":  "Banshee 0.1.1.0", "md5": "D07AF292AD6873BFB173243EE807F146", "type": "server", "info": "b1.7.3 mod" },
-  { "name":  "Banshee 0.1.1.2", "md5": "B2BCDCE9F18118AD9234743641532336", "type": "server", "info": "b1.7.3 mod" },
-  { "name":  "Banshee 0.1.1.3", "md5": "A4212E714E84121C2E82042AC5CD109D", "type": "server", "info": "b1.7.3 mod" },
-  { "name":  "Banshee 0.1.1.4", "md5": "58616E188132745FCA7ACF6FEF1FEEF1", "type": "server", "info": "b1.7.3 mod" },
-  { "name":  "Banshee 0.1.1.5", "md5": "4A10FA3251CD42B9B3B0F2C6278E5B3F", "type": "server", "info": "b1.7.3 mod" },
-  { "name":  "Banshee 0.1.1.6", "md5": "7E74F5ADE94EF00E5C15BBF2AD908D3B", "type": "server", "info": "b1.7.3 mod" },
+  { "name": "Banshee 0.0.5.0", "md5": "27ADBA2B0DD3610E13E117FF18DC60BF", "type": "server", "info": "Beta 1.7.3 mod" },
+  { "name": "Banshee 0.1.1.0", "md5": "D07AF292AD6873BFB173243EE807F146", "type": "server", "info": "Beta 1.7.3 mod" },
+  { "name": "Banshee 0.1.1.2", "md5": "B2BCDCE9F18118AD9234743641532336", "type": "server", "info": "Beta 1.7.3 mod" },
+  { "name": "Banshee 0.1.1.3", "md5": "A4212E714E84121C2E82042AC5CD109D", "type": "server", "info": "Beta 1.7.3 mod" },
+  { "name": "Banshee 0.1.1.4", "md5": "58616E188132745FCA7ACF6FEF1FEEF1", "type": "server", "info": "Beta 1.7.3 mod" },
+  { "name": "Banshee 0.1.1.5", "md5": "4A10FA3251CD42B9B3B0F2C6278E5B3F", "type": "server", "info": "Beta 1.7.3 mod" },
+  { "name": "Banshee 0.1.1.6", "md5": "7E74F5ADE94EF00E5C15BBF2AD908D3B", "type": "server", "info": "Beta 1.7.3 mod" },
 
-  { "name":  "Puucraft 0.1.0.0", "md5": "A19C83410023F4D96CE0DE3DAF613DCF", "type": "client", "info":  "b1.7.3 mod"},
-  { "name":  "Puucraft 0.1.1.0", "md5": "B0D44C2B3B848037705EF6D24B9994C8", "type": "client", "info":  "b1.7.3 mod"},
-  { "name":  "Puucraft 0.2.0.1 (Pre- Release)", "md5": "7ADDA28EB4BBF6FE1E28F2E664E80F7A", "type": "client", "info":  "b1.7.3 mod"},
-  { "name":  "Puucraft 0.2.0.1", "md5": "27EF3CD6AB2DF7A1877840EB64F9DC0B", "type": "client", "info":  "b1.7.3 mod"}
+  { "name": "Puucraft 0.1.0.0", "md5": "A19C83410023F4D96CE0DE3DAF613DCF", "type": "client", "info": "Beta 1.7.3 mod"},
+  { "name": "Puucraft 0.1.1.0", "md5": "B0D44C2B3B848037705EF6D24B9994C8", "type": "client", "info": "Beta 1.7.3 mod"},
+  { "name": "Puucraft 0.2.0.1 (Pre-Release)", "md5": "7ADDA28EB4BBF6FE1E28F2E664E80F7A", "type": "client", "info": "Beta 1.7.3 mod"},
+  { "name": "Puucraft 0.2.0.1", "md5": "27EF3CD6AB2DF7A1877840EB64F9DC0B", "type": "client", "info": "Beta 1.7.3 mod"}
 ]
