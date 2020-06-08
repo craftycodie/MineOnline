@@ -8,6 +8,7 @@ import gg.codie.mineonline.gui.rendering.*;
 import gg.codie.mineonline.gui.rendering.Renderer;
 import gg.codie.mineonline.gui.rendering.components.MediumButton;
 import gg.codie.mineonline.gui.rendering.components.SelectableVersionList;
+import gg.codie.mineonline.gui.rendering.components.TinyButton;
 import gg.codie.mineonline.gui.rendering.font.TextMaster;
 import gg.codie.mineonline.gui.rendering.shaders.GUIShader;
 import gg.codie.utils.JSONUtils;
@@ -21,8 +22,13 @@ import java.io.IOException;
 
 public class SelectVersionMenuScreen implements IMenuScreen {
     MediumButton doneButton;
-    MediumButton browseButton;
+    MediumButton browseButtonBig;
+    TinyButton browseButtonSmall;
+    TinyButton backButton;
     GUIText label;
+
+    IOnClickListener backListener;
+    IOnClickListener doneListener;
 
     SelectableVersionList selectableVersionList;
 
@@ -31,17 +37,10 @@ public class SelectVersionMenuScreen implements IMenuScreen {
     // Since browsing doesn't occur on the opengl thread, store the result here and check on update.
     String[] versionToAdd = null;
 
-    public SelectVersionMenuScreen() {
-        doneButton = new MediumButton("Done", new Vector2f((DisplayManager.getDefaultWidth() / 2) + 8, DisplayManager.getDefaultHeight() - 20), new IOnClickListener() {
-            @Override
-            public void onClick() {
-                Properties.properties.put("selectedJar", selectableVersionList.getSelected());
-                Properties.saveProperties();
-                PlayerRendererTest.setMenuScreen(new MainMenuScreen());
-            }
-        });
+    public SelectVersionMenuScreen(IOnClickListener backListener, IOnClickListener doneListener, String doneText) {
+        doneButton = new MediumButton(doneText != null ? doneText : "Done", new Vector2f((DisplayManager.getDefaultWidth() / 2) + 8, DisplayManager.getDefaultHeight() - 20), doneListener);
 
-        browseButton = new MediumButton("Browse...", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 308, DisplayManager.getDefaultHeight() - 20), new IOnClickListener() {
+        IOnClickListener browseListener = new IOnClickListener() {
             @Override
             public void onClick() {
                 EventQueue.invokeLater(new Runnable() {
@@ -68,7 +67,7 @@ public class SelectVersionMenuScreen implements IMenuScreen {
                             String[] newJars = new String[existingJars.length + 1];
 
                             for (int i = 0; i < existingJars.length; i++) {
-                                if(existingJars[i].equals(file.getPath())) {
+                                if (existingJars[i].equals(file.getPath())) {
                                     selectableVersionList.selectVersion(file.getPath());
                                     return;
                                 } else {
@@ -80,16 +79,23 @@ public class SelectVersionMenuScreen implements IMenuScreen {
                             Properties.properties.put("minecraftJars", newJars);
                             Properties.saveProperties();
 
-                            if(minecraftVersion != null) {
-                                versionToAdd = new String[] { minecraftVersion.name, file.getPath(), minecraftVersion.info };
+                            if (minecraftVersion != null) {
+                                versionToAdd = new String[]{minecraftVersion.name, file.getPath(), minecraftVersion.info};
                             } else {
-                                versionToAdd = new String[] { "Unknown Version", file.getPath(), null };
+                                versionToAdd = new String[]{"Unknown Version", file.getPath(), null};
                             }
                         }
                     }
                 });
             }
-        });
+        };
+
+        if (backListener == null) {
+            browseButtonBig = new MediumButton("Browse...", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 308, DisplayManager.getDefaultHeight() - 20), browseListener);
+        } else {
+            browseButtonSmall = new TinyButton("Browse...", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 150, DisplayManager.getDefaultHeight() - 20), browseListener);
+            backButton = new TinyButton("Back", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 308, DisplayManager.getDefaultHeight() - 20), backListener);
+        }
 
         selectableVersionList = new SelectableVersionList("version list", new Vector3f(), new Vector3f(), new Vector3f(1, 1, 1), new IOnClickListener() {
             @Override
@@ -126,6 +132,10 @@ public class SelectVersionMenuScreen implements IMenuScreen {
 
     }
 
+    public String getSelectedPath() {
+        return selectableVersionList.getSelected();
+    }
+
     public void update() {
         if (versionToAdd != null) {
             selectableVersionList.addVersion(versionToAdd[0], versionToAdd[1], versionToAdd[2]);
@@ -134,7 +144,12 @@ public class SelectVersionMenuScreen implements IMenuScreen {
         }
 
         doneButton.update();
-        browseButton.update();
+        if(browseButtonBig != null)
+            browseButtonBig.update();
+        if(browseButtonSmall != null)
+            browseButtonSmall.update();
+        if(backButton != null)
+            backButton.update();
         selectableVersionList.update();
     }
 
@@ -145,7 +160,12 @@ public class SelectVersionMenuScreen implements IMenuScreen {
         renderer.prepareGUI();
 
         doneButton.render(renderer, guiShader);
-        browseButton.render(renderer, guiShader);
+        if(browseButtonBig != null)
+            browseButtonBig.render(renderer, guiShader);
+        if(browseButtonSmall != null)
+            browseButtonSmall.render(renderer, guiShader);
+        if(backButton != null)
+            backButton.render(renderer, guiShader);
         selectableVersionList.render(renderer, guiShader);
     }
 
@@ -155,14 +175,24 @@ public class SelectVersionMenuScreen implements IMenuScreen {
 
     public void resize() {
         doneButton.resize();
-        browseButton.resize();
+        if(browseButtonBig != null)
+            browseButtonBig.resize();
+        if(browseButtonSmall != null)
+            browseButtonSmall.resize();
+        if(backButton != null)
+            backButton.resize();
         selectableVersionList.resize();
     }
 
     @Override
     public void cleanUp() {
         doneButton.cleanUp();
-        browseButton.cleanUp();
+        if(browseButtonBig != null)
+            browseButtonBig.cleanUp();
+        if(browseButtonSmall != null)
+            browseButtonSmall.cleanUp();
+        if(backButton != null)
+            backButton.cleanUp();
         selectableVersionList.cleanUp();
         label.remove();
     }

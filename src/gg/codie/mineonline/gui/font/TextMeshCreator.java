@@ -17,8 +17,8 @@ public class TextMeshCreator {
 
     protected TextMeshData createTextMesh(GUIText text) {
         List<Line> lines = createStructure(text);
-        if (text.getNumberOfLines() < lines.size()) {
-            lines = lines.subList(lines.size() - text.getNumberOfLines(), lines.size());
+        if (text.getMaxLines() < lines.size() && text.getMaxLines() > 0) {
+            lines = lines.subList(lines.size() - text.getMaxLines(), lines.size());
         }
         TextMeshData data = createQuadVertices(text, lines);
         return data;
@@ -40,18 +40,19 @@ public class TextMeshCreator {
                 }
                 currentWord = new Word(text.getFontSize());
                 continue;
-            } else if (ascii == 47 || ascii == 92) {
-                Character character = metaData.getCharacter(ascii);
-                currentWord.addCharacter(character);
-                boolean added = currentLine.attemptToAddWord(currentWord);
-                if (!added) {
-                    lines.add(currentLine);
-                    currentLine = new Line(metaData.getSpaceWidth(), text.getFontSize(), text.getMaxLineSize());
-                    currentLine.attemptToAddWord(currentWord);
-                }
-                currentWord = new Word(text.getFontSize());
-                continue;
             }
+//            else if (ascii == 47 || ascii == 92) {
+//                Character character = metaData.getCharacter(ascii);
+//                currentWord.addCharacter(character);
+//                boolean added = currentLine.attemptToAddWord(currentWord);
+//                if (!added) {
+//                    lines.add(currentLine);
+//                    currentLine = new Line(metaData.getSpaceWidth(), text.getFontSize(), text.getMaxLineSize());
+//                    currentLine.attemptToAddWord(currentWord);
+//                }
+//                currentWord = new Word(text.getFontSize());
+//                continue;
+//            }
             Character character = metaData.getCharacter(ascii);
             currentWord.addCharacter(character);
         }

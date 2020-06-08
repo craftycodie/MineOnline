@@ -48,8 +48,6 @@ public class OptionsMenuScreen implements IMenuScreen {
 
                 PlayerRendererTest.resizeMenu();
 
-                System.out.println(DisplayManager.getGuiScale());
-
                 guiScaleButton.setName("GUI Scale: " + guiScales[DisplayManager.getGuiScale()]);
             }
         });

@@ -1,5 +1,7 @@
 package gg.codie.mineonline.gui.rendering;
 
+import gg.codie.mineonline.LauncherFiles;
+import gg.codie.mineonline.MinecraftOptions;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.*;
 import org.lwjgl.opengl.DisplayMode;
@@ -7,8 +9,22 @@ import org.lwjgl.opengl.DisplayMode;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class DisplayManager {
+
+    static {
+        if (new File(LauncherFiles.MINECRAFT_OPTIONS_PATH).exists()) {
+            try {
+                MinecraftOptions minecraftOptions = new MinecraftOptions(LauncherFiles.MINECRAFT_OPTIONS_PATH);
+                guiScale = Integer.parseInt(minecraftOptions.getOption("guiScale"));
+            } catch (Exception ex) {
+                guiScale = 0;
+            }
+        }
+    }
 
     public static int getDefaultWidth() {
         return DEFAULT_WIDTH;
@@ -72,9 +88,20 @@ public class DisplayManager {
 
     public static void setGuiScale(int guiScale) {
         DisplayManager.guiScale = guiScale;
+
+        try {
+            if (!new File(LauncherFiles.MINECRAFT_OPTIONS_PATH).exists()) {
+                Files.createFile(Paths.get(LauncherFiles.MINECRAFT_OPTIONS_PATH));
+            }
+
+            MinecraftOptions minecraftOptions = new MinecraftOptions(LauncherFiles.MINECRAFT_OPTIONS_PATH);
+            minecraftOptions.setOption("guiScale", guiScale + "");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
-    static int guiScale = 0;
+    static int guiScale;
 
     public static double getScale() {
         double xScale = (double) Display.getWidth() / DEFAULT_WIDTH;

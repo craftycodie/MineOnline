@@ -29,7 +29,7 @@ public class InputField extends GUIObject {
 
     public InputField(String name, Vector2f position, String value, IOnClickListener onEnterPressed) {
         super(name,
-                new TexturedModel(Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth(position.x) + DisplayManager.getXBuffer(), DisplayManager.scaledHeight(DisplayManager.getDefaultHeight() - position.y) + DisplayManager.getYBuffer()), new Vector2f(DisplayManager.scaledWidth(400), DisplayManager.scaledHeight(40)), TextureHelper.getPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(200, 0), new Vector2f(200, 20))), new ModelTexture(Loader.singleton.loadTexture(PlayerRendererTest.class.getResource("/img/gui.png")))),
+                new TexturedModel(Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth(position.x) + DisplayManager.getXBuffer(), DisplayManager.scaledHeight(DisplayManager.getDefaultHeight() - position.y) + DisplayManager.getYBuffer()), new Vector2f(DisplayManager.scaledWidth(404), DisplayManager.scaledHeight(44)), TextureHelper.getYFlippedPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(0, 166), new Vector2f(202, 22))), new ModelTexture(Loader.singleton.loadTexture(PlayerRendererTest.class.getResource("/img/gui.png")))),
                 new Vector3f(0, 0, 0), new Vector3f(), new Vector3f(1, 1, 1)
         );
 
@@ -37,7 +37,7 @@ public class InputField extends GUIObject {
         this.value = value;
         this.onEnterPressed = onEnterPressed;
 
-        guiText = new GUIText(value, 1.5f, TextMaster.minecraftFont, new Vector2f(position.x, position.y - 32), 400f, false, true);
+        guiText = new GUIText(value, 1.5f, TextMaster.minecraftFont, new Vector2f(position.x + 12, position.y - 32), 400f, false, true);
     }
 
     public void render(Renderer renderer, GUIShader shader) {
@@ -45,12 +45,14 @@ public class InputField extends GUIObject {
         renderer.renderGUI(this, shader);
         shader.stop();
 
-        if(focused && System.currentTimeMillis() % 600 >= 300 && !this.guiText.textString.equals(this.value + "_")) {
+        long diff = System.currentTimeMillis() % 600;
+
+        if(focused && diff >= 300 && !this.guiText.textString.equals(this.value + "_")) {
             guiText.remove();
-            guiText = new GUIText(this.value + "_", 1.5f, TextMaster.minecraftFont, new Vector2f(position.x, position.y - 32), 400f, false, true);
-        } else if (!this.guiText.textString.equals(this.value)) {
+            guiText = new GUIText(this.value + "_", 1.5f, TextMaster.minecraftFont, new Vector2f(position.x + 12, position.y - 32), 400f, false, true);
+        } else if (diff < 300 && !this.guiText.textString.equals(this.value)) {
             guiText.remove();
-            guiText = new GUIText(value, 1.5f, TextMaster.minecraftFont, new Vector2f(position.x, position.y - 32), 400f, false, true);
+            guiText = new GUIText(value, 1.5f, TextMaster.minecraftFont, new Vector2f(position.x + 12, position.y - 32), 400f, false, true);
         }
 
     }
@@ -108,7 +110,7 @@ public class InputField extends GUIObject {
     }
 
     public void resize() {
-        this.model.setRawModel(Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth(position.x) + DisplayManager.getXBuffer(), DisplayManager.scaledHeight(DisplayManager.getDefaultHeight() - position.y) + DisplayManager.getYBuffer()), new Vector2f(DisplayManager.scaledWidth(400), DisplayManager.scaledHeight(40)), TextureHelper.getPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(200, 0), new Vector2f(200, 20))));
+        this.model.setRawModel(Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth(position.x) + DisplayManager.getXBuffer(), DisplayManager.scaledHeight(DisplayManager.getDefaultHeight() - position.y) + DisplayManager.getYBuffer()), new Vector2f(DisplayManager.scaledWidth(404), DisplayManager.scaledHeight(44)), TextureHelper.getYFlippedPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(0, 166), new Vector2f(202, 22))));
     }
 
     public void cleanUp() {

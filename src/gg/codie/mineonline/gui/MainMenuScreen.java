@@ -26,6 +26,7 @@ public class MainMenuScreen implements IMenuScreen {
     TinyButton optionsButton;
     TinyButton skinButton;
 
+    static SelectVersionMenuScreen selectVersionMenuScreen = null;
 
     public MainMenuScreen() {
         RawModel logoModel = Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth((DisplayManager.getDefaultWidth() / 2) -200) + DisplayManager.getXBuffer(), Display.getHeight() - DisplayManager.scaledHeight(69)), new Vector2f(DisplayManager.scaledWidth(400), DisplayManager.scaledHeight(49)), TextureHelper.getYFlippedPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(0, 40), new Vector2f(400, 49)));
@@ -51,7 +52,7 @@ public class MainMenuScreen implements IMenuScreen {
         joinServerButton = new MediumButton("Join Server", new Vector2f((DisplayManager.getDefaultWidth() / 2) + 30, (DisplayManager.getDefaultHeight() / 2) + 8), new IOnClickListener() {
             @Override
             public void onClick() {
-                PlayerRendererTest.setMenuScreen(new JoinServerScreen());
+                PlayerRendererTest.setMenuScreen(new JoinServerScreen(null));
             }
         });
 
@@ -64,7 +65,15 @@ public class MainMenuScreen implements IMenuScreen {
         versionButton = new MediumButton(jarPath != null ? (version != null ? "Version: " + version.name : jarName) : "Select Version", new Vector2f((DisplayManager.getDefaultWidth() / 2) + 30, (DisplayManager.getDefaultHeight() / 2) + 56), new IOnClickListener() {
             @Override
             public void onClick() {
-                PlayerRendererTest.setMenuScreen(new SelectVersionMenuScreen());
+                selectVersionMenuScreen = new SelectVersionMenuScreen(null, new IOnClickListener() {
+                    @Override
+                    public void onClick() {
+                        Properties.properties.put("selectedJar", selectVersionMenuScreen.getSelectedPath());
+                        Properties.saveProperties();
+                        PlayerRendererTest.setMenuScreen(new MainMenuScreen());
+                    }
+                }, null);
+                PlayerRendererTest.setMenuScreen(selectVersionMenuScreen);
             }
         });
 

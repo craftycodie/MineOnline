@@ -1,20 +1,34 @@
 package gg.codie.mineonline.gui.rendering.components;
 
+import gg.codie.mineonline.MinecraftVersionInfo;
+import gg.codie.mineonline.Properties;
 import gg.codie.mineonline.gui.events.IOnClickListener;
 import gg.codie.mineonline.gui.font.GUIText;
 import gg.codie.mineonline.gui.rendering.*;
+import gg.codie.mineonline.gui.rendering.Renderer;
 import gg.codie.mineonline.gui.rendering.font.TextMaster;
 import gg.codie.mineonline.gui.rendering.models.RawModel;
 import gg.codie.mineonline.gui.rendering.models.TexturedModel;
 import gg.codie.mineonline.gui.rendering.shaders.GUIShader;
 import gg.codie.mineonline.gui.rendering.textures.ModelTexture;
+import gg.codie.utils.JSONUtils;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
+import javax.swing.*;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetAdapter;
+import java.awt.dnd.DropTargetDropEvent;
+import java.io.File;
+import java.io.IOException;
 import java.util.LinkedList;
+import java.util.List;
 
 public class SelectableVersionList extends GUIObject {
 
@@ -22,10 +36,100 @@ public class SelectableVersionList extends GUIObject {
     GUIObject scrollBar;
     GUIObject background;
 
+    GUIText emptyText;
+
     IOnClickListener doubleClickListener;
+    DropTargetAdapter dropTargetAdapter;
+
+    static DropTarget dropTarget = new DropTarget();
+
+    // Queue of jars to add if jars were selected from a non opengl thread (drag n drop).
+    LinkedList<String[]> jarsToAdd = new LinkedList<>();
 
     public SelectableVersionList(String name, Vector3f localPosition, Vector3f rotation, Vector3f scale, IOnClickListener doubleClickListener) {
         super(name, localPosition, rotation, scale);
+
+        dropTarget.setComponent(DisplayManager.getCanvas());
+
+        dropTargetAdapter = new DropTargetAdapter() {
+            @Override
+            public void drop(DropTargetDropEvent event) {
+                // Accept copy drops
+                event.acceptDrop(DnDConstants.ACTION_COPY);
+
+                // Get the transfer which can provide the dropped item data
+                Transferable transferable = event.getTransferable();
+
+                // Get the data formats of the dropped item
+                DataFlavor[] flavors = transferable.getTransferDataFlavors();
+
+                // Loop through the flavors
+                for (DataFlavor flavor : flavors) {
+
+                    try {
+
+                        // If the drop items are files
+                        if (flavor.isFlavorJavaFileListType()) {
+
+                            // Get all of the dropped files
+                            List<File> files = (List<File>) transferable.getTransferData(flavor);
+
+                            // Loop them through
+                            for (File file : files) {
+                                MinecraftVersionInfo.MinecraftVersion minecraftVersion = MinecraftVersionInfo.getVersion(file.getPath());
+
+                                try {
+                                    if (!MinecraftVersionInfo.isRunnableJar(file.getPath())) {
+                                        continue;
+                                    }
+                                } catch (IOException ex) {
+                                    continue;
+                                }
+
+                                String[] existingJars = Properties.properties.has("minecraftJars") ? JSONUtils.getStringArray(Properties.properties.getJSONArray("minecraftJars")) : new String[0];
+                                String[] newJars = new String[existingJars.length + 1];
+
+                                for (int i = 0; i < existingJars.length; i++) {
+                                    if(existingJars[i].equals(file.getPath())) {
+                                        selectVersion(file.getPath());
+                                        return;
+                                    } else {
+                                        newJars[i] = existingJars[i];
+                                    }
+                                }
+                                newJars[newJars.length - 1] = file.getPath();
+
+                                Properties.properties.put("minecraftJars", newJars);
+                                Properties.saveProperties();
+
+                                if(minecraftVersion != null) {
+                                    jarsToAdd.add(new String[] { minecraftVersion.name, file.getPath(), minecraftVersion.info });
+                                } else {
+                                    jarsToAdd.add(new String[] { "Unknown Version", file.getPath(), null });
+                                }
+
+                            }
+
+                        }
+
+                    } catch (Exception e) {
+
+                        // Print out the error stack
+                        e.printStackTrace();
+
+                    }
+                }
+
+                // Inform that the drop is complete
+                event.dropComplete(true);
+            }
+        };
+
+        try {
+            dropTarget.addDropTargetListener(dropTargetAdapter);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         float viewportHeight = DisplayManager.getDefaultHeight() - (69 * 2);
 //        float contentHeight = 72 * (getGUIChildren().size());
@@ -50,9 +154,19 @@ public class SelectableVersionList extends GUIObject {
         ModelTexture backgroundTexture = new ModelTexture(Loader.singleton.loadTexture(PlayerRendererTest.class.getResource("/img/gui.png")));
         TexturedModel texuredBackgroundModel =  new TexturedModel(backgroundModel, backgroundTexture);
         background = new GUIObject("background", texuredBackgroundModel, new Vector3f(), new Vector3f(), new Vector3f(1, 1, 1));
+
+        emptyText = new GUIText("Browse to find a minecraft jar, or drag and drop jars onto the window!", 1.5f, TextMaster.minecraftFont, new Vector2f(200, (DisplayManager.getDefaultHeight() / 2) - 32 ), DisplayManager.getDefaultWidth() - 400, true, true);
+        emptyText.setMaxLines(0);
+        emptyText.setColour(0.5f, 0.5f, 0.5f);
     }
 
     public void addVersion(String name, String path, String info) {
+
+        if(emptyText != null) {
+            emptyText.remove();
+            emptyText = null;
+        }
+
         int buffer = (72) * getVersions().size();
         super.addChild(
                 new SelectableVersion(path, new Vector2f((DisplayManager.getDefaultWidth() / 2) - 220, 140 + buffer), name, path, info, this, new IOnClickListener() {
@@ -83,6 +197,10 @@ public class SelectableVersionList extends GUIObject {
             child.update();
         }
 
+        while(jarsToAdd.size() > 0) {
+            String[] jarToAdd = jarsToAdd.pop();
+            addVersion(jarToAdd[0], jarToAdd[1], jarToAdd[2]);
+        }
 
         float viewportHeight = Display.getHeight() - DisplayManager.scaledHeight(138) - (DisplayManager.getYBuffer() * 2);
         float contentHeight = DisplayManager.scaledHeight(72) * (float)this.getVersions().size();
@@ -386,5 +504,10 @@ public class SelectableVersionList extends GUIObject {
         for(SelectableVersion version : getVersions()) {
             version.cleanUp();
         }
+
+        if(emptyText != null)
+            emptyText.remove();
+
+        dropTarget.removeDropTargetListener(dropTargetAdapter);
     }
 }

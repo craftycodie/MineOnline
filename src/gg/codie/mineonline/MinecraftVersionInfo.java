@@ -1,5 +1,6 @@
 package gg.codie.mineonline;
 
+import gg.codie.utils.JSONUtils;
 import gg.codie.utils.MD5Checksum;
 import jdk.nashorn.api.scripting.URLReader;
 import org.json.JSONArray;
@@ -42,8 +43,9 @@ public class MinecraftVersionInfo {
         public final boolean hasHeartbeat;
         public final boolean enableFullscreenPatch;
         public final String info;
+        public final String[] clientMd5s;
 
-        private MinecraftVersion(String sha256, String name, String md5, String type, boolean baseURLHasNoPort, boolean enableScreenshotPatch, String clientName, boolean hasHeartbeat, boolean enableFullscreenPatch, String info) {
+        private MinecraftVersion(String sha256, String name, String md5, String type, boolean baseURLHasNoPort, boolean enableScreenshotPatch, String clientName, boolean hasHeartbeat, boolean enableFullscreenPatch, String info, String[] clientMd5s) {
             this.sha256 = sha256;
             this.name = name;
             this.md5 = md5;
@@ -54,6 +56,7 @@ public class MinecraftVersionInfo {
             this.hasHeartbeat = hasHeartbeat;
             this.enableFullscreenPatch = enableFullscreenPatch;
             this.info = info;
+            this.clientMd5s = clientMd5s;
         }
     }
 
@@ -85,11 +88,12 @@ public class MinecraftVersionInfo {
                         (object.has("clientName") ? object.getString("clientName") : null),
                         (object.has("hasHeartbeat") && object.getBoolean("hasHeartbeat")),
                         (object.has("enableFullscreenPatch") && object.getBoolean("enableFullscreenPatch")),
-                        (object.has("info") ? object.getString("info") : null)
+                        (object.has("info") ? object.getString("info") : null),
+                        (object.has("clientMd5s") ? JSONUtils.getStringArray(object.getJSONArray("clientMd5s")) : new String[0])
                 ));
             }
         } catch (IOException ex) {
-            System.err.println("Failed to load minecraftVersion information!");
+            System.err.println("Failed to load Minecraft Version information!");
             versions = new LinkedList<>();
         }
     }

@@ -1,6 +1,7 @@
 package gg.codie.mineonline.gui;
 
 import gg.codie.mineonline.MinecraftLauncher;
+import gg.codie.mineonline.MinecraftVersionInfo;
 import gg.codie.mineonline.Properties;
 import gg.codie.mineonline.Session;
 import gg.codie.mineonline.api.MinecraftAPI;
@@ -10,55 +11,100 @@ import gg.codie.mineonline.gui.rendering.*;
 import gg.codie.mineonline.gui.rendering.components.InputField;
 import gg.codie.mineonline.gui.rendering.components.LargeButton;
 import gg.codie.mineonline.gui.rendering.font.TextMaster;
-import gg.codie.mineonline.gui.rendering.models.RawModel;
-import gg.codie.mineonline.gui.rendering.models.TexturedModel;
 import gg.codie.mineonline.gui.rendering.shaders.GUIShader;
-import gg.codie.mineonline.gui.rendering.textures.ModelTexture;
-import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Vector2f;
-import org.newdawn.slick.Color;
+
+import java.io.File;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 public class JoinServerScreen implements IMenuScreen {
     InputField serverIPField;
-    LargeButton aboutButton;
-    LargeButton logoutButton;
+    LargeButton versionButton;
+    LargeButton connectButton;
     LargeButton doneButton;
+    LargeButton serverListButton;
     GUIText label;
 
+    static SelectVersionMenuScreen selectVersionMenuScreen = null;
 
-    public JoinServerScreen() {
-        serverIPField = new InputField("Server IP Input", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 200, (DisplayManager.getDefaultHeight() / 2) - 40), Properties.properties.has("lastServer") ? Properties.properties.getString("lastServer") : "", new IOnClickListener() {
+    public JoinServerScreen(String value) {
+        serverIPField = new InputField("Server IP Input", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 202, (DisplayManager.getDefaultHeight() / 2) - 42),  (value != null) ? value : Properties.properties.has("lastServer") ? Properties.properties.getString("lastServer") : "", new IOnClickListener() {
             @Override
             public void onClick() {
                 try {
                     Properties.properties.put("lastServer", serverIPField.getValue());
                     Properties.saveProperties();
                     String[] split = serverIPField.getValue().split(":");
-                    String mppass = MinecraftAPI.getMpPass(Session.session.getSessionToken(), split[0], split.length > 1 ? split[1] : "25565");
 
-                    //new MinecraftLauncher("D:\\Projects\\GitHub\\MineOnline\\jars\\b1.7.3-modded.jar", null, null, null).startMinecraft();
-                    new MinecraftLauncher("D:\\Projects\\GitHub\\MineOnline\\jars\\b1.7.3.jar", split[0], split.length > 1 ? split[1] : "25565", mppass).startMinecraft();
+                    InetAddress inetAddress = InetAddress.getByName(split[0]);
 
-                    //new MinecraftLauncher("D:\\Projects\\GitHub\\MineOnline\\jars\\c0.0.11a-launcher.jar", null, null, null).startMinecraft();
-                } catch (Exception ex) {}
+                    String mppass = MinecraftAPI.getMpPass(Session.session.getSessionToken(), inetAddress.getHostAddress(), split.length > 1 ? split[1] : "25565");
+
+                    new MinecraftLauncher(Properties.properties.getString("selectedJar"), split[0], split.length > 1 ? split[1] : "25565", mppass).startMinecraft();
+                }
+                catch (UnknownHostException ex) {
+                    ex.printStackTrace();
+                }
+                catch (Exception ex) {
+                    ex.printStackTrace();
+                }
             }
         });
 
-        aboutButton = new LargeButton("Version: b1.7.3", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 200, (DisplayManager.getDefaultHeight() / 2) + 8), null);
+        Properties.loadProperties();
+        String jarPath = Properties.properties.has("selectedJar") ? Properties.properties.getString("selectedJar") : null;
 
-        logoutButton = new LargeButton("Connect", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 200, DisplayManager.getDefaultHeight() - 66), new IOnClickListener() {
+        String jarName = jarPath != null ? new File(jarPath).getName() : null;
+        MinecraftVersionInfo.MinecraftVersion version = null;
+        if(jarPath != null) {
+            version = MinecraftVersionInfo.getVersion(jarPath);
+        }
+
+        versionButton = new LargeButton(jarPath != null ? (version != null ? "Version: " + version.name : jarName) : "Select Version", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 200, (DisplayManager.getDefaultHeight() / 2) + 8), new IOnClickListener() {
+            @Override
+            public void onClick() {
+                selectVersionMenuScreen = new SelectVersionMenuScreen(null, new IOnClickListener() {
+                    @Override
+                    public void onClick() {
+                        Properties.properties.put("selectedJar", selectVersionMenuScreen.getSelectedPath());
+                        Properties.saveProperties();
+                        PlayerRendererTest.setMenuScreen(new JoinServerScreen(serverIPField.getValue()));
+                    }
+                }, null);
+                PlayerRendererTest.setMenuScreen(selectVersionMenuScreen);
+            }
+        });
+
+        connectButton = new LargeButton("Connect", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 200, DisplayManager.getDefaultHeight() - 66), new IOnClickListener() {
             @Override
             public void onClick() {
                 try {
                     Properties.properties.put("lastServer", serverIPField.getValue());
                     Properties.saveProperties();
                     String[] split = serverIPField.getValue().split(":");
-                    String mppass = MinecraftAPI.getMpPass(Session.session.getSessionToken(), split[0], split.length > 1 ? split[1] : "25565");
 
-                    //new MinecraftLauncher("D:\\Projects\\GitHub\\MineOnline\\jars\\b1.7.3-modded.jar", null, null, null).startMinecraft();
-                    new MinecraftLauncher("D:\\Projects\\GitHub\\MineOnline\\jars\\b1.7.3.jar", split[0], split.length > 1 ? split[1] : "25565", mppass).startMinecraft();
 
-                    //new MinecraftLauncher("D:\\Projects\\GitHub\\MineOnline\\jars\\c0.0.11a-launcher.jar", null, null, null).startMinecraft();
+                    InetAddress inetAddress = InetAddress.getByName(split[0]);
+
+                    String mppass = MinecraftAPI.getMpPass(Session.session.getSessionToken(), inetAddress.getHostAddress(), split.length > 1 ? split[1] : "25565");
+
+                    new MinecraftLauncher(Properties.properties.getString("selectedJar"), split[0], split.length > 1 ? split[1] : "25565", mppass).startMinecraft();
+                }
+                catch (UnknownHostException ex) {
+                    ex.printStackTrace();
+                }
+                catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+
+        serverListButton = new LargeButton("Server List", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 200, (DisplayManager.getDefaultHeight() / 2) + 56), new IOnClickListener() {
+            @Override
+            public void onClick() {
+                try {
+                    PlayerRendererTest.setMenuScreen(new ServerListMenuScreen());
                 } catch (Exception ex) {}
             }
         });
@@ -75,9 +121,10 @@ public class JoinServerScreen implements IMenuScreen {
 
     public void update() {
         serverIPField.update();
-        aboutButton.update();
-        logoutButton.update();
+        versionButton.update();
+        connectButton.update();
         doneButton.update();
+        serverListButton.update();
     }
 
     public void render(Renderer renderer) {
@@ -86,9 +133,10 @@ public class JoinServerScreen implements IMenuScreen {
         guiShader.loadViewMatrix(Camera.singleton);
         renderer.prepareGUI();
         serverIPField.render(renderer, guiShader);
-        aboutButton.render(renderer, guiShader);
-        logoutButton.render(renderer, guiShader);
+        versionButton.render(renderer, guiShader);
+        connectButton.render(renderer, guiShader);
         doneButton.render(renderer, guiShader);
+        serverListButton.render(renderer, guiShader);
         guiShader.stop();
     }
 
@@ -98,17 +146,19 @@ public class JoinServerScreen implements IMenuScreen {
 
     public void resize() {
         serverIPField.resize();
-        logoutButton.resize();
-        aboutButton.resize();
+        connectButton.resize();
+        versionButton.resize();
         doneButton.resize();
+        serverListButton.resize();
     }
 
     @Override
     public void cleanUp() {
         label.remove();
         serverIPField.cleanUp();
-        logoutButton.cleanUp();
-        aboutButton.cleanUp();
+        connectButton.cleanUp();
+        versionButton.cleanUp();
         doneButton.cleanUp();
+        serverListButton.cleanUp();
     }
 }

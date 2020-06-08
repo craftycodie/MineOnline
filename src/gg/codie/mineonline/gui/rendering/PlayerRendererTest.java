@@ -4,6 +4,7 @@ import gg.codie.mineonline.LibraryManager;
 import gg.codie.mineonline.MinecraftLauncher;
 import gg.codie.mineonline.Session;
 import gg.codie.mineonline.gui.IMenuScreen;
+import gg.codie.mineonline.gui.LoginMenuScreen;
 import gg.codie.mineonline.gui.MainMenuScreen;
 import gg.codie.mineonline.gui.font.FontType;
 import gg.codie.mineonline.gui.font.GUIText;
@@ -61,6 +62,8 @@ public class PlayerRendererTest {
         }
     };
 
+    private static GameObject playerScale;
+
     public static void main(String[] args) throws Exception {
         formopen = true;
 
@@ -82,14 +85,14 @@ public class PlayerRendererTest {
 
         GameObject playerPivot = new GameObject("player_origin", new Vector3f(), new Vector3f(0, 30, 0), new Vector3f(1, 1, 1));
         PlayerGameObject playerGameObject = new PlayerGameObject("player", loader, shader, new Vector3f(0, -21, 0), new Vector3f(), new Vector3f(1, 1, 1));
-        new Session("codie", "5eda032fd4c7ad8928b3ba11");
+        new Session("Player", "5eddffd6d4c7ad8928b3d218");
         playerPivot.addChild(playerGameObject);
 
-        GameObject playerScale = new GameObject("player scale", new Vector3f(-20, 0, -65), new Vector3f(), new Vector3f(1, 1, 1));
+        playerScale = new GameObject("player scale", new Vector3f(-20, 0, -65), new Vector3f(), new Vector3f(1, 1, 1));
         playerScale.addChild(playerPivot);
 
         playerGameObject.setPlayerAnimation(new IdlePlayerAnimation());
-        Camera camera = new DebugCamera();
+        Camera camera = new Camera();
 
         //String[] panoramaNames = new String[] {"midnight", "sunset"};
         String[] panoramaNames = new String[] {"sunset"};
@@ -106,11 +109,11 @@ public class PlayerRendererTest {
         TexturedModel texturedModel =  new TexturedModel(model, modelTexture);
         GameObject backgroundImage = new GUIObject("Background", texturedModel, new Vector3f(0, 0, 0), new Vector3f(), new Vector3f(75f, 75f, 75f));
 
-        setMenuScreen(new MainMenuScreen());
+        setMenuScreen(new LoginMenuScreen());
 
         FontType font = new FontType(loader.loadTexture(PlayerRendererTest.class.getResource("/font/font.png")), PlayerRendererTest.class.getResourceAsStream("/font/font.fnt"));
         //FontType font = new FontType(loader.loadTexture(PlayerRendererTest.class.getResource("/font/testfont.png")), PlayerRendererTest.class.getResourceAsStream("/font/testfont.fnt"));
-        GUIText text = new GUIText("MineOnline Debug", 1.5f, font, new Vector2f(0, 0), DisplayManager.getDefaultWidth(), false, false);
+        GUIText text = new GUIText("MineOnline Pre-Release", 1.5f, font, new Vector2f(0, 0), DisplayManager.getDefaultWidth(), false, false);
         text.setColour(1, 1, 0);
 
         //playerScale.scale(new Vector3f(1, 0.5f, 1));

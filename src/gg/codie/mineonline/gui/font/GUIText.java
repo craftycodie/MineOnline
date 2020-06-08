@@ -26,6 +26,18 @@ public class GUIText {
     private float lineMaxSize;
     private int numberOfLines;
 
+    public int getMaxLines() {
+        return maxLines;
+    }
+
+    public void setMaxLines(int maxLines) {
+        this.maxLines = maxLines;
+        this.remove();
+        TextMaster.loadText(this);
+    }
+
+    private int maxLines = 1;
+
     private FontType font;
 
     private boolean centerText;
