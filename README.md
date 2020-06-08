@@ -1,4 +1,5 @@
-# MineOnline
+![logo](mineonlinelogo.png)
+
 Launch old versions of minecraft just as you remembered them, only without a browser.
 
 ## New: Test MineOnline
@@ -33,13 +34,13 @@ These are features MineOnline will bring to pre-release Minecraft.
 
 ## Launching Servers
 If you'd like to launch a server to authenticate using a different API, you can do so with a simple tweak to the typical launch command.
-Add `-cp <MineOnline.jar path> gg.codie.mineonline.Server` after "java". Eg.
+Add `-cp <MineOnline.jar path> gg.codie.mineonline.Server <server jar path>` after "java". Eg.
 
 ```java -Xmx1024M -Xms1024M -jar minecraft_server.jar nogui```
 
 becomes
 
-```java -cp MineOnline.jar gg.codie.mineonline.Server -Xmx1024M -Xms1024M -jar minecraft_server.jar nogui```
+```java -cp MineOnline.jar gg.codie.mineonline.Server minecraft_server.jar -Xmx1024M -Xms1024M -jar minecraft_server.jar nogui```
 
 ## Credit
 
