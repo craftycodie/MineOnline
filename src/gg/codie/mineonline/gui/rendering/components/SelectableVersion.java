@@ -1,5 +1,6 @@
 package gg.codie.mineonline.gui.rendering.components;
 
+import gg.codie.mineonline.gui.events.IOnClickListener;
 import gg.codie.mineonline.gui.font.GUIText;
 import gg.codie.mineonline.gui.rendering.*;
 import gg.codie.mineonline.gui.rendering.font.TextMaster;
@@ -28,8 +29,9 @@ public class SelectableVersion extends GUIObject {
     GUIText infoText;
 
     private SelectableVersionList parent;
+    private IOnClickListener doubleClickListener;
 
-    public SelectableVersion(String name, Vector2f position, String versionName, String path, String info, SelectableVersionList parent) {
+    public SelectableVersion(String name, Vector2f position, String versionName, String path, String info, SelectableVersionList parent, IOnClickListener doubleClickListener) {
         super(name,
                 new TexturedModel(Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth(position.x) + DisplayManager.getXBuffer(), DisplayManager.scaledHeight(DisplayManager.getDefaultHeight() - position.y) + DisplayManager.getYBuffer()), new Vector2f(DisplayManager.scaledWidth(440), DisplayManager.scaledHeight(72)), TextureHelper.getPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(0, 130), new Vector2f(220, 36))), new ModelTexture(Loader.singleton.loadTexture(PlayerRendererTest.class.getResource("/img/gui.png")))),
                 new Vector3f(0, 0, 0), new Vector3f(), new Vector3f(1, 1, 1)
@@ -41,6 +43,7 @@ public class SelectableVersion extends GUIObject {
         this.path = path;
         this.parent = parent;
         this.info = info;
+        this.doubleClickListener = doubleClickListener;
 
         nameText = new GUIText(this.versionName, 1.5f, TextMaster.minecraftFont, new Vector2f(currentPosition.x + 8, currentPosition.y - 70), 440, false, true);
         nameText.setYBounds(new Vector2f(69 , 69));
@@ -79,6 +82,7 @@ public class SelectableVersion extends GUIObject {
 
     boolean focused = false;
     boolean mouseWasDown = false;
+    long lastClickTime;
     boolean mouseWasOver = false;
     public void update() {
         int x = Mouse.getX();
@@ -88,11 +92,18 @@ public class SelectableVersion extends GUIObject {
             mouseWasDown = false;
         }
 
+        float viewportHeight = Display.getHeight() - DisplayManager.scaledHeight(138) - (DisplayManager.getYBuffer() * 2);
+        float viewportStartY = DisplayManager.getYBuffer() + DisplayManager.scaledHeight(69) + viewportHeight;
+        
         boolean mouseIsOver =
                 x - (DisplayManager.scaledWidth(currentPosition.x) + DisplayManager.getXBuffer()) <= DisplayManager.scaledWidth(440)
                         && x - (DisplayManager.scaledWidth(currentPosition.x) + DisplayManager.getXBuffer()) >= 0
                         && y - DisplayManager.scaledHeight(DisplayManager.getDefaultHeight() - currentPosition.y) - DisplayManager.getYBuffer() <= DisplayManager.scaledHeight(72)
                         && y - DisplayManager.scaledHeight(DisplayManager.getDefaultHeight() - currentPosition.y) - DisplayManager.getYBuffer() >= 0;
+
+        if(y > viewportStartY || y < viewportStartY - viewportHeight) {
+            mouseIsOver = false;
+        }
 
         if (mouseIsOver && !mouseWasOver) {
             mouseWasOver = true;
@@ -108,6 +119,12 @@ public class SelectableVersion extends GUIObject {
 
         if(Mouse.isButtonDown(0) && !mouseWasDown) {
             mouseWasDown = true;
+
+            if(System.currentTimeMillis() - lastClickTime < 350 && doubleClickListener != null) {
+                doubleClickListener.onClick();
+            }
+
+            lastClickTime = System.currentTimeMillis();
         }
     }
 

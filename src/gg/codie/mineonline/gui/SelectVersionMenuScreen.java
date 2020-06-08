@@ -91,7 +91,14 @@ public class SelectVersionMenuScreen implements IMenuScreen {
             }
         });
 
-        selectableVersionList = new SelectableVersionList("version list", new Vector3f(), new Vector3f(), new Vector3f(1, 1, 1));
+        selectableVersionList = new SelectableVersionList("version list", new Vector3f(), new Vector3f(), new Vector3f(1, 1, 1), new IOnClickListener() {
+            @Override
+            public void onClick() {
+                Properties.properties.put("selectedJar", selectableVersionList.getSelected());
+                Properties.saveProperties();
+                PlayerRendererTest.setMenuScreen(new MainMenuScreen());
+            }
+        });
 
         Properties.loadProperties();
         String[] minecraftJars = Properties.properties.has("minecraftJars") ? JSONUtils.getStringArray(Properties.properties.getJSONArray("minecraftJars")) : new String[0];

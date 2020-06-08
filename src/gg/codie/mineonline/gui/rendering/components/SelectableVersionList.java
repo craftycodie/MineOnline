@@ -1,5 +1,6 @@
 package gg.codie.mineonline.gui.rendering.components;
 
+import gg.codie.mineonline.gui.events.IOnClickListener;
 import gg.codie.mineonline.gui.font.GUIText;
 import gg.codie.mineonline.gui.rendering.*;
 import gg.codie.mineonline.gui.rendering.font.TextMaster;
@@ -21,12 +22,15 @@ public class SelectableVersionList extends GUIObject {
     GUIObject scrollBar;
     GUIObject background;
 
-    public SelectableVersionList(String name, Vector3f localPosition, Vector3f rotation, Vector3f scale) {
+    IOnClickListener doubleClickListener;
+
+    public SelectableVersionList(String name, Vector3f localPosition, Vector3f rotation, Vector3f scale, IOnClickListener doubleClickListener) {
         super(name, localPosition, rotation, scale);
 
         float viewportHeight = DisplayManager.getDefaultHeight() - (69 * 2);
 //        float contentHeight = 72 * (getGUIChildren().size());
 
+        this.doubleClickListener = doubleClickListener;
 
         RawModel scrollBackgroundModel = Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth((DisplayManager.getDefaultWidth() / 2) + 240), DisplayManager.scaledHeight(69) + DisplayManager.getYBuffer()), new Vector2f(DisplayManager.scaledWidth(10), viewportHeight), TextureHelper.getPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(0, 129), new Vector2f(1, 1)));
         ModelTexture scrollBackgroundTexture = new ModelTexture(Loader.singleton.loadTexture(PlayerRendererTest.class.getResource("/img/gui.png")));
@@ -51,7 +55,13 @@ public class SelectableVersionList extends GUIObject {
     public void addVersion(String name, String path, String info) {
         int buffer = (72) * getVersions().size();
         super.addChild(
-                new SelectableVersion(path, new Vector2f((DisplayManager.getDefaultWidth() / 2) - 220, 140 + buffer), name, path, info,this)
+                new SelectableVersion(path, new Vector2f((DisplayManager.getDefaultWidth() / 2) - 220, 140 + buffer), name, path, info, this, new IOnClickListener() {
+                    @Override
+                    public void onClick() {
+                        if (doubleClickListener != null)
+                            doubleClickListener.onClick();
+                    }
+                })
         );
 
         resize();
@@ -64,9 +74,6 @@ public class SelectableVersionList extends GUIObject {
         }
         return guiObjects;
     }
-
-    GUIText debug1;
-    GUIText debug2;
 
     // Where 0 is scrollbar at top, 1 is at bottom.
     float scrollbarPosition = 0;
@@ -93,6 +100,7 @@ public class SelectableVersionList extends GUIObject {
 
         int x = Mouse.getX();
         int y = Mouse.getY();
+
 
         boolean mouseIsOver =
                 x - (Display.getWidth() / 2) - DisplayManager.scaledWidth(240) <= DisplayManager.scaledWidth(10)
@@ -355,6 +363,7 @@ public class SelectableVersionList extends GUIObject {
     }
 
     public void selectVersion(String path) {
+        System.out.println(path);
         for(SelectableVersion child : getVersions()) {
             if (child.path.equals(path)) {
                 child.focused = true;
