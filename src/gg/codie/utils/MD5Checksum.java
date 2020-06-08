@@ -37,14 +37,7 @@ public class MD5Checksum {
 
     public static void main(String args[]) {
         try {
-            System.out.println(getMD5Checksum("apache-tomcat-5.5.17.exe"));
-            // output :
-            //  0bb2827c5eacf570b6064e24e0e6653b
-            // ref :
-            //  http://www.apache.org/dist/
-            //          tomcat/tomcat-5/v5.5.17/bin
-            //              /apache-tomcat-5.5.17.exe.MD5
-            //  0bb2827c5eacf570b6064e24e0e6653b *apache-tomcat-5.5.17.exe
+            System.out.println(getMD5Checksum(args[0]));
         }
         catch (Exception e) {
             e.printStackTrace();

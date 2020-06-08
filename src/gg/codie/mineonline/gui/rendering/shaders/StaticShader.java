@@ -19,9 +19,13 @@ public class StaticShader extends ShaderProgram {
         super(VERTEX_FILE, FRAGMENT_FILE);
     }
 
+    protected StaticShader(URL vertexFile, URL fragmentFile) {
+        super(vertexFile, fragmentFile);
+    }
+
     protected void bindAttributes() {
         super.bindAttribute(0, "position");
-        super.bindAttribute(1, "texutureCoordinates");
+        super.bindAttribute(1, "textureCoordinates");
     }
 
     @Override

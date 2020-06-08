@@ -3,10 +3,10 @@ package gg.codie.mineonline.gui.rendering;
 import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.gui.rendering.models.RawModel;
 import gg.codie.mineonline.gui.rendering.utils.MathUtils;
-import jdk.nashorn.api.scripting.URLReader;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.*;
+import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
@@ -15,8 +15,6 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 
 import java.net.URL;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
@@ -30,8 +28,19 @@ public class Loader {
 
     public final int MISSING_TEXTURE_ID;
 
+    public static Loader singleton;
+
     public Loader() {
         MISSING_TEXTURE_ID = loadTexture(LauncherFiles.MISSING_TEXTURE);
+        singleton = this;
+    }
+
+    public int loadToVAO(float[] positions, float[] textureCoords) {
+        int vaoID = createVAO();
+        storeDataInAttributeList(0, 2, positions);
+        storeDataInAttributeList(1, 2, textureCoords);
+        unbindVAO();
+        return vaoID;
     }
 
     public RawModel loadToVAO(float[] positions, float[] textureCoordinates, int[] indices) {
@@ -42,6 +51,36 @@ public class Loader {
         unbindVAO();
         return new RawModel(vaoID, indices.length);
     }
+
+    public RawModel loadGUIToVAO(Vector2f begin, Vector2f size, float[] textureCoordinates) {
+        begin = new Vector2f((begin.x / (Display.getWidth() / 2)) -1, (begin.y / (Display.getHeight() / 2)) -1);
+        size = new Vector2f((size.x / (Display.getWidth() / 2)), (size.y / (Display.getHeight() / 2)));
+
+        Vector2f end = new Vector2f(begin.x + size.x, begin.y + size.y);
+
+        int vaoID = createVAO();
+        bindIndicesBuffer(new int[] {
+                0,1,2,
+                2,3,0,
+        });
+        storeDataInAttributeList(0, 3, MathUtils.makePlaneVertices(begin, end));
+        storeDataInAttributeList(1, 2, textureCoordinates);
+        unbindVAO();
+        return new RawModel(vaoID, 6);
+    }
+
+    public RawModel loadPlaneToVAO(Vector3f begin, Vector3f end, float[] textureCoordinates) {
+        int vaoID = createVAO();
+        bindIndicesBuffer(new int[] {
+                0,1,2,
+                2,3,0,
+        });
+        storeDataInAttributeList(0, 3, MathUtils.makePlaneVertices(new Vector2f(begin.x, begin.y), new Vector2f(end.x, end.y)));
+        storeDataInAttributeList(1, 2, textureCoordinates);
+        unbindVAO();
+        return new RawModel(vaoID, 36);
+    }
+
 
     public RawModel loadBoxToVAO(Vector3f begin, Vector3f end, float[] textureCoordinates) {
         int vaoID = createVAO();

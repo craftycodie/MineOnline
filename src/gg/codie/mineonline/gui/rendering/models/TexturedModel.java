@@ -4,6 +4,10 @@ import gg.codie.mineonline.gui.rendering.textures.ModelTexture;
 
 public class TexturedModel {
 
+    public void setRawModel(RawModel rawModel) {
+        this.rawModel = rawModel;
+    }
+
     private RawModel rawModel;
     private ModelTexture texture;
 

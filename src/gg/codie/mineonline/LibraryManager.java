@@ -1,32 +1,17 @@
 package gg.codie.mineonline;
 
-import gg.codie.mineonline.gui.FormManager;
-
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.nio.file.*;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
-import java.util.Enumeration;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 
 public class LibraryManager {
-
-    public static void main(String[] args) throws Exception {
-        extractLibraries();
-        updateClasspath();
-        updateNativesPath();
-
-        FormManager.main(args);
-    }
 
     public static void extractLibraries() throws IOException, URISyntaxException {
         File jarFile = new File(LibraryManager.class.getProtectionDomain().getCodeSource().getLocation().toURI());
@@ -48,7 +33,7 @@ public class LibraryManager {
                 continue;
             }
 
-            if (file.isDirectory()) { // if its unka directory, create it
+            if (file.isDirectory()) { // if its a directory, create it
                 f.mkdir();
                 continue;
             }
@@ -76,9 +61,6 @@ public class LibraryManager {
                 }
             });
 
-
-            method.setAccessible(true);
-
             for(File file : libraries) {
                 method.invoke(ClassLoader.getSystemClassLoader(), new Object[]{file.toURI().toURL()});
             }
@@ -87,6 +69,18 @@ public class LibraryManager {
             t.printStackTrace();
             throw new IOException("Error, could not add URL to system classloader");
         }//end try catch
+    }
+
+    public static void addJarToClasspath(URL url) {
+        try {
+            Method method = URLClassLoader.class.getDeclaredMethod("addURL", new Class[]{URL.class});
+            method.setAccessible(true);
+            method.invoke(ClassLoader.getSystemClassLoader(), new Object[]{url});
+        } catch (Exception e) {
+            System.err.println("Java Error");
+            e.printStackTrace();
+            System.exit(1);
+        }
     }
 
     public static void updateNativesPath() throws PrivilegedActionException {

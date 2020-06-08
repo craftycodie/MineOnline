@@ -10,12 +10,20 @@ import java.util.LinkedList;
 
 public class GameObject {
 
-    public final String name;
-    private TexturedModel model;
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    private String name;
+    public TexturedModel model;
 
     protected Matrix4f localMatrix;
 
-    private GameObject parent;
+    protected GameObject parent;
 
     public LinkedList<GameObject> getChildren() {
         return children;
@@ -109,9 +117,18 @@ public class GameObject {
 ////        return MathUtils.getPosition(matrix);
 //    }
 
-//    public void setLocalPosition(Vector3f localPosition) {
-//        this.localPosition = localPosition;
-//    }
+    public void translate(Vector3f localPosition) {
+        localMatrix = localMatrix.translate(localPosition);
+    }
+
+    // Buggy.
+    public void setLocalPosition(Vector3f localPosition) {
+        localMatrix = MathUtils.createTransformationMatrix(localPosition, MathUtils.getRotation(localMatrix), MathUtils.getScale(localMatrix));
+    }
+
+    public Vector3f getLocalPosition() {
+        return MathUtils.getPosition(localMatrix);
+    }
 //
 //    public Matrix4f GetModelMatrix() {
 //        Matrix4f matrix4f = new Matrix4f();
@@ -286,9 +303,12 @@ public class GameObject {
 //        return scale;
 //    }
 //
-//    public void setScale(float scale) {
-//        this.scale = scale;
-//    }
+    public void setScale(Vector3f scale) {
+        Vector3f currentScale = MathUtils.getScale(localMatrix);
+        localMatrix.scale(new Vector3f(1 / currentScale.x, 1 / currentScale.y, 1 / currentScale.z));
+        localMatrix.scale(scale);
+        //this.localMatrix = MathUtils.createTransformationMatrix(MathUtils.getPosition(localMatrix), getLocalRotation(), scale);
+    }
 
 
 }

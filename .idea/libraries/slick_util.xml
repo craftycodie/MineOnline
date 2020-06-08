@@ -3,9 +3,7 @@
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/res/lib/slick-util.jar!/" />
     </CLASSES>
-    <JAVADOC>
-      <root url="http://slick.ninjacave.com/javadoc-util/" />
-    </JAVADOC>
+    <JAVADOC />
     <SOURCES />
   </library>
 </component>

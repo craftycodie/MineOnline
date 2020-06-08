@@ -8,6 +8,11 @@ import java.net.HttpURLConnection;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -106,7 +111,7 @@ public class ProxyThread implements Runnable {
                     if(urlString.contains("/resources/")) {
                         oggFilePath = urlString.substring(oggFilePath.indexOf("/resources/")).replace("/resources/", "");
                     } else if (urlString.contains("/MinecraftResources")) {
-                        oggFilePath = urlString.substring(oggFilePath.indexOf("/resources/")).replace("/resources/", "");
+                        oggFilePath = urlString.substring(oggFilePath.indexOf("/MinecraftResources/")).replace("/MinecraftResources/", "");
                     }
 
                     oggFilePath.replace("/", File.separator);
@@ -117,23 +122,9 @@ public class ProxyThread implements Runnable {
                         System.out.println("Responding already downloaded resource.");
 
                         String responseHeaders =
-                                "HTTP/1.0 200 OKServer:Werkzeug/1.0.1 Python/3.7.0\r\n" +
-                                        "Content-Length:" + oggFile.length() + "\r\n" +
-                                        "Content-Type:audio/ogg\r\n\r\n";
+                                "HTTP/1.0 404 Not FoundServer:Werkzeug/1.0.1 Python/3.7.0\r\n\r\n";
+
                         clientSocket.getOutputStream().write(responseHeaders.getBytes());
-
-                        buffer = new byte[bufferSize];
-                        InputStream in = new FileInputStream(oggFile);
-                        while ((bytes_read = in.read(buffer, 0, bufferSize)) != -1) {
-                            for (int i = 0; i < bytes_read; i++) {
-                                clientSocket.getOutputStream().write(buffer[i]);
-                            }
-                        }
-
-                        clientSocket.getOutputStream().flush();
-                        clientSocket.getOutputStream().close();
-
-                        continue;
                     }
                 }
 
@@ -206,6 +197,8 @@ public class ProxyThread implements Runnable {
                 clientSocket.getOutputStream().flush();
                 clientSocket.getOutputStream().close();
 
+            } catch (FileNotFoundException ex) {
+                System.err.println("Got a 404 for: " + ex.getMessage());
             } catch (IOException ex) {
                 System.out.println("Something went very wrong.");
                 ex.printStackTrace();

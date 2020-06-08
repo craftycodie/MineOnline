@@ -1,0 +1,24 @@
+#version 400 core
+
+in vec2 pass_textureCoordinates;
+
+out vec4 out_color;
+
+uniform sampler2D textureSampler;
+uniform bool allowTransparency;
+uniform int yMin;
+uniform int yMax;
+
+void main(void) {
+
+    if (texture(textureSampler, pass_textureCoordinates).w == 0) {
+        discard;
+    }
+
+    if (gl_FragCoord.y < yMin || gl_FragCoord.y > yMax) {
+        discard;
+    }
+
+    out_color = texture(textureSampler, pass_textureCoordinates);
+
+}
