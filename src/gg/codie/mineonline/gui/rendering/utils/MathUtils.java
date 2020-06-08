@@ -3,6 +3,7 @@ package gg.codie.mineonline.gui.rendering.utils;
 import gg.codie.mineonline.gui.rendering.Camera;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Quaternion;
+import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
 public class MathUtils {
@@ -150,6 +151,15 @@ public class MathUtils {
         return viewMatrix;
     }
 
+    public static float[] makePlaneVertices(Vector2f begin, Vector2f end) {
+        return new float[] {
+                begin.x, begin.y, 0,   // v1
+                begin.x, end.y, 0,  // v2
+                end.x, end.y, 0,   // v3
+                end.x, begin.y, 0,    // v4
+        };
+    }
+
     public static float[] makeBoxVertices(Vector3f begin, Vector3f end) {
         return new float[]{
                 begin.x, end.y, begin.z,   // v1
@@ -202,11 +212,15 @@ public class MathUtils {
             return new Vector3f(x, y, z);
         }
 
+        // This should work until things get complicated (eg negative scale) which shouldn't happen for thisd
         public static Vector3f getScale(Matrix4f matrix4f) {
             Vector3f dest = new Vector3f();
-            dest.x = (float)Math.sqrt(matrix4f.m00 * matrix4f.m00 + matrix4f.m01 * matrix4f.m01 + matrix4f.m02 * matrix4f.m02);
-            dest.y = (float)Math.sqrt(matrix4f.m10 * matrix4f.m10 + matrix4f.m11 * matrix4f.m11 + matrix4f.m12 * matrix4f.m12);
-            dest.z = (float)Math.sqrt(matrix4f.m20 * matrix4f.m20 + matrix4f.m21 * matrix4f.m21 + matrix4f.m22 * matrix4f.m22);
+            dest.x = (float)Math.sqrt(Math.pow(matrix4f.m00, 2) + Math.pow(matrix4f.m01, 2) + Math.pow(matrix4f.m02, 2));
+            dest.y = (float)Math.sqrt(Math.pow(matrix4f.m10, 2) + Math.pow(matrix4f.m11, 2) + Math.pow(matrix4f.m12, 2));
+            dest.z = (float)Math.sqrt(Math.pow(matrix4f.m20, 2) + Math.pow(matrix4f.m21, 2) + Math.pow(matrix4f.m22, 2));
+//            float sx = length(new Vector3f(matrix4f.m11, matrix4f.m12, matrix4f.m13));
+//            float sy = length(new Vector3f(matrix4f.m21, matrix4f.m22, matrix4f.m23));
+//            float sz = length(new Vector3f(matrix4f.m31, matrix4f.m32, matrix4f.m33));
             return dest;
         }
 

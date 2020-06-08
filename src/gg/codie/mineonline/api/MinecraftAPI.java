@@ -1,6 +1,8 @@
 package gg.codie.mineonline.api;
 
+import gg.codie.mineonline.MineOnline;
 import gg.codie.mineonline.Properties;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.*;
@@ -11,6 +13,7 @@ import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.LinkedList;
 import java.util.Locale;
 
 public class MinecraftAPI {
@@ -253,6 +256,76 @@ public class MinecraftAPI {
                 connection.disconnect();
         }
     }
+
+    public static boolean listServer(String ip, String port, int users, int maxUsers, String name, boolean onlineMode, String md5, boolean isPrivate) {
+        HttpURLConnection connection = null;
+
+        try {
+            String parameters = "ip=" + URLEncoder.encode(ip, "UTF-8")
+                    + "&port=" + URLEncoder.encode(port, "UTF-8")
+                    + (users > -1 ? "&users=" + URLEncoder.encode("" + users, "UTF-8") : "")
+                    + "&max=" + URLEncoder.encode("" + maxUsers, "UTF-8")
+                    + "&name=" + URLEncoder.encode(name, "UTF-8")
+                    + "&onlinemode=" + URLEncoder.encode(Boolean.toString(onlineMode), "UTF-8")
+                    + "&md5=" + URLEncoder.encode(md5, "UTF-8")
+                    + "&public=" + URLEncoder.encode(Boolean.toString(!isPrivate), "UTF-8");
+
+            URL url = new URL("http://" + Properties.properties.getString("apiDomainName") + "/mineonline/listserver.jsp?" + parameters);
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setDoInput(true);
+            connection.setDoOutput(false);
+            connection.setRequestMethod("POST");
+            connection.connect();
+
+            InputStream is = connection.getInputStream();
+            BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+
+            String res = rd.readLine();
+
+            rd.close();
+
+            return res.equals("ok");
+        } catch (Exception e) {
+
+            e.printStackTrace();
+            return false;
+        } finally {
+
+            if (connection != null)
+                connection.disconnect();
+        }
+    }
+
+    public static LinkedList<MineOnlineServer> listServers(String username, String sessionId) throws IOException, ParseException {
+        HttpURLConnection connection = null;
+
+        String parameters = "sessionId=" + URLEncoder.encode(sessionId, "UTF-8") + "&user=" + URLEncoder.encode(username, "UTF-8");
+        URL url = new URL("http://" + Properties.properties.getString("apiDomainName") + "/mineonline/listservers.jsp?" + parameters);
+        connection = (HttpURLConnection) url.openConnection();
+        connection.setDoInput(true);
+        connection.setDoOutput(false);
+        connection.connect();
+
+        InputStream is = connection.getInputStream();
+        BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+
+        StringBuilder response = new StringBuilder();
+        String line;
+        while ((line = rd.readLine()) != null) {
+            response.append(line);
+            response.append('\r');
+        }
+        rd.close();
+
+        JSONArray jsonArray = new JSONArray(response.toString());
+
+        if (connection != null)
+            connection.disconnect();
+
+        return MineOnlineServer.getServers(jsonArray);
+    }
+
+
 
     public static MineOnlineAccount account(String username, String sessionId) throws IOException, ParseException {
         HttpURLConnection connection = null;

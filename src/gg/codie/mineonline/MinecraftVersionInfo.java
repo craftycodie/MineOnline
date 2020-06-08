@@ -1,19 +1,23 @@
 package gg.codie.mineonline;
 
+import gg.codie.utils.JSONUtils;
+import gg.codie.utils.MD5Checksum;
 import jdk.nashorn.api.scripting.URLReader;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.lwjgl.Sys;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 import java.util.stream.Collectors;
 
 public class MinecraftVersionInfo {
-    private static JSONObject versionsJson;
+    private static JSONArray versionsJson;
     private static LinkedList<MinecraftVersion> versions = new LinkedList();
 
     static {
@@ -32,15 +36,27 @@ public class MinecraftVersionInfo {
         public final String sha256;
         public final String name;
         public final String md5;
+        public final String type;
         public final boolean baseURLHasNoPort;
-        public final boolean doesntHaveScreenshotting;
+        public final boolean enableScreenshotPatch;
+        public final String clientName;
+        public final boolean hasHeartbeat;
+        public final boolean enableFullscreenPatch;
+        public final String info;
+        public final String[] clientMd5s;
 
-        private MinecraftVersion(String sha256, String name, String md5, boolean baseURLHasNoPort, boolean doesntHaveScreenshotting) {
+        private MinecraftVersion(String sha256, String name, String md5, String type, boolean baseURLHasNoPort, boolean enableScreenshotPatch, String clientName, boolean hasHeartbeat, boolean enableFullscreenPatch, String info, String[] clientMd5s) {
             this.sha256 = sha256;
             this.name = name;
             this.md5 = md5;
+            this.type = type;
             this.baseURLHasNoPort = baseURLHasNoPort;
-            this.doesntHaveScreenshotting = doesntHaveScreenshotting;
+            this.enableScreenshotPatch = enableScreenshotPatch;
+            this.clientName = clientName;
+            this.hasHeartbeat = hasHeartbeat;
+            this.enableFullscreenPatch = enableFullscreenPatch;
+            this.info = info;
+            this.clientMd5s = clientMd5s;
         }
     }
 
@@ -56,24 +72,101 @@ public class MinecraftVersionInfo {
                 }
             }
 
-            versionsJson = new JSONObject(stringBuffer.toString());
+            versionsJson = new JSONArray(stringBuffer.toString());
 
-            Iterator keyIterator = versionsJson.keys();
+            Iterator versionIterator = versionsJson.iterator();
 
-            while (keyIterator.hasNext()) {
-                String versionSha256 = (String) keyIterator.next();
-                JSONObject object = versionsJson.getJSONObject(versionSha256);
+            while (versionIterator.hasNext()) {
+                JSONObject object = (JSONObject)versionIterator.next();
                 versions.add(new MinecraftVersion(
-                        versionSha256,
+                        (object.has("sha256") ? object.getString("sha256") : null),
                         object.getString("name"),
                         object.getString("md5"),
+                        object.getString("type"),
                         (object.has("baseURLHasNoPort") && object.getBoolean("baseURLHasNoPort")),
-                        (object.has("doesntHaveScreenshotting") && object.getBoolean("doesntHaveScreenshotting"))
+                        (object.has("enableScreenshotPatch") && object.getBoolean("enableScreenshotPatch")),
+                        (object.has("clientName") ? object.getString("clientName") : null),
+                        (object.has("hasHeartbeat") && object.getBoolean("hasHeartbeat")),
+                        (object.has("enableFullscreenPatch") && object.getBoolean("enableFullscreenPatch")),
+                        (object.has("info") ? object.getString("info") : null),
+                        (object.has("clientMd5s") ? JSONUtils.getStringArray(object.getJSONArray("clientMd5s")) : new String[0])
                 ));
             }
         } catch (IOException ex) {
-            System.err.println("Failed to load version information!");
+            System.err.println("Failed to load Minecraft Version information!");
             versions = new LinkedList<>();
+        }
+    }
+
+    public static String getAppletClass(String path) throws IOException {
+        JarFile jarFile = new JarFile(path);
+        Enumeration allEntries = jarFile.entries();
+        while (allEntries.hasMoreElements()) {
+            JarEntry entry = (JarEntry) allEntries.nextElement();
+            String classCanonicalName = entry.getName();
+
+            if(!classCanonicalName.contains(".class"))
+                continue;
+
+            classCanonicalName = classCanonicalName.replace("/", ".");
+            classCanonicalName = classCanonicalName.replace(".class", "");
+
+            String className = classCanonicalName;
+            if(classCanonicalName.lastIndexOf(".") > -1) {
+                className = classCanonicalName.substring(classCanonicalName.lastIndexOf(".") + 1);
+            }
+
+            if(className.equals("MinecraftApplet")) {
+                return classCanonicalName;
+            }
+        }
+        return null;
+    }
+
+    public static boolean isRunnableJar(String path) throws IOException {
+        JarFile jarFile = new JarFile(path);
+        Enumeration allEntries = jarFile.entries();
+        while (allEntries.hasMoreElements()) {
+            JarEntry entry = (JarEntry) allEntries.nextElement();
+            String classCanonicalName = entry.getName();
+
+            if(!classCanonicalName.contains(".class"))
+                continue;
+
+            classCanonicalName = classCanonicalName.replace("/", ".");
+            classCanonicalName = classCanonicalName.replace(".class", "");
+
+            String className = classCanonicalName;
+            if(classCanonicalName.lastIndexOf(".") > -1) {
+                className = classCanonicalName.substring(classCanonicalName.lastIndexOf(".") + 1);
+            }
+
+            if (className.equals("MinecraftApplet")) {
+                return true;
+            } else if (className.equals("Minecraft")) {
+                return true;
+            } else if (className.equals("MinecraftLauncher")) {
+                return true;
+            } else if (className.equals("Main")) {
+                return true;
+            }
+        }
+        
+        try {
+            System.out.println("Incompatible Jar MD5: " + MD5Checksum.getMD5Checksum(path));
+        } catch (Exception ex) {
+
+        }
+
+        return false;
+    }
+
+    public static MinecraftVersion getVersion(String path) {
+        try {
+            String md5 = MD5Checksum.getMD5Checksum(path);
+            return getVersionByMD5(md5);
+        } catch (Exception e) {
+            return null;
         }
     }
 }

@@ -14,7 +14,7 @@ public class LauncherFiles {
 
     public static final String MINEONLINE_LIBRARY_FOLDER = MINEONLINE_FOLDER + "lib" + File.separator;
   
-    public static final String LWJGL_JAR = MINEONLINE_LIBRARY_FOLDER + "lwjgl.jar";
+    public static final String LWJGL_JAR = MINEONLINE_LIBRARY_FOLDER + "lwjgl-modded.jar";
     public static final String LWJGL_UTIL_JAR = MINEONLINE_LIBRARY_FOLDER + "lwjgl_util.jar";
 
     public static final String MINEONLNE_NATIVES_FOLDER = MINEONLINE_LIBRARY_FOLDER + "native" + File.separator + OSUtils.getPlatform().toString();
@@ -28,6 +28,8 @@ public class LauncherFiles {
 
     public static final String MINECRAFT_RESOURCES_PATH = getMinecraftDirectory() + File.separator + "resources" + File.separator;
     public static final String MINECRAFT_SCREENSHOTS_PATH = getMinecraftDirectory() + File.separator + "screenshots" + File.separator;
+    public static final String MINECRAFT_OPTIONS_PATH = getMinecraftDirectory() + File.separator + "options.txt";
+    public static final String MINECRAFT_VERSIONS_PATH = getMinecraftDirectory() + File.separator + "versions" + File.separator;
 
     public static final URL TEMPLATE_SKIN_PATH = LauncherFiles.class.getResource("/img/skin.png");
     public static final URL TEMPLATE_CLOAK_PATH = LauncherFiles.class.getResource("/img/cloak.png");

@@ -12,7 +12,11 @@ public class Camera {
     protected float yaw;
     protected float roll;
 
-    public Camera() { }
+    public static Camera singleton = null;
+
+    public Camera() {
+        singleton = this;
+    }
 
     public void move() { }
 
