@@ -49,20 +49,6 @@ public class MinecraftLauncher extends Applet implements AppletStub{
 
     MinecraftVersionInfo.MinecraftVersion minecraftVersion;
 
-    public static void main(String[] args) throws Exception{
-        LibraryManager.updateClasspath();
-        LibraryManager.updateNativesPath();
-
-        DisplayManager.init();
-
-        MenuManager.main(null);
-
-        DisplayManager.closeDisplay();
-        new Session("codie", "1213");
-
-        new MinecraftLauncher("D:\\Projects\\Local\\MinecraftBetaOfflineLauncher\\Binaries\\Old Game\\Old Files\\bin\\c0.30-3.jar", "127.0.0.1", "56197", null).startMinecraft();
-    }
-
     public MinecraftLauncher(String jarPath, String serverAddress, String serverPort, String MPPass) {
         this.jarPath = jarPath;
         this.serverAddress = serverAddress;
@@ -196,11 +182,15 @@ public class MinecraftLauncher extends Applet implements AppletStub{
             return;
         }
 
-        if (OSUtils.isMac() && minecraftVersion.forceFullscreenMacos)
+        if (OSUtils.isMac() && minecraftVersion.forceFullscreenMacos) {
+            Display.setDisplayMode(Display.getDesktopDisplayMode());
+            Display.setFullscreen(true);
+            DisplayManager.fullscreen(true);
             fullscreen = true;
 
-        if (fullscreen) {
-            if (minecraftVersion != null && (minecraftVersion.enableFullscreenPatch || minecraftVersion.forceFullscreenMacos)) {
+            appletResize(DisplayManager.getFrame().getWidth(), DisplayManager.getFrame().getHeight());
+        } else if (fullscreen) {
+            if (minecraftVersion != null && minecraftVersion.enableFullscreenPatch) {
                 setFullscreen(true);
             } else {
                 Display.setDisplayMode(Display.getDesktopDisplayMode());
@@ -430,7 +420,7 @@ public class MinecraftLauncher extends Applet implements AppletStub{
                             f2wasDown = false;
                         }
                     }
-                    if (minecraftVersion != null && minecraftVersion.enableFullscreenPatch) {
+                    if (minecraftVersion != null && minecraftVersion.enableFullscreenPatch && !(OSUtils.isMac() && minecraftVersion.forceFullscreenMacos)) {
                         if (Keyboard.getEventKey() == Keyboard.KEY_F11 && !Keyboard.isRepeatEvent() && Keyboard.getEventKeyState() && !f11WasDown) {
                             setFullscreen(!fullscreen);
                             f11WasDown = true;
