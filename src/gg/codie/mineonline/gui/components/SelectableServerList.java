@@ -112,7 +112,11 @@ public class SelectableServerList extends GUIObject {
                     }
                 }
 
-                addServer(server.name, "Players: " + server.users + "/" + server.maxUsers, info2, server);
+                if(server.isMineOnline)
+                    addServer(server.name, "Players: " + server.users + "/" + server.maxUsers, info2, server);
+                else
+                    addServer(server.name, "Featured Server", info2, server);
+
             }
         } catch (Exception ex) {
             ex.printStackTrace();
