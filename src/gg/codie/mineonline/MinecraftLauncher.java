@@ -6,9 +6,11 @@ import gg.codie.mineonline.gui.rendering.Renderer;
 import gg.codie.mineonline.lwjgl.OnCreateListener;
 import gg.codie.mineonline.lwjgl.OnUpdateListener;
 import gg.codie.utils.MD5Checksum;
+import gg.codie.utils.OSUtils;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector2f;
 
@@ -30,6 +32,7 @@ import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Map;
 
 public class MinecraftLauncher extends Applet implements AppletStub{
 
@@ -80,12 +83,118 @@ public class MinecraftLauncher extends Applet implements AppletStub{
         }
     }
 
+    public static char getClasspathSeparator() {
+        if (OSUtils.isWindows()) {
+            return ';';
+        }
+
+        return ':';
+    }
+
     boolean firstUpdate = true;
     public void startMinecraft() throws Exception {
 
         System.out.println("Launching Jar, MD5: " + MD5Checksum.getMD5Checksum(jarPath));
 
         fullscreen = Properties.properties.has("fullscreen") && Properties.properties.getBoolean("fullscreen");
+
+        try {
+            Class rubyDungClass;
+            try {
+                rubyDungClass = Class.forName("com.mojang.rubydung.RubyDung");
+            } catch (ClassNotFoundException ex) {
+                rubyDungClass = Class.forName("com.mojang.minecraft.RubyDung");
+            }
+
+            // TODO: Launch RubyDung in frame.
+//            Method mainFunction = rubyDungClass.getDeclaredMethod("main", String[].class);
+//            String[] params = null;
+//
+//            DisplayManager.closeDisplay();
+//
+//            Display.setCreateListener(new OnCreateListener() {
+//                @Override
+//                public void onCreateEvent() {
+//                    renderer = new Renderer();
+//                    try {
+//                        Display.setParent(DisplayManager.getCanvas());
+//                        Display.setDisplayMode(new DisplayMode(DisplayManager.getFrame().getWidth(), DisplayManager.getFrame().getHeight()));
+//                    } catch (Exception ex) {
+//
+//                    }
+//                }
+//            });
+//
+//            mainFunction.invoke(null, (Object)params);
+
+            String CP = "-cp";
+            String proxySet = "-DproxySet=true";
+            String proxyHost = "-Dhttp.proxyHost=127.0.0.1";
+            String proxyPortArgument = "-Dhttp.proxyPort=";
+
+            String classpath = System.getProperty("java.class.path").replace("\"", "");
+            String natives = "-Djava.library.path=" + LauncherFiles.MINEONLNE_NATIVES_FOLDER;
+
+            String[] CMD_ARRAY = new String[] {
+                    Properties.properties.getString("javaCommand"),
+                    proxySet, proxyHost, proxyPortArgument + System.getProperty("http.proxyHost"),
+                    CP, classpath + getClasspathSeparator() + LauncherFiles.LWJGL_JAR + getClasspathSeparator() + LauncherFiles.LWJGL_UTIL_JAR + getClasspathSeparator() + jarPath,
+                    natives,
+                    rubyDungClass.getCanonicalName()
+            };
+
+            System.out.println("Launching RubyDung!  " + String.join(" ", CMD_ARRAY));
+
+
+            java.util.Properties props = System.getProperties();
+            ProcessBuilder processBuilder = new ProcessBuilder(CMD_ARRAY);
+            Map<String, String> env = processBuilder.environment();
+            for(String prop : props.stringPropertyNames()) {
+                env.put(prop, props.getProperty(prop));
+            }
+            processBuilder.directory(new File(System.getProperty("user.dir")));
+
+            processBuilder.start();
+            DisplayManager.closeDisplay();
+            System.exit(0);
+            return;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        if (minecraftVersion.type.equals("launcher")) {
+            String CP = "-cp";
+            String proxySet = "-DproxySet=true";
+            String proxyHost = "-Dhttp.proxyHost=127.0.0.1";
+            String proxyPortArgument = "-Dhttp.proxyPort=";
+
+            String[] CMD_ARRAY = new String[] {
+                    Properties.properties.getString("javaCommand"),
+                    proxySet, proxyHost, proxyPortArgument + System.getProperty("http.proxyHost"),
+                    "-Dsun.java2d.noddraw=true",
+                    "-Dsun.java2d.d3d=false",
+                    "-Dsun.java2d.opengl=false",
+                    "-Dsun.java2d.pmoffscreen=false",
+                    CP, "\"" + jarPath + "\"",
+                    "net.minecraft.LauncherFrame"
+            };
+
+            System.out.println("Launching launcher!  " + String.join(" ", CMD_ARRAY));
+
+
+            java.util.Properties props = System.getProperties();
+            ProcessBuilder processBuilder = new ProcessBuilder(CMD_ARRAY);
+            Map<String, String> env = processBuilder.environment();
+            for(String prop : props.stringPropertyNames()) {
+                env.put(prop, props.getProperty(prop));
+            }
+            processBuilder.directory(new File(System.getProperty("user.dir")));
+
+            processBuilder.start();
+            DisplayManager.closeDisplay();
+            System.exit(0);
+            return;
+        }
 
         if (fullscreen) {
             if (minecraftVersion != null && minecraftVersion.enableFullscreenPatch) {
@@ -335,7 +444,7 @@ public class MinecraftLauncher extends Applet implements AppletStub{
             }
         });
 
-        System.out.println("width: " + DisplayManager.getCanvas().getWidth());
+        //System.out.println("width: " + DisplayManager.getCanvas().getWidth());
 //        DisplayManager.getCanvas().setSize(DisplayManager.getFrame().getSize());
 //        //DisplayManager.getCanvas().setPreferredSize(DisplayManager.getFrame().getSize());
 //        appletResize(DisplayManager.getFrame().getSize().width, DisplayManager.getFrame().getSize().height);

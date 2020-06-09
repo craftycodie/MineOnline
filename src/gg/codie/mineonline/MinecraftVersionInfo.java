@@ -145,11 +145,19 @@ public class MinecraftVersionInfo {
                 return true;
             } else if (className.equals("Minecraft")) {
                 return true;
-            } else if (className.equals("MinecraftLauncher")) {
-                return true;
-            } else if (className.equals("Main")) {
+            }
+//            else if (className.equals("MinecraftLauncher")) {
+//                return true;
+//            }
+            else if (className.equals("LauncherFrame")) {
                 return true;
             }
+            else if (className.equals("RubyDung")) {
+                return true;
+            }
+//            else if (className.equals("Main")) {
+//                return true;
+//            }
         }
         
         try {
