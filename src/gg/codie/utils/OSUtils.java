@@ -9,6 +9,10 @@ public class OSUtils {
         return getPlatform() == OS.windows;
     }
 
+    public static boolean isMac() {
+        return getPlatform() == OS.macosx;
+    }
+
     public static OS getPlatform() {
         String osName = System.getProperty("os.name").toLowerCase();
         if (osName.contains("win")) return OS.windows;

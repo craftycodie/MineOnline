@@ -44,8 +44,9 @@ public class MinecraftVersionInfo {
         public final boolean enableFullscreenPatch;
         public final String info;
         public final String[] clientMd5s;
+        public final boolean forceFullscreenMacos;
 
-        private MinecraftVersion(String sha256, String name, String md5, String type, boolean baseURLHasNoPort, boolean enableScreenshotPatch, String clientName, boolean hasHeartbeat, boolean enableFullscreenPatch, String info, String[] clientMd5s) {
+        private MinecraftVersion(String sha256, String name, String md5, String type, boolean baseURLHasNoPort, boolean enableScreenshotPatch, String clientName, boolean hasHeartbeat, boolean enableFullscreenPatch, String info, String[] clientMd5s, boolean forceFullscreenMacos) {
             this.sha256 = sha256;
             this.name = name;
             this.md5 = md5;
@@ -57,6 +58,7 @@ public class MinecraftVersionInfo {
             this.enableFullscreenPatch = enableFullscreenPatch;
             this.info = info;
             this.clientMd5s = clientMd5s;
+            this.forceFullscreenMacos = forceFullscreenMacos;
         }
     }
 
@@ -89,7 +91,8 @@ public class MinecraftVersionInfo {
                         (object.has("hasHeartbeat") && object.getBoolean("hasHeartbeat")),
                         (object.has("enableFullscreenPatch") && object.getBoolean("enableFullscreenPatch")),
                         (object.has("info") ? object.getString("info") : null),
-                        (object.has("clientMd5s") ? JSONUtils.getStringArray(object.getJSONArray("clientMd5s")) : new String[0])
+                        (object.has("clientMd5s") ? JSONUtils.getStringArray(object.getJSONArray("clientMd5s")) : new String[0]),
+                        (object.has("forceFullscreenMacos") && object.getBoolean("forceFullscreenMacos"))
                 ));
             }
         } catch (IOException ex) {

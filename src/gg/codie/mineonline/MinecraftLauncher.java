@@ -196,8 +196,11 @@ public class MinecraftLauncher extends Applet implements AppletStub{
             return;
         }
 
+        if (OSUtils.isMac() && minecraftVersion.forceFullscreenMacos)
+            fullscreen = true;
+
         if (fullscreen) {
-            if (minecraftVersion != null && minecraftVersion.enableFullscreenPatch) {
+            if (minecraftVersion != null && (minecraftVersion.enableFullscreenPatch || minecraftVersion.forceFullscreenMacos)) {
                 setFullscreen(true);
             } else {
                 Display.setDisplayMode(Display.getDesktopDisplayMode());
