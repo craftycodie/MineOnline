@@ -26,6 +26,7 @@ public class LauncherFiles {
     public static final String CACHED_VERSION_INFO_PATH = MINEONLINE_CACHE_FOLDER + "version-info.json";
 
     public static final String LAST_LOGIN_PATH = MINEONLINE_CACHE_FOLDER + "lastlogin";
+    public static final String CUSTOM_VERSION_INFO_PATH = MINEONLINE_FOLDER + "custom-version-info.json";
 
     public static final String MINECRAFT_RESOURCES_PATH = getMinecraftDirectory() + File.separator + "resources" + File.separator;
     public static final String MINECRAFT_SCREENSHOTS_PATH = getMinecraftDirectory() + File.separator + "screenshots" + File.separator;

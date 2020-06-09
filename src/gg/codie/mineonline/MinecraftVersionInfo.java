@@ -9,6 +9,7 @@ import org.json.JSONObject;
 import org.lwjgl.Sys;
 
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
@@ -131,6 +132,44 @@ public class MinecraftVersionInfo {
         } catch (IOException ex) {
             System.err.println("Failed to load Minecraft Version information!");
             versions = new LinkedList<>();
+        }
+
+        if (new File(LauncherFiles.CUSTOM_VERSION_INFO_PATH).exists()) {
+            try (FileReader input = new FileReader(LauncherFiles.CUSTOM_VERSION_INFO_PATH)) {
+                // load a properties file
+                char[] buffer = new char[8096];
+                int bytes_read = 0;
+                StringBuffer stringBuffer = new StringBuffer();
+                while ((bytes_read = input.read(buffer, 0, 8096)) != -1) {
+                    for(int i = 0; i < bytes_read; i++) {
+                        stringBuffer.append(buffer[i]);
+                    }
+                }
+
+                versionsJson = new JSONArray(stringBuffer.toString());
+
+                Iterator versionIterator = versionsJson.iterator();
+
+                while (versionIterator.hasNext()) {
+                    JSONObject object = (JSONObject)versionIterator.next();
+                    versions.add(new MinecraftVersion(
+                            (object.has("sha256") ? object.getString("sha256") : null),
+                            object.getString("name"),
+                            object.getString("md5"),
+                            object.getString("type"),
+                            (object.has("baseURLHasNoPort") && object.getBoolean("baseURLHasNoPort")),
+                            (object.has("enableScreenshotPatch") && object.getBoolean("enableScreenshotPatch")),
+                            (object.has("clientName") ? object.getString("clientName") : null),
+                            (object.has("hasHeartbeat") && object.getBoolean("hasHeartbeat")),
+                            (object.has("enableFullscreenPatch") && object.getBoolean("enableFullscreenPatch")),
+                            (object.has("info") ? object.getString("info") : null),
+                            (object.has("clientMd5s") ? JSONUtils.getStringArray(object.getJSONArray("clientMd5s")) : new String[0]),
+                            (object.has("forceFullscreenMacos") && object.getBoolean("forceFullscreenMacos"))
+                    ));
+                }
+            } catch (IOException ex) {
+                System.err.println("Failed to load custom Minecraft Version information!");
+            }
         }
     }
 
