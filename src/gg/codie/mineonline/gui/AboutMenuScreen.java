@@ -56,7 +56,7 @@ public class AboutMenuScreen implements IMenuScreen {
         });
 
         label = new GUIText("About", 1.5f, TextMaster.minecraftFont, new Vector2f(0, 40), DisplayManager.getDefaultWidth(), true, true);
-        info = new GUIText("MineOnline 1.0 Release Candidate 1 by @codieradical.", 1.5f, TextMaster.minecraftFont, new Vector2f((DisplayManager.getDefaultWidth() / 2) - 200, (DisplayManager.getDefaultHeight() / 2) - 100), 400, true, true);
+        info = new GUIText("MineOnline 1.0 Release Candidate 2 by @codieradical.", 1.5f, TextMaster.minecraftFont, new Vector2f((DisplayManager.getDefaultWidth() / 2) - 200, (DisplayManager.getDefaultHeight() / 2) - 100), 400, true, true);
         info.setMaxLines(0);
     }
 
