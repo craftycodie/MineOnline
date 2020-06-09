@@ -1,5 +1,6 @@
 package gg.codie.mineonline;
 
+import gg.codie.mineonline.api.MinecraftAPI;
 import gg.codie.utils.JSONUtils;
 import gg.codie.utils.MD5Checksum;
 import jdk.nashorn.api.scripting.URLReader;
@@ -7,7 +8,11 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.lwjgl.Sys;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Paths;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -62,8 +67,36 @@ public class MinecraftVersionInfo {
         }
     }
 
+    private static void fetchVersions() {
+        try {
+            JSONArray versions = MinecraftAPI.getVersionsInfo();
+
+            //Write JSON file
+            try (FileWriter file = new FileWriter(LauncherFiles.CACHED_VERSION_INFO_PATH, false)) {
+                file.write(versions.toString());
+                file.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
     private static void loadVersions() {
-        try (URLReader input = new URLReader(LauncherFiles.VERSION_INFO_PATH)) {
+        fetchVersions();
+
+        URL path = LauncherFiles.VERSION_INFO_PATH;
+
+        try {
+            if (new File(LauncherFiles.CACHED_VERSION_INFO_PATH).exists())
+                path = Paths.get(LauncherFiles.CACHED_VERSION_INFO_PATH).toUri().toURL();
+        } catch (Exception ex) {
+
+        }
+
+        try (URLReader input = new URLReader(path)) {
             // load a properties file
             char[] buffer = new char[8096];
             int bytes_read = 0;

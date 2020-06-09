@@ -23,6 +23,7 @@ public class LauncherFiles {
 
     public static final String CACHED_SKIN_PATH = MINEONLINE_CACHE_FOLDER + "skin.png";
     public static final String CACHED_CLOAK_PATH = MINEONLINE_CACHE_FOLDER + "cloak.png";
+    public static final String CACHED_VERSION_INFO_PATH = MINEONLINE_CACHE_FOLDER + "version-info.json";
 
     public static final String LAST_LOGIN_PATH = MINEONLINE_CACHE_FOLDER + "lastlogin";
 

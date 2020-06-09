@@ -13,7 +13,6 @@
     <orderEntry type="library" name="intellij" level="project" />
     <orderEntry type="library" name="slick-util" level="project" />
     <orderEntry type="library" name="json" level="project" />
-    <orderEntry type="library" name="minecraft" level="project" />
     <orderEntry type="library" name="lwjgl" level="project" />
   </component>
 </module>

@@ -20,6 +20,7 @@ import org.lwjgl.util.vector.Vector3f;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
 import java.util.Random;
 
 public class MenuManager {
@@ -108,13 +109,17 @@ public class MenuManager {
 
         LastLogin lastLogin = LastLogin.readLastLogin();
         if(lastLogin != null ) {
-            String sessionToken = MinecraftAPI.login(lastLogin.username, lastLogin.password);
-            if (sessionToken != null) {
-                new Session(lastLogin.username, sessionToken);
-                LastLogin.writeLastLogin(lastLogin.username, lastLogin.password);
-                setMenuScreen(new MainMenuScreen());
-            } else {
-                setMenuScreen(new LoginMenuScreen(false));
+            try {
+                String sessionToken = MinecraftAPI.login(lastLogin.username, lastLogin.password);
+                if (sessionToken != null) {
+                    new Session(lastLogin.username, sessionToken);
+                    LastLogin.writeLastLogin(lastLogin.username, lastLogin.password);
+                    setMenuScreen(new MainMenuScreen());
+                } else {
+                    setMenuScreen(new LoginMenuScreen(false));
+                }
+            } catch (IOException ex) {
+                setMenuScreen(new LoginMenuScreen(true));
             }
         } else {
             setMenuScreen(new LoginMenuScreen(false));
