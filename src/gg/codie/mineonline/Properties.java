@@ -23,7 +23,7 @@ public class Properties {
 
             // Check .minecraft\versions for new jars.
 
-            String[] knownJars = JSONUtils.getStringArray(properties.getJSONArray("minecraftJars"));
+            String[] knownJars = properties.has("minecraftJars") ? JSONUtils.getStringArray(properties.getJSONArray("minecraftJars")) : new String[0];
 
             LinkedList<String> officialLauncherVersions = getOfficialLauncherJars(null, null);
             LinkedList<String> newJars = new LinkedList<>();

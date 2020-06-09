@@ -53,7 +53,7 @@ public class LauncherFiles {
                 }
                 workingDirectory = new File(userHome, String.valueOf('.') + "minecraft/");
             break;
-                case macos:
+                case macosx:
                 workingDirectory = new File(userHome, "Library/Application Support/minecraft/");
                 break;
             default:

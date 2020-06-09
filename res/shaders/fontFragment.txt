@@ -1,6 +1,6 @@
-#version 330
+#version 150 core
 
-in vec2 pass_textureCoords;
+in vec2 pass_textureCoordinates;
 
 out vec4 out_colour;
 
@@ -16,6 +16,6 @@ void main(void){
         discard;
     }
 
-	out_colour = vec4(colour, texture(fontAtlas, pass_textureCoords).a * alpha);
+	out_colour = vec4(colour, texture(fontAtlas, pass_textureCoordinates).a * alpha);
 
 }
