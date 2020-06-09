@@ -200,9 +200,9 @@ public class MenuManager {
             renderer.render(backgroundImage, shader);
 
             if (menuScreen.showPlayer()) {
-                GL11.glPushMatrix();
+                //GL11.glPushMatrix();
                 renderer.render(playerGameObject, shader);
-                GL11.glPopMatrix();
+                //GL11.glPopMatrix();
             }
 
             shader.stop();

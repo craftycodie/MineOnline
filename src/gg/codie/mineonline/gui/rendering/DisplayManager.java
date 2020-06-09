@@ -194,7 +194,7 @@ public class DisplayManager {
             return;
         }
 
-        ContextAttribs attribs = new ContextAttribs(3,2).withProfileCompatibility(true);
+        ContextAttribs attribs = new ContextAttribs(3,2).withProfileCore(true);
 
         try {
             Display.setParent(canvas);

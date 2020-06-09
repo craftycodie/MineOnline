@@ -37,13 +37,13 @@ public class Renderer {
 
     public void prepare() {
         GL11.glViewport(0, 0, Display.getWidth(), Display.getHeight());
-        GL11.glMatrixMode(GL11.GL_PROJECTION);
+        //GL11.glMatrixMode(GL11.GL_PROJECTION);
 
-        GL11.glLoadIdentity();
-        GLU.gluPerspective(45, (float) Display.getWidth() / Display.getHeight(), 0.1f, 5000.0f);
+        //GL11.glLoadIdentity();
+        //GLU.gluPerspective(45, (float) Display.getWidth() / Display.getHeight(), 0.1f, 5000.0f);
 
-        GL11.glMatrixMode(GL11.GL_MODELVIEW);
-        GL11.glLoadIdentity();
+        //GL11.glMatrixMode(GL11.GL_MODELVIEW);
+        //GL11.glLoadIdentity();
 
         GL11.glEnable(GL11.GL_DEPTH_TEST);
         GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
@@ -55,13 +55,13 @@ public class Renderer {
 
     public void prepareGUI() {
         GL11.glViewport(0, 0, Display.getWidth(), Display.getHeight());
-        GL11.glMatrixMode(GL11.GL_PROJECTION);
-        GL11.glLoadIdentity();
+        //GL11.glMatrixMode(GL11.GL_PROJECTION);
+        //GL11.glLoadIdentity();
 
-        GLU.gluOrtho2D(0.0f, DisplayManager.scaledWidth(DisplayManager.getDefaultWidth()), DisplayManager.scaledHeight(DisplayManager.getDefaultHeight()), 0.0f);
+        //GLU.gluOrtho2D(0.0f, DisplayManager.scaledWidth(DisplayManager.getDefaultWidth()), DisplayManager.scaledHeight(DisplayManager.getDefaultHeight()), 0.0f);
 
-        GL11.glMatrixMode(GL11.GL_MODELVIEW);
-        GL11.glLoadIdentity();
+        //GL11.glMatrixMode(GL11.GL_MODELVIEW);
+        //GL11.glLoadIdentity();
         //GL11.glTranslatef(0.375f, 0.375f, 0.0f);
 
         GL11.glDisable(GL11.GL_DEPTH_TEST);

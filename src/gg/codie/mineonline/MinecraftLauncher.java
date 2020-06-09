@@ -159,7 +159,7 @@ public class MinecraftLauncher extends Applet implements AppletStub{
             System.exit(0);
             return;
         } catch (Exception ex) {
-            ex.printStackTrace();
+           // ex.printStackTrace();
         }
 
         if (minecraftVersion.type.equals("launcher")) {

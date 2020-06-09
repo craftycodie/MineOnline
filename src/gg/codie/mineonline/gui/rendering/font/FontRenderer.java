@@ -54,7 +54,7 @@ public class FontRenderer {
         GL20.glEnableVertexAttribArray(0);
         GL20.glEnableVertexAttribArray(1);
 
-        GL11.glPushMatrix();
+        //GL11.glPushMatrix();
 
         if (text.isCenterAnchored()) {
             GL11.glViewport(DisplayManager.getXBuffer(), DisplayManager.getYBuffer(), (int) (DisplayManager.getDefaultWidth() * DisplayManager.getScale()), (int) (DisplayManager.getDefaultHeight() * DisplayManager.getScale()));
@@ -83,7 +83,7 @@ public class FontRenderer {
         shader.loadTranslation(text.getPosition());
         GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, text.getVertexCount());
 
-        GL11.glPopMatrix();
+        //GL11.glPopMatrix();
 
         GL20.glDisableVertexAttribArray(0);
         GL20.glDisableVertexAttribArray(1);
