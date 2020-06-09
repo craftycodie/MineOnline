@@ -40,6 +40,7 @@ public class Proxy {
         java.util.Properties props = System.getProperties();
         ProcessBuilder processBuilder = new ProcessBuilder(
                 Properties.properties.getString("javaCommand"),
+                "-Djava.util.Arrays.useLegacyMergeSort=true",
                 "-cp",
                 new File(Proxy.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath(),
                 MineOnline.class.getCanonicalName(),
