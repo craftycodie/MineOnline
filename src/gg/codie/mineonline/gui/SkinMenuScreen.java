@@ -47,10 +47,6 @@ public class SkinMenuScreen implements IMenuScreen {
     private boolean unsavedChanges = false;
 
     public SkinMenuScreen() {
-        RawModel logoModel = Loader.singleton.loadGUIToVAO(new Vector2f((DisplayManager.getDefaultWidth() / 2) -200, Display.getHeight() - 69), new Vector2f(400, 49), TextureHelper.getYFlippedPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(0, 40), new Vector2f(400, 49)));
-        ModelTexture logoTexture = new ModelTexture(Loader.singleton.loadTexture(MenuManager.class.getResource("/img/gui.png")));
-        TexturedModel texuredLogoModel =  new TexturedModel(logoModel, logoTexture);
-
         PlayerGameObject.thePlayer.translate(new Vector3f(0, 6, 0));
         PlayerGameObject.thePlayer.scale(new Vector3f(0.8f, 0.8f, 0.8f));
         PlayerGameObject.thePlayer.setPlayerAnimation(new WalkPlayerAnimation());
@@ -91,7 +87,24 @@ public class SkinMenuScreen implements IMenuScreen {
                             File skinTexture = new File(skinPath);
                             if (skinTexture.exists() && PlayerGameObject.thePlayer != null) {
                                 try {
+                                    boolean failed = false;
                                     PlayerGameObject.thePlayer.setSkin(Paths.get(skinTexture.getPath()).toUri().toURL());
+
+                                    try {
+                                        BufferedImage bufferedImage = ImageIO.read(new File(skinPath));
+                                        bufferedImage = TextureHelper.cropImage(bufferedImage, 0, 0, 64, 32);
+                                        ByteArrayOutputStream os = new ByteArrayOutputStream();
+                                        ImageIO.write(bufferedImage, "png", os);
+                                        ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
+                                        MinecraftAPI.uploadSkin(Session.session.getUsername(), Session.session.getSessionToken(), is);
+                                    } catch (IOException ex) {
+                                        JOptionPane.showMessageDialog(null, "Failed to upload skin.");
+                                        failed = true;
+                                    }
+                                    if(!failed) {
+                                        unsavedChanges = false;
+                                    }
+
                                 } catch (MalformedURLException mx) {
 
                                 }
@@ -123,7 +136,23 @@ public class SkinMenuScreen implements IMenuScreen {
                             File cloakTexture = new File(cloakPath);
                             if (cloakTexture.exists() && PlayerGameObject.thePlayer != null) {
                                 try {
+                                    boolean failed = false;
                                     PlayerGameObject.thePlayer.setCloak(Paths.get(cloakTexture.getPath()).toUri().toURL());
+
+                                    try {
+                                        BufferedImage bufferedImage = ImageIO.read(new File(cloakPath));
+                                        bufferedImage = TextureHelper.cropImage(bufferedImage, 0, 0, 64, 32);
+                                        ByteArrayOutputStream os = new ByteArrayOutputStream();
+                                        ImageIO.write(bufferedImage, "png", os);
+                                        ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
+                                        MinecraftAPI.uploadCloak(Session.session.getUsername(), Session.session.getSessionToken(), is);
+                                    } catch (IOException ex) {
+                                        JOptionPane.showMessageDialog(null, "Failed to upload skin.");
+                                        failed = true;
+                                    }
+                                    if(!failed) {
+                                        unsavedChanges = false;
+                                    }
                                 } catch (MalformedURLException mx) {
 
                                 }
@@ -134,49 +163,14 @@ public class SkinMenuScreen implements IMenuScreen {
             }
         });
 
-        resetCloakButton = new MediumButton("Remove Cloak", new Vector2f((DisplayManager.getDefaultWidth() / 2) + 30, (DisplayManager.getDefaultHeight() / 2) + 56), new IOnClickListener() {
+        resetCloakButton = new MediumButton("Remove Cloak", new Vector2f((DisplayManager.getDefaultWidth() / 2) + 30, (DisplayManager.getDefaultHeight() / 2) + 104), new IOnClickListener() {
             @Override
             public void onClick() {
                 if(MinecraftAPI.removecloak(Session.session.getSessionToken())) {
                     if(PlayerGameObject.thePlayer != null) {
                         PlayerGameObject.thePlayer.setCloak(LauncherFiles.TEMPLATE_CLOAK_PATH);
+                        new File(LauncherFiles.CACHED_CLOAK_PATH).delete();
                     }
-                }
-            }
-        });
-
-        submitButton = new MediumButton("Submit", new Vector2f((DisplayManager.getDefaultWidth() / 2) + 30, (DisplayManager.getDefaultHeight() / 2) + 104), new IOnClickListener() {
-            @Override
-            public void onClick() {
-                boolean failed = false;
-                if(!skinPath.isEmpty()) {
-                    try {
-                        BufferedImage bufferedImage = ImageIO.read(new File(skinPath));
-                        bufferedImage = TextureHelper.cropImage(bufferedImage, 0, 0, 64, 32);
-                        ByteArrayOutputStream os = new ByteArrayOutputStream();
-                        ImageIO.write(bufferedImage, "png", os);
-                        ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
-                        MinecraftAPI.uploadSkin(Session.session.getUsername(), Session.session.getSessionToken(), is);
-                    } catch (IOException ex) {
-                        JOptionPane.showMessageDialog(null, "Failed to upload skin.");
-                        failed = true;
-                    }
-                }
-                if(!cloakPath.isEmpty()) {
-                    try {
-                        BufferedImage bufferedImage = ImageIO.read(new File(cloakPath));
-                        bufferedImage = TextureHelper.cropImage(bufferedImage, 0, 0, 64, 32);
-                        ByteArrayOutputStream os = new ByteArrayOutputStream();
-                        ImageIO.write(bufferedImage, "png", os);
-                        ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
-                        MinecraftAPI.uploadCloak(Session.session.getUsername(), Session.session.getSessionToken(), is);
-                    } catch (IOException ex) {
-                        JOptionPane.showMessageDialog(null, "Failed to upload skin.");
-                        failed = true;
-                    }
-                }
-                if(!failed) {
-                    unsavedChanges = false;
                 }
             }
         });
@@ -209,7 +203,6 @@ public class SkinMenuScreen implements IMenuScreen {
         skinButton.update();
         cloakButton.update();
         resetCloakButton.update();
-        submitButton.update();
         doneButton.update();
     }
 
@@ -221,7 +214,6 @@ public class SkinMenuScreen implements IMenuScreen {
         skinButton.render(renderer, guiShader);
         cloakButton.render(renderer, guiShader);
         resetCloakButton.render(renderer, guiShader);
-        submitButton.render(renderer, guiShader);
         doneButton.render(renderer, guiShader);
         guiShader.stop();
     }
@@ -234,7 +226,6 @@ public class SkinMenuScreen implements IMenuScreen {
         skinButton.resize();
         cloakButton.resize();
         resetCloakButton.resize();
-        submitButton.resize();
         doneButton.resize();
     }
 
@@ -243,7 +234,6 @@ public class SkinMenuScreen implements IMenuScreen {
         skinButton.cleanUp();
         cloakButton.cleanUp();
         resetCloakButton.cleanUp();
-        submitButton.cleanUp();
         doneButton.cleanUp();
         label.remove();
     }

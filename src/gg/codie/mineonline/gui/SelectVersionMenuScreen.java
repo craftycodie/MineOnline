@@ -40,6 +40,8 @@ public class SelectVersionMenuScreen implements IMenuScreen {
     public SelectVersionMenuScreen(IOnClickListener backListener, IOnClickListener doneListener, String doneText) {
         doneButton = new MediumButton(doneText != null ? doneText : "Done", new Vector2f((DisplayManager.getDefaultWidth() / 2) + 8, DisplayManager.getDefaultHeight() - 20), doneListener);
 
+        fileChooser.setFileHidingEnabled(false);
+
         IOnClickListener browseListener = new IOnClickListener() {
             @Override
             public void onClick() {

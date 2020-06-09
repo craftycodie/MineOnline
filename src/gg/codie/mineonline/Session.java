@@ -102,8 +102,10 @@ public class Session {
 
                 if(PlayerGameObject.thePlayer != null) {
                     try {
-                        PlayerGameObject.thePlayer.setCloak(Paths.get(LauncherFiles.CACHED_CLOAK_PATH).toUri().toURL());
-                        PlayerGameObject.thePlayer.setSkin(Paths.get(LauncherFiles.CACHED_SKIN_PATH).toUri().toURL());
+                        if (new File(LauncherFiles.CACHED_CLOAK_PATH).exists())
+                            PlayerGameObject.thePlayer.setCloak(Paths.get(LauncherFiles.CACHED_CLOAK_PATH).toUri().toURL());
+                        if (new File(LauncherFiles.CACHED_SKIN_PATH).exists())
+                            PlayerGameObject.thePlayer.setSkin(Paths.get(LauncherFiles.CACHED_SKIN_PATH).toUri().toURL());
                     } catch (MalformedURLException mx) {
 
                     }

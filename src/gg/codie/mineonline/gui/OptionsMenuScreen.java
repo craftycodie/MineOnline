@@ -1,5 +1,6 @@
 package gg.codie.mineonline.gui;
 
+import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.Properties;
 import gg.codie.mineonline.Session;
 import gg.codie.mineonline.gui.events.IOnClickListener;
@@ -11,6 +12,8 @@ import gg.codie.mineonline.gui.rendering.font.TextMaster;
 import gg.codie.mineonline.gui.rendering.shaders.GUIShader;
 import gg.codie.utils.LastLogin;
 import org.lwjgl.util.vector.Vector2f;
+
+import java.io.File;
 
 public class OptionsMenuScreen implements IMenuScreen {
     MediumButton fullscreenButton;
@@ -69,6 +72,8 @@ public class OptionsMenuScreen implements IMenuScreen {
                 LastLogin.deleteLastLogin();
                 Session.session.logout();
                 MenuManager.setMenuScreen(new LoginMenuScreen(false));
+                new File(LauncherFiles.CACHED_CLOAK_PATH).delete();
+                new File(LauncherFiles.CACHED_SKIN_PATH).delete();
             }
         });
 
