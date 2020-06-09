@@ -71,6 +71,8 @@ public class SmallInputField extends GUIObject {
                         }
                     } else if (Keyboard.getEventKey() == Keyboard.KEY_RETURN && this.onEnterPressed != null) {
                         this.onEnterPressed.onClick();
+                    } else if (!Character.toString(Keyboard.getEventCharacter()).matches("[A-Za-z0-9\\[\\]{}'#@~./,<>?;:\\-\\\\()&^$%£\"!*&=_@~`¬¦|]+")) {
+                        continue;
                     } else {
                         value += Keyboard.getEventCharacter();
                     }
