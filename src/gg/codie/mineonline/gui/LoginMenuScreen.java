@@ -1,5 +1,6 @@
 package gg.codie.mineonline.gui;
 
+import gg.codie.mineonline.Globals;
 import gg.codie.mineonline.Properties;
 import gg.codie.mineonline.Session;
 import gg.codie.mineonline.api.MinecraftAPI;
@@ -145,7 +146,7 @@ public class LoginMenuScreen implements IMenuScreen {
 
         if(MouseHandler.didClick() && mouseIsOver) {
             try {
-                Desktop.getDesktop().browse(new URI("http://mineonline.codie.gg/register.jsp"));
+                Desktop.getDesktop().browse(new URI("http://" + Globals.API_HOSTNAME + "/register.jsp"));
             } catch (Exception ex) {
 
             }

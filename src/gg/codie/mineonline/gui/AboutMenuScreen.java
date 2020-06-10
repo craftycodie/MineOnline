@@ -1,5 +1,6 @@
 package gg.codie.mineonline.gui;
 
+import gg.codie.mineonline.Globals;
 import gg.codie.mineonline.gui.events.IOnClickListener;
 import gg.codie.mineonline.gui.font.GUIText;
 import gg.codie.mineonline.gui.rendering.Camera;
@@ -56,7 +57,7 @@ public class AboutMenuScreen implements IMenuScreen {
         });
 
         label = new GUIText("About", 1.5f, TextMaster.minecraftFont, new Vector2f(0, 40), DisplayManager.getDefaultWidth(), true, true);
-        info = new GUIText("MineOnline " + MenuManager.CURRENT_VERSION  + " by @codieradical.", 1.5f, TextMaster.minecraftFont, new Vector2f((DisplayManager.getDefaultWidth() / 2) - 200, (DisplayManager.getDefaultHeight() / 2) - 100), 400, true, true);
+        info = new GUIText("MineOnline " + Globals.LAUNCHER_VERSION  + " by @codieradical.", 1.5f, TextMaster.minecraftFont, new Vector2f((DisplayManager.getDefaultWidth() / 2) - 200, (DisplayManager.getDefaultHeight() / 2) - 100), 400, true, true);
         info.setMaxLines(0);
     }
 

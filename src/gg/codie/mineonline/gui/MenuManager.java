@@ -1,5 +1,6 @@
 package gg.codie.mineonline.gui;
 
+import gg.codie.mineonline.Globals;
 import gg.codie.mineonline.LibraryManager;
 import gg.codie.mineonline.Session;
 import gg.codie.mineonline.api.MinecraftAPI;
@@ -68,8 +69,6 @@ public class MenuManager {
         return updateAvailable;
     }
 
-    public static final String CURRENT_VERSION = "1.0.0";
-
     public static void main(String[] args) throws Exception {
         formopen = true;
 
@@ -77,7 +76,7 @@ public class MenuManager {
 
         try {
             System.out.println(MinecraftAPI.getLauncherVersion());
-            updateAvailable = !MinecraftAPI.getLauncherVersion().replaceAll("\\s","").equals(CURRENT_VERSION);
+            updateAvailable = !MinecraftAPI.getLauncherVersion().replaceAll("\\s","").equals(Globals.LAUNCHER_VERSION);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

@@ -1,5 +1,6 @@
 package gg.codie.mineonline.api;
 
+import gg.codie.mineonline.Globals;
 import gg.codie.mineonline.MineOnline;
 import gg.codie.mineonline.Properties;
 import org.json.JSONArray;
@@ -23,7 +24,7 @@ public class MinecraftAPI {
 
         try {
             String parameters = "sessionId=" + URLEncoder.encode(sessionId, "UTF-8") + "&serverIP=" + URLEncoder.encode(serverIP, "UTF-8") + "&serverPort=" + URLEncoder.encode(serverPort, "UTF-8");
-            URL url = new URL("http://mineonline.codie.gg/mineonline/mppass.jsp?" + parameters);
+            URL url = new URL("http://" + Globals.API_HOSTNAME + "/mineonline/mppass.jsp?" + parameters);
             connection = (HttpURLConnection) url.openConnection();
             connection.setDoInput(true);
             connection.setDoOutput(false);
@@ -53,7 +54,7 @@ public class MinecraftAPI {
 
         try {
             String parameters = "sessionId=" + URLEncoder.encode(sessionId, "UTF-8");
-            URL url = new URL("http://mineonline.codie.gg/mineonline/removecloak.jsp?" + parameters);
+            URL url = new URL("http://" + Globals.API_HOSTNAME + "/mineonline/removecloak.jsp?" + parameters);
             connection = (HttpURLConnection) url.openConnection();
             connection.setDoInput(true);
             connection.setDoOutput(false);
@@ -82,7 +83,7 @@ public class MinecraftAPI {
         HttpURLConnection connection = null;
 
         try {
-            URL url = new URL("http://mineonline.codie.gg/mineonline/skin.jsp");
+            URL url = new URL("http://" + Globals.API_HOSTNAME + "/mineonline/skin.jsp");
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
             connection.setDoInput(true);
@@ -133,7 +134,7 @@ public class MinecraftAPI {
         HttpURLConnection connection = null;
 
         try {
-            URL url = new URL("http://mineonline.codie.gg/mineonline/cloak.jsp");
+            URL url = new URL("http://" + Globals.API_HOSTNAME + "/mineonline/cloak.jsp");
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
             connection.setDoInput(true);
@@ -185,7 +186,7 @@ public class MinecraftAPI {
 
         String parameters = "user=" + URLEncoder.encode(username, "UTF-8") + "&password=" + URLEncoder.encode(password, "UTF-8") + "&version=" + '\f';
 
-        URL url = new URL("http://mineonline.codie.gg/game/getversion.jsp");
+        URL url = new URL("http://" + Globals.API_HOSTNAME + "/game/getversion.jsp");
         connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("POST");
         connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
@@ -232,7 +233,7 @@ public class MinecraftAPI {
 
         try {
             String parameters = "session=" + URLEncoder.encode(sessionId, "UTF-8") + "&name=" + URLEncoder.encode(username, "UTF-8");
-            URL url = new URL("http://mineonline.codie.gg/login/session.jsp?" + parameters);
+            URL url = new URL("http://" + Globals.API_HOSTNAME + "/login/session.jsp?" + parameters);
             connection = (HttpURLConnection) url.openConnection();
             connection.setDoInput(true);
             connection.setDoOutput(false);
@@ -270,7 +271,7 @@ public class MinecraftAPI {
                     + "&md5=" + URLEncoder.encode(md5, "UTF-8")
                     + "&public=" + URLEncoder.encode(Boolean.toString(!isPrivate), "UTF-8");
 
-            URL url = new URL("http://mineonline.codie.gg/mineonline/listserver.jsp?" + parameters);
+            URL url = new URL("http://" + Globals.API_HOSTNAME + "/mineonline/listserver.jsp?" + parameters);
             connection = (HttpURLConnection) url.openConnection();
             connection.setDoInput(true);
             connection.setDoOutput(false);
@@ -300,7 +301,7 @@ public class MinecraftAPI {
         HttpURLConnection connection = null;
 
         String parameters = "sessionId=" + URLEncoder.encode(sessionId, "UTF-8") + "&user=" + URLEncoder.encode(username, "UTF-8");
-        URL url = new URL("http://mineonline.codie.gg/mineonline/listservers.jsp?" + parameters);
+        URL url = new URL("http://" + Globals.API_HOSTNAME + "/mineonline/listservers.jsp?" + parameters);
         connection = (HttpURLConnection) url.openConnection();
         connection.setDoInput(true);
         connection.setDoOutput(false);
@@ -328,7 +329,7 @@ public class MinecraftAPI {
     public static JSONArray getVersionsInfo() throws IOException {
         HttpURLConnection connection = null;
 
-        URL url = new URL("http://mineonline.codie.gg/versions.json");
+        URL url = new URL("http://" + Globals.API_HOSTNAME + "/versions.json");
         connection = (HttpURLConnection) url.openConnection();
         connection.connect();
 
@@ -354,7 +355,7 @@ public class MinecraftAPI {
     public static String getLauncherVersion() throws IOException {
         HttpURLConnection connection = null;
 
-        URL url = new URL("http://mineonline.codie.gg/launcherversion");
+        URL url = new URL("http://" + Globals.API_HOSTNAME + "/launcherversion");
         connection = (HttpURLConnection) url.openConnection();
         connection.connect();
 
@@ -376,7 +377,7 @@ public class MinecraftAPI {
         HttpURLConnection connection = null;
 
         String parameters = "session=" + URLEncoder.encode(sessionId, "UTF-8") + "&name=" + URLEncoder.encode(username, "UTF-8");
-        URL url = new URL("http://mineonline.codie.gg/mineonline/account.jsp?" + parameters);
+        URL url = new URL("http://" + Globals.API_HOSTNAME + "/mineonline/account.jsp?" + parameters);
         connection = (HttpURLConnection) url.openConnection();
         connection.setDoInput(true);
         connection.setDoOutput(false);

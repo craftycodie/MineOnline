@@ -1,9 +1,6 @@
 package gg.codie.mineonline.gui;
 
-import gg.codie.mineonline.MinecraftLauncher;
-import gg.codie.mineonline.MinecraftVersionInfo;
-import gg.codie.mineonline.Properties;
-import gg.codie.mineonline.Session;
+import gg.codie.mineonline.*;
 import gg.codie.mineonline.gui.events.IOnClickListener;
 import gg.codie.mineonline.gui.font.GUIText;
 import gg.codie.mineonline.gui.rendering.*;
@@ -131,7 +128,7 @@ public class MainMenuScreen implements IMenuScreen {
 
             if (MouseHandler.didClick() && mouseIsOver) {
                 try {
-                    Desktop.getDesktop().browse(new URI("http://mineonline.codie.gg/download.jsp"));
+                    Desktop.getDesktop().browse(new URI("http://" + Globals.API_HOSTNAME + "/download.jsp"));
                 } catch (Exception ex) {
 
                 }
