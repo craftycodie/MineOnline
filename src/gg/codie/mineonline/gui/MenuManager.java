@@ -72,10 +72,7 @@ public class MenuManager {
     public static void main(String[] args) throws Exception {
         formopen = true;
 
-//        DisplayManager.getFrame().setResizable(false);
-
         try {
-            System.out.println(MinecraftAPI.getLauncherVersion());
             updateAvailable = !MinecraftAPI.getLauncherVersion().replaceAll("\\s","").equals(Globals.LAUNCHER_VERSION);
         } catch (Exception ex) {
             ex.printStackTrace();

@@ -50,7 +50,8 @@ public class ProxyThread implements Runnable {
 
         Socket clientSocket = null;
 
-        System.out.println(serverSocket.get().getInetAddress() + ":" + serverSocket.get().getLocalPort());
+        if (Globals.PROXY_LOGGING)
+            System.out.println(serverSocket.get().getInetAddress() + ":" + serverSocket.get().getLocalPort());
 
         while (running.get()) {
             //Stream to put data to the browser
@@ -96,10 +97,12 @@ public class ProxyThread implements Runnable {
                     requestString = requestString.replace(redirectedDomain, Globals.API_HOSTNAME);
                 }
 
-                System.out.println("Request");
+                if (Globals.PROXY_LOGGING)
+                    System.out.println("Request");
                 requestHeaders = requestString.split("\r\n\r\n")[0];
 
-                System.out.println(requestString);
+                if (Globals.PROXY_LOGGING)
+                    System.out.println(requestString);
 
 
                 String urlString = pullLinks(requestString).get(0);
@@ -118,7 +121,8 @@ public class ProxyThread implements Runnable {
                     File oggFile = new File(LauncherFiles.MINECRAFT_RESOURCES_PATH + oggFilePath);
 
                     if(oggFile.exists()) {
-                        System.out.println("Responding already downloaded resource.");
+                        if (Globals.PROXY_LOGGING)
+                            System.out.println("Responding already downloaded resource.");
 
                         String responseHeaders =
                                 "HTTP/1.0 404 Not FoundServer:Werkzeug/1.0.1 Python/3.7.0\r\n\r\n";
@@ -176,10 +180,13 @@ public class ProxyThread implements Runnable {
                 }
                 responseHeader += "\r\n";
 
-                System.out.println("Response");
-                System.out.print(responseHeader);
+                if (Globals.PROXY_LOGGING)
+                    System.out.println("Response");
+                if (Globals.PROXY_LOGGING)
+                    System.out.print(responseHeader);
                 String contentString = new String(content);
-                System.out.println(contentString);
+                if (Globals.PROXY_LOGGING)
+                    System.out.println(contentString);
 
                 InputStream is = connection.getInputStream();
 
@@ -188,7 +195,6 @@ public class ProxyThread implements Runnable {
                 buffer = new byte[bufferSize];
                 while ((bytes_read = is.read(buffer, 0, bufferSize)) != -1) {
                     for(int i = 0; i < bytes_read; i++) {
-                        //System.out.print(buffer[i]);
                         clientSocket.getOutputStream().write(buffer[i]);
                     }
                 }
