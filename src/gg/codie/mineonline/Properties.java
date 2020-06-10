@@ -78,7 +78,8 @@ public class Properties {
                 if(path.toFile().isDirectory()) {
                     getOfficialLauncherJars(fileNames, path);
                 } else if(path.toAbsolutePath().toString().endsWith(".jar")) {
-                    if(path.getFileName().startsWith("a") || path.getFileName().startsWith("b") || path.getFileName().startsWith("c") || path.getFileName().startsWith("rd") || path.getFileName().startsWith("inf"))
+                    String fileName = path.getFileName().toString();
+                    if(fileName.startsWith("a") || fileName.startsWith("b") || fileName.startsWith("c") || fileName.startsWith("rd") || fileName.startsWith("inf"))
                         fileNames.add(path.toAbsolutePath().toString());
                 }
             }
