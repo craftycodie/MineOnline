@@ -9,6 +9,8 @@ For example, if you wanted to play classic right now, you'd have no way to launc
 
 The program can also run regular desktop versions of the game, and even old launchers.
 
+[Download](https://github.com/codieradical/MineOnline/releases)
+
 ## Features
 These are features MineOnline will bring to pre-release Minecraft.
 
