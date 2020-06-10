@@ -9,8 +9,6 @@ import org.lwjgl.util.vector.Vector3f;
 /**
  * Represents a piece of text in the game.
  *
- * @author Karl
- *
  */
 public class GUIText {
 

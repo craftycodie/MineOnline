@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * Represents a line of text during the loading of a text.
  *
- * @author Karl
+ * @author ThinMatrix
  *
  */
 public class Line {

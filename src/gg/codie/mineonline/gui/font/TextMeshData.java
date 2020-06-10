@@ -2,7 +2,7 @@ package gg.codie.mineonline.gui.font;
 
 /**
  * Stores the vertex data for all the quads on which a text will be rendered.
- * @author Karl
+ * @author ThinMatrix
  *
  */
 public class TextMeshData {

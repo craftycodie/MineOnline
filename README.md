@@ -2,10 +2,6 @@
 
 Launch old versions of minecraft just as you remembered them, only without a browser.
 
-## New: Test MineOnline
-If you'd like to play around with this during early stages of development, I'd recommend joining my Discord server, where I regularly post updates and instructions, as well as known issues and planned features.
-https://discord.codie.gg/
-
 ## What is MineOnline?
 MineOnline is a launcher for pre-release Minecraft versions capable of running web applets without a browser, and redirecting old web requests to a new API.
 
@@ -28,7 +24,7 @@ These are features MineOnline will bring to pre-release Minecraft.
 
 - Resource Files (Sounds)
 
-- Resizable Applets
+- Resizable & Fullscreenable Applets
 
 - Screenshots (F2)
 
@@ -42,7 +38,17 @@ becomes
 
 ```java -cp MineOnline.jar gg.codie.mineonline.Server minecraft_server.jar -Xmx1024M -Xms1024M -jar minecraft_server.jar nogui```
 
+## For Developers
+As per the license you are welcome to use the launcher code under non-commercial conditions.
+
+Note that the graphics code is VERY rough. I've never used LWJGL before, I've also never written game engine code on that level.
+I might tidy things up in future, if I get time.
+
+The GUI and menu code shall not be used for 'clone' projects (for instance, copying my API and pointing the launcher to it).
+
+I also request that forks remain up to date for security.
+
+
 ## Credit
 
 - I wouldn't have been able to make this LWJGL UI without [ThinMatrix](https://twitter.com/thinmatrix)'s LWJGL 2 tutorial.
-- Version information retrieved from Omniarchive.

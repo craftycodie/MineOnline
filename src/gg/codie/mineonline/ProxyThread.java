@@ -47,7 +47,7 @@ public class ProxyThread implements Runnable {
 
         Properties.loadProperties();
         String[] redirectedDomains = JSONUtils.getStringArray(Properties.properties.getJSONArray("redirectedDomains"));
-        String destination = Properties.properties.getString("apiDomainName");
+        String destination = "mineonline.codie.gg";
 
         Socket clientSocket = null;
 

@@ -56,7 +56,7 @@ public class Session {
             public void run() {
                 Properties.loadProperties();
 
-                try (BufferedInputStream in = new BufferedInputStream(new URL("http://" + Properties.properties.getString("apiDomainName") + "/MinecraftSkins/" + username + ".png").openStream())) {
+                try (BufferedInputStream in = new BufferedInputStream(new URL("http://mineonline.codie.gg/MinecraftSkins/" + username + ".png").openStream())) {
 
                     // Delete the currently cached skin.
                     File cachedSkin = new File(LauncherFiles.CACHED_SKIN_PATH);
@@ -78,7 +78,7 @@ public class Session {
                     // handle exception
                 }
 
-                try (BufferedInputStream in = new BufferedInputStream(new URL("http://" + Properties.properties.getString("apiDomainName") + "/MinecraftCloaks/" + username + ".png").openStream())) {
+                try (BufferedInputStream in = new BufferedInputStream(new URL("http://mineonline.codie.gg/MinecraftCloaks/" + username + ".png").openStream())) {
 
                     // Delete the currently cached skin.
                     File cachedCloak = new File(LauncherFiles.CACHED_CLOAK_PATH);

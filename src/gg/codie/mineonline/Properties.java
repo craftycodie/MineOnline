@@ -93,7 +93,6 @@ public class Properties {
     public static void resetSettings() {
         properties = new JSONObject();
         properties.put("isPremium", true);
-        properties.put("apiDomainName", "mineonline.codie.gg");
         properties.put("redirectedDomains", new String[] {"www.minecraft.net:-1", "skins.minecraft.net", "mineraft.net", "www.minecraft.net", "s3.amazonaws.com", "banshee.alex231.com", "mcauth-alex231.rhcloud.com"} );
         properties.put("javaCommand", "java");
         properties.put("seletedJar", "");

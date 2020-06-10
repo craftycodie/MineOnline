@@ -9,7 +9,7 @@ import org.lwjgl.opengl.Display;
 /**
  * Provides functionality for getting the values from a font file.
  *
- * @author Karl
+ * @author ThinMatrix
  *
  */
 public class MetaFile {

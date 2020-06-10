@@ -145,7 +145,7 @@ public class LoginMenuScreen implements IMenuScreen {
 
         if(MouseHandler.didClick() && mouseIsOver) {
             try {
-                Desktop.getDesktop().browse(new URI("http://" + Properties.properties.getString("apiDomainName") + "/register.jsp"));
+                Desktop.getDesktop().browse(new URI("http://mineonline.codie.gg/register.jsp"));
             } catch (Exception ex) {
 
             }

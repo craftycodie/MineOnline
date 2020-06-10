@@ -5,7 +5,7 @@ import java.util.List;
 
 /**
  * During the loading of a text this represents one word in the text.
- * @author Karl
+ * @author ThinMatrix
  *
  */
 public class Word {
