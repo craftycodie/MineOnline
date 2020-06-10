@@ -80,6 +80,14 @@ public class MinecraftLauncher extends Applet implements AppletStub{
     boolean firstUpdate = true;
     public void startMinecraft() throws Exception {
 
+        if(serverAddress != null) {
+            try {
+                new MinecraftOptions(LauncherFiles.MINECRAFT_OPTIONS_PATH).setOption("lastServer", serverAddress + "_" + serverPort);
+            } catch (Exception ex) {
+
+            }
+        }
+
         System.out.println("Launching Jar, MD5: " + MD5Checksum.getMD5Checksum(jarPath));
 
         fullscreen = Properties.properties.has("fullscreen") && Properties.properties.getBoolean("fullscreen");

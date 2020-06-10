@@ -1,9 +1,6 @@
 package gg.codie.mineonline.gui;
 
-import gg.codie.mineonline.MinecraftLauncher;
-import gg.codie.mineonline.MinecraftVersionInfo;
-import gg.codie.mineonline.Properties;
-import gg.codie.mineonline.Session;
+import gg.codie.mineonline.*;
 import gg.codie.mineonline.api.MinecraftAPI;
 import gg.codie.mineonline.gui.events.IOnClickListener;
 import gg.codie.mineonline.gui.font.GUIText;
@@ -15,6 +12,7 @@ import gg.codie.mineonline.gui.rendering.shaders.GUIShader;
 import org.lwjgl.util.vector.Vector2f;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
@@ -29,12 +27,21 @@ public class JoinServerScreen implements IMenuScreen {
     static SelectVersionMenuScreen selectVersionMenuScreen = null;
 
     public JoinServerScreen(String value) {
-        serverIPField = new InputField("Server IP Input", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 202, (DisplayManager.getDefaultHeight() / 2) - 42),  (value != null) ? value : Properties.properties.has("lastServer") ? Properties.properties.getString("lastServer") : "", new IOnClickListener() {
+        String server = "";
+        try {
+            server = new MinecraftOptions(LauncherFiles.MINECRAFT_OPTIONS_PATH).getOption("lastServer").replace("_", ":");
+        } catch (Exception e) {
+            /// ignore
+        }
+        serverIPField = new InputField("Server IP Input", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 202, (DisplayManager.getDefaultHeight() / 2) - 42),  (value != null) ? value : server, new IOnClickListener() {
             @Override
             public void onClick() {
                 try {
-                    Properties.properties.put("lastServer", serverIPField.getValue());
-                    Properties.saveProperties();
+                    try {
+                        new MinecraftOptions(LauncherFiles.MINECRAFT_OPTIONS_PATH).setOption("lastServer", serverIPField.getValue().replace(":", "_"));
+                    } catch (Exception ex) {
+                        // ignore
+                    }
                     String[] split = serverIPField.getValue().split(":");
 
                     InetAddress inetAddress = InetAddress.getByName(split[0]);
@@ -80,8 +87,11 @@ public class JoinServerScreen implements IMenuScreen {
             @Override
             public void onClick() {
                 try {
-                    Properties.properties.put("lastServer", serverIPField.getValue());
-                    Properties.saveProperties();
+                    try {
+                        new MinecraftOptions(LauncherFiles.MINECRAFT_OPTIONS_PATH).setOption("lastServer", serverIPField.getValue().replace(":", "_"));
+                    } catch (Exception ex) {
+                        // ignore
+                    }
                     String[] split = serverIPField.getValue().split(":");
 
 

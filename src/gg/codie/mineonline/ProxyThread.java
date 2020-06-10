@@ -50,7 +50,8 @@ public class ProxyThread implements Runnable {
 
         Socket clientSocket = null;
 
-        if (Globals.PROXY_LOGGING)
+        Properties.loadProperties();
+        if (Properties.properties.has("proxyLogging") && Properties.properties.getBoolean("proxyLogging"))
             System.out.println(serverSocket.get().getInetAddress() + ":" + serverSocket.get().getLocalPort());
 
         while (running.get()) {
@@ -97,11 +98,13 @@ public class ProxyThread implements Runnable {
                     requestString = requestString.replace(redirectedDomain, Globals.API_HOSTNAME);
                 }
 
-                if (Globals.PROXY_LOGGING)
+                Properties.loadProperties();
+                if (Properties.properties.has("proxyLogging") && Properties.properties.getBoolean("proxyLogging"))
                     System.out.println("Request");
                 requestHeaders = requestString.split("\r\n\r\n")[0];
 
-                if (Globals.PROXY_LOGGING)
+                Properties.loadProperties();
+                if (Properties.properties.has("proxyLogging") && Properties.properties.getBoolean("proxyLogging"))
                     System.out.println(requestString);
 
 
@@ -121,7 +124,8 @@ public class ProxyThread implements Runnable {
                     File oggFile = new File(LauncherFiles.MINECRAFT_RESOURCES_PATH + oggFilePath);
 
                     if(oggFile.exists()) {
-                        if (Globals.PROXY_LOGGING)
+                        Properties.loadProperties();
+                        if (Properties.properties.has("proxyLogging") && Properties.properties.getBoolean("proxyLogging"))
                             System.out.println("Responding already downloaded resource.");
 
                         String responseHeaders =
@@ -180,13 +184,14 @@ public class ProxyThread implements Runnable {
                 }
                 responseHeader += "\r\n";
 
-                if (Globals.PROXY_LOGGING)
-                    System.out.println("Response");
-                if (Globals.PROXY_LOGGING)
-                    System.out.print(responseHeader);
                 String contentString = new String(content);
-                if (Globals.PROXY_LOGGING)
+
+                Properties.loadProperties();
+                if (Properties.properties.has("proxyLogging") && Properties.properties.getBoolean("proxyLogging")) {
+                    System.out.println("Response");
+                    System.out.print(responseHeader);
                     System.out.println(contentString);
+                }
 
                 InputStream is = connection.getInputStream();
 

@@ -96,8 +96,8 @@ public class Properties {
         properties.put("redirectedDomains", new String[] {"www.minecraft.net:-1", "skins.minecraft.net", "mineraft.net", "www.minecraft.net", "s3.amazonaws.com", "banshee.alex231.com", "mcauth-alex231.rhcloud.com"} );
         properties.put("javaCommand", "java");
         properties.put("seletedJar", "");
-        properties.put("lastServer", "");
         properties.put("fullscreen", false);
+        properties.put("proxyLogging", false);
 
         // Check .minecraft\versions for new jars.
 

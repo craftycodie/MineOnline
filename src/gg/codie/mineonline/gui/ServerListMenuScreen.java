@@ -1,9 +1,6 @@
 package gg.codie.mineonline.gui;
 
-import gg.codie.mineonline.MinecraftLauncher;
-import gg.codie.mineonline.MinecraftVersionInfo;
-import gg.codie.mineonline.Properties;
-import gg.codie.mineonline.Session;
+import gg.codie.mineonline.*;
 import gg.codie.mineonline.api.MinecraftAPI;
 import gg.codie.mineonline.gui.events.IOnClickListener;
 import gg.codie.mineonline.gui.font.GUIText;
@@ -59,8 +56,11 @@ public class ServerListMenuScreen implements IMenuScreen {
                                 }
 
                                 if(clientVersion != null && clientVersion.md5.equals(compatibleClientMd5)) {
-                                    Properties.properties.put("lastServer", selectedServer.server.ip + ":" + selectedServer.server.port);
-                                    Properties.saveProperties();
+                                    try {
+                                        new MinecraftOptions(LauncherFiles.MINECRAFT_OPTIONS_PATH).setOption("lastServer", selectedServer.server.ip + "_" + selectedServer.server.port);
+                                    } catch (Exception ex) {
+                                        // ignore
+                                    }
                                     String mppass = MinecraftAPI.getMpPass(Session.session.getSessionToken(), selectedServer.server.ip, "" + selectedServer.server.port);
 
                                     new MinecraftLauncher(path, selectedServer.server.ip, "" + selectedServer.server.port, mppass).startMinecraft();
@@ -78,8 +78,11 @@ public class ServerListMenuScreen implements IMenuScreen {
                         }, new IOnClickListener() {
                             @Override
                             public void onClick() {
-                                Properties.properties.put("lastServer", selectedServer.server.ip + ":" + selectedServer.server.port);
-                                Properties.saveProperties();
+                                try {
+                                    new MinecraftOptions(LauncherFiles.MINECRAFT_OPTIONS_PATH).setOption("lastServer", selectedServer.server.ip + "_" + selectedServer.server.port);
+                                } catch (Exception ex) {
+                                    // ignore
+                                }
                                 String mppass = MinecraftAPI.getMpPass(Session.session.getSessionToken(), selectedServer.server.ip, "" + selectedServer.server.port);
                                 try {
                                     new MinecraftLauncher(selectVersionMenuScreen.getSelectedPath(), selectedServer.server.ip, "" + selectedServer.server.port, mppass).startMinecraft();
