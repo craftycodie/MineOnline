@@ -28,6 +28,8 @@ These are features MineOnline will bring to pre-release Minecraft.
 
 - Screenshots (F2)
 
+![launcher](launcherdemo.png)
+
 ## Launching Servers
 If you'd like to launch a server to authenticate using a different API, you can do so with a simple tweak to the typical launch command.
 Add `-cp <MineOnline.jar path> gg.codie.mineonline.Server <server jar path>` after "java". Eg.
@@ -37,6 +39,21 @@ Add `-cp <MineOnline.jar path> gg.codie.mineonline.Server <server jar path>` aft
 becomes
 
 ```java -cp MineOnline.jar gg.codie.mineonline.Server minecraft_server.jar -Xmx1024M -Xms1024M -jar minecraft_server.jar nogui```
+
+If you don't want your server to appear on the list, set `dont-list: true` in `server.properties`.
+
+## For Modders
+You can add custom version information to the launcher by creating the file `.minecraft\mineonline\custom-version-info.json`.
+This file should contain an array of JSON versions, like this:
+
+```json
+[
+  { "name": "Skylands 0.1", "md5": "F8F78A4ED4033547CC1EA28C776DA7AE", "type": "client", "info": "Beta 1.7.3 mod" },
+  { "name": "Skylands 0.1", "md5": "22D6B302995BA88549C98ED1996A5430", "type": "server", "info": "Beta 1.7.3 mod", "clientName": "Beta 1.7.3", "clientMd5s": ["F8F78A4ED4033547CC1EA28C776DA7AE", "EAE3353FDAA7E10A59B4CB5B45BFA10D"] }
+]
+```
+
+If you would like a version to be added to the main list, contact me (Codie) and I can add it to the API.
 
 ## For Developers
 As per the license you are welcome to use the launcher code under non-commercial conditions.

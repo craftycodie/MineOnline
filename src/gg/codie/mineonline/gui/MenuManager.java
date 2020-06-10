@@ -68,7 +68,7 @@ public class MenuManager {
         return updateAvailable;
     }
 
-    public static final String CURRENT_VERSION = "1.0.0-RC3";
+    public static final String CURRENT_VERSION = "1.0.0";
 
     public static void main(String[] args) throws Exception {
         formopen = true;
