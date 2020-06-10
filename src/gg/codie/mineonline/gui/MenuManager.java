@@ -63,10 +63,24 @@ public class MenuManager {
 
     private static GameObject playerScale;
 
+    static boolean updateAvailable = false;
+    public static boolean isUpdateAvailable() {
+        return updateAvailable;
+    }
+
+    public static final String CURRENT_VERSION = "1.0.0-RC2";
+
     public static void main(String[] args) throws Exception {
         formopen = true;
 
 //        DisplayManager.getFrame().setResizable(false);
+
+        try {
+            System.out.println(MinecraftAPI.getLauncherVersion());
+            updateAvailable = !MinecraftAPI.getLauncherVersion().replaceAll("\\s","").equals(CURRENT_VERSION);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
 
         LibraryManager.updateClasspath();
         LibraryManager.updateNativesPath();

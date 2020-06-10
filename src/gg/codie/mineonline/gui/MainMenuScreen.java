@@ -5,18 +5,23 @@ import gg.codie.mineonline.MinecraftVersionInfo;
 import gg.codie.mineonline.Properties;
 import gg.codie.mineonline.Session;
 import gg.codie.mineonline.gui.events.IOnClickListener;
+import gg.codie.mineonline.gui.font.GUIText;
 import gg.codie.mineonline.gui.rendering.*;
 import gg.codie.mineonline.gui.components.MediumButton;
 import gg.codie.mineonline.gui.components.TinyButton;
+import gg.codie.mineonline.gui.rendering.font.TextMaster;
 import gg.codie.mineonline.gui.rendering.models.RawModel;
 import gg.codie.mineonline.gui.rendering.models.TexturedModel;
 import gg.codie.mineonline.gui.rendering.shaders.GUIShader;
 import gg.codie.mineonline.gui.rendering.textures.ModelTexture;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
+import java.awt.*;
 import java.io.File;
+import java.net.URI;
 
 public class MainMenuScreen implements IMenuScreen {
     GUIObject logo;
@@ -25,6 +30,8 @@ public class MainMenuScreen implements IMenuScreen {
     MediumButton versionButton;
     TinyButton optionsButton;
     TinyButton skinButton;
+
+    GUIText updateAvailableText;
 
     static SelectVersionMenuScreen selectVersionMenuScreen = null;
 
@@ -95,6 +102,11 @@ public class MainMenuScreen implements IMenuScreen {
             }
         });
 
+        if(MenuManager.isUpdateAvailable()) {
+            updateAvailableText = new GUIText("Update available!", 1.5f, TextMaster.minecraftFont, new Vector2f(0, DisplayManager.getDefaultHeight() - 32), DisplayManager.getDefaultWidth(), true, true);
+            updateAvailableText.setColour(1f, 1f, 0f);
+        }
+
         if (!Session.session.isOnline()) {
             skinButton.setDisabled(true);
         }
@@ -106,6 +118,25 @@ public class MainMenuScreen implements IMenuScreen {
         versionButton.update();
         optionsButton.update();
         skinButton.update();
+
+        if(MenuManager.isUpdateAvailable()) {
+            int x = Mouse.getX();
+            int y = Mouse.getY();
+
+            boolean mouseIsOver =
+                    x - ((Display.getWidth() / 2) - DisplayManager.scaledWidth(75)) <= DisplayManager.scaledWidth(150)
+                            && x - ((Display.getWidth() / 2) - DisplayManager.scaledWidth(75)) >= 0
+                            && y - DisplayManager.scaledHeight(18) - DisplayManager.getYBuffer() <= DisplayManager.scaledHeight(22)
+                            && y - DisplayManager.scaledHeight(18) - DisplayManager.getYBuffer() >= 0;
+
+            if (MouseHandler.didClick() && mouseIsOver) {
+                try {
+                    Desktop.getDesktop().browse(new URI("http://" + Properties.properties.getString("apiDomainName") + "/download.jsp"));
+                } catch (Exception ex) {
+
+                }
+            }
+        }
     }
 
     public void render(Renderer renderer) {
@@ -142,5 +173,7 @@ public class MainMenuScreen implements IMenuScreen {
         versionButton.cleanUp();
         skinButton.cleanUp();
         optionsButton.cleanUp();
+        if(updateAvailableText != null)
+            updateAvailableText.remove();
     }
 }

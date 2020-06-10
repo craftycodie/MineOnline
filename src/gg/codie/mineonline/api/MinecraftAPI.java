@@ -351,7 +351,26 @@ public class MinecraftAPI {
         return jsonArray;
     }
 
+    public static String getLauncherVersion() throws IOException {
+        HttpURLConnection connection = null;
 
+        URL url = new URL("http://" + Properties.properties.getString("apiDomainName") + "/launcherversion");
+        connection = (HttpURLConnection) url.openConnection();
+        connection.connect();
+
+        InputStream is = connection.getInputStream();
+        BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+
+        StringBuilder response = new StringBuilder();
+        String line;
+        while ((line = rd.readLine()) != null) {
+            response.append(line);
+            response.append('\r');
+        }
+        rd.close();
+
+        return response.toString();
+    }
 
     public static MineOnlineAccount account(String username, String sessionId) throws IOException, ParseException {
         HttpURLConnection connection = null;

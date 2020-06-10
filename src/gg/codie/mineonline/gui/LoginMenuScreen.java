@@ -143,9 +143,6 @@ public class LoginMenuScreen implements IMenuScreen {
                         && y - DisplayManager.scaledHeight(18) - DisplayManager.getYBuffer() <= DisplayManager.scaledHeight(22)
                         && y - DisplayManager.scaledHeight(18) - DisplayManager.getYBuffer() >= 0;
 
-        if(mouseIsOver)
-            System.out.println("over");
-
         if(MouseHandler.didClick() && mouseIsOver) {
             try {
                 Desktop.getDesktop().browse(new URI("http://" + Properties.properties.getString("apiDomainName") + "/register.jsp"));
