@@ -9,6 +9,7 @@ import gg.codie.utils.MD5Checksum;
 import gg.codie.utils.OSUtils;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
@@ -441,6 +442,18 @@ public class MinecraftLauncher extends Applet implements AppletStub{
 
                 if (firstUpdate) {
                     firstUpdate = false;
+                }
+
+                // This stops the mouse from spinning out on mac os.
+                if (OSUtils.isMac() && minecraftVersion.enableMacosCursorPatch) {
+                    try {
+                        // If you're not in a menu...
+                        if (Mouse.getNativeCursor() != null) {
+                            Mouse.setCursorPosition(Display.getWidth() / 2, Display.getHeight() / 2);
+                        }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
                 }
             }
         });

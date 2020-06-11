@@ -51,8 +51,9 @@ public class MinecraftVersionInfo {
         public final String info;
         public final String[] clientMd5s;
         public final boolean forceFullscreenMacos;
+        public final boolean enableMacosCursorPatch;
 
-        private MinecraftVersion(String sha256, String name, String md5, String type, boolean baseURLHasNoPort, boolean enableScreenshotPatch, String clientName, boolean hasHeartbeat, boolean enableFullscreenPatch, String info, String[] clientMd5s, boolean forceFullscreenMacos) {
+        private MinecraftVersion(String sha256, String name, String md5, String type, boolean baseURLHasNoPort, boolean enableScreenshotPatch, String clientName, boolean hasHeartbeat, boolean enableFullscreenPatch, String info, String[] clientMd5s, boolean forceFullscreenMacos, boolean enableMacosCursorPatch) {
             this.sha256 = sha256;
             this.name = name;
             this.md5 = md5;
@@ -65,6 +66,7 @@ public class MinecraftVersionInfo {
             this.info = info;
             this.clientMd5s = clientMd5s;
             this.forceFullscreenMacos = forceFullscreenMacos;
+            this.enableMacosCursorPatch = enableMacosCursorPatch;
         }
     }
 
@@ -126,7 +128,8 @@ public class MinecraftVersionInfo {
                         (object.has("enableFullscreenPatch") && object.getBoolean("enableFullscreenPatch")),
                         (object.has("info") ? object.getString("info") : null),
                         (object.has("clientMd5s") ? JSONUtils.getStringArray(object.getJSONArray("clientMd5s")) : new String[0]),
-                        (object.has("forceFullscreenMacos") && object.getBoolean("forceFullscreenMacos"))
+                        (object.has("forceFullscreenMacos") && object.getBoolean("forceFullscreenMacos")),
+                        (object.has("enableMacosCursorPatch") && object.getBoolean("enableMacosCursorPatch"))
                 ));
             }
         } catch (IOException ex) {
@@ -164,7 +167,8 @@ public class MinecraftVersionInfo {
                             (object.has("enableFullscreenPatch") && object.getBoolean("enableFullscreenPatch")),
                             (object.has("info") ? object.getString("info") : null),
                             (object.has("clientMd5s") ? JSONUtils.getStringArray(object.getJSONArray("clientMd5s")) : new String[0]),
-                            (object.has("forceFullscreenMacos") && object.getBoolean("forceFullscreenMacos"))
+                            (object.has("forceFullscreenMacos") && object.getBoolean("forceFullscreenMacos")),
+                            (object.has("enableMacosCursorPatch") && object.getBoolean("enableMacosCursorPatch"))
                     ));
                 }
             } catch (IOException ex) {
