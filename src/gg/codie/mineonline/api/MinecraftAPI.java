@@ -262,8 +262,9 @@ public class MinecraftAPI {
         HttpURLConnection connection = null;
 
         try {
-            String parameters = "ip=" + URLEncoder.encode(ip, "UTF-8")
-                    + "&port=" + URLEncoder.encode(port, "UTF-8")
+            String parameters =
+                    "port=" + URLEncoder.encode(port, "UTF-8")
+                    + (ip != null ? ("ip=" + URLEncoder.encode(ip, "UTF-8")) : "")
                     + (users > -1 ? "&users=" + URLEncoder.encode("" + users, "UTF-8") : "")
                     + "&max=" + URLEncoder.encode("" + maxUsers, "UTF-8")
                     + "&name=" + URLEncoder.encode(name, "UTF-8")

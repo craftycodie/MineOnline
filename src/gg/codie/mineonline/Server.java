@@ -21,6 +21,12 @@ public class Server {
 	    LibraryManager.extractLibraries();
 	    LibraryManager.updateClasspath();
 
+	    System.out.println("MineOnline " + Globals.LAUNCHER_VERSION);
+
+	    if (!Globals.LAUNCHER_VERSION.equals(MinecraftAPI.getLauncherVersion())) {
+	        System.out.println("An update is available!");
+        }
+
 	    File jarFile = new File(args[0]);
 	    if(!jarFile.exists()) {
 	        System.err.println("Couldn't find jar file " + args[0]);
@@ -111,7 +117,7 @@ public class Server {
                     }
 
                     MinecraftAPI.listServer(
-                            serverProperties.getProperty("server-ip"),
+                            serverProperties.getProperty("server-ip", null),
                             serverProperties.getProperty("server-port", serverProperties.getProperty("port", "25565")),
                             hasHeartbeat ? -1 : users,
                             Integer.parseInt(serverProperties.getProperty("max-players")),
