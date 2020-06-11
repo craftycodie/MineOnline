@@ -245,5 +245,7 @@
 
   { "name": "Skylands 0.1", "md5": "F8F78A4ED4033547CC1EA28C776DA7AE", "type": "client", "info": "Beta 1.7.3 mod" },
 
-  { "name": "Skylands 0.1", "md5": "22D6B302995BA88549C98ED1996A5430", "type": "server", "info": "Beta 1.7.3 mod", "clientName": "Beta 1.7.3", "clientMd5s": ["F8F78A4ED4033547CC1EA28C776DA7AE", "EAE3353FDAA7E10A59B4CB5B45BFA10D"] }
+  { "name": "Skylands 0.1", "md5": "22D6B302995BA88549C98ED1996A5430", "type": "server", "info": "Beta 1.7.3 mod", "clientName": "Beta 1.7.3", "clientMd5s": ["F8F78A4ED4033547CC1EA28C776DA7AE", "EAE3353FDAA7E10A59B4CB5B45BFA10D"] },
+  { "name": "Skylands 0.2", "md5": "6938B2F59F9A4D7CBB9090F103198A2F", "type": "server", "info": "Beta 1.7.3 mod", "clientName": "Beta 1.7.3", "clientMd5s": ["F8F78A4ED4033547CC1EA28C776DA7AE", "EAE3353FDAA7E10A59B4CB5B45BFA10D"] },
+  { "name": "Skylands 0.3", "md5": "7F9C7BC43902FED5520C1E2A2BD9BAF3", "type": "server", "info": "Beta 1.7.3 mod", "clientName": "Beta 1.7.3", "clientMd5s": ["F8F78A4ED4033547CC1EA28C776DA7AE", "EAE3353FDAA7E10A59B4CB5B45BFA10D"] }
 ]
