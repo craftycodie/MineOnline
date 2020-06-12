@@ -3,6 +3,7 @@ package gg.codie.mineonline.gui.components;
 import gg.codie.mineonline.MinecraftVersionInfo;
 import gg.codie.mineonline.Properties;
 import gg.codie.mineonline.Session;
+import gg.codie.mineonline.api.EMineOnlineServerStatus;
 import gg.codie.mineonline.api.MineOnlineServer;
 import gg.codie.mineonline.api.MinecraftAPI;
 import gg.codie.mineonline.gui.MenuManager;
@@ -133,7 +134,7 @@ public class SelectableServerList extends GUIObject {
 
         int buffer = (72) * getServers().size();
         super.addChild(
-                new SelectableServer(name, new Vector2f((DisplayManager.getDefaultWidth() / 2) - 220, 140 + buffer), name, info1, info2, server, this, new IOnClickListener() {
+                new SelectableServer(name, new Vector2f((DisplayManager.getDefaultWidth() / 2) - 220, 140 + buffer), name, info1, info2, server.status, server, this, new IOnClickListener() {
                     @Override
                     public void onClick() {
                         if (doubleClickListener != null)
@@ -279,13 +280,8 @@ public class SelectableServerList extends GUIObject {
         float viewportStartY = DisplayManager.getYBuffer() + DisplayManager.scaledHeight(69) + viewportHeight;
         float scrollBarYOffset = viewportStartY - (scrollableHeight * scrollbarPosition) - scrollbarHeight;
 
-//        System.out.println(viewportHeight);
-//        System.out.println(contentHeight);
-//        System.out.println(viewportHeight / contentHeight);
-
         scrollBar.model.setRawModel(Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth((DisplayManager.getDefaultWidth() / 2) + 240) + DisplayManager.getXBuffer(), scrollBarYOffset), new Vector2f(DisplayManager.scaledWidth(10), scrollbarHeight), TextureHelper.getPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(1, 129), new Vector2f(1, 1))));
         scrollBarBackground.model.setRawModel(Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth((DisplayManager.getDefaultWidth() / 2) + 240) + DisplayManager.getXBuffer(), DisplayManager.scaledHeight(69) + DisplayManager.getYBuffer()), new Vector2f(DisplayManager.scaledWidth(10), viewportHeight), TextureHelper.getPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(0, 129), new Vector2f(1, 1))));
-        //        scrollBar.model.setRawModel();
     }
 
     public void render(Renderer renderer, GUIShader shader) {

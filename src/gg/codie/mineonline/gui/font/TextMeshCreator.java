@@ -24,7 +24,7 @@ public class TextMeshCreator {
         return data;
     }
 
-    private List<Line> createStructure(GUIText text) {
+    public List<Line> createStructure(GUIText text) {
         char[] chars = text.getTextString().toCharArray();
         List<Line> lines = new ArrayList<Line>();
         Line currentLine = new Line(metaData.getSpaceWidth(), text.getFontSize(), text.getMaxLineSize());

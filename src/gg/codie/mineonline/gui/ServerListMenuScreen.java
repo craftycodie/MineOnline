@@ -33,7 +33,7 @@ public class ServerListMenuScreen implements IMenuScreen {
             @Override
             public void onClick() {
                 SelectableServer selectedServer = selectableServerList.getSelected();
-                if (selectedServer != null) {
+                if (selectedServer != null && selectedServer.server.ip != null) {
                     try {
                         Properties.loadProperties();
 
@@ -41,30 +41,32 @@ public class ServerListMenuScreen implements IMenuScreen {
 
                         String[] minecraftJars = Properties.properties.has("minecraftJars") ? JSONUtils.getStringArray(Properties.properties.getJSONArray("minecraftJars")) : new String[0];
 
-                        for (String compatibleClientMd5 : serverVersion.clientMd5s) {
-                            for (String path : minecraftJars) {
-                                File file = new File(path);
+                        if(serverVersion != null) {
+                            for (String compatibleClientMd5 : serverVersion.clientMd5s) {
+                                for (String path : minecraftJars) {
+                                    File file = new File(path);
 
-                                MinecraftVersionInfo.MinecraftVersion clientVersion = MinecraftVersionInfo.getVersion(path);
+                                    MinecraftVersionInfo.MinecraftVersion clientVersion = MinecraftVersionInfo.getVersion(path);
 
-                                try {
-                                    if (!MinecraftVersionInfo.isRunnableJar(file.getPath())) {
+                                    try {
+                                        if (!MinecraftVersionInfo.isRunnableJar(file.getPath())) {
+                                            continue;
+                                        }
+                                    } catch (IOException ex) {
                                         continue;
                                     }
-                                } catch (IOException ex) {
-                                    continue;
-                                }
 
-                                if(clientVersion != null && clientVersion.md5.equals(compatibleClientMd5)) {
-                                    try {
-                                        new MinecraftOptions(LauncherFiles.MINECRAFT_OPTIONS_PATH).setOption("lastServer", selectedServer.server.ip + "_" + selectedServer.server.port);
-                                    } catch (Exception ex) {
-                                        // ignore
+                                    if (clientVersion != null && clientVersion.md5.equals(compatibleClientMd5)) {
+                                        try {
+                                            new MinecraftOptions(LauncherFiles.MINECRAFT_OPTIONS_PATH).setOption("lastServer", selectedServer.server.ip + "_" + selectedServer.server.port);
+                                        } catch (Exception ex) {
+                                            // ignore
+                                        }
+                                        String mppass = MinecraftAPI.getMpPass(Session.session.getSessionToken(), selectedServer.server.ip, "" + selectedServer.server.port);
+
+                                        new MinecraftLauncher(path, selectedServer.server.ip, "" + selectedServer.server.port, mppass).startMinecraft();
+                                        return;
                                     }
-                                    String mppass = MinecraftAPI.getMpPass(Session.session.getSessionToken(), selectedServer.server.ip, "" + selectedServer.server.port);
-
-                                    new MinecraftLauncher(path, selectedServer.server.ip, "" + selectedServer.server.port, mppass).startMinecraft();
-                                    return;
                                 }
                             }
                         }
@@ -122,9 +124,10 @@ public class ServerListMenuScreen implements IMenuScreen {
     }
 
     public void update() {
-        if(this.connectButton.getDisabled() && selectableServerList.getSelected() != null)
+        if(this.connectButton.getDisabled() && (selectableServerList.getSelected() != null && selectableServerList.getSelected().server.status.canJoin()))
             this.connectButton.setDisabled(false);
-
+        else if(!this.connectButton.getDisabled() && (selectableServerList.getSelected() == null || !selectableServerList.getSelected().server.status.canJoin()))
+            this.connectButton.setDisabled(true);
         connectButton.update();
         backButton.update();
         selectableServerList.update();

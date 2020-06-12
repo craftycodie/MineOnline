@@ -1,8 +1,6 @@
 package gg.codie.mineonline.api;
 
 import gg.codie.mineonline.Globals;
-import gg.codie.mineonline.MineOnline;
-import gg.codie.mineonline.Properties;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -12,10 +10,9 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.LinkedList;
-import java.util.Locale;
 
 public class MinecraftAPI {
 
@@ -258,26 +255,38 @@ public class MinecraftAPI {
         }
     }
 
-    public static boolean listServer(String ip, String port, int users, int maxUsers, String name, boolean onlineMode, String md5, boolean isPrivate) {
+    public static boolean listServer(String ip, String port, int users, int maxUsers, String name, boolean onlineMode, String md5, boolean whitelisted, String[] whitelistUsers, String[] whitelistIPs, String[] bannedUsers, String[] bannedIPs) {
         HttpURLConnection connection = null;
 
         try {
-            String parameters =
-                    "port=" + URLEncoder.encode(port, "UTF-8")
-                    + (ip != null ? ("ip=" + URLEncoder.encode(ip, "UTF-8")) : "")
-                    + (users > -1 ? "&users=" + URLEncoder.encode("" + users, "UTF-8") : "")
-                    + "&max=" + URLEncoder.encode("" + maxUsers, "UTF-8")
-                    + "&name=" + URLEncoder.encode(name, "UTF-8")
-                    + "&onlinemode=" + URLEncoder.encode(Boolean.toString(onlineMode), "UTF-8")
-                    + "&md5=" + URLEncoder.encode(md5, "UTF-8")
-                    + "&public=" + URLEncoder.encode(Boolean.toString(!isPrivate), "UTF-8");
+            JSONObject jsonObject = new JSONObject();
+            if (ip != null)
+                jsonObject.put("ip", ip);
+            jsonObject.put("port", port);
+            if (users > -1)
+                jsonObject.put("users", users);
+            jsonObject.put("max", maxUsers);
+            jsonObject.put("name", name);
+            jsonObject.put("onlinemode", onlineMode);
+            jsonObject.put("md5", md5);
+            jsonObject.put("whitelisted", whitelisted);
+            jsonObject.put("whitelistUsers", whitelistUsers);
+            jsonObject.put("whitelistIPs", whitelistIPs);
+            jsonObject.put("bannedUsers", bannedUsers);
+            jsonObject.put("bannedIPs", bannedIPs);
 
-            URL url = new URL("http://" + Globals.API_HOSTNAME + "/mineonline/listserver.jsp?" + parameters);
+            String json = jsonObject.toString();
+
+            URL url = new URL("http://" + Globals.API_HOSTNAME + "/mineonline/listserver.jsp");
             connection = (HttpURLConnection) url.openConnection();
-            connection.setDoInput(true);
-            connection.setDoOutput(false);
+            connection.setRequestProperty("Content-Type", "application/json");
             connection.setRequestMethod("POST");
-            connection.connect();
+            connection.setDoInput(true);
+            connection.setDoOutput(true);
+
+            connection.getOutputStream().write(json.getBytes(StandardCharsets.UTF_8));
+            connection.getOutputStream().flush();
+            connection.getOutputStream().close();
 
             InputStream is = connection.getInputStream();
             BufferedReader rd = new BufferedReader(new InputStreamReader(is));
@@ -373,39 +382,4 @@ public class MinecraftAPI {
 
         return response.toString();
     }
-
-    public static MineOnlineAccount account(String username, String sessionId) throws IOException, ParseException {
-        HttpURLConnection connection = null;
-
-        String parameters = "session=" + URLEncoder.encode(sessionId, "UTF-8") + "&name=" + URLEncoder.encode(username, "UTF-8");
-        URL url = new URL("http://" + Globals.API_HOSTNAME + "/mineonline/account.jsp?" + parameters);
-        connection = (HttpURLConnection) url.openConnection();
-        connection.setDoInput(true);
-        connection.setDoOutput(false);
-        connection.connect();
-
-        InputStream is = connection.getInputStream();
-        BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-
-        StringBuilder response = new StringBuilder();
-        String line;
-        while ((line = rd.readLine()) != null) {
-            response.append(line);
-            response.append('\r');
-        }
-        rd.close();
-
-        JSONObject jsonObject = new JSONObject(response.toString());
-
-        if (connection != null)
-            connection.disconnect();
-
-        return new MineOnlineAccount(
-                jsonObject.getString("user"),
-                jsonObject.getString("email"),
-                jsonObject.getBoolean("premium"),
-                (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSSSS", Locale.US)).parse(jsonObject.getString("createdAt"))
-        );
-    }
-
 }

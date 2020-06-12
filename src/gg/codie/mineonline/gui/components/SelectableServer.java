@@ -1,5 +1,6 @@
 package gg.codie.mineonline.gui.components;
 
+import gg.codie.mineonline.api.EMineOnlineServerStatus;
 import gg.codie.mineonline.api.MineOnlineServer;
 import gg.codie.mineonline.gui.MouseHandler;
 import gg.codie.mineonline.gui.MenuManager;
@@ -24,17 +25,19 @@ public class SelectableServer extends GUIObject {
     String versionName;
     String info1;
     String info2;
+    EMineOnlineServerStatus status;
 
     GUIText nameText;
     GUIText info1Text;
     GUIText info2Text;
+    GUIText statusText;
 
     private SelectableServerList parent;
     private IOnClickListener doubleClickListener;
 
     public final MineOnlineServer server;
 
-    public SelectableServer(String name, Vector2f position, String versionName, String info1, String info2, MineOnlineServer server, SelectableServerList parent, IOnClickListener doubleClickListener) {
+    public SelectableServer(String name, Vector2f position, String versionName, String info1, String info2, EMineOnlineServerStatus status, MineOnlineServer server, SelectableServerList parent, IOnClickListener doubleClickListener) {
         super(name,
                 new TexturedModel(Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth(position.x) + DisplayManager.getXBuffer(), DisplayManager.scaledHeight(DisplayManager.getDefaultHeight() - position.y) + DisplayManager.getYBuffer()), new Vector2f(DisplayManager.scaledWidth(440), DisplayManager.scaledHeight(72)), TextureHelper.getPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(0, 130), new Vector2f(220, 36))), new ModelTexture(Loader.singleton.loadTexture(MenuManager.class.getResource("/img/gui.png")))),
                 new Vector3f(0, 0, 0), new Vector3f(), new Vector3f(1, 1, 1)
@@ -46,15 +49,28 @@ public class SelectableServer extends GUIObject {
         this.info1 = info1;
         this.parent = parent;
         this.info2 = info2;
+        this.status = status;
         this.doubleClickListener = doubleClickListener;
         this.server = server;
 
         nameText = new GUIText(this.versionName, 1.5f, TextMaster.minecraftFont, new Vector2f(currentPosition.x + 8, currentPosition.y - 70), 440, false, true);
         nameText.setYBounds(new Vector2f(69 , 69));
 
-        info1Text = new GUIText(this.info1, 1.5f, TextMaster.minecraftFont, new Vector2f(currentPosition.x + 8, currentPosition.y - 48), 440, false, true);
-        info1Text.setColour(0.5F, 0.5F, 0.5F);
-        info1Text.setYBounds(new Vector2f(69 , 69));
+        if (this.status != null && this.status != EMineOnlineServerStatus.NONE) {
+            info1Text = new GUIText(this.info1 + " ", 1.5f, TextMaster.minecraftFont, new Vector2f(currentPosition.x + 8, currentPosition.y - 48), 440, false, true);
+            info1Text.setColour(0.5F, 0.5F, 0.5F);
+            info1Text.setYBounds(new Vector2f(69, 69));
+
+            int info1Length = info1Text.getLineLength();
+            statusText = new GUIText(this.status.toString(), 1.5f, TextMaster.minecraftFont, new Vector2f(currentPosition.x + 8 + info1Length, currentPosition.y - 48), 440 - info1Length, false, true);
+            Vector3f statusColor = this.status.getColor();
+            statusText.setColour(statusColor.x, statusColor.y, statusColor.z);
+            statusText.setYBounds(new Vector2f(69, 69));
+        } else {
+            info1Text = new GUIText(this.info1, 1.5f, TextMaster.minecraftFont, new Vector2f(currentPosition.x + 8, currentPosition.y - 48), 440, false, true);
+            info1Text.setColour(0.5F, 0.5F, 0.5F);
+            info1Text.setYBounds(new Vector2f(69, 69));
+        }
 
         if(this.info2 != null) {
             info2Text = new GUIText(this.info2, 1.5f, TextMaster.minecraftFont, new Vector2f(currentPosition.x + 8, currentPosition.y - 26), 440, false, true);
@@ -121,6 +137,8 @@ public class SelectableServer extends GUIObject {
 
 
         nameText.remove();
+        if(statusText != null)
+            statusText.remove();
         if (info2Text != null)
             info2Text.remove();
         info1Text.remove();
@@ -128,9 +146,21 @@ public class SelectableServer extends GUIObject {
         nameText = new GUIText(this.versionName, 1.5f, TextMaster.minecraftFont, new Vector2f(currentPosition.x + 8, currentPosition.y - 70), 440, false, true);
         nameText.setYBounds(new Vector2f(69 , 69));
 
-        info1Text = new GUIText(this.info1, 1.5f, TextMaster.minecraftFont, new Vector2f(currentPosition.x + 8, currentPosition.y - 48), 440, false, true);
-        info1Text.setColour(0.5F, 0.5F, 0.5F);
-        info1Text.setYBounds(new Vector2f(69 , 69));
+        if (this.status != null && this.status != EMineOnlineServerStatus.NONE) {
+            info1Text = new GUIText(this.info1 + " ", 1.5f, TextMaster.minecraftFont, new Vector2f(currentPosition.x + 8, currentPosition.y - 48), 440, false, true);
+            info1Text.setColour(0.5F, 0.5F, 0.5F);
+            info1Text.setYBounds(new Vector2f(69, 69));
+
+            int info1Length = info1Text.getLineLength();
+            statusText = new GUIText(this.status.toString(), 1.5f, TextMaster.minecraftFont, new Vector2f(currentPosition.x + 8 + info1Length, currentPosition.y - 48), 440 - info1Length, false, true);
+            Vector3f statusColor = this.status.getColor();
+            statusText.setColour(statusColor.x, statusColor.y, statusColor.z);
+            statusText.setYBounds(new Vector2f(69, 69));
+        } else {
+            info1Text = new GUIText(this.info1, 1.5f, TextMaster.minecraftFont, new Vector2f(currentPosition.x + 8, currentPosition.y - 48), 440, false, true);
+            info1Text.setColour(0.5F, 0.5F, 0.5F);
+            info1Text.setYBounds(new Vector2f(69, 69));
+        }
 
         if(this.info2 != null) {
             info2Text = new GUIText(this.info2, 1.5f, TextMaster.minecraftFont, new Vector2f(currentPosition.x + 8, currentPosition.y - 26), 440, false, true);
@@ -141,6 +171,8 @@ public class SelectableServer extends GUIObject {
 
     public void cleanUp() {
         nameText.remove();
+        if(statusText != null)
+            statusText.remove();
         info1Text.remove();
         if (info2Text != null)
             info2Text.remove();

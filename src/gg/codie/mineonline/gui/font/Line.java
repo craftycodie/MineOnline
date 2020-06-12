@@ -70,7 +70,7 @@ public class Line {
     /**
      * @return The current screen-space length of the line.
      */
-    protected double getLineLength() {
+    public double getLineLength() {
         return currentLineLength;
     }
 

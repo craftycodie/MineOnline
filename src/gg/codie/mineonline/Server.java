@@ -7,6 +7,7 @@ import gg.codie.utils.MD5Checksum;
 import java.io.*;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -23,8 +24,12 @@ public class Server {
 
 	    System.out.println("MineOnline " + Globals.LAUNCHER_VERSION);
 
-	    if (!Globals.LAUNCHER_VERSION.equals(MinecraftAPI.getLauncherVersion())) {
-	        System.out.println("An update is available!");
+	    try {
+            if (!Globals.LAUNCHER_VERSION.equals(MinecraftAPI.getLauncherVersion().replaceAll("\\s",""))) {
+                System.out.println("An update is available!");
+            }
+        } catch (Exception ex) {
+
         }
 
 	    File jarFile = new File(args[0]);
@@ -83,6 +88,10 @@ public class Server {
 
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(stdin));
 
+        String whitelistPath = args[0].replace(Paths.get(args[0]).getFileName().toString(), "whitelist.txt");
+        String bannedPath = args[0].replace(Paths.get(args[0]).getFileName().toString(), "banned-players.txt");
+        String bannedIpsPath = args[0].replace(Paths.get(args[0]).getFileName().toString(), "banned-ips.txt");
+
         Scanner scanner = new Scanner(System.in);
         long lastPing = System.currentTimeMillis();
         while(serverProcess.isAlive()) {
@@ -97,8 +106,13 @@ public class Server {
                 }
             }
 
-            if (!Boolean.parseBoolean(serverProperties.getProperty("dont-list", "false")) && System.currentTimeMillis() - lastPing > 45000) {
+            if (Boolean.parseBoolean(serverProperties.getProperty("public", "true")) && System.currentTimeMillis() - lastPing > 45000) {
                 try {
+                    String[] whitelistedPlayers = new String[0];
+                    String[] whitelistedIPs = new String[0];
+                    String[] bannedPlayers = readUsersFile(bannedPath);
+                    String[] bannedIPs = readUsersFile(bannedIpsPath);
+
                     if (!gotProperties) {
                         loadServerProperties(serverProperties, args[0]);
                     }
@@ -109,11 +123,13 @@ public class Server {
                         writer.flush();
                     }
 
-                    boolean isPrivate = false;
-                    if (serverProperties.containsKey("whitelist-enabled")) {
-                        isPrivate = serverProperties.getProperty("whitelist-enabled").equals("true");
-                    } else if (serverProperties.containsKey("public")) {
-                        isPrivate = serverProperties.getProperty("public").equals("false");
+                    boolean whitelisted = false;
+                    if (serverProperties.containsKey("white-list")) {
+                        whitelisted = serverProperties.getProperty("white-list").equals("true");
+                    }
+
+                    if(whitelisted) {
+                        whitelistedPlayers = readUsersFile(whitelistPath);
                     }
 
                     MinecraftAPI.listServer(
@@ -124,7 +140,11 @@ public class Server {
                             serverProperties.getProperty("server-name", "Untitled Server"),
                             serverProperties.getProperty("online-mode", serverProperties.getProperty("verify-names", "true")).equals("true"),
                             md5,
-                            isPrivate
+                            whitelisted,
+                            whitelistedPlayers,
+                            whitelistedIPs,
+                            bannedPlayers,
+                            bannedIPs
                     );
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -138,6 +158,26 @@ public class Server {
 
         Proxy.stopProxy();
 	}
+
+	private static String[] readUsersFile(String path) {
+        try {
+            File usersFile = new File(path);
+            if (usersFile.exists()) {
+                LinkedList list = new LinkedList();
+                BufferedReader reader = new BufferedReader(new FileReader(usersFile));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    list.add(line);
+                }
+                reader.close();
+                return (String[])list.toArray(new String[0]);
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+
+        return new String[0];
+    }
 
     private static void redirectOutput(final InputStream src, final PrintStream dest) {
         new Thread(new Runnable() {

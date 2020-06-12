@@ -248,4 +248,9 @@ public class GUIText {
         return textString;
     }
 
+
+    public int getLineLength() {
+        return (int)(font.loader.createStructure(this).get(0).getLineLength() * DisplayManager.getDefaultWidth());
+    }
+
 }

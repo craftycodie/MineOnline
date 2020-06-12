@@ -12,7 +12,7 @@ import java.io.InputStream;
 public class FontType {
 
     private int textureAtlas;
-    private TextMeshCreator loader;
+    public TextMeshCreator loader;
 
     /**
      * Creates a new font and loads up the data about each character from the
