@@ -1,9 +1,8 @@
 package gg.codie.mineonline.gui.components;
 
 import gg.codie.mineonline.MinecraftVersionInfo;
-import gg.codie.mineonline.Properties;
+import gg.codie.mineonline.Settings;
 import gg.codie.mineonline.Session;
-import gg.codie.mineonline.api.EMineOnlineServerStatus;
 import gg.codie.mineonline.api.MineOnlineServer;
 import gg.codie.mineonline.api.MinecraftAPI;
 import gg.codie.mineonline.gui.MenuManager;
@@ -65,8 +64,8 @@ public class SelectableServerList extends GUIObject {
         try {
             LinkedList<MineOnlineServer> servers = MinecraftAPI.listServers(Session.session.getUsername(), Session.session.getSessionToken());
 
-            Properties.loadProperties();
-            String[] minecraftJars = Properties.properties.has("minecraftJars") ? JSONUtils.getStringArray(Properties.properties.getJSONArray("minecraftJars")) : new String[0];
+            Settings.loadSettings();
+            String[] minecraftJars = Settings.settings.has("minecraftJars") ? JSONUtils.getStringArray(Settings.settings.getJSONArray("minecraftJars")) : new String[0];
             LinkedList<MinecraftVersionInfo.MinecraftVersion> installedClients = new LinkedList<>();
 
             for (String path : minecraftJars) {

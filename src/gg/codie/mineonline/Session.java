@@ -2,15 +2,10 @@ package gg.codie.mineonline;
 
 import gg.codie.mineonline.gui.rendering.PlayerGameObject;
 
-import javax.crypto.*;
-import javax.crypto.spec.PBEKeySpec;
-import javax.crypto.spec.PBEParameterSpec;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Random;
 
 public class Session {
 
@@ -54,7 +49,7 @@ public class Session {
     public void cacheSkin () {
         (new Thread() {
             public void run() {
-                Properties.loadProperties();
+                Settings.loadSettings();
 
                 try (BufferedInputStream in = new BufferedInputStream(new URL("http://" + Globals.API_HOSTNAME + "/MinecraftSkins/" + username + ".png").openStream())) {
 

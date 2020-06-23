@@ -100,7 +100,7 @@ public class MinecraftVersionInfo {
         }
 
         try (URLReader input = new URLReader(path)) {
-            // load a properties file
+            // load a settings file
             char[] buffer = new char[8096];
             int bytes_read = 0;
             StringBuffer stringBuffer = new StringBuffer();
@@ -139,7 +139,7 @@ public class MinecraftVersionInfo {
 
         if (new File(LauncherFiles.CUSTOM_VERSION_INFO_PATH).exists()) {
             try (FileReader input = new FileReader(LauncherFiles.CUSTOM_VERSION_INFO_PATH)) {
-                // load a properties file
+                // load a settings file
                 char[] buffer = new char[8096];
                 int bytes_read = 0;
                 StringBuffer stringBuffer = new StringBuffer();

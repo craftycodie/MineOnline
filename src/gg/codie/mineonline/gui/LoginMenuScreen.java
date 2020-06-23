@@ -1,7 +1,6 @@
 package gg.codie.mineonline.gui;
 
 import gg.codie.mineonline.Globals;
-import gg.codie.mineonline.Properties;
 import gg.codie.mineonline.Session;
 import gg.codie.mineonline.api.MinecraftAPI;
 import gg.codie.mineonline.gui.events.IOnClickListener;

@@ -8,11 +8,6 @@ import java.net.HttpURLConnection;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -45,13 +40,13 @@ public class ProxyThread implements Runnable {
     public void run() {
         running.set(true);
 
-        Properties.loadProperties();
-        String[] redirectedDomains = JSONUtils.getStringArray(Properties.properties.getJSONArray("redirectedDomains"));
+        Settings.loadSettings();
+        String[] redirectedDomains = JSONUtils.getStringArray(Settings.settings.getJSONArray("redirectedDomains"));
 
         Socket clientSocket = null;
 
-        Properties.loadProperties();
-        if (Properties.properties.has("proxyLogging") && Properties.properties.getBoolean("proxyLogging"))
+        Settings.loadSettings();
+        if (Settings.settings.has("proxyLogging") && Settings.settings.getBoolean("proxyLogging"))
             System.out.println(serverSocket.get().getInetAddress() + ":" + serverSocket.get().getLocalPort());
 
         while (running.get()) {
@@ -73,7 +68,7 @@ public class ProxyThread implements Runnable {
 
                 String requestHeaders = new String(buffer).split("\r\n\r\n")[0];
 
-//                // keep reading.
+                // keep reading.
                 String requestString = new String(buffer);
                 for (String header : requestHeaders.split("\r\n")) {
                     if(header.contains("Content-Length")) {
@@ -98,19 +93,20 @@ public class ProxyThread implements Runnable {
                     requestString = requestString.replace(redirectedDomain, Globals.API_HOSTNAME);
                 }
 
-                Properties.loadProperties();
-                if (Properties.properties.has("proxyLogging") && Properties.properties.getBoolean("proxyLogging"))
+                Settings.loadSettings();
+                if (Settings.settings.has("proxyLogging") && Settings.settings.getBoolean("proxyLogging"))
                     System.out.println("Request");
                 requestHeaders = requestString.split("\r\n\r\n")[0];
 
-                Properties.loadProperties();
-                if (Properties.properties.has("proxyLogging") && Properties.properties.getBoolean("proxyLogging"))
+                Settings.loadSettings();
+                if (Settings.settings.has("proxyLogging") && Settings.settings.getBoolean("proxyLogging"))
                     System.out.println(requestString);
 
 
                 String urlString = pullLinks(requestString).get(0);
 
                 if((urlString.contains("/resources/") && !urlString.endsWith("/resources/")) || (urlString.contains("/MinecraftResources/") && !urlString.endsWith("/MinecraftResources/"))) {
+                    // There's probably a better way to do this, but to avoid downloading resources every play (which would be demanding on the API), 404 if resources are already downloaded.
                     String oggFilePath = urlString;
 
                     if(urlString.contains("/resources/")) {
@@ -124,8 +120,8 @@ public class ProxyThread implements Runnable {
                     File oggFile = new File(LauncherFiles.MINECRAFT_RESOURCES_PATH + oggFilePath);
 
                     if(oggFile.exists()) {
-                        Properties.loadProperties();
-                        if (Properties.properties.has("proxyLogging") && Properties.properties.getBoolean("proxyLogging"))
+                        Settings.loadSettings();
+                        if (Settings.settings.has("proxyLogging") && Settings.settings.getBoolean("proxyLogging"))
                             System.out.println("Responding already downloaded resource.");
 
                         String responseHeaders =
@@ -134,6 +130,9 @@ public class ProxyThread implements Runnable {
                         clientSocket.getOutputStream().write(responseHeaders.getBytes());
                     }
                 }
+
+
+
 
                 URL url = new URL(urlString);
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -147,20 +146,43 @@ public class ProxyThread implements Runnable {
                 String methodLine = requestHeaders.substring(0, requestHeaders.indexOf("\r\n"));
                 connection.setRequestMethod(methodLine.substring(0, methodLine.indexOf(" ")));
 
-                connection.setUseCaches(false);
-                connection.setDoInput(true);
-
-
                 byte[] content = new byte[0];
 
                 if(headerSize < requestBytes.length) {
                     content = Arrays.copyOfRange(requestBytes, headerSize, requestBytes.length);
+
+                    if (urlString.endsWith("/heartbeat.jsp")) {
+                        // If there's a server running which has a connection hostname not equal to the bound IP address (like if you're using ngrok or something),
+                        // Update the heartbeat to use that hostname.
+                        if (Server.serverlistAddress != null && !Server.serverlistAddress.isEmpty()) {
+                            String query = new String(content);
+                            String ip = query.substring(query.indexOf("ip=") + 3);
+                            ip = ip.substring(0, ip.indexOf("&"));
+                            // Append "ip=" in case no IP was provided.
+                            query = query.replace("ip=" + ip, "ip=" + Server.serverlistAddress);
+                            content = query.getBytes();
+                        }
+                        if (Server.serverlistPort != null && !Server.serverlistPort.isEmpty()) {
+                            String query = new String(content);
+                            String port = query.substring(query.indexOf("port=") + 5);
+                            port = port.substring(0, port.indexOf("&"));
+                            query = query.replace("port=" + port, "port=" + Server.serverlistPort);
+                            content = query.getBytes();
+                        }
+
+                        connection.setRequestProperty("Content-Length", content.length + "");
+                    }
+
+                    connection.setUseCaches(false);
+                    connection.setDoInput(true);
                     connection.setDoOutput(true);
                     DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
                     wr.write(content);
                     wr.flush();
                     wr.close();
                 } else {
+                    connection.setUseCaches(false);
+                    connection.setDoInput(true);
                     connection.connect();
                 }
 
@@ -186,8 +208,8 @@ public class ProxyThread implements Runnable {
 
                 String contentString = new String(content);
 
-                Properties.loadProperties();
-                if (Properties.properties.has("proxyLogging") && Properties.properties.getBoolean("proxyLogging")) {
+                Settings.loadSettings();
+                if (Settings.settings.has("proxyLogging") && Settings.settings.getBoolean("proxyLogging")) {
                     System.out.println("Response");
                     System.out.print(responseHeader);
                     System.out.println(contentString);

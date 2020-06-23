@@ -6,15 +6,15 @@ import gg.codie.utils.MD5Checksum;
 
 import java.io.*;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 public class Server {
     static String proxySet = "-DproxySet=true";
     static String proxyHost = "-Dhttp.proxyHost=127.0.0.1";
     static String proxyPortArgument = "-Dhttp.proxyPort=";
+
+    public static String serverlistAddress;
+    public static String serverlistPort;
 
     static int users = 0;
 
@@ -38,12 +38,20 @@ public class Server {
 	        System.exit(1);
         }
 
-        java.util.Properties serverProperties = new java.util.Properties();
+        Properties serverProperties;
 
 	    try {
-            loadServerProperties(serverProperties, args[0]);
+            serverProperties = gg.codie.minecraft.server.Properties.loadServerProperties(args[0]);
         } catch (Exception ex) {
+            serverProperties = new Properties();
+        }
 
+	    if (serverProperties.containsKey("serverlist-ip")) {
+	        serverlistAddress = serverProperties.getProperty("serverlist-ip");
+        }
+
+        if (serverProperties.containsKey("serverlist-port")) {
+            serverlistPort = serverProperties.getProperty("serverlist-port");
         }
 
 	    String md5 = MD5Checksum.getMD5Checksum(jarFile.getPath());
@@ -57,7 +65,7 @@ public class Server {
 
         Proxy.launchProxy();
 
-        String[] CMD_ARRAY = new String[] {Properties.properties.getString("javaCommand"), proxySet, proxyHost, proxyPortArgument + Proxy.getProxyPort()};
+        String[] CMD_ARRAY = new String[] {Settings.settings.getString("javaCommand"), proxySet, proxyHost, proxyPortArgument + Proxy.getProxyPort()};
 
         CMD_ARRAY = ArrayUtils.concatenate(CMD_ARRAY, Arrays.copyOfRange(args, 1, args.length));
 
@@ -82,7 +90,7 @@ public class Server {
 
         Runtime.getRuntime().addShutdownHook(closeLauncher);
 
-        redirectOutput2(serverProcess.getInputStream(), System.out);
+        redirectOutput(serverProcess.getInputStream(), System.out);
 
         OutputStream stdin = serverProcess.getOutputStream();
 
@@ -113,11 +121,8 @@ public class Server {
                     String[] bannedPlayers = readUsersFile(bannedPath);
                     String[] bannedIPs = readUsersFile(bannedIpsPath);
 
-                    if (!gotProperties) {
-                        loadServerProperties(serverProperties, args[0]);
-                    }
-
                     if (!hasHeartbeat) {
+                        playerCountRequested++;
                         writer.write("list");
                         writer.newLine();
                         writer.flush();
@@ -133,8 +138,8 @@ public class Server {
                     }
 
                     MinecraftAPI.listServer(
-                            serverProperties.getProperty("server-ip", null),
-                            serverProperties.getProperty("server-port", serverProperties.getProperty("port", "25565")),
+                            serverlistAddress != null && !serverlistAddress.isEmpty() ? serverlistAddress : serverProperties.getProperty("server-ip", null),
+                            serverlistPort != null && !serverlistPort.isEmpty() ? serverlistPort : serverProperties.getProperty("server-port", serverProperties.getProperty("port", "25565")),
                             hasHeartbeat ? -1 : users,
                             Integer.parseInt(serverProperties.getProperty("max-players")),
                             serverProperties.getProperty("server-name", "Untitled Server"),
@@ -157,6 +162,8 @@ public class Server {
         scanner.close();
 
         Proxy.stopProxy();
+
+        System.exit(0);
 	}
 
 	private static String[] readUsersFile(String path) {
@@ -179,22 +186,12 @@ public class Server {
         return new String[0];
     }
 
-    private static void redirectOutput(final InputStream src, final PrintStream dest) {
-        new Thread(new Runnable() {
-            public void run() {
-                try {
-                    byte[] buffer = new byte[1024];
-                    for (int n = 0; n != -1; n = src.read(buffer)) {
-                        dest.write(buffer, 0, n);
-                    }
-                    dest.flush();
-                } catch (IOException e) { // just exit
-                }
-            }
-        }).start();
-    }
+    // If the player count was requested by MineOnline we remove that from stdout to avoid spamming logs.
+    // Since the server might be responding slowly, we count the amount of times this has been requested,
+    // to ensure each is removed.
+    static int playerCountRequested = 0;
 
-    private static void redirectOutput2(final InputStream src, final PrintStream dest) {
+    private static void redirectOutput(final InputStream src, final PrintStream dest) {
         new Thread(new Runnable() {
             public void run() {
                 Scanner inScanner = new Scanner(src);
@@ -208,8 +205,13 @@ public class Server {
                                     users = nextLine.split(",").length;
                                 }
                             }
-                            dest.write(nextLine.getBytes("UTF-8"));
-                            dest.write("\n".getBytes());
+                            if(playerCountRequested > 0) {
+                                playerCountRequested--;
+                            }
+                            else {
+                                dest.write(nextLine.getBytes("UTF-8"));
+                                dest.write("\n".getBytes());
+                            }
                         }
                     }
                 } catch (IOException e) { // just exit
@@ -217,10 +219,4 @@ public class Server {
             }
         }).start();
     }
-
-	static boolean gotProperties = false;
-	private static void loadServerProperties(java.util.Properties properties, String jarPath) throws IOException {
-	    properties.load(new FileInputStream(new File(jarPath.replace(Paths.get(jarPath).getFileName().toString(), "server.properties"))));
-    }
-
 }

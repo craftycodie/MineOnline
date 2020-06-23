@@ -44,6 +44,8 @@ becomes
 
 If you don't want your server to appear on the list, set `dont-list: true` in `server.properties`.
 
+You can optionally provide a "serverlist-ip" and or "serverlist-port" in your server.properties, if you'd like a different IP/hostname/port to be listed.
+
 ## For Modders
 You can add custom version information to the launcher by creating the file `.minecraft\mineonline\custom-version-info.json`.
 This file should contain an array of JSON versions, like this:

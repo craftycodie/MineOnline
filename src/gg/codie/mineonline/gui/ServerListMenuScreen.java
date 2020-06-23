@@ -1,5 +1,6 @@
 package gg.codie.mineonline.gui;
 
+import gg.codie.minecraft.client.Options;
 import gg.codie.mineonline.*;
 import gg.codie.mineonline.api.MinecraftAPI;
 import gg.codie.mineonline.gui.events.IOnClickListener;
@@ -35,11 +36,11 @@ public class ServerListMenuScreen implements IMenuScreen {
                 SelectableServer selectedServer = selectableServerList.getSelected();
                 if (selectedServer != null && selectedServer.server.ip != null) {
                     try {
-                        Properties.loadProperties();
+                        Settings.loadSettings();
 
                         MinecraftVersionInfo.MinecraftVersion serverVersion = MinecraftVersionInfo.getVersionByMD5(selectedServer.server.md5);
 
-                        String[] minecraftJars = Properties.properties.has("minecraftJars") ? JSONUtils.getStringArray(Properties.properties.getJSONArray("minecraftJars")) : new String[0];
+                        String[] minecraftJars = Settings.settings.has("minecraftJars") ? JSONUtils.getStringArray(Settings.settings.getJSONArray("minecraftJars")) : new String[0];
 
                         if(serverVersion != null) {
                             for (String compatibleClientMd5 : serverVersion.clientMd5s) {
@@ -58,7 +59,7 @@ public class ServerListMenuScreen implements IMenuScreen {
 
                                     if (clientVersion != null && clientVersion.md5.equals(compatibleClientMd5)) {
                                         try {
-                                            new MinecraftOptions(LauncherFiles.MINECRAFT_OPTIONS_PATH).setOption("lastServer", selectedServer.server.ip + "_" + selectedServer.server.port);
+                                            new Options(LauncherFiles.MINECRAFT_OPTIONS_PATH).setOption("lastServer", selectedServer.server.ip + "_" + selectedServer.server.port);
                                         } catch (Exception ex) {
                                             // ignore
                                         }
@@ -81,7 +82,7 @@ public class ServerListMenuScreen implements IMenuScreen {
                             @Override
                             public void onClick() {
                                 try {
-                                    new MinecraftOptions(LauncherFiles.MINECRAFT_OPTIONS_PATH).setOption("lastServer", selectedServer.server.ip + "_" + selectedServer.server.port);
+                                    new Options(LauncherFiles.MINECRAFT_OPTIONS_PATH).setOption("lastServer", selectedServer.server.ip + "_" + selectedServer.server.port);
                                 } catch (Exception ex) {
                                     // ignore
                                 }

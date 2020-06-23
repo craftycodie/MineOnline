@@ -1,12 +1,12 @@
-package gg.codie.mineonline;
+package gg.codie.minecraft.client;
 
 import java.io.*;
 import java.util.LinkedList;
 
-public class MinecraftOptions {
+public class Options {
     String path;
 
-    public MinecraftOptions(String path) throws FileNotFoundException {
+    public Options(String path) throws FileNotFoundException {
         if(!new File(path).exists()) {
             throw new FileNotFoundException();
         }

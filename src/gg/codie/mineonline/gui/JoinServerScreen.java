@@ -1,5 +1,6 @@
 package gg.codie.mineonline.gui;
 
+import gg.codie.minecraft.client.Options;
 import gg.codie.mineonline.*;
 import gg.codie.mineonline.api.MinecraftAPI;
 import gg.codie.mineonline.gui.events.IOnClickListener;
@@ -12,7 +13,6 @@ import gg.codie.mineonline.gui.rendering.shaders.GUIShader;
 import org.lwjgl.util.vector.Vector2f;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
@@ -29,7 +29,7 @@ public class JoinServerScreen implements IMenuScreen {
     public JoinServerScreen(String value) {
         String server = "";
         try {
-            server = new MinecraftOptions(LauncherFiles.MINECRAFT_OPTIONS_PATH).getOption("lastServer").replace("_", ":");
+            server = new Options(LauncherFiles.MINECRAFT_OPTIONS_PATH).getOption("lastServer").replace("_", ":");
         } catch (Exception e) {
             /// ignore
         }
@@ -38,7 +38,7 @@ public class JoinServerScreen implements IMenuScreen {
             public void onClick() {
                 try {
                     try {
-                        new MinecraftOptions(LauncherFiles.MINECRAFT_OPTIONS_PATH).setOption("lastServer", serverIPField.getValue().replace(":", "_"));
+                        new Options(LauncherFiles.MINECRAFT_OPTIONS_PATH).setOption("lastServer", serverIPField.getValue().replace(":", "_"));
                     } catch (Exception ex) {
                         // ignore
                     }
@@ -48,7 +48,7 @@ public class JoinServerScreen implements IMenuScreen {
 
                     String mppass = MinecraftAPI.getMpPass(Session.session.getSessionToken(), inetAddress.getHostAddress(), split.length > 1 ? split[1] : "25565");
 
-                    new MinecraftLauncher(Properties.properties.getString("selectedJar"), split[0], split.length > 1 ? split[1] : "25565", mppass).startMinecraft();
+                    new MinecraftLauncher(Settings.settings.getString("selectedJar"), split[0], split.length > 1 ? split[1] : "25565", mppass).startMinecraft();
                 }
                 catch (UnknownHostException ex) {
                     ex.printStackTrace();
@@ -59,8 +59,8 @@ public class JoinServerScreen implements IMenuScreen {
             }
         });
 
-        Properties.loadProperties();
-        String jarPath = Properties.properties.has("selectedJar") ? Properties.properties.getString("selectedJar") : null;
+        Settings.loadSettings();
+        String jarPath = Settings.settings.has("selectedJar") ? Settings.settings.getString("selectedJar") : null;
 
         String jarName = jarPath != null ? new File(jarPath).getName() : null;
         MinecraftVersionInfo.MinecraftVersion version = null;
@@ -74,8 +74,8 @@ public class JoinServerScreen implements IMenuScreen {
                 selectVersionMenuScreen = new SelectVersionMenuScreen(null, new IOnClickListener() {
                     @Override
                     public void onClick() {
-                        Properties.properties.put("selectedJar", selectVersionMenuScreen.getSelectedPath());
-                        Properties.saveProperties();
+                        Settings.settings.put("selectedJar", selectVersionMenuScreen.getSelectedPath());
+                        Settings.saveSettings();
                         MenuManager.setMenuScreen(new JoinServerScreen(serverIPField.getValue()));
                     }
                 }, null);
@@ -88,7 +88,7 @@ public class JoinServerScreen implements IMenuScreen {
             public void onClick() {
                 try {
                     try {
-                        new MinecraftOptions(LauncherFiles.MINECRAFT_OPTIONS_PATH).setOption("lastServer", serverIPField.getValue().replace(":", "_"));
+                        new Options(LauncherFiles.MINECRAFT_OPTIONS_PATH).setOption("lastServer", serverIPField.getValue().replace(":", "_"));
                     } catch (Exception ex) {
                         // ignore
                     }
@@ -99,7 +99,7 @@ public class JoinServerScreen implements IMenuScreen {
 
                     String mppass = MinecraftAPI.getMpPass(Session.session.getSessionToken(), inetAddress.getHostAddress(), split.length > 1 ? split[1] : "25565");
 
-                    new MinecraftLauncher(Properties.properties.getString("selectedJar"), split[0], split.length > 1 ? split[1] : "25565", mppass).startMinecraft();
+                    new MinecraftLauncher(Settings.settings.getString("selectedJar"), split[0], split.length > 1 ? split[1] : "25565", mppass).startMinecraft();
                 }
                 catch (UnknownHostException ex) {
                     ex.printStackTrace();

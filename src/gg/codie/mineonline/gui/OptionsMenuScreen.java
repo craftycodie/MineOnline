@@ -1,7 +1,7 @@
 package gg.codie.mineonline.gui;
 
 import gg.codie.mineonline.LauncherFiles;
-import gg.codie.mineonline.Properties;
+import gg.codie.mineonline.Settings;
 import gg.codie.mineonline.Session;
 import gg.codie.mineonline.gui.events.IOnClickListener;
 import gg.codie.mineonline.gui.font.GUIText;
@@ -27,13 +27,13 @@ public class OptionsMenuScreen implements IMenuScreen {
     private static final String[] guiScales = new String[] { "Auto", "Small", "Normal", "Large" };
 
     public OptionsMenuScreen() {
-        fullscreenButton = new MediumButton("Fullscreen: " + (Properties.properties.getBoolean("fullscreen") ? "ON" : "OFF"), new Vector2f((DisplayManager.getDefaultWidth() / 2) - 308, (DisplayManager.getDefaultHeight() / 2) - 40), new IOnClickListener() {
+        fullscreenButton = new MediumButton("Fullscreen: " + (Settings.settings.getBoolean("fullscreen") ? "ON" : "OFF"), new Vector2f((DisplayManager.getDefaultWidth() / 2) - 308, (DisplayManager.getDefaultHeight() / 2) - 40), new IOnClickListener() {
             @Override
             public void onClick() {
-                boolean fullcreen = !Properties.properties.getBoolean("fullscreen");
-                Properties.properties.put("fullscreen", fullcreen);
-                Properties.saveProperties();
-                fullscreenButton.setName("Fullscreen: " + (Properties.properties.getBoolean("fullscreen") ? "ON" : "OFF"));
+                boolean fullcreen = !Settings.settings.getBoolean("fullscreen");
+                Settings.settings.put("fullscreen", fullcreen);
+                Settings.saveSettings();
+                fullscreenButton.setName("Fullscreen: " + (Settings.settings.getBoolean("fullscreen") ? "ON" : "OFF"));
             }
         });
 
@@ -55,7 +55,7 @@ public class OptionsMenuScreen implements IMenuScreen {
         resetSettings = new MediumButton("Reset Settings", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 308, (DisplayManager.getDefaultHeight() / 2) + 56), new IOnClickListener() {
             @Override
             public void onClick() {
-                Properties.resetSettings();
+                Settings.resetSettings();
             }
         });
 

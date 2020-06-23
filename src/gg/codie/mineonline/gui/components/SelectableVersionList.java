@@ -1,7 +1,7 @@
 package gg.codie.mineonline.gui.components;
 
 import gg.codie.mineonline.MinecraftVersionInfo;
-import gg.codie.mineonline.Properties;
+import gg.codie.mineonline.Settings;
 import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.gui.events.IOnClickListener;
 import gg.codie.mineonline.gui.font.GUIText;
@@ -85,7 +85,7 @@ public class SelectableVersionList extends GUIObject {
                                     continue;
                                 }
 
-                                String[] existingJars = Properties.properties.has("minecraftJars") ? JSONUtils.getStringArray(Properties.properties.getJSONArray("minecraftJars")) : new String[0];
+                                String[] existingJars = Settings.settings.has("minecraftJars") ? JSONUtils.getStringArray(Settings.settings.getJSONArray("minecraftJars")) : new String[0];
                                 String[] newJars = new String[existingJars.length + 1];
 
                                 for (int i = 0; i < existingJars.length; i++) {
@@ -98,8 +98,8 @@ public class SelectableVersionList extends GUIObject {
                                 }
                                 newJars[newJars.length - 1] = file.getPath();
 
-                                Properties.properties.put("minecraftJars", newJars);
-                                Properties.saveProperties();
+                                Settings.settings.put("minecraftJars", newJars);
+                                Settings.saveSettings();
 
                                 if(minecraftVersion != null) {
                                     jarsToAdd.add(new String[] { minecraftVersion.name, file.getPath(), minecraftVersion.info });
@@ -158,8 +158,8 @@ public class SelectableVersionList extends GUIObject {
         emptyText.setMaxLines(0);
         emptyText.setColour(0.5f, 0.5f, 0.5f);
 
-        Properties.loadProperties();
-        String[] minecraftJars = Properties.properties.has("minecraftJars") ? JSONUtils.getStringArray(Properties.properties.getJSONArray("minecraftJars")) : new String[0];
+        Settings.loadSettings();
+        String[] minecraftJars = Settings.settings.has("minecraftJars") ? JSONUtils.getStringArray(Settings.settings.getJSONArray("minecraftJars")) : new String[0];
         for (String path : minecraftJars) {
             File file = new File(path);
 
@@ -180,7 +180,7 @@ public class SelectableVersionList extends GUIObject {
             }
         }
 
-        String selectedJar = Properties.properties.has("selectedJar") ? Properties.properties.getString("selectedJar") : null;
+        String selectedJar = Settings.settings.has("selectedJar") ? Settings.settings.getString("selectedJar") : null;
         if (selectedJar != null && !selectedJar.isEmpty()) {
             selectVersion(selectedJar);
         }

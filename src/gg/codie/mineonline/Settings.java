@@ -2,7 +2,6 @@ package gg.codie.mineonline;
 
 import gg.codie.utils.ArrayUtils;
 import gg.codie.utils.JSONUtils;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.*;
@@ -10,20 +9,19 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.LinkedList;
 
-public class Properties {
+public class Settings {
 
-    public static JSONObject properties;
+    public static JSONObject settings;
 
     static {
         if(new File(LauncherFiles.MINEONLINE_PROPS_FILE).exists()) {
-            loadProperties();
+            loadSettings();
 
             // Check .minecraft\versions for new jars.
 
-            String[] knownJars = properties.has("minecraftJars") ? JSONUtils.getStringArray(properties.getJSONArray("minecraftJars")) : new String[0];
+            String[] knownJars = settings.has("minecraftJars") ? JSONUtils.getStringArray(settings.getJSONArray("minecraftJars")) : new String[0];
 
             LinkedList<String> officialLauncherVersions = getOfficialLauncherJars(null, null);
             LinkedList<String> newJars = new LinkedList<>();
@@ -57,9 +55,9 @@ public class Properties {
                 } else { }
             }
 
-            properties.put("minecraftJars", ArrayUtils.concatenate(knownJars, newJars.toArray(new String[0])));
+            settings.put("minecraftJars", ArrayUtils.concatenate(knownJars, newJars.toArray(new String[0])));
 
-            saveProperties();
+            saveSettings();
 
         } else {
             resetSettings();
@@ -91,13 +89,13 @@ public class Properties {
     }
 
     public static void resetSettings() {
-        properties = new JSONObject();
-        properties.put("isPremium", true);
-        properties.put("redirectedDomains", new String[] {"www.minecraft.net:-1", "skins.minecraft.net", "mineraft.net", "www.minecraft.net", "s3.amazonaws.com", "banshee.alex231.com", "mcauth-alex231.rhcloud.com"} );
-        properties.put("javaCommand", "java");
-        properties.put("seletedJar", "");
-        properties.put("fullscreen", false);
-        properties.put("proxyLogging", false);
+        settings = new JSONObject();
+        settings.put("isPremium", true);
+        settings.put("redirectedDomains", new String[] {"www.minecraft.net:-1", "skins.minecraft.net", "mineraft.net", "www.minecraft.net", "s3.amazonaws.com", "banshee.alex231.com", "mcauth-alex231.rhcloud.com"} );
+        settings.put("javaCommand", "java");
+        settings.put("seletedJar", "");
+        settings.put("fullscreen", false);
+        settings.put("proxyLogging", false);
 
         // Check .minecraft\versions for new jars.
 
@@ -125,15 +123,15 @@ public class Properties {
             } else { }
         }
 
-        properties.put("minecraftJars", newJars.toArray(new String[0]));
+        settings.put("minecraftJars", newJars.toArray(new String[0]));
 
-        saveProperties();
-        loadProperties();
+        saveSettings();
+        loadSettings();
     }
 
-    public static void loadProperties() {
+    public static void loadSettings() {
         try (FileInputStream input = new FileInputStream(LauncherFiles.MINEONLINE_PROPS_FILE)) {
-            // load a properties file
+            // load a settings file
             byte[] buffer = new byte[8096];
             int bytes_read = 0;
             StringBuffer stringBuffer = new StringBuffer();
@@ -143,16 +141,16 @@ public class Properties {
                 }
             }
 
-            properties = new JSONObject(stringBuffer.toString());
+            settings = new JSONObject(stringBuffer.toString());
         } catch (IOException ex) {
-            saveProperties();
+            saveSettings();
         }
     }
 
-    public  static void saveProperties() {
+    public  static void saveSettings() {
         try {
             FileWriter fileWriter = new FileWriter(LauncherFiles.MINEONLINE_PROPS_FILE, false);
-            fileWriter.write(properties.toString());
+            fileWriter.write(settings.toString());
             fileWriter.close();
 
             FileInputStream input = new FileInputStream(LauncherFiles.MINEONLINE_PROPS_FILE);
@@ -167,7 +165,7 @@ public class Properties {
 
             input.close();
 
-            properties = new JSONObject(stringBuffer.toString());
+            settings = new JSONObject(stringBuffer.toString());
         } catch (IOException io) {
             io.printStackTrace();
         }

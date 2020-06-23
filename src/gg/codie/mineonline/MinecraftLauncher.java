@@ -1,5 +1,6 @@
 package gg.codie.mineonline;
 
+import gg.codie.minecraft.client.Options;
 import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.gui.rendering.*;
 import gg.codie.mineonline.gui.rendering.Renderer;
@@ -11,7 +12,6 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector2f;
 
@@ -83,7 +83,7 @@ public class MinecraftLauncher extends Applet implements AppletStub{
 
         if(serverAddress != null) {
             try {
-                new MinecraftOptions(LauncherFiles.MINECRAFT_OPTIONS_PATH).setOption("lastServer", serverAddress + "_" + serverPort);
+                new Options(LauncherFiles.MINECRAFT_OPTIONS_PATH).setOption("lastServer", serverAddress + "_" + serverPort);
             } catch (Exception ex) {
 
             }
@@ -91,7 +91,7 @@ public class MinecraftLauncher extends Applet implements AppletStub{
 
         System.out.println("Launching Jar, MD5: " + MD5Checksum.getMD5Checksum(jarPath));
 
-        fullscreen = Properties.properties.has("fullscreen") && Properties.properties.getBoolean("fullscreen");
+        fullscreen = Settings.settings.has("fullscreen") && Settings.settings.getBoolean("fullscreen");
 
         try {
             Class rubyDungClass;
@@ -131,7 +131,7 @@ public class MinecraftLauncher extends Applet implements AppletStub{
             String natives = "-Djava.library.path=" + LauncherFiles.MINEONLNE_NATIVES_FOLDER;
 
             String[] CMD_ARRAY = new String[] {
-                    Properties.properties.getString("javaCommand"),
+                    Settings.settings.getString("javaCommand"),
                     proxySet, proxyHost, proxyPortArgument + System.getProperty("http.proxyHost"),
                     CP, classpath + getClasspathSeparator() + LauncherFiles.LWJGL_JAR + getClasspathSeparator() + LauncherFiles.LWJGL_UTIL_JAR + getClasspathSeparator() + jarPath,
                     natives,
@@ -164,7 +164,7 @@ public class MinecraftLauncher extends Applet implements AppletStub{
             String proxyPortArgument = "-Dhttp.proxyPort=";
 
             String[] CMD_ARRAY = new String[] {
-                    Properties.properties.getString("javaCommand"),
+                    Settings.settings.getString("javaCommand"),
                     proxySet, proxyHost, proxyPortArgument + System.getProperty("http.proxyHost"),
                     "-Dsun.java2d.noddraw=true",
                     "-Dsun.java2d.d3d=false",
@@ -720,10 +720,10 @@ public class MinecraftLauncher extends Applet implements AppletStub{
                 RetVal = Session.session.getSessionToken();
                 break;
             case "haspaid":
-                RetVal = String.valueOf(Properties.properties.getBoolean("isPremium"));
+                RetVal = String.valueOf(Settings.settings.getBoolean("isPremium"));
                 break;
             case "demo":
-                RetVal = String.valueOf(!Properties.properties.getBoolean("isPremium"));
+                RetVal = String.valueOf(!Settings.settings.getBoolean("isPremium"));
                 break;
             case "server":
                 RetVal = serverAddress;
