@@ -163,6 +163,7 @@ public class Server {
 
         Proxy.stopProxy();
 
+        serverProcess.destroyForcibly();
         System.exit(0);
 	}
 
