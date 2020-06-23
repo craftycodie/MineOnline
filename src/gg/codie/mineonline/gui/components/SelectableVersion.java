@@ -123,30 +123,14 @@ public class SelectableVersion extends GUIObject {
 
         this.model.setRawModel(Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth(currentPosition.x) + DisplayManager.getXBuffer(), DisplayManager.scaledHeight(DisplayManager.getDefaultHeight() - currentPosition.y) + DisplayManager.getYBuffer()), new Vector2f(DisplayManager.scaledWidth(440), DisplayManager.scaledHeight(72)), TextureHelper.getPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(0, 130), new Vector2f(220, 36))));
 
-
-        nameText.remove();
-        if (infoText != null)
-            infoText.remove();
-        pathText.remove();
-
-        nameText = new GUIText(this.versionName, 1.5f, TextMaster.minecraftFont, new Vector2f(currentPosition.x + 8, currentPosition.y - 70), 440, false, true);
-        nameText.setYBounds(new Vector2f(69 , 69));
-
-        String jarName = Paths.get(path).getFileName().toString();
+        nameText.setPosition(new Vector2f(currentPosition.x + 8, currentPosition.y - 70));
 
         if(this.info != null) {
-            infoText = new GUIText(this.info, 1.5f, TextMaster.minecraftFont, new Vector2f(currentPosition.x + 8, currentPosition.y - 48), 440, false, true);
-            infoText.setColour(0.7F, 0.7F, 0.7F);
-            infoText.setYBounds(new Vector2f(69 , 69));
+            infoText.setPosition(new Vector2f(currentPosition.x + 8, currentPosition.y - 48));
 
-            pathText = new GUIText(jarName, 1.5f, TextMaster.minecraftFont, new Vector2f(currentPosition.x + 8, currentPosition.y - 26), 440, false, true);
-            pathText.setColour(0.5F, 0.5F, 0.5F);
-            pathText.setYBounds(new Vector2f(69 , 69));
-
+            pathText.setPosition(new Vector2f(currentPosition.x + 8, currentPosition.y - 26));
         } else {
-            pathText = new GUIText(jarName, 1.5f, TextMaster.minecraftFont, new Vector2f(currentPosition.x + 8, currentPosition.y - 48), 440, false, true);
-            pathText.setColour(0.5F, 0.5F, 0.5F);
-            pathText.setYBounds(new Vector2f(69 , 69));
+            pathText.setPosition(new Vector2f(currentPosition.x + 8, currentPosition.y - 48));
         }
     }
 

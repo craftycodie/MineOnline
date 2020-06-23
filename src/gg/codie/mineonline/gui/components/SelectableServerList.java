@@ -132,25 +132,22 @@ public class SelectableServerList extends GUIObject {
         }
 
         int buffer = (72) * getServers().size();
-        super.addChild(
-                new SelectableServer(name, new Vector2f((DisplayManager.getDefaultWidth() / 2) - 220, 140 + buffer), name, info1, info2, server.status, server, this, new IOnClickListener() {
-                    @Override
-                    public void onClick() {
-                        if (doubleClickListener != null)
-                            doubleClickListener.onClick();
-                    }
-                })
-        );
+        SelectableServer selectableServer = new SelectableServer(name, new Vector2f((DisplayManager.getDefaultWidth() / 2) - 220, 140 + buffer), name, info1, info2, server.status, server, this, new IOnClickListener() {
+            @Override
+            public void onClick() {
+                if (doubleClickListener != null)
+                    doubleClickListener.onClick();
+            }
+        });
+        super.addChild(selectableServer);
+        selectableServers.add(selectableServer);
 
         resize();
     }
 
+    LinkedList<SelectableServer> selectableServers = new LinkedList<>();
     public LinkedList<SelectableServer> getServers() {
-        LinkedList<SelectableServer> guiObjects = new LinkedList<>();
-        for(Object obj: super.getChildren()) {
-            guiObjects.add((SelectableServer)obj);
-        }
-        return guiObjects;
+        return selectableServers;
     }
 
     // Where 0 is scrollbar at top, 1 is at bottom.
@@ -206,7 +203,7 @@ public class SelectableServerList extends GUIObject {
                         scrollbarPosition = 1;
                     }
 
-                    resize();
+                    scroll();
 
                     // This is how much the content items have been scrolled up in pixels.
                     // scrollbarPosition (eg 0.9) multiplied by the height content which is offscreen.
@@ -242,7 +239,7 @@ public class SelectableServerList extends GUIObject {
                     scrollbarPosition = 1;
                 }
 
-                resize();
+                scroll();
 
                 // This is how much the content items have been scrolled up in pixels.
                 // scrollbarPosition (eg 0.9) multiplied by the height content which is offscreen.
@@ -268,6 +265,22 @@ public class SelectableServerList extends GUIObject {
             child.resize();
         }
 
+        background.model.setRawModel(Loader.singleton.loadGUIToVAO(new Vector2f(0, DisplayManager.scaledHeight(69) + DisplayManager.getYBuffer()), new Vector2f(Display.getWidth(), DisplayManager.scaledHeight(DisplayManager.getDefaultHeight() - (69 * 2))), TextureHelper.getYFlippedPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(0, 129), new Vector2f(1, 1))));
+
+        float viewportHeight = DisplayManager.scaledHeight(DisplayManager.getDefaultHeight() - 138);
+        float contentHeight = DisplayManager.scaledHeight(72 * this.getServers().size());
+
+        scrollbarHeight = (viewportHeight / contentHeight) * viewportHeight;
+        scrollableHeight = viewportHeight - scrollbarHeight;
+
+        float viewportStartY = DisplayManager.getYBuffer() + DisplayManager.scaledHeight(69) + viewportHeight;
+        float scrollBarYOffset = viewportStartY - (scrollableHeight * scrollbarPosition) - scrollbarHeight;
+
+        scrollBar.model.setRawModel(Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth((DisplayManager.getDefaultWidth() / 2) + 240) + DisplayManager.getXBuffer(), scrollBarYOffset), new Vector2f(DisplayManager.scaledWidth(10), scrollbarHeight), TextureHelper.getPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(1, 129), new Vector2f(1, 1))));
+        scrollBarBackground.model.setRawModel(Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth((DisplayManager.getDefaultWidth() / 2) + 240) + DisplayManager.getXBuffer(), DisplayManager.scaledHeight(69) + DisplayManager.getYBuffer()), new Vector2f(DisplayManager.scaledWidth(10), viewportHeight), TextureHelper.getPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(0, 129), new Vector2f(1, 1))));
+    }
+
+    public void scroll() {
         background.model.setRawModel(Loader.singleton.loadGUIToVAO(new Vector2f(0, DisplayManager.scaledHeight(69) + DisplayManager.getYBuffer()), new Vector2f(Display.getWidth(), DisplayManager.scaledHeight(DisplayManager.getDefaultHeight() - (69 * 2))), TextureHelper.getYFlippedPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(0, 129), new Vector2f(1, 1))));
 
         float viewportHeight = DisplayManager.scaledHeight(DisplayManager.getDefaultHeight() - 138);

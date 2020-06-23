@@ -145,12 +145,6 @@ public class MenuManager {
             MouseHandler.update();
             renderer.prepare();
 
-            // Camera roll lock.
-            // Broken and not necessary.
-//            if(playerPivot.getLocalRotation().z > 0) {
-//                playerPivot.increaseRotation(new Vector3f(0, 0, -playerPivot.getLocalRotation().z));
-//            }
-
             if(Display.getWidth() != lastWidth || Display.getHeight() != lastHeight) {
                 menuScreen.resize();
             }
@@ -175,25 +169,9 @@ public class MenuManager {
                 playerScale.setLocalPosition(new Vector3f(-20 * (1 / xScale) * (float)DisplayManager.getScale(), 0, -65));
             }
 
-            ///playerPivot.scale(new Vector3f(2 - currentScale.x, 2 - currentScale.y, 2 - currentScale.z));
-            //playerPivot.setScale(new Vector3f((float)DisplayManager.getScale(), (float)DisplayManager.getScale(), (float)DisplayManager.getScale()));
-
             if(Mouse.isButtonDown(0)) {
                 Vector3f currentRotation = playerPivot.getLocalRotation();
                 Vector3f rotation = new Vector3f();
-
-                // Camera pitch rotation with lock.
-                // Currently broken.
-
-//                float dy = Mouse.getDY();
-
-//                if(currentRotation.x + (dy * -0.3f) > 30) {
-//                    rotation.x = 30 - currentRotation.x;
-//                } else if(currentRotation.x + (dy * -0.3f) < -30) {
-//                    rotation.x = -30 - currentRotation.x;
-//                } else {
-//                    rotation.x = dy * -0.3f;
-//                }
 
                 rotation.y = (Mouse.getDX() * 0.5f);
 
@@ -203,28 +181,24 @@ public class MenuManager {
 
             playerGameObject.update();
             menuScreen.update();
-//
-//            camera.move();
-//
+
             if(!formopen) return;
-//
+
             StaticShader.singleton.start();
             StaticShader.singleton.loadViewMatrix(camera);
-//
+
             renderer.render(backgroundImage, StaticShader.singleton);
-//
+
             if (menuScreen.showPlayer()) {
-                //GL11.glPushMatrix();
                 renderer.render(playerGameObject, StaticShader.singleton);
-                //GL11.glPopMatrix();
             }
-//
+
             StaticShader.singleton.stop();
-//
+
             menuScreen.render(renderer);
-//
+
             TextMaster.render();
-//
+
             DisplayManager.updateDisplay();
         }
 

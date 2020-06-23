@@ -8,7 +8,6 @@ import gg.codie.mineonline.gui.font.GUIText;
 import gg.codie.mineonline.gui.rendering.DisplayManager;
 import gg.codie.mineonline.gui.rendering.shaders.FontShader;
 import org.lwjgl.opengl.*;
-import org.lwjgl.util.Color;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
@@ -65,14 +64,14 @@ public class FontRenderer {
         FontShader.singleton.loadColour(new Vector3f(text.getColour().x / 5, text.getColour().y / 5, text.getColour().z / 5));
         FontShader.singleton.loadAlpha(0.66f);
         FontShader.singleton.loadYBounds(DisplayManager.getYBuffer() + (int)DisplayManager.scaledHeight(text.getYBounds().x), Display.getHeight() - (DisplayManager.getYBuffer() + (int)DisplayManager.scaledHeight(text.getYBounds().y)));
-        FontShader.singleton.loadTranslation(new Vector2f(text.getPosition().x + (2 / (float)DisplayManager.getDefaultWidth()), text.getPosition().y + (2 / (float)DisplayManager.getDefaultHeight())));
+        FontShader.singleton.loadTranslation(new Vector2f(text.getScreenPosition().x + (2 / (float)DisplayManager.getDefaultWidth()), text.getScreenPosition().y + (2 / (float)DisplayManager.getDefaultHeight())));
 
         GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, text.getVertexCount());
 
         FontShader.singleton.loadColour(text.getColour());
         FontShader.singleton.loadAlpha(1);
         FontShader.singleton.loadYBounds(DisplayManager.getYBuffer() + (int)DisplayManager.scaledHeight(text.getYBounds().x), Display.getHeight() - (DisplayManager.getYBuffer() + (int)DisplayManager.scaledHeight(text.getYBounds().y)));
-        FontShader.singleton.loadTranslation(text.getPosition());
+        FontShader.singleton.loadTranslation(text.getScreenPosition());
         GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, text.getVertexCount());
 
         //GL11.glPopMatrix();

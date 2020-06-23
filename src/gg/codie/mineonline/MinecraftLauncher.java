@@ -81,6 +81,8 @@ public class MinecraftLauncher extends Applet implements AppletStub{
     boolean firstUpdate = true;
     public void startMinecraft() throws Exception {
 
+        System.gc();
+
         if(serverAddress != null) {
             try {
                 new Options(LauncherFiles.MINECRAFT_OPTIONS_PATH).setOption("lastServer", serverAddress + "_" + serverPort);

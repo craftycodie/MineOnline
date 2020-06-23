@@ -20,6 +20,10 @@ public class GUIText {
     private int vertexCount;
     private Vector3f colour = new Vector3f(1f, 1f, 1f);
 
+    public Vector2f getPosition() {
+        return position;
+    }
+
     private Vector2f position;
     private float lineMaxSize;
     private int numberOfLines;
@@ -109,6 +113,12 @@ public class GUIText {
         TextMaster.loadText(this);
     }
 
+    public void setPosition(Vector2f position) {
+        //TextMaster.removeText(this);
+        this.position = position;
+        //TextMaster.loadText(this);
+    }
+
     public void resize() {
         if(!this.centerAnchored) {
             remove();
@@ -177,7 +187,7 @@ public class GUIText {
      *         (0, 0) is the top left corner of the screen, (1, 1) is the bottom
      *         right.
      */
-    public Vector2f getPosition() {
+    public Vector2f getScreenPosition() {
         return new Vector2f((DisplayManager.scaledWidth(position.x)) / DisplayManager.scaledWidth(DisplayManager.getDefaultWidth()), (DisplayManager.scaledHeight(position.y)) / DisplayManager.scaledHeight(DisplayManager.getDefaultHeight()));
     }
 

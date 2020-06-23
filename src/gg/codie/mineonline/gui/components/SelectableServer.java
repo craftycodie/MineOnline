@@ -134,37 +134,16 @@ public class SelectableServer extends GUIObject {
 
         this.model.setRawModel(Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth(currentPosition.x) + DisplayManager.getXBuffer(), DisplayManager.scaledHeight(DisplayManager.getDefaultHeight() - currentPosition.y) + DisplayManager.getYBuffer()), new Vector2f(DisplayManager.scaledWidth(440), DisplayManager.scaledHeight(72)), TextureHelper.getPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(0, 130), new Vector2f(220, 36))));
 
+        nameText.setPosition(new Vector2f(currentPosition.x + 8, currentPosition.y - 70));
 
-        nameText.remove();
-        if(statusText != null)
-            statusText.remove();
-        if (info2Text != null)
-            info2Text.remove();
-        info1Text.remove();
-
-        nameText = new GUIText(this.versionName, 1.5f, TextMaster.minecraftFont, new Vector2f(currentPosition.x + 8, currentPosition.y - 70), 440, false, true);
-        nameText.setYBounds(new Vector2f(69 , 69));
-
-        if (this.status != null && this.status != EMineOnlineServerStatus.NONE) {
-            info1Text = new GUIText(this.info1 + " ", 1.5f, TextMaster.minecraftFont, new Vector2f(currentPosition.x + 8, currentPosition.y - 48), 440, false, true);
-            info1Text.setColour(0.5F, 0.5F, 0.5F);
-            info1Text.setYBounds(new Vector2f(69, 69));
-
-            int info1Length = info1Text.getLineLength();
-            statusText = new GUIText(this.status.toString(), 1.5f, TextMaster.minecraftFont, new Vector2f(currentPosition.x + 8 + info1Length, currentPosition.y - 48), 440 - info1Length, false, true);
-            Vector3f statusColor = this.status.getColor();
-            statusText.setColour(statusColor.x, statusColor.y, statusColor.z);
-            statusText.setYBounds(new Vector2f(69, 69));
-        } else {
-            info1Text = new GUIText(this.info1, 1.5f, TextMaster.minecraftFont, new Vector2f(currentPosition.x + 8, currentPosition.y - 48), 440, false, true);
-            info1Text.setColour(0.5F, 0.5F, 0.5F);
-            info1Text.setYBounds(new Vector2f(69, 69));
-        }
+        info1Text.setPosition(new Vector2f(currentPosition.x + 8, currentPosition.y - 48));
 
         if(this.info2 != null) {
-            info2Text = new GUIText(this.info2, 1.5f, TextMaster.minecraftFont, new Vector2f(currentPosition.x + 8, currentPosition.y - 26), 440, false, true);
-            info2Text.setColour(0.7F, 0.7F, 0.7F);
-            info2Text.setYBounds(new Vector2f(69, 69));
+            info2Text.setPosition(new Vector2f(currentPosition.x + 8, currentPosition.y - 26));
+        }
+
+        if(this.statusText != null) {
+            statusText.setPosition(new Vector2f(statusText.getPosition().x, currentPosition.y - 26));
         }
     }
 
