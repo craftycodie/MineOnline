@@ -97,17 +97,16 @@ public class OptionsMenuScreen implements IMenuScreen {
     }
 
     public void render(Renderer renderer) {
-        GUIShader guiShader = new GUIShader();
-        guiShader.start();
-        guiShader.loadViewMatrix(Camera.singleton);
+        GUIShader.singleton.start();
+        GUIShader.singleton.loadViewMatrix(Camera.singleton);
         renderer.prepareGUI();
-        fullscreenButton.render(renderer, guiShader);
-        aboutButton.render(renderer, guiShader);
-        logoutButton.render(renderer, guiShader);
-        doneButton.render(renderer, guiShader);
-        guiScaleButton.render(renderer, guiShader);
-        resetSettings.render(renderer, guiShader);
-        guiShader.stop();
+        fullscreenButton.render(renderer, GUIShader.singleton);
+        aboutButton.render(renderer, GUIShader.singleton);
+        logoutButton.render(renderer, GUIShader.singleton);
+        doneButton.render(renderer, GUIShader.singleton);
+        guiScaleButton.render(renderer, GUIShader.singleton);
+        resetSettings.render(renderer, GUIShader.singleton);
+        GUIShader.singleton.stop();
     }
 
     public boolean showPlayer() {

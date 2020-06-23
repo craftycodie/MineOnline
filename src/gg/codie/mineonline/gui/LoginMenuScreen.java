@@ -153,17 +153,16 @@ public class LoginMenuScreen implements IMenuScreen {
     }
 
     public void render(Renderer renderer) {
-        GUIShader guiShader = new GUIShader();
-        guiShader.start();
-        guiShader.loadViewMatrix(Camera.singleton);
+        GUIShader.singleton.start();
+        GUIShader.singleton.loadViewMatrix(Camera.singleton);
         renderer.prepareGUI();
-        renderer.renderGUI(logo, guiShader);
-        usernameInput.render(renderer, guiShader);
-        passwordInput.render(renderer, guiShader);
-        loginButton.render(renderer, guiShader);
+        renderer.renderGUI(logo, GUIShader.singleton);
+        usernameInput.render(renderer, GUIShader.singleton);
+        passwordInput.render(renderer, GUIShader.singleton);
+        loginButton.render(renderer, GUIShader.singleton);
         if(offline && playOfflineButton != null)
-            playOfflineButton.render(renderer, guiShader);
-        guiShader.stop();
+            playOfflineButton.render(renderer, GUIShader.singleton);
+        GUIShader.singleton.stop();
     }
 
     public boolean showPlayer() {

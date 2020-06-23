@@ -87,13 +87,12 @@ public class MenuManager {
 
         DisplayManager.getFrame().addWindowListener(closeListener);
 
-        StaticShader shader = new StaticShader();
         Renderer renderer = new Renderer();
         Loader loader = new Loader();
         TextMaster.init(loader);
 
         GameObject playerPivot = new GameObject("player_origin", new Vector3f(), new Vector3f(0, 30, 0), new Vector3f(1, 1, 1));
-        PlayerGameObject playerGameObject = new PlayerGameObject("player", loader, shader, new Vector3f(0, -21, 0), new Vector3f(), new Vector3f(1, 1, 1));
+        PlayerGameObject playerGameObject = new PlayerGameObject("player", loader, StaticShader.singleton, new Vector3f(0, -21, 0), new Vector3f(), new Vector3f(1, 1, 1));
         playerPivot.addChild(playerGameObject);
 
         playerScale = new GameObject("player scale", new Vector3f(-20, 0, -65), new Vector3f(), new Vector3f(1, 1, 1));
@@ -204,33 +203,32 @@ public class MenuManager {
 
             playerGameObject.update();
             menuScreen.update();
-
-            camera.move();
-
+//
+//            camera.move();
+//
             if(!formopen) return;
-
-            shader.start();
-            shader.loadViewMatrix(camera);
-
-            renderer.render(backgroundImage, shader);
-
+//
+            StaticShader.singleton.start();
+            StaticShader.singleton.loadViewMatrix(camera);
+//
+            renderer.render(backgroundImage, StaticShader.singleton);
+//
             if (menuScreen.showPlayer()) {
                 //GL11.glPushMatrix();
-                renderer.render(playerGameObject, shader);
+                renderer.render(playerGameObject, StaticShader.singleton);
                 //GL11.glPopMatrix();
             }
-
-            shader.stop();
-
+//
+            StaticShader.singleton.stop();
+//
             menuScreen.render(renderer);
-
+//
             TextMaster.render();
-
+//
             DisplayManager.updateDisplay();
-
         }
 
-        shader.cleanUp();
+        StaticShader.singleton.cleanUp();
         loader.cleanUp();
         TextMaster.cleanUp();
         DisplayManager.closeDisplay();

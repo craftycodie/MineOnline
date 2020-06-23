@@ -15,7 +15,13 @@ public class StaticShader extends ShaderProgram {
     private int location_projectionMatrix;
     private int location_viewMatrix;
 
-    public StaticShader() {
+    public static StaticShader singleton;
+
+    static {
+        singleton = new StaticShader();
+    }
+
+    private StaticShader() {
         super(VERTEX_FILE, FRAGMENT_FILE);
     }
 

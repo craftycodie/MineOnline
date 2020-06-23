@@ -135,14 +135,13 @@ public class ServerListMenuScreen implements IMenuScreen {
     }
 
     public void render(Renderer renderer) {
-        GUIShader guiShader = new GUIShader();
-        guiShader.start();
-        guiShader.loadViewMatrix(Camera.singleton);
+        GUIShader.singleton.start();
+        GUIShader.singleton.loadViewMatrix(Camera.singleton);
         renderer.prepareGUI();
 
-        connectButton.render(renderer, guiShader);
-        backButton.render(renderer, guiShader);
-        selectableServerList.render(renderer, guiShader);
+        connectButton.render(renderer, GUIShader.singleton);
+        backButton.render(renderer, GUIShader.singleton);
+        selectableServerList.render(renderer, GUIShader.singleton);
     }
 
     public boolean showPlayer() {

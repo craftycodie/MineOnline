@@ -17,7 +17,13 @@ public class GUIShader extends StaticShader {
     private int location_projectionMatrix;
     private int location_viewMatrix;
 
-    public GUIShader() {
+    public static GUIShader singleton;
+
+    static {
+        singleton = new GUIShader();
+    }
+
+    private GUIShader() {
         super(VERTEX_FILE, FRAGMENT_FILE);
     }
 

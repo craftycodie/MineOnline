@@ -81,11 +81,10 @@ public class SelectableServer extends GUIObject {
 
     public void render(Renderer renderer, GUIShader shader) {
         if(focused) {
-            SelectableVersionShader selectableVersionShader = new SelectableVersionShader();
-            selectableVersionShader.start();
-            selectableVersionShader.loadViewMatrix(Camera.singleton);
-            renderer.renderGUI(this, selectableVersionShader);
-            selectableVersionShader.stop();
+            SelectableVersionShader.singleton.start();
+            SelectableVersionShader.singleton.loadViewMatrix(Camera.singleton);
+            renderer.renderGUI(this, SelectableVersionShader.singleton);
+            SelectableVersionShader.singleton.stop();
         }
     }
 

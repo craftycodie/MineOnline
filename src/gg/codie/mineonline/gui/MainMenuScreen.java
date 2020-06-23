@@ -137,17 +137,16 @@ public class MainMenuScreen implements IMenuScreen {
     }
 
     public void render(Renderer renderer) {
-        GUIShader guiShader = new GUIShader();
-        guiShader.start();
-        guiShader.loadViewMatrix(Camera.singleton);
+        GUIShader.singleton.start();
+        GUIShader.singleton.loadViewMatrix(Camera.singleton);
         renderer.prepareGUI();
-        renderer.renderGUI(logo, guiShader);
-        playButton.render(renderer, guiShader);
-        joinServerButton.render(renderer, guiShader);
-        versionButton.render(renderer, guiShader);
-        optionsButton.render(renderer, guiShader);
-        skinButton.render(renderer, guiShader);
-        guiShader.stop();
+        renderer.renderGUI(logo, GUIShader.singleton);
+        playButton.render(renderer, GUIShader.singleton);
+        joinServerButton.render(renderer, GUIShader.singleton);
+        versionButton.render(renderer, GUIShader.singleton);
+        optionsButton.render(renderer, GUIShader.singleton);
+        skinButton.render(renderer, GUIShader.singleton);
+        GUIShader.singleton.stop();
     }
 
     public boolean showPlayer() {

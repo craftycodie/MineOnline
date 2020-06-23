@@ -68,14 +68,13 @@ public class AboutMenuScreen implements IMenuScreen {
     }
 
     public void render(Renderer renderer) {
-        GUIShader guiShader = new GUIShader();
-        guiShader.start();
-        guiShader.loadViewMatrix(Camera.singleton);
+        GUIShader.singleton.start();
+        GUIShader.singleton.loadViewMatrix(Camera.singleton);
         renderer.prepareGUI();
-        discordButton.render(renderer, guiShader);
-        websiteButton.render(renderer, guiShader);
-        doneButton.render(renderer, guiShader);
-        guiShader.stop();
+        discordButton.render(renderer, GUIShader.singleton);
+        websiteButton.render(renderer, GUIShader.singleton);
+        doneButton.render(renderer, GUIShader.singleton);
+        GUIShader.singleton.stop();
     }
 
     public boolean showPlayer() {

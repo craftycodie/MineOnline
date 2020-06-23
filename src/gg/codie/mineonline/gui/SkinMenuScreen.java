@@ -207,15 +207,14 @@ public class SkinMenuScreen implements IMenuScreen {
     }
 
     public void render(Renderer renderer) {
-        GUIShader guiShader = new GUIShader();
-        guiShader.start();
-        guiShader.loadViewMatrix(Camera.singleton);
+        GUIShader.singleton.start();
+        GUIShader.singleton.loadViewMatrix(Camera.singleton);
         renderer.prepareGUI();
-        skinButton.render(renderer, guiShader);
-        cloakButton.render(renderer, guiShader);
-        resetCloakButton.render(renderer, guiShader);
-        doneButton.render(renderer, guiShader);
-        guiShader.stop();
+        skinButton.render(renderer, GUIShader.singleton);
+        cloakButton.render(renderer, GUIShader.singleton);
+        resetCloakButton.render(renderer, GUIShader.singleton);
+        doneButton.render(renderer, GUIShader.singleton);
+        GUIShader.singleton.stop();
     }
 
     public boolean showPlayer() {

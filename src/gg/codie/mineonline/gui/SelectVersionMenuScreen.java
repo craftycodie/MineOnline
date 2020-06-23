@@ -134,19 +134,18 @@ public class SelectVersionMenuScreen implements IMenuScreen {
     }
 
     public void render(Renderer renderer) {
-        GUIShader guiShader = new GUIShader();
-        guiShader.start();
-        guiShader.loadViewMatrix(Camera.singleton);
+        GUIShader.singleton.start();
+        GUIShader.singleton.loadViewMatrix(Camera.singleton);
         renderer.prepareGUI();
 
-        doneButton.render(renderer, guiShader);
+        doneButton.render(renderer, GUIShader.singleton);
         if(browseButtonBig != null)
-            browseButtonBig.render(renderer, guiShader);
+            browseButtonBig.render(renderer, GUIShader.singleton);
         if(browseButtonSmall != null)
-            browseButtonSmall.render(renderer, guiShader);
+            browseButtonSmall.render(renderer, GUIShader.singleton);
         if(backButton != null)
-            backButton.render(renderer, guiShader);
-        selectableVersionList.render(renderer, guiShader);
+            backButton.render(renderer, GUIShader.singleton);
+        selectableVersionList.render(renderer, GUIShader.singleton);
     }
 
     public boolean showPlayer() {

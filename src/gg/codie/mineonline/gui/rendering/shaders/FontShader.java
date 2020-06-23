@@ -16,7 +16,13 @@ public class FontShader extends ShaderProgram{
     private int location_yMin;
     private int location_yMax;
 
-    public FontShader() {
+    public static FontShader singleton;
+
+    static {
+        singleton = new FontShader();
+    }
+
+    private FontShader() {
         super(VERTEX_FILE, FRAGMENT_FILE);
     }
 

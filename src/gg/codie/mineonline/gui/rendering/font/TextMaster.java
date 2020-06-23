@@ -42,10 +42,14 @@ public class TextMaster {
     }
 
     public static void removeText(GUIText text){
-        List<GUIText> textBatch = texts.get(text.getFont());
-        textBatch.remove(text);
-        if(textBatch.isEmpty()){
-            texts.remove(texts.get(text.getFont()));
+        try {
+            List<GUIText> textBatch = texts.get(text.getFont());
+            textBatch.remove(text);
+            if (textBatch.isEmpty()) {
+                texts.remove(texts.get(text.getFont()));
+            }
+        } catch (NullPointerException ex) {
+            // if there's no text then there's no need to remove it.
         }
     }
 

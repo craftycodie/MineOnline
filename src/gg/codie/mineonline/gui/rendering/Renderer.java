@@ -36,6 +36,8 @@ public class Renderer {
     }
 
     public void prepare() {
+        createProjectionMatrix();
+
         GL11.glViewport(0, 0, Display.getWidth(), Display.getHeight());
         //GL11.glMatrixMode(GL11.GL_PROJECTION);
 
@@ -72,8 +74,6 @@ public class Renderer {
     }
 
     public void render(GameObject gameObject, StaticShader shader) {
-        createProjectionMatrix();
-
         for(GameObject child : gameObject.getChildren()) {
             render(child, shader);
         }
@@ -85,7 +85,7 @@ public class Renderer {
 
         if(texturedModel == null) {
             return;
-        };
+        }
 
         RawModel rawModel = texturedModel.getRawModel();
 

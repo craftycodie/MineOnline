@@ -19,7 +19,13 @@ public class SelectableVersionShader extends StaticShader {
     private int location_yMin;
     private int location_yMax;
 
-    public SelectableVersionShader() {
+    public static SelectableVersionShader singleton;
+
+    static {
+        singleton = new SelectableVersionShader();
+    }
+
+    private SelectableVersionShader() {
         super(VERTEX_FILE, FRAGMENT_FILE);
     }
 

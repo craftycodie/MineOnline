@@ -152,16 +152,15 @@ public class JoinServerScreen implements IMenuScreen {
     }
 
     public void render(Renderer renderer) {
-        GUIShader guiShader = new GUIShader();
-        guiShader.start();
-        guiShader.loadViewMatrix(Camera.singleton);
+        GUIShader.singleton.start();
+        GUIShader.singleton.loadViewMatrix(Camera.singleton);
         renderer.prepareGUI();
-        serverIPField.render(renderer, guiShader);
-        versionButton.render(renderer, guiShader);
-        connectButton.render(renderer, guiShader);
-        doneButton.render(renderer, guiShader);
-        serverListButton.render(renderer, guiShader);
-        guiShader.stop();
+        serverIPField.render(renderer, GUIShader.singleton);
+        versionButton.render(renderer, GUIShader.singleton);
+        connectButton.render(renderer, GUIShader.singleton);
+        doneButton.render(renderer, GUIShader.singleton);
+        serverListButton.render(renderer, GUIShader.singleton);
+        GUIShader.singleton.stop();
     }
 
     public boolean showPlayer() {

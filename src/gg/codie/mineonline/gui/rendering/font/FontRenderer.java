@@ -13,13 +13,6 @@ import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
 public class FontRenderer {
-
-    private FontShader shader;
-
-    public FontRenderer() {
-        shader = new FontShader();
-    }
-
     public void render(Map<FontType, List<GUIText>> texts){
         prepare();
         for(FontType font : texts.keySet()){
@@ -37,7 +30,7 @@ public class FontRenderer {
     }
 
     public void cleanUp(){
-        shader.cleanUp();
+        FontShader.singleton.cleanUp();
     }
 
     private void prepare(){
@@ -45,8 +38,7 @@ public class FontRenderer {
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         GL11.glDisable(GL11.GL_DEPTH_TEST);
 
-        shader = new FontShader();
-        shader.start();
+        FontShader.singleton.start();
     }
 
     private void renderText(GUIText text){
@@ -70,17 +62,17 @@ public class FontRenderer {
             GL11.glViewport(0, 0, (int) (DisplayManager.getDefaultWidth() * scale), (int) ((DisplayManager.getDefaultHeight() * scale)));
         }
 
-        shader.loadColour(new Vector3f(text.getColour().x / 5, text.getColour().y / 5, text.getColour().z / 5));
-        shader.loadAlpha(0.66f);
-        shader.loadYBounds(DisplayManager.getYBuffer() + (int)DisplayManager.scaledHeight(text.getYBounds().x), Display.getHeight() - (DisplayManager.getYBuffer() + (int)DisplayManager.scaledHeight(text.getYBounds().y)));
-        shader.loadTranslation(new Vector2f(text.getPosition().x + (2 / (float)DisplayManager.getDefaultWidth()), text.getPosition().y + (2 / (float)DisplayManager.getDefaultHeight())));
+        FontShader.singleton.loadColour(new Vector3f(text.getColour().x / 5, text.getColour().y / 5, text.getColour().z / 5));
+        FontShader.singleton.loadAlpha(0.66f);
+        FontShader.singleton.loadYBounds(DisplayManager.getYBuffer() + (int)DisplayManager.scaledHeight(text.getYBounds().x), Display.getHeight() - (DisplayManager.getYBuffer() + (int)DisplayManager.scaledHeight(text.getYBounds().y)));
+        FontShader.singleton.loadTranslation(new Vector2f(text.getPosition().x + (2 / (float)DisplayManager.getDefaultWidth()), text.getPosition().y + (2 / (float)DisplayManager.getDefaultHeight())));
 
         GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, text.getVertexCount());
 
-        shader.loadColour(text.getColour());
-        shader.loadAlpha(1);
-        shader.loadYBounds(DisplayManager.getYBuffer() + (int)DisplayManager.scaledHeight(text.getYBounds().x), Display.getHeight() - (DisplayManager.getYBuffer() + (int)DisplayManager.scaledHeight(text.getYBounds().y)));
-        shader.loadTranslation(text.getPosition());
+        FontShader.singleton.loadColour(text.getColour());
+        FontShader.singleton.loadAlpha(1);
+        FontShader.singleton.loadYBounds(DisplayManager.getYBuffer() + (int)DisplayManager.scaledHeight(text.getYBounds().x), Display.getHeight() - (DisplayManager.getYBuffer() + (int)DisplayManager.scaledHeight(text.getYBounds().y)));
+        FontShader.singleton.loadTranslation(text.getPosition());
         GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, text.getVertexCount());
 
         //GL11.glPopMatrix();
@@ -91,7 +83,7 @@ public class FontRenderer {
     }
 
     private void endRendering(){
-        shader.stop();
+        FontShader.singleton.stop();
         GL11.glDisable(GL11.GL_BLEND);
         GL11.glEnable(GL11.GL_DEPTH_TEST);
     }
