@@ -8,19 +8,15 @@ import gg.codie.mineonline.gui.rendering.models.TexturedModel;
 import gg.codie.mineonline.gui.rendering.shaders.StaticShader;
 import gg.codie.mineonline.gui.rendering.textures.ModelTexture;
 import gg.codie.mineonline.gui.rendering.utils.MathUtils;
-import jdk.nashorn.api.scripting.URLReader;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Quaternion;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
-import org.newdawn.slick.opengl.Texture;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.net.URL;
 
 public class PlayerGameObject extends GameObject {
@@ -87,7 +83,7 @@ public class PlayerGameObject extends GameObject {
                 new Vector2f(28, 16), new Vector2f(8, 4)
         ));
 
-        playerRightArm = addBox("rightarm", new Vector3f(-3, -2, -2), 4, 12, 4, new Vector3f(2, -10, 0), new Vector3f(5, 24, 0), TextureHelper.getCubeTextureCoords(new Vector2f(SKIN_WIDTH, SKIN_HEIGHT),
+        playerRightArm = addBox("rightarm", new Vector3f(-3, -2, -2), 4, 12, 4, new Vector3f(2, -10, 0), new Vector3f(5, 24, 0), TextureHelper.getRightLimbTextureCoords(new Vector2f(SKIN_WIDTH, SKIN_HEIGHT),
                 new Vector2f(52, 20), new Vector2f(4, 12),
                 new Vector2f(44, 20), new Vector2f(4, 12),
                 new Vector2f(48, 20), new Vector2f(4, 12),
@@ -97,7 +93,7 @@ public class PlayerGameObject extends GameObject {
         ));
 
 
-        playerLeftArm = addBox("leftarm", new Vector3f(-1, -2, -2), 4, 12, 4, new Vector3f(-2, -10, 0), new Vector3f(-5, 24, 0), TextureHelper.getCubeTextureCoords(new Vector2f(SKIN_WIDTH, SKIN_HEIGHT),
+        playerLeftArm = addBox("leftarm", new Vector3f(-1, -2, -2), 4, 12, 4, new Vector3f(-2, -10, 0), new Vector3f(-5, 24, 0), TextureHelper.getLeftLimbTextureCoords(new Vector2f(SKIN_WIDTH, SKIN_HEIGHT),
                 new Vector2f(52, 20), new Vector2f(4, 12),
                 new Vector2f(44, 20), new Vector2f(4, 12),
                 new Vector2f(48, 20), new Vector2f(4, 12),
@@ -107,7 +103,7 @@ public class PlayerGameObject extends GameObject {
         ));
 
 
-        playerRightLeg = addBox("rightleg", new Vector3f(-2, 0, -2), 4 , 12, 4, new Vector3f(-2, -12, 0), new Vector3f(4, 12, 0), TextureHelper.getCubeTextureCoords(new Vector2f(SKIN_WIDTH, SKIN_HEIGHT),
+        playerRightLeg = addBox("rightleg", new Vector3f(-2, 0, -2), 4 , 12, 4, new Vector3f(-2, -12, 0), new Vector3f(4, 12, 0), TextureHelper.getRightLimbTextureCoords(new Vector2f(SKIN_WIDTH, SKIN_HEIGHT),
                 new Vector2f(12, 20), new Vector2f(4, 12),
                 new Vector2f(4, 20), new Vector2f(4, 12),
                 new Vector2f(8, 20), new Vector2f(4, 12),
@@ -116,7 +112,7 @@ public class PlayerGameObject extends GameObject {
                 new Vector2f(8, 16), new Vector2f(4, 4)
         ));
 
-        playerLeftLeg = addBox("leftleg", new Vector3f(-2, 0, -2), 4 , 12, 4, new Vector3f(2, -12, 0 ), new Vector3f(-4, 12, 0),  TextureHelper.getCubeTextureCoords(new Vector2f(SKIN_WIDTH, SKIN_HEIGHT),
+        playerLeftLeg = addBox("leftleg", new Vector3f(-2, 0, -2), 4 , 12, 4, new Vector3f(2, -12, 0 ), new Vector3f(-4, 12, 0),  TextureHelper.getLeftLimbTextureCoords(new Vector2f(SKIN_WIDTH, SKIN_HEIGHT),
                 new Vector2f(12, 20), new Vector2f(4, 12),
                 new Vector2f(4, 20), new Vector2f(4, 12),
                 new Vector2f(8, 20), new Vector2f(4, 12),

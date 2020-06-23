@@ -94,4 +94,97 @@ public class TextureHelper {
 
     }
 
+    // Ok so this is just for left arms/legs, but this whole package is a mess so I'm not refactoring now.
+    public static float[] getLeftLimbTextureCoords(Vector2f textureDimensions,
+                                                   Vector2f pixelBegin1, Vector2f pixelEnd1,
+                                                   Vector2f pixelBegin2, Vector2f pixelEnd2,
+                                                   Vector2f pixelBegin3, Vector2f pixelEnd3,
+                                                   Vector2f pixelBegin4, Vector2f pixelEnd4,
+                                                   Vector2f pixelBegin5, Vector2f pixelEnd5,
+                                                   Vector2f pixelBegin6, Vector2f pixelEnd6
+    ) {
+        float[] results = new float[48];
+
+        int i = 0;
+
+        for(float coord : getXFlippedPlaneTextureCoords(textureDimensions, pixelBegin1, pixelEnd1)) {
+            results[i] = coord;
+            i++;
+        }
+
+        for(float coord : getPlaneTextureCoords(textureDimensions, pixelBegin2, pixelEnd2)) {
+            results[i] = coord;
+            i++;
+        }
+
+        for(float coord : getXFlippedPlaneTextureCoords(textureDimensions, pixelBegin3, pixelEnd3)) {
+            results[i] = coord;
+            i++;
+        }
+
+        for(float coord : getPlaneTextureCoords(textureDimensions, pixelBegin4, pixelEnd4)) {
+            results[i] = coord;
+            i++;
+        }
+
+        for(float coord : getYFlippedPlaneTextureCoords(textureDimensions, pixelBegin5, pixelEnd5)) {
+            results[i] = coord;
+            i++;
+        }
+
+        for(float coord : getPlaneTextureCoords(textureDimensions, pixelBegin6, pixelEnd6)) {
+            results[i] = coord;
+            i++;
+        }
+
+        return results;
+
+    }
+
+    public static float[] getRightLimbTextureCoords(Vector2f textureDimensions,
+                                                    Vector2f pixelBegin1, Vector2f pixelEnd1,
+                                                    Vector2f pixelBegin2, Vector2f pixelEnd2,
+                                                    Vector2f pixelBegin3, Vector2f pixelEnd3,
+                                                    Vector2f pixelBegin4, Vector2f pixelEnd4,
+                                                    Vector2f pixelBegin5, Vector2f pixelEnd5,
+                                                    Vector2f pixelBegin6, Vector2f pixelEnd6
+    ) {
+        float[] results = new float[48];
+
+        int i = 0;
+
+        for(float coord : getPlaneTextureCoords(textureDimensions, pixelBegin1, pixelEnd1)) {
+            results[i] = coord;
+            i++;
+        }
+
+        for(float coord : getXFlippedPlaneTextureCoords(textureDimensions, pixelBegin2, pixelEnd2)) {
+            results[i] = coord;
+            i++;
+        }
+
+        for(float coord : getXFlippedPlaneTextureCoords(textureDimensions, pixelBegin3, pixelEnd3)) {
+            results[i] = coord;
+            i++;
+        }
+
+        for(float coord : getPlaneTextureCoords(textureDimensions, pixelBegin4, pixelEnd4)) {
+            results[i] = coord;
+            i++;
+        }
+
+        for(float coord : getYFlippedPlaneTextureCoords(textureDimensions, pixelBegin5, pixelEnd5)) {
+            results[i] = coord;
+            i++;
+        }
+
+        for(float coord : getPlaneTextureCoords(textureDimensions, pixelBegin6, pixelEnd6)) {
+            results[i] = coord;
+            i++;
+        }
+
+        return results;
+
+    }
+
 }
