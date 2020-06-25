@@ -17,6 +17,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.net.URL;
 
 public class PlayerGameObject extends GameObject {
@@ -227,8 +228,8 @@ public class PlayerGameObject extends GameObject {
 
         ModelTexture skin;
 
-        try {
-            BufferedImage bufferedImage = ImageIO.read(path.openStream());
+        try(InputStream inputStream = path.openStream()) {
+            BufferedImage bufferedImage = ImageIO.read(inputStream);
             bufferedImage = TextureHelper.cropImage(bufferedImage, 0, 0, 64, 32);
             ByteArrayOutputStream os = new ByteArrayOutputStream();
             ImageIO.write(bufferedImage, "png", os);
@@ -254,8 +255,8 @@ public class PlayerGameObject extends GameObject {
 
         ModelTexture cloak;
 
-        try {
-            BufferedImage bufferedImage = ImageIO.read(path.openStream());
+        try(InputStream inputStream = path.openStream()) {
+            BufferedImage bufferedImage = ImageIO.read(inputStream);
             bufferedImage = TextureHelper.cropImage(bufferedImage, 0, 0, 64, 32);
             ByteArrayOutputStream os = new ByteArrayOutputStream();
             ImageIO.write(bufferedImage, "png", os);
