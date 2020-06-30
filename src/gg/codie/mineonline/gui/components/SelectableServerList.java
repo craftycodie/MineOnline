@@ -65,7 +65,7 @@ public class SelectableServerList extends GUIObject {
             LinkedList<MineOnlineServer> servers = MinecraftAPI.listServers(Session.session.getUsername(), Session.session.getSessionToken());
 
             Settings.loadSettings();
-            String[] minecraftJars = Settings.settings.has("minecraftJars") ? JSONUtils.getStringArray(Settings.settings.getJSONArray("minecraftJars")) : new String[0];
+            String[] minecraftJars = Settings.settings.has(Settings.MINECRAFT_JARS) ? JSONUtils.getStringArray(Settings.settings.getJSONArray(Settings.MINECRAFT_JARS)) : new String[0];
             LinkedList<MinecraftVersionInfo.MinecraftVersion> installedClients = new LinkedList<>();
 
             for (String path : minecraftJars) {

@@ -85,7 +85,7 @@ public class SelectableVersionList extends GUIObject {
                                     continue;
                                 }
 
-                                String[] existingJars = Settings.settings.has("minecraftJars") ? JSONUtils.getStringArray(Settings.settings.getJSONArray("minecraftJars")) : new String[0];
+                                String[] existingJars = Settings.settings.has(Settings.MINECRAFT_JARS) ? JSONUtils.getStringArray(Settings.settings.getJSONArray(Settings.MINECRAFT_JARS)) : new String[0];
                                 String[] newJars = new String[existingJars.length + 1];
 
                                 for (int i = 0; i < existingJars.length; i++) {
@@ -98,7 +98,7 @@ public class SelectableVersionList extends GUIObject {
                                 }
                                 newJars[newJars.length - 1] = file.getPath();
 
-                                Settings.settings.put("minecraftJars", newJars);
+                                Settings.settings.put(Settings.MINECRAFT_JARS, newJars);
                                 Settings.saveSettings();
 
                                 if(minecraftVersion != null) {
@@ -159,7 +159,7 @@ public class SelectableVersionList extends GUIObject {
         emptyText.setColour(0.5f, 0.5f, 0.5f);
 
         Settings.loadSettings();
-        String[] minecraftJars = Settings.settings.has("minecraftJars") ? JSONUtils.getStringArray(Settings.settings.getJSONArray("minecraftJars")) : new String[0];
+        String[] minecraftJars = Settings.settings.has(Settings.MINECRAFT_JARS) ? JSONUtils.getStringArray(Settings.settings.getJSONArray(Settings.MINECRAFT_JARS)) : new String[0];
         for (String path : minecraftJars) {
             File file = new File(path);
 
@@ -180,7 +180,7 @@ public class SelectableVersionList extends GUIObject {
             }
         }
 
-        String selectedJar = Settings.settings.has("selectedJar") ? Settings.settings.getString("selectedJar") : null;
+        String selectedJar = Settings.settings.has(Settings.SELECTED_JAR) ? Settings.settings.getString(Settings.SELECTED_JAR) : null;
         if (selectedJar != null && !selectedJar.isEmpty()) {
             selectVersion(selectedJar);
         }

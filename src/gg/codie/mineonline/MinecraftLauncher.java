@@ -93,7 +93,7 @@ public class MinecraftLauncher extends Applet implements AppletStub{
 
         System.out.println("Launching Jar, MD5: " + MD5Checksum.getMD5Checksum(jarPath));
 
-        fullscreen = Settings.settings.has("fullscreen") && Settings.settings.getBoolean("fullscreen");
+        fullscreen = Settings.settings.has(Settings.FULLSCREEN) && Settings.settings.getBoolean(Settings.FULLSCREEN);
 
         try {
             Class rubyDungClass;
@@ -133,7 +133,7 @@ public class MinecraftLauncher extends Applet implements AppletStub{
             String natives = "-Djava.library.path=" + LauncherFiles.MINEONLNE_NATIVES_FOLDER;
 
             String[] CMD_ARRAY = new String[] {
-                    Settings.settings.getString("javaCommand"),
+                    Settings.settings.getString(Settings.JAVA_COMMAND),
                     proxySet, proxyHost, proxyPortArgument + System.getProperty("http.proxyHost"),
                     CP, classpath + getClasspathSeparator() + LauncherFiles.LWJGL_JAR + getClasspathSeparator() + LauncherFiles.LWJGL_UTIL_JAR + getClasspathSeparator() + jarPath,
                     natives,
@@ -166,7 +166,7 @@ public class MinecraftLauncher extends Applet implements AppletStub{
             String proxyPortArgument = "-Dhttp.proxyPort=";
 
             String[] CMD_ARRAY = new String[] {
-                    Settings.settings.getString("javaCommand"),
+                    Settings.settings.getString(Settings.JAVA_COMMAND),
                     proxySet, proxyHost, proxyPortArgument + System.getProperty("http.proxyHost"),
                     "-Dsun.java2d.noddraw=true",
                     "-Dsun.java2d.d3d=false",
@@ -722,10 +722,10 @@ public class MinecraftLauncher extends Applet implements AppletStub{
                 RetVal = Session.session.getSessionToken();
                 break;
             case "haspaid":
-                RetVal = String.valueOf(Settings.settings.getBoolean("isPremium"));
+                RetVal = String.valueOf(Settings.settings.getBoolean(Settings.IS_PREMIUM));
                 break;
             case "demo":
-                RetVal = String.valueOf(!Settings.settings.getBoolean("isPremium"));
+                RetVal = String.valueOf(!Settings.settings.getBoolean(Settings.IS_PREMIUM));
                 break;
             case "server":
                 RetVal = serverAddress;

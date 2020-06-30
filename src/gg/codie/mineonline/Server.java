@@ -65,7 +65,7 @@ public class Server {
 
         Proxy.launchProxy();
 
-        String[] CMD_ARRAY = new String[] {Settings.settings.getString("javaCommand"), proxySet, proxyHost, proxyPortArgument + Proxy.getProxyPort()};
+        String[] CMD_ARRAY = new String[] {Settings.settings.getString(Settings.JAVA_COMMAND), proxySet, proxyHost, proxyPortArgument + Proxy.getProxyPort()};
 
         CMD_ARRAY = ArrayUtils.concatenate(CMD_ARRAY, Arrays.copyOfRange(args, 1, args.length));
 

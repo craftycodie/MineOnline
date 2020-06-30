@@ -27,13 +27,13 @@ public class OptionsMenuScreen implements IMenuScreen {
     private static final String[] guiScales = new String[] { "Auto", "Small", "Normal", "Large" };
 
     public OptionsMenuScreen() {
-        fullscreenButton = new MediumButton("Fullscreen: " + (Settings.settings.getBoolean("fullscreen") ? "ON" : "OFF"), new Vector2f((DisplayManager.getDefaultWidth() / 2) - 308, (DisplayManager.getDefaultHeight() / 2) - 40), new IOnClickListener() {
+        fullscreenButton = new MediumButton("Fullscreen: " + (Settings.settings.getBoolean(Settings.FULLSCREEN) ? "ON" : "OFF"), new Vector2f((DisplayManager.getDefaultWidth() / 2) - 308, (DisplayManager.getDefaultHeight() / 2) - 40), new IOnClickListener() {
             @Override
             public void onClick() {
-                boolean fullcreen = !Settings.settings.getBoolean("fullscreen");
-                Settings.settings.put("fullscreen", fullcreen);
+                boolean fullcreen = !Settings.settings.getBoolean(Settings.FULLSCREEN);
+                Settings.settings.put(Settings.FULLSCREEN, fullcreen);
                 Settings.saveSettings();
-                fullscreenButton.setName("Fullscreen: " + (Settings.settings.getBoolean("fullscreen") ? "ON" : "OFF"));
+                fullscreenButton.setName("Fullscreen: " + (Settings.settings.getBoolean(Settings.FULLSCREEN) ? "ON" : "OFF"));
             }
         });
 

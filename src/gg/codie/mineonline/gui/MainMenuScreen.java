@@ -39,7 +39,7 @@ public class MainMenuScreen implements IMenuScreen {
         logo = new GUIObject("logo", texuredLogoModel, new Vector3f(), new Vector3f(), new Vector3f(1, 1, 1));
 
         Settings.loadSettings();
-        String jarPath = Settings.settings.has("selectedJar") ? Settings.settings.getString("selectedJar") : null;
+        String jarPath = Settings.settings.has(Settings.SELECTED_JAR) ? Settings.settings.getString(Settings.SELECTED_JAR) : null;
 
         playButton = new MediumButton("Play", new Vector2f((DisplayManager.getDefaultWidth() / 2) + 30, (DisplayManager.getDefaultHeight() / 2) - 40), new IOnClickListener() {
             @Override
@@ -76,7 +76,7 @@ public class MainMenuScreen implements IMenuScreen {
                 selectVersionMenuScreen = new SelectVersionMenuScreen(null, new IOnClickListener() {
                     @Override
                     public void onClick() {
-                        Settings.settings.put("selectedJar", selectVersionMenuScreen.getSelectedPath());
+                        Settings.settings.put(Settings.SELECTED_JAR, selectVersionMenuScreen.getSelectedPath());
                         Settings.saveSettings();
                         MenuManager.setMenuScreen(new MainMenuScreen());
                     }

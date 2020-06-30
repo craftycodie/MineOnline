@@ -41,12 +41,12 @@ public class ProxyThread implements Runnable {
         running.set(true);
 
         Settings.loadSettings();
-        String[] redirectedDomains = JSONUtils.getStringArray(Settings.settings.getJSONArray("redirectedDomains"));
+        String[] redirectedDomains = JSONUtils.getStringArray(Settings.settings.getJSONArray(Settings.REDIRECTED_DOMAINS));
 
         Socket clientSocket = null;
 
         Settings.loadSettings();
-        if (Settings.settings.has("proxyLogging") && Settings.settings.getBoolean("proxyLogging"))
+        if (Settings.settings.has(Settings.PROXY_LOGGING) && Settings.settings.getBoolean(Settings.PROXY_LOGGING))
             System.out.println(serverSocket.get().getInetAddress() + ":" + serverSocket.get().getLocalPort());
 
         while (running.get()) {
@@ -94,12 +94,12 @@ public class ProxyThread implements Runnable {
                 }
 
                 Settings.loadSettings();
-                if (Settings.settings.has("proxyLogging") && Settings.settings.getBoolean("proxyLogging"))
+                if (Settings.settings.has(Settings.PROXY_LOGGING) && Settings.settings.getBoolean(Settings.PROXY_LOGGING))
                     System.out.println("Request");
                 requestHeaders = requestString.split("\r\n\r\n")[0];
 
                 Settings.loadSettings();
-                if (Settings.settings.has("proxyLogging") && Settings.settings.getBoolean("proxyLogging"))
+                if (Settings.settings.has(Settings.PROXY_LOGGING) && Settings.settings.getBoolean(Settings.PROXY_LOGGING))
                     System.out.println(requestString);
 
 
@@ -121,7 +121,7 @@ public class ProxyThread implements Runnable {
 
                     if(oggFile.exists()) {
                         Settings.loadSettings();
-                        if (Settings.settings.has("proxyLogging") && Settings.settings.getBoolean("proxyLogging"))
+                        if (Settings.settings.has(Settings.PROXY_LOGGING) && Settings.settings.getBoolean(Settings.PROXY_LOGGING))
                             System.out.println("Responding already downloaded resource.");
 
                         String responseHeaders =
@@ -209,7 +209,7 @@ public class ProxyThread implements Runnable {
                 String contentString = new String(content);
 
                 Settings.loadSettings();
-                if (Settings.settings.has("proxyLogging") && Settings.settings.getBoolean("proxyLogging")) {
+                if (Settings.settings.has(Settings.PROXY_LOGGING) && Settings.settings.getBoolean(Settings.PROXY_LOGGING)) {
                     System.out.println("Response");
                     System.out.print(responseHeader);
                     System.out.println(contentString);

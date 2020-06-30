@@ -39,7 +39,7 @@ public class Proxy {
         // Start the proxy as a new process.
         java.util.Properties props = System.getProperties();
         ProcessBuilder processBuilder = new ProcessBuilder(
-                Settings.settings.getString("javaCommand"),
+                Settings.settings.getString(Settings.JAVA_COMMAND),
                 "-Djava.util.Arrays.useLegacyMergeSort=true",
                 "-cp",
                 new File(Proxy.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath(),

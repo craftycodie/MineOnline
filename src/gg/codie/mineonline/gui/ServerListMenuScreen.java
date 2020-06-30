@@ -40,7 +40,7 @@ public class ServerListMenuScreen implements IMenuScreen {
 
                         MinecraftVersionInfo.MinecraftVersion serverVersion = MinecraftVersionInfo.getVersionByMD5(selectedServer.server.md5);
 
-                        String[] minecraftJars = Settings.settings.has("minecraftJars") ? JSONUtils.getStringArray(Settings.settings.getJSONArray("minecraftJars")) : new String[0];
+                        String[] minecraftJars = Settings.settings.has(Settings.MINECRAFT_JARS) ? JSONUtils.getStringArray(Settings.settings.getJSONArray(Settings.MINECRAFT_JARS)) : new String[0];
 
                         if(serverVersion != null) {
                             for (String compatibleClientMd5 : serverVersion.clientMd5s) {

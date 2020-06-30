@@ -65,7 +65,7 @@ public class SelectVersionMenuScreen implements IMenuScreen {
                                 return;
                             }
 
-                            String[] existingJars = Settings.settings.has("minecraftJars") ? JSONUtils.getStringArray(Settings.settings.getJSONArray("minecraftJars")) : new String[0];
+                            String[] existingJars = Settings.settings.has(Settings.MINECRAFT_JARS) ? JSONUtils.getStringArray(Settings.settings.getJSONArray(Settings.MINECRAFT_JARS)) : new String[0];
                             String[] newJars = new String[existingJars.length + 1];
 
                             for (int i = 0; i < existingJars.length; i++) {
@@ -78,7 +78,7 @@ public class SelectVersionMenuScreen implements IMenuScreen {
                             }
                             newJars[newJars.length - 1] = file.getPath();
 
-                            Settings.settings.put("minecraftJars", newJars);
+                            Settings.settings.put(Settings.MINECRAFT_JARS, newJars);
                             Settings.saveSettings();
 
                             if (minecraftVersion != null) {
@@ -102,7 +102,7 @@ public class SelectVersionMenuScreen implements IMenuScreen {
         selectableVersionList = new SelectableVersionList("version list", new Vector3f(), new Vector3f(), new Vector3f(1, 1, 1), new IOnClickListener() {
             @Override
             public void onClick() {
-                Settings.settings.put("selectedJar", selectableVersionList.getSelected());
+                Settings.settings.put(Settings.SELECTED_JAR, selectableVersionList.getSelected());
                 Settings.saveSettings();
                 MenuManager.setMenuScreen(new MainMenuScreen());
             }
