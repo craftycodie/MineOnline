@@ -24,7 +24,7 @@ public class Server {
 
 	    System.out.println("MineOnline " + Globals.LAUNCHER_VERSION);
 
-	    try {
+	try {
             if (!Globals.LAUNCHER_VERSION.equals(MinecraftAPI.getLauncherVersion().replaceAll("\\s",""))) {
                 System.out.println("An update is available!");
             }
@@ -40,7 +40,7 @@ public class Server {
 
         Properties serverProperties;
 
-	    try {
+	try {
             serverProperties = gg.codie.minecraft.server.Properties.loadServerProperties(args[0]);
         } catch (Exception ex) {
             serverProperties = new Properties();
@@ -54,7 +54,7 @@ public class Server {
             serverlistPort = serverProperties.getProperty("serverlist-port");
         }
 
-	    String md5 = MD5Checksum.getMD5Checksum(jarFile.getPath());
+	String md5 = MD5Checksum.getMD5Checksum(jarFile.getPath());
         MinecraftVersionInfo.MinecraftVersion serverVersion = MinecraftVersionInfo.getVersionByMD5(md5);
 
         boolean hasHeartbeat = serverVersion != null && serverVersion.hasHeartbeat;
@@ -115,6 +115,12 @@ public class Server {
             }
 
             if (Boolean.parseBoolean(serverProperties.getProperty("public", "true")) && System.currentTimeMillis() - lastPing > 45000) {
+		try {
+		    serverProperties = gg.codie.minecraft.server.Properties.loadServerProperties(args[0]);
+		} catch (Exception ex) {
+		    // use whatever is in memory.
+		}
+		    
                 try {
                     String[] whitelistedPlayers = new String[0];
                     String[] whitelistedIPs = new String[0];
