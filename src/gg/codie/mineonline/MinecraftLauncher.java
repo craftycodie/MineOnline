@@ -6,6 +6,7 @@ import gg.codie.mineonline.gui.rendering.*;
 import gg.codie.mineonline.gui.rendering.Renderer;
 import gg.codie.mineonline.lwjgl.OnCreateListener;
 import gg.codie.mineonline.lwjgl.OnUpdateListener;
+import gg.codie.utils.ArrayUtils;
 import gg.codie.utils.MD5Checksum;
 import gg.codie.utils.OSUtils;
 import org.lwjgl.BufferUtils;
@@ -21,19 +22,14 @@ import java.applet.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import java.lang.reflect.*;
 import java.net.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.nio.ByteBuffer;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
 
 public class MinecraftLauncher extends Applet implements AppletStub{
 
@@ -59,8 +55,6 @@ public class MinecraftLauncher extends Applet implements AppletStub{
         if(serverAddress != null && serverPort == null)
             this.serverPort = "25565";
 
-        minecraftVersion = MinecraftVersionInfo.getVersion(jarPath);
-
         try {
             LibraryManager.addJarToClasspath(Paths.get(jarPath).toUri().toURL());
         } catch (Exception e) {
@@ -68,6 +62,8 @@ public class MinecraftLauncher extends Applet implements AppletStub{
             e.printStackTrace();
             System.exit(1);
         }
+
+        minecraftVersion = MinecraftVersionInfo.getVersion(jarPath);
     }
 
     public static char getClasspathSeparator() {
@@ -94,6 +90,14 @@ public class MinecraftLauncher extends Applet implements AppletStub{
         System.out.println("Launching Jar, MD5: " + MD5Checksum.getMD5Checksum(jarPath));
 
         fullscreen = Settings.settings.has(Settings.FULLSCREEN) && Settings.settings.getBoolean(Settings.FULLSCREEN);
+
+        String CP = "-cp";
+        String proxySet = "-DproxySet=true";
+        String proxyHost = "-Dhttp.proxyHost=127.0.0.1";
+        String proxyPortArgument = "-Dhttp.proxyPort=";
+
+        String classpath = System.getProperty("java.class.path").replace("\"", "");
+        String natives = "-Djava.library.path=" + LauncherFiles.MINEONLNE_NATIVES_FOLDER;
 
         try {
             Class rubyDungClass;
@@ -124,19 +128,11 @@ public class MinecraftLauncher extends Applet implements AppletStub{
 //
 //            mainFunction.invoke(null, (Object)params);
 
-            String CP = "-cp";
-            String proxySet = "-DproxySet=true";
-            String proxyHost = "-Dhttp.proxyHost=127.0.0.1";
-            String proxyPortArgument = "-Dhttp.proxyPort=";
-
-            String classpath = System.getProperty("java.class.path").replace("\"", "");
-            String natives = "-Djava.library.path=" + LauncherFiles.MINEONLNE_NATIVES_FOLDER;
-
             String[] CMD_ARRAY = new String[] {
                     Settings.settings.getString(Settings.JAVA_COMMAND),
-                    proxySet, proxyHost, proxyPortArgument + System.getProperty("http.proxyHost"),
+                    proxySet, proxyHost, proxyPortArgument + System.getProperty("http.proxyPort"),
                     CP, classpath + getClasspathSeparator() + LauncherFiles.LWJGL_JAR + getClasspathSeparator() + LauncherFiles.LWJGL_UTIL_JAR + getClasspathSeparator() + jarPath,
-                    natives,
+                    "-Djava.library.path=" + LauncherFiles.MINECRAFT_VERSIONS_PATH + "1.6.2/natives",
                     rubyDungClass.getCanonicalName()
             };
 
@@ -159,15 +155,206 @@ public class MinecraftLauncher extends Applet implements AppletStub{
            // ex.printStackTrace();
         }
 
-        if (minecraftVersion.type.equals("launcher")) {
-            String CP = "-cp";
-            String proxySet = "-DproxySet=true";
-            String proxyHost = "-Dhttp.proxyHost=127.0.0.1";
-            String proxyPortArgument = "-Dhttp.proxyPort=";
+//        try {
+//
+//            LinkedList<String> args = new LinkedList<>();
+//
+////            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_AUTHLIB_PATH).toUri().toURL());
+////            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_CODEC_JORBIS_PATH).toUri().toURL());
+////            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_CODEC_WAV_PATH).toUri().toURL());
+////            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_COMMONS_IO_PATH).toUri().toURL());
+////            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_COMMONS_LANG3_PATH).toUri().toURL());
+////            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_GSON_PATH).toUri().toURL());
+////            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_GUAVA_PATH).toUri().toURL());
+////            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_ICU4J_CORE_PATH).toUri().toURL());
+////            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_JINPUT_PATH).toUri().toURL());
+////            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_JOPT_SIMPLE_PATH).toUri().toURL());
+////            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_JUTILS_PATH).toUri().toURL());
+////            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_LIBRARY_LWJGL_OPENAL_PATH).toUri().toURL());
+////            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_LIBRARY_JAVA_SOUND_PATH).toUri().toURL());
+////            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_NETTY_ALL_PATH).toUri().toURL());
+////            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_SOUNDSYSTEM_PATH).toUri().toURL());
+////            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_TROVE4J_PATH).toUri().toURL());
+////            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_VECMATH_PATH).toUri().toURL());
+////            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_ARGO_PATH).toUri().toURL());
+////            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_BCPROV_PATH).toUri().toURL());
+////            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_LOG4J_CORE_PATH).toUri().toURL());
+////            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_LOG4J_API_PATH).toUri().toURL());
+////            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_FASTUTIL_PATH).toUri().toURL());
+////            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_BRIGADIER_PATH).toUri().toURL());
+////            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_DATAFIXERUPPER_PATH).toUri().toURL());
+////            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_JAVABRIDGE_PATH).toUri().toURL());
+////            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_PATCHY_PATH).toUri().toURL());
+////            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_REALMS_PATH).toUri().toURL());
+////            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_TEXT2SPEECH_PATH).toUri().toURL());
+////            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_LWJGL_GLFW_PATH).toUri().toURL());
+////            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_LWJGL_GLFW_NATIVES_PATH).toUri().toURL());
+////            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_LWJGL_OPENGL_PATH).toUri().toURL());
+////            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_LWJGL_OPENGL_NATIVES_PATH).toUri().toURL());
+////            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_LWJGL_OPENAL_PATH).toUri().toURL());
+////            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_LWJGL_OPENAL_NATIVES_PATH).toUri().toURL());
+////            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_LWJGL_STB_PATH).toUri().toURL());
+////            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_LWJGL_STB_NATIVES_PATH).toUri().toURL());
+////            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_LWJGL_PATH).toUri().toURL());
+////            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_LWJGL_NATIVES_PATH).toUri().toURL());
+////
+////            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_LWJGL_GLFW_PATH).toUri().toURL());
+//
+//            //Class clazz = Class.forName("net.minecraft.client.main.Main");
+//
+//            String[] CMD_ARRAY = new String[] {
+//                    Settings.settings.getString(Settings.JAVA_COMMAND),
+//                    //proxySet, proxyHost, proxyPortArgument + System.getProperty("http.proxyPort"),
+//                    //proxySet, proxyHost, proxyPortArgument + "8888",
+//                    "-javaagent:" + LauncherFiles.PATCH_AGENT_JAR,
+//                    "-XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump",
+//                    CP, classpath
+//
+//                    + getClasspathSeparator() + LauncherFiles.MINECRAFT_LIBRARIES_AUTHLIB_PATH
+//                    + getClasspathSeparator() + LauncherFiles.MINECRAFT_LIBRARIES_CODEC_JORBIS_PATH
+//                    + getClasspathSeparator() + LauncherFiles.MINECRAFT_LIBRARIES_CODEC_WAV_PATH
+//                    + getClasspathSeparator() + LauncherFiles.MINECRAFT_LIBRARIES_COMMONS_IO_PATH
+//                    + getClasspathSeparator() + LauncherFiles.MINECRAFT_LIBRARIES_COMMONS_LANG3_PATH
+//                    + getClasspathSeparator() + LauncherFiles.MINECRAFT_LIBRARIES_GSON_PATH
+//                    + getClasspathSeparator() + LauncherFiles.MINECRAFT_LIBRARIES_GUAVA_PATH
+//                    + getClasspathSeparator() + LauncherFiles.MINECRAFT_LIBRARIES_ICU4J_CORE_PATH
+//                    + getClasspathSeparator() + LauncherFiles.MINECRAFT_LIBRARIES_JINPUT_PATH
+//                    + getClasspathSeparator() + LauncherFiles.MINECRAFT_LIBRARIES_JOPT_SIMPLE_PATH
+//                    + getClasspathSeparator() + LauncherFiles.MINECRAFT_LIBRARIES_JUTILS_PATH
+//                    + getClasspathSeparator() + LauncherFiles.MINECRAFT_LIBRARIES_LIBRARY_JAVA_SOUND_PATH
+//                    + getClasspathSeparator() + LauncherFiles.MINECRAFT_LIBRARIES_LIBRARY_LWJGL_OPENAL_PATH
+//                    + getClasspathSeparator() + LauncherFiles.MINECRAFT_LIBRARIES_NETTY_ALL_PATH
+//                    + getClasspathSeparator() + LauncherFiles.MINECRAFT_LIBRARIES_SOUNDSYSTEM_PATH
+//                    + getClasspathSeparator() + LauncherFiles.MINECRAFT_LIBRARIES_TROVE4J_PATH
+//                    + getClasspathSeparator() + LauncherFiles.MINECRAFT_LIBRARIES_VECMATH_PATH
+//                    + getClasspathSeparator() + LauncherFiles.MINECRAFT_LIBRARIES_ARGO_PATH
+//                    + getClasspathSeparator() + LauncherFiles.MINECRAFT_LIBRARIES_BCPROV_PATH
+//                    + getClasspathSeparator() + LauncherFiles.MINECRAFT_LIBRARIES_LOG4J_CORE_PATH
+//                    + getClasspathSeparator() + LauncherFiles.MINECRAFT_LIBRARIES_LOG4J_API_PATH
+//                    + getClasspathSeparator() + LauncherFiles.MINECRAFT_LIBRARIES_FASTUTIL_PATH
+//                    + getClasspathSeparator() + LauncherFiles.MINECRAFT_LIBRARIES_BRIGADIER_PATH
+//                    + getClasspathSeparator() + LauncherFiles.MINECRAFT_LIBRARIES_DATAFIXERUPPER_PATH
+//                    + getClasspathSeparator() + LauncherFiles.MINECRAFT_LIBRARIES_JAVABRIDGE_PATH
+//                    + getClasspathSeparator() + LauncherFiles.MINECRAFT_LIBRARIES_PATCHY_PATH
+//                    + getClasspathSeparator() + LauncherFiles.MINECRAFT_LIBRARIES_REALMS_PATH
+//                    + getClasspathSeparator() + LauncherFiles.MINECRAFT_LIBRARIES_TEXT2SPEECH_PATH
+//                    + getClasspathSeparator() + LauncherFiles.MINECRAFT_LIBRARIES_LWJGL_GLFW_PATH
+//                    + getClasspathSeparator() + LauncherFiles.MINECRAFT_LIBRARIES_LWJGL_GLFW_NATIVES_PATH
+//                    + getClasspathSeparator() + LauncherFiles.MINECRAFT_LIBRARIES_LWJGL_OPENGL_PATH
+//                    + getClasspathSeparator() + LauncherFiles.MINECRAFT_LIBRARIES_LWJGL_OPENGL_NATIVES_PATH
+//                    + getClasspathSeparator() + LauncherFiles.MINECRAFT_LIBRARIES_LWJGL_OPENAL_PATH
+//                    + getClasspathSeparator() + LauncherFiles.MINECRAFT_LIBRARIES_LWJGL_OPENAL_NATIVES_PATH
+//                    + getClasspathSeparator() + LauncherFiles.MINECRAFT_LIBRARIES_LWJGL_STB_PATH
+//                    + getClasspathSeparator() + LauncherFiles.MINECRAFT_LIBRARIES_LWJGL_STB_NATIVES_PATH
+//                    + getClasspathSeparator() + LauncherFiles.MINECRAFT_LIBRARIES_LWJGL_PATH
+//                    + getClasspathSeparator() + LauncherFiles.MINECRAFT_LIBRARIES_LWJGL_NATIVES_PATH
+//                    + getClasspathSeparator() + LauncherFiles.MINECRAFT_LIBRARIES_COMMONS_CODEC_PATH
+//
+//                    //+ getClasspathSeparator() + LauncherFiles.LWJGL_JAR + getClasspathSeparator() + LauncherFiles.LWJGL_UTIL_JAR + getClasspathSeparator() + jarPath,
+//
+//                    + getClasspathSeparator() + jarPath,
+//                    natives,
+//                    "net.minecraft.client.main.Main"
+//            };
+//
+//            args.add("-Djava.net.preferIPv4Stack=true");
+//
+//            if(serverAddress != null) {
+//                args.add("--server");
+//                args.add(serverAddress);
+//            }
+//
+//            if(serverPort != null) {
+//                args.add("--port");
+//                args.add(serverPort);
+//            }
+//
+//            args.add("--width");
+//            args.add("" + Display.getWidth());
+//
+//            args.add("--height");
+//            args.add("" + Display.getHeight());
+//
+//            args.add("--gameDir");
+//            args.add(LauncherFiles.getMinecraftDirectory().getPath());
+//
+//            args.add("--assetsDir");
+//            args.add(LauncherFiles.MINECRAFT_ASSETS_PATH);
+//
+//            args.add("--assetIndex");
+//            args.add("1.16");
+//
+//            args.add("--version");
+//            args.add("1.16.1");
+//
+//            args.add("uuid");
+//            args.add("806f3493624332a29166b098a0b03fb0");
+//
+//            args.add("--proxyHost");
+//            args.add("127.0.0.1");
+////
+////            args.add("--proxyPort");
+////            args.add(System.getProperty("http.proxyPort"));
+//
+////            args.add("--proxyPort");
+////            args.add("8888");
+//
+//            args.add("--username");
+//            args.add(Session.session.getUsername());
+//
+//            args.add("--session");
+//            args.add(Session.session.getSessionToken());
+//
+//            args.add("--accessToken");
+//            args.add(Session.session.getSessionToken());
+//
+//            if (Settings.settings.has(Settings.FULLSCREEN) && Settings.settings.getBoolean(Settings.FULLSCREEN))
+//                args.add("--fullscreen");
+//
+//            if (Settings.settings.has(Settings.IS_PREMIUM) && !Settings.settings.getBoolean(Settings.IS_PREMIUM))
+//                args.add("--demo");
+//
+//
+//
+//            java.util.Properties props = System.getProperties();
+//            ProcessBuilder processBuilder = new ProcessBuilder(ArrayUtils.concatenate(CMD_ARRAY, args.toArray(new String[0])));
+//            System.out.println(Arrays.toString(ArrayUtils.concatenate(CMD_ARRAY, args.toArray(new String[0]))));
+//            processBuilder.redirectError(ProcessBuilder.Redirect.INHERIT);
+//            processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
+//            Map<String, String> env = processBuilder.environment();
+//            for(String prop : props.stringPropertyNames()) {
+//                env.put(prop, props.getProperty(prop));
+//            }
+//            System.setProperty("java.net.preferIPv4Stack", "true");
+//            processBuilder.directory(new File(System.getProperty("user.dir")));
+//
+//            DisplayManager.getFrame().setVisible(false);
+//            Process gameProcess = processBuilder.start();
+//            //DisplayManager.getFrame().dispose();
+//
+//
+////            MenuManager.formopen = false;
+////            DisplayManager.closeDisplay();
+//
+//            while (gameProcess.isAlive()) {
+//
+//            }
+//
+//
+////            Method main = clazz.getMethod("main", String[].class);
+////            main.invoke(null, new Object[] {args.toArray(new String[0])});
+//
+//            System.exit(0);
+//        } catch (Throwable e) {
+//            if(e.getClass() != ClassNotFoundException.class)
+//                e.printStackTrace();
+//        }
 
+        if (minecraftVersion != null && minecraftVersion.type.equals("launcher")) {
             String[] CMD_ARRAY = new String[] {
                     Settings.settings.getString(Settings.JAVA_COMMAND),
-                    proxySet, proxyHost, proxyPortArgument + System.getProperty("http.proxyHost"),
+                    proxySet, proxyHost, proxyPortArgument + System.getProperty("http.proxyPort"),
+                    //"-javaagent:" + LauncherFiles.PATCH_AGENT_JAR,
                     "-Dsun.java2d.noddraw=true",
                     "-Dsun.java2d.d3d=false",
                     "-Dsun.java2d.opengl=false",
@@ -298,6 +485,11 @@ public class MinecraftLauncher extends Applet implements AppletStub{
                                 constructor = clazz.getDeclaredConstructor(
                                         Component.class, Canvas.class, appletClass, int.class, int.class, boolean.class, Frame.class
                                 );
+
+//                                if(!Arrays.equals(constructor.getParameterTypes(), new Class[] {Component.class, Canvas.class, appletClass, int.class, int.class, boolean.class, Frame.class})) {
+//                                    constructor = null;
+//                                    continue;
+//                                }
                             } catch (Throwable e) {
                             }
                         }
@@ -305,7 +497,12 @@ public class MinecraftLauncher extends Applet implements AppletStub{
                         if (constructor != null) {
                             System.out.println("found MinecraftImpl: " + file.getName());
 
-                            minecraftImpl = (Runnable) constructor.newInstance(null, DisplayManager.getCanvas(), null, Display.getWidth(), Display.getHeight(), fullscreen, frame);
+                            try {
+                                minecraftImpl = (Runnable) constructor.newInstance(null, DisplayManager.getCanvas(), null, Display.getWidth(), Display.getHeight(), fullscreen, frame);
+                            } catch(InvocationTargetException e) {
+                                constructor = null;
+                                minecraftImpl = null;
+                            }
                         }
 
                         // If we're manually creating MinecraftImpl there's a couple of other things to do:

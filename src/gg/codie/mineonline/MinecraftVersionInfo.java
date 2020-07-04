@@ -234,9 +234,9 @@ public class MinecraftVersionInfo {
             else if (className.equals("RubyDung")) {
                 return true;
             }
-//            else if (className.equals("Main")) {
-//                return true;
-//            }
+            else if (className.equals("Main")) {
+                return true;
+            }
         }
         
         try {

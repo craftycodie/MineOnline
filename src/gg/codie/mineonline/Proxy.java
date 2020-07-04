@@ -40,6 +40,7 @@ public class Proxy {
         java.util.Properties props = System.getProperties();
         ProcessBuilder processBuilder = new ProcessBuilder(
                 Settings.settings.getString(Settings.JAVA_COMMAND),
+                "-javaagent:" + LauncherFiles.PATCH_AGENT_JAR,
                 "-Djava.util.Arrays.useLegacyMergeSort=true",
                 "-cp",
                 new File(Proxy.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath(),

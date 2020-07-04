@@ -103,7 +103,24 @@ public class Settings {
         settings = new JSONObject();
         settings.put(SETTINGS_VERSION, 2);
         settings.put(IS_PREMIUM, true);
-        settings.put(REDIRECTED_DOMAINS, new String[] {"www.minecraft.net:-1", "skins.minecraft.net", "session.minecraft.net", "mineraft.net", "www.minecraft.net", "s3.amazonaws.com", "banshee.alex231.com", "mcauth-alex231.rhcloud.com"} );
+        settings.put(REDIRECTED_DOMAINS, new String[] {
+                "www.minecraft.net:-1",
+                "skins.minecraft.net",
+                "session.minecraft.net",
+                "realms.minecraft.net",
+                "mcoapi.minecraft.net",
+                "snoop.minecraft.net",
+                "minecraft.net",
+                "www.minecraft.net",
+                "s3.amazonaws.com",
+                "api.mojang.com",
+                "authserver.mojang.com",
+                "sessionserver.mojang.com",
+
+                "banshee.alex231.com",
+                "mcauth-alex231.rhcloud.com"
+            }
+        );
         settings.put(MINECRAFT_JARS, new String[0]);
         settings.put(JAVA_COMMAND, "java");
         settings.put(SELECTED_JAR, "");

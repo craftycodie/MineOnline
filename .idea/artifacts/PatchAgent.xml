@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="PatchAgent">
+    <output-path>$PROJECT_DIR$/out/artifacts/PatchAgent</output-path>
+    <root id="archive" name="PatchAgent.jar">
+      <element id="module-output" name="PatchAgent" />
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/PatchAgent/META-INF/MANIFEST.MF" />
+      </element>
+    </root>
+  </artifact>
+</component>

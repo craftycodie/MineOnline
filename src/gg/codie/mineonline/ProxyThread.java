@@ -4,10 +4,7 @@ import gg.codie.utils.ArrayUtils;
 import gg.codie.utils.JSONUtils;
 
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.URL;
+import java.net.*;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -39,6 +36,7 @@ public class ProxyThread implements Runnable {
     @Override
     public void run() {
         running.set(true);
+        System.setProperty("java.net.preferIPv4Stack", "true");
 
         Settings.loadSettings();
         String[] redirectedDomains = JSONUtils.getStringArray(Settings.settings.getJSONArray(Settings.REDIRECTED_DOMAINS));
@@ -103,13 +101,40 @@ public class ProxyThread implements Runnable {
                     System.out.println(requestString);
 
 
-                String urlString = pullLinks(requestString).get(0);
+                String urlString = "";
+                try {
+                    urlString = pullLinks(requestString).get(0);
+                } catch (IndexOutOfBoundsException ex) {
+                    return;
+                }
 
-                if((urlString.contains("/resources/") && !urlString.endsWith("/resources/")) || (urlString.contains("/MinecraftResources/") && !urlString.endsWith("/MinecraftResources/"))) {
+                // Tell the game 1.6 hasn't been release yet. Anyone using MineOnline doesn't need to be told to update.
+                if(urlString.contains("1_6_has_been_released.flag")) {
+                    String responseHeaders =
+                            "HTTP/1.0 404 Not FoundServer:Werkzeug/1.0.1 Python/3.7.0\r\n\r\n";
+
+                    clientSocket.getOutputStream().write(responseHeaders.getBytes());
+                    clientSocket.getOutputStream().flush();
+                    clientSocket.getOutputStream().close();
+                    continue;
+                }
+
+                // Don't bother redirecting snooping data yet.
+                if(urlString.contains("snoop.minecraft.net")) {
+                    String responseHeaders =
+                            "HTTP/1.0 404 Not FoundServer:Werkzeug/1.0.1 Python/3.7.0\r\n\r\n";
+
+                    clientSocket.getOutputStream().write(responseHeaders.getBytes());
+                    clientSocket.getOutputStream().flush();
+                    clientSocket.getOutputStream().close();
+                    continue;
+                }
+
+                if ((urlString.contains("/resources/") && !urlString.endsWith("/resources/")) || (urlString.contains("/MinecraftResources/") && !urlString.endsWith("/MinecraftResources/"))) {
                     // There's probably a better way to do this, but to avoid downloading resources every play (which would be demanding on the API), 404 if resources are already downloaded.
                     String oggFilePath = urlString;
 
-                    if(urlString.contains("/resources/")) {
+                    if (urlString.contains("/resources/")) {
                         oggFilePath = urlString.substring(oggFilePath.indexOf("/resources/")).replace("/resources/", "");
                     } else if (urlString.contains("/MinecraftResources")) {
                         oggFilePath = urlString.substring(oggFilePath.indexOf("/MinecraftResources/")).replace("/MinecraftResources/", "");
@@ -119,7 +144,7 @@ public class ProxyThread implements Runnable {
 
                     File oggFile = new File(LauncherFiles.MINECRAFT_RESOURCES_PATH + oggFilePath);
 
-                    if(oggFile.exists()) {
+                    if (oggFile.exists()) {
                         Settings.loadSettings();
                         if (Settings.settings.has(Settings.PROXY_LOGGING) && Settings.settings.getBoolean(Settings.PROXY_LOGGING))
                             System.out.println("Responding already downloaded resource.");
@@ -128,16 +153,17 @@ public class ProxyThread implements Runnable {
                                 "HTTP/1.0 404 Not FoundServer:Werkzeug/1.0.1 Python/3.7.0\r\n\r\n";
 
                         clientSocket.getOutputStream().write(responseHeaders.getBytes());
+                        clientSocket.getOutputStream().flush();
+                        clientSocket.getOutputStream().close();
+                        continue;
                     }
                 }
-
-
 
 
                 URL url = new URL(urlString);
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
-                for(String header : requestHeaders.substring(requestHeaders.indexOf("\r\n") + 2).split("\r\n")) {
+                for (String header : requestHeaders.substring(requestHeaders.indexOf("\r\n") + 2).split("\r\n")) {
                     String headerName = header.substring(0, header.indexOf(":"));
                     String headerValue = header.substring(header.indexOf(":") + 2);
                     connection.setRequestProperty(headerName, headerValue);
@@ -148,87 +174,99 @@ public class ProxyThread implements Runnable {
 
                 byte[] content = new byte[0];
 
-                if(headerSize < requestBytes.length) {
-                    content = Arrays.copyOfRange(requestBytes, headerSize, requestBytes.length);
+                try {
+                    if (headerSize < requestBytes.length) {
+                        content = Arrays.copyOfRange(requestBytes, headerSize, requestBytes.length);
 
-                    if (urlString.endsWith("/heartbeat.jsp")) {
-                        // If there's a server running which has a connection hostname not equal to the bound IP address (like if you're using ngrok or something),
-                        // Update the heartbeat to use that hostname.
-                        if (Server.serverlistAddress != null && !Server.serverlistAddress.isEmpty()) {
-                            String query = new String(content);
-                            String ip = query.substring(query.indexOf("ip=") + 3);
-                            ip = ip.substring(0, ip.indexOf("&"));
-                            // Append "ip=" in case no IP was provided.
-                            query = query.replace("ip=" + ip, "ip=" + Server.serverlistAddress);
-                            content = query.getBytes();
-                        }
-                        if (Server.serverlistPort != null && !Server.serverlistPort.isEmpty()) {
-                            String query = new String(content);
-                            String port = query.substring(query.indexOf("port=") + 5);
-                            port = port.substring(0, port.indexOf("&"));
-                            query = query.replace("port=" + port, "port=" + Server.serverlistPort);
-                            content = query.getBytes();
+                        if (urlString.endsWith("/heartbeat.jsp")) {
+                            // If there's a server running which has a connection hostname not equal to the bound IP address (like if you're using ngrok or something),
+                            // Update the heartbeat to use that hostname.
+                            if (Server.serverlistAddress != null && !Server.serverlistAddress.isEmpty()) {
+                                String query = new String(content);
+                                String ip = query.substring(query.indexOf("ip=") + 3);
+                                ip = ip.substring(0, ip.indexOf("&"));
+                                // Append "ip=" in case no IP was provided.
+                                query = query.replace("ip=" + ip, "ip=" + Server.serverlistAddress);
+                                content = query.getBytes();
+                            }
+                            if (Server.serverlistPort != null && !Server.serverlistPort.isEmpty()) {
+                                String query = new String(content);
+                                String port = query.substring(query.indexOf("port=") + 5);
+                                port = port.substring(0, port.indexOf("&"));
+                                query = query.replace("port=" + port, "port=" + Server.serverlistPort);
+                                content = query.getBytes();
+                            }
+
+                            connection.setRequestProperty("Content-Length", content.length + "");
                         }
 
-                        connection.setRequestProperty("Content-Length", content.length + "");
+                        connection.setUseCaches(false);
+                        connection.setDoInput(true);
+                        connection.setDoOutput(true);
+
+                        DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
+
+                        wr.write(content);
+                        wr.flush();
+                        wr.close();
+                    } else {
+                        connection.setUseCaches(false);
+                        connection.setDoInput(true);
+                        connection.connect();
                     }
 
-                    connection.setUseCaches(false);
-                    connection.setDoInput(true);
-                    connection.setDoOutput(true);
-                    DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
-                    wr.write(content);
-                    wr.flush();
-                    wr.close();
-                } else {
-                    connection.setUseCaches(false);
-                    connection.setDoInput(true);
-                    connection.connect();
-                }
 
-                String responseHeader = "";
-                for (Map.Entry<String, List<String>> header : connection.getHeaderFields().entrySet()) {
-                    if(header.getKey() == null) {
+                    String responseHeader = "";
+                    for (Map.Entry<String, List<String>> header : connection.getHeaderFields().entrySet()) {
+                        if (header.getKey() == null) {
+                            Iterator<String> valueIterator = header.getValue().iterator();
+                            responseHeader += valueIterator.next();
+                            while (valueIterator.hasNext()) {
+                                responseHeader += " " + valueIterator.next();
+                            }
+                            continue;
+                        }
+                        responseHeader += header.getKey() + ":";
                         Iterator<String> valueIterator = header.getValue().iterator();
                         responseHeader += valueIterator.next();
                         while (valueIterator.hasNext()) {
-                            responseHeader += " " + valueIterator.next();
+                            responseHeader += ", " + valueIterator.next();
                         }
-                        continue;
-                    }
-                    responseHeader += header.getKey() +  ":";
-                    Iterator<String> valueIterator = header.getValue().iterator();
-                    responseHeader += valueIterator.next();
-                    while (valueIterator.hasNext()) {
-                        responseHeader += ", " + valueIterator.next();
+                        responseHeader += "\r\n";
                     }
                     responseHeader += "\r\n";
-                }
-                responseHeader += "\r\n";
 
-                String contentString = new String(content);
+                    String contentString = new String(content);
 
-                Settings.loadSettings();
-                if (Settings.settings.has(Settings.PROXY_LOGGING) && Settings.settings.getBoolean(Settings.PROXY_LOGGING)) {
-                    System.out.println("Response");
-                    System.out.print(responseHeader);
-                    System.out.println(contentString);
-                }
-
-                InputStream is = connection.getInputStream();
-
-                clientSocket.getOutputStream().write(responseHeader.getBytes());
-
-                buffer = new byte[bufferSize];
-                while ((bytes_read = is.read(buffer, 0, bufferSize)) != -1) {
-                    for(int i = 0; i < bytes_read; i++) {
-                        clientSocket.getOutputStream().write(buffer[i]);
+                    Settings.loadSettings();
+                    if (Settings.settings.has(Settings.PROXY_LOGGING) && Settings.settings.getBoolean(Settings.PROXY_LOGGING)) {
+                        System.out.println("Response");
+                        System.out.print(responseHeader);
+                        System.out.println(contentString);
                     }
+
+                    InputStream is = connection.getInputStream();
+
+                    clientSocket.getOutputStream().write(responseHeader.getBytes());
+
+                    buffer = new byte[bufferSize];
+                    while ((bytes_read = is.read(buffer, 0, bufferSize)) != -1) {
+                        for (int i = 0; i < bytes_read; i++) {
+                            clientSocket.getOutputStream().write(buffer[i]);
+                        }
+                    }
+
+                    clientSocket.getOutputStream().flush();
+                    clientSocket.getOutputStream().close();
+
+                } catch (Exception ex) {
+                    String responseHeaders =
+                            "HTTP/1.0 404 Not FoundServer:Werkzeug/1.0.1 Python/3.7.0\r\n\r\n";
+                    clientSocket.getOutputStream().write(responseHeaders.getBytes());
+                    clientSocket.getOutputStream().flush();
+                    clientSocket.getOutputStream().close();
+                    ex.printStackTrace();
                 }
-
-                clientSocket.getOutputStream().flush();
-                clientSocket.getOutputStream().close();
-
             } catch (FileNotFoundException ex) {
                 System.err.println("Got a 404 for: " + ex.getMessage());
             } catch (IOException ex) {
