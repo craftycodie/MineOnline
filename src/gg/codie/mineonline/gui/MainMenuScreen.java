@@ -40,6 +40,7 @@ public class MainMenuScreen implements IMenuScreen {
 
         Settings.loadSettings();
         String jarPath = Settings.settings.has(Settings.SELECTED_JAR) ? Settings.settings.getString(Settings.SELECTED_JAR) : null;
+        boolean jarSelected = jarPath != null && !jarPath.isEmpty();
 
         playButton = new MediumButton("Play", new Vector2f((DisplayManager.getDefaultWidth() / 2) + 30, (DisplayManager.getDefaultHeight() / 2) - 40), new IOnClickListener() {
             @Override
@@ -60,17 +61,17 @@ public class MainMenuScreen implements IMenuScreen {
             }
         });
 
-        String jarName = jarPath != null ? new File(jarPath).getName() : null;
+        String jarName = jarSelected ? new File(jarPath).getName() : null;
         MinecraftVersionInfo.MinecraftVersion version = null;
         if(jarPath != null) {
             version = MinecraftVersionInfo.getVersion(jarPath);
         }
 
-        if(jarName == null) {
+        if(!jarSelected) {
             playButton.setDisabled(true);
         }
 
-        versionButton = new MediumButton(jarPath != null ? (version != null ? "Version: " + version.name : jarName) : "Select Version", new Vector2f((DisplayManager.getDefaultWidth() / 2) + 30, (DisplayManager.getDefaultHeight() / 2) + 56), new IOnClickListener() {
+        versionButton = new MediumButton(jarSelected ? (version != null ? "Version: " + version.name : jarName) : "Select Version", new Vector2f((DisplayManager.getDefaultWidth() / 2) + 30, (DisplayManager.getDefaultHeight() / 2) + 56), new IOnClickListener() {
             @Override
             public void onClick() {
                 selectVersionMenuScreen = new SelectVersionMenuScreen(null, new IOnClickListener() {

@@ -61,14 +61,15 @@ public class JoinServerScreen implements IMenuScreen {
 
         Settings.loadSettings();
         String jarPath = Settings.settings.has(Settings.SELECTED_JAR) ? Settings.settings.getString(Settings.SELECTED_JAR) : null;
+        boolean jarSelected = jarPath != null && !jarPath.isEmpty();
 
-        String jarName = jarPath != null ? new File(jarPath).getName() : null;
+        String jarName = jarSelected ? new File(jarPath).getName() : null;
         MinecraftVersionInfo.MinecraftVersion version = null;
         if(jarPath != null) {
             version = MinecraftVersionInfo.getVersion(jarPath);
         }
 
-        versionButton = new LargeButton(jarPath != null ? (version != null ? "Version: " + version.name : jarName) : "Select Version", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 200, (DisplayManager.getDefaultHeight() / 2) + 8), new IOnClickListener() {
+        versionButton = new LargeButton(jarSelected ? (version != null ? "Version: " + version.name : jarName) : "Select Version", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 200, (DisplayManager.getDefaultHeight() / 2) + 8), new IOnClickListener() {
             @Override
             public void onClick() {
                 selectVersionMenuScreen = new SelectVersionMenuScreen(null, new IOnClickListener() {
@@ -110,7 +111,7 @@ public class JoinServerScreen implements IMenuScreen {
             }
         });
 
-        if(jarName == null) {
+        if(!jarSelected) {
             connectButton.setDisabled(true);
         }
 
@@ -142,6 +143,12 @@ public class JoinServerScreen implements IMenuScreen {
             connectButton.setDisabled(true);
         } else if (!serverIPField.getValue().isEmpty() && connectButton.getDisabled()) {
             connectButton.setDisabled(false);
+        }
+
+        String jarPath = Settings.settings.has(Settings.SELECTED_JAR) ? Settings.settings.getString(Settings.SELECTED_JAR) : null;
+        boolean jarSelected = jarPath != null && !jarPath.isEmpty();
+        if(!jarSelected && !connectButton.getDisabled()) {
+            connectButton.setDisabled(true);
         }
 
         serverIPField.update();

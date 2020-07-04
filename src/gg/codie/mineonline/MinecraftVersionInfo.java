@@ -120,7 +120,6 @@ public class MinecraftVersionInfo {
 
             while (versionIterator.hasNext()) {
                 JSONObject object = (JSONObject)versionIterator.next();
-                System.out.println(object);
                 versions.add(new MinecraftVersion(
                         (object.has("sha256") ? object.getString("sha256") : null),
                         object.getString("name"),
