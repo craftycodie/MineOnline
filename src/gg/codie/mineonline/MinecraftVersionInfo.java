@@ -52,8 +52,10 @@ public class MinecraftVersionInfo {
         public final String[] clientMd5s;
         public final boolean forceFullscreenMacos;
         public final boolean enableMacosCursorPatch;
+        public final boolean useMinecraftImpl;
+        public final String minecraftImplClass;
 
-        private MinecraftVersion(String sha256, String name, String md5, String type, boolean baseURLHasNoPort, boolean enableScreenshotPatch, String clientName, boolean hasHeartbeat, boolean enableFullscreenPatch, String info, String[] clientMd5s, boolean forceFullscreenMacos, boolean enableMacosCursorPatch) {
+        private MinecraftVersion(String sha256, String name, String md5, String type, boolean baseURLHasNoPort, boolean enableScreenshotPatch, String clientName, boolean hasHeartbeat, boolean enableFullscreenPatch, String info, String[] clientMd5s, boolean forceFullscreenMacos, boolean enableMacosCursorPatch, boolean useMinecraftImpl, String minecraftImplClass) {
             this.sha256 = sha256;
             this.name = name;
             this.md5 = md5;
@@ -67,6 +69,8 @@ public class MinecraftVersionInfo {
             this.clientMd5s = clientMd5s;
             this.forceFullscreenMacos = forceFullscreenMacos;
             this.enableMacosCursorPatch = enableMacosCursorPatch;
+            this.useMinecraftImpl = useMinecraftImpl;
+            this.minecraftImplClass = minecraftImplClass;
         }
     }
 
@@ -116,6 +120,7 @@ public class MinecraftVersionInfo {
 
             while (versionIterator.hasNext()) {
                 JSONObject object = (JSONObject)versionIterator.next();
+                System.out.println(object);
                 versions.add(new MinecraftVersion(
                         (object.has("sha256") ? object.getString("sha256") : null),
                         object.getString("name"),
@@ -129,7 +134,9 @@ public class MinecraftVersionInfo {
                         (object.has("info") ? object.getString("info") : null),
                         (object.has("clientMd5s") ? JSONUtils.getStringArray(object.getJSONArray("clientMd5s")) : new String[0]),
                         (object.has("forceFullscreenMacos") && object.getBoolean("forceFullscreenMacos")),
-                        (object.has("enableMacosCursorPatch") && object.getBoolean("enableMacosCursorPatch"))
+                        (object.has("enableMacosCursorPatch") && object.getBoolean("enableMacosCursorPatch")),
+                        (object.has("useMinecraftImpl") && object.getBoolean("useMinecraftImpl")),
+                        (object.has("minecraftImplClass") ? object.getString("minecraftImplClass") : null)
                 ));
             }
         } catch (IOException ex) {
@@ -168,7 +175,9 @@ public class MinecraftVersionInfo {
                             (object.has("info") ? object.getString("info") : null),
                             (object.has("clientMd5s") ? JSONUtils.getStringArray(object.getJSONArray("clientMd5s")) : new String[0]),
                             (object.has("forceFullscreenMacos") && object.getBoolean("forceFullscreenMacos")),
-                            (object.has("enableMacosCursorPatch") && object.getBoolean("enableMacosCursorPatch"))
+                            (object.has("enableMacosCursorPatch") && object.getBoolean("enableMacosCursorPatch")),
+                            (object.has("useMinecraftImpl") && object.getBoolean("useMinecraftImpl")),
+                            (object.has("minecraftImplClass") ? object.getString("minecraftImplClass") : null)
                     ));
                 }
             } catch (IOException ex) {
