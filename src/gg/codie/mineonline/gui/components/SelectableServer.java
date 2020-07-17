@@ -143,7 +143,7 @@ public class SelectableServer extends GUIObject {
         }
 
         if(this.statusText != null) {
-            statusText.setPosition(new Vector2f(statusText.getPosition().x, currentPosition.y - 26));
+            statusText.setPosition(new Vector2f(statusText.getPosition().x, currentPosition.y - 48));
         }
     }
 
