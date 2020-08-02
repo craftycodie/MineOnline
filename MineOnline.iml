@@ -14,5 +14,6 @@
     <orderEntry type="library" name="slick-util" level="project" />
     <orderEntry type="library" name="json" level="project" />
     <orderEntry type="library" name="lwjgl" level="project" />
+    <orderEntry type="library" name="byte-buddy-dep-1.10.14" level="project" />
   </component>
 </module>
