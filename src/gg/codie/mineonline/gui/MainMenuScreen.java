@@ -46,7 +46,8 @@ public class MainMenuScreen implements IMenuScreen {
             public void onClick() {
                 try {
                     //new MinecraftLauncher("D:\\Projects\\GitHub\\MineOnline\\jars\\b1.7.3-modded.jar", null, null, null).startMinecraft();
-                    new MinecraftLauncher(jarPath, null, null, null).startMinecraft();
+                    //new LegacyMinecraftLauncher(jarPath, null, null, null).startMinecraft();
+                    MinecraftLauncher.startProcess(jarPath, null, null);
 
                     //new MinecraftLauncher("D:\\Projects\\GitHub\\MineOnline\\jars\\c0.0.11a-launcher.jar", null, null, null).startMinecraft();
                 } catch (Exception ex) {}

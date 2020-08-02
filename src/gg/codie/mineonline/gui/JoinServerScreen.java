@@ -48,7 +48,7 @@ public class JoinServerScreen implements IMenuScreen {
 
                     String mppass = MinecraftAPI.getMpPass(Session.session.getSessionToken(), inetAddress.getHostAddress(), split.length > 1 ? split[1] : "25565");
 
-                    new MinecraftLauncher(Settings.settings.getString(Settings.SELECTED_JAR), split[0], split.length > 1 ? split[1] : "25565", mppass).startMinecraft();
+                    new LegacyMinecraftLauncher(Settings.settings.getString(Settings.SELECTED_JAR), split[0], split.length > 1 ? split[1] : "25565", mppass).startMinecraft();
                 }
                 catch (UnknownHostException ex) {
                     ex.printStackTrace();
@@ -99,7 +99,7 @@ public class JoinServerScreen implements IMenuScreen {
 
                     String mppass = MinecraftAPI.getMpPass(Session.session.getSessionToken(), inetAddress.getHostAddress(), split.length > 1 ? split[1] : "25565");
 
-                    new MinecraftLauncher(Settings.settings.getString(Settings.SELECTED_JAR), split[0], split.length > 1 ? split[1] : "25565", mppass).startMinecraft();
+                    new LegacyMinecraftLauncher(Settings.settings.getString(Settings.SELECTED_JAR), split[0], split.length > 1 ? split[1] : "25565", mppass).startMinecraft();
                 }
                 catch (UnknownHostException ex) {
                     ex.printStackTrace();

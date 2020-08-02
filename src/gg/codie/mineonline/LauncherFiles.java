@@ -17,6 +17,10 @@ public class LauncherFiles {
     public static final String LWJGL_JAR = MINEONLINE_LIBRARY_FOLDER + "lwjgl-modded.jar";
     public static final String LWJGL_UTIL_JAR = MINEONLINE_LIBRARY_FOLDER + "lwjgl_util.jar";
     public static final String PATCH_AGENT_JAR = MINEONLINE_LIBRARY_FOLDER + "byte-buddy-agent.jar";
+    public static final String JSON_JAR = MINEONLINE_LIBRARY_FOLDER + "json.jar";
+    public static final String BYTEBUDDY_JAR = MINEONLINE_LIBRARY_FOLDER + "byte-buddy-1.10.14.jar";
+    public static final String BYTEBUDDY_DEP_JAR = MINEONLINE_LIBRARY_FOLDER + "byte-buddy-dep-1.10.14.jar";
+
 
     public static final String MINEONLNE_NATIVES_FOLDER = MINEONLINE_LIBRARY_FOLDER + "native" + File.separator + OSUtils.getPlatform().toString();
 

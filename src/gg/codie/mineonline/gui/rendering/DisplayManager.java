@@ -188,7 +188,6 @@ public class DisplayManager {
     }
 
     public static void createDisplay(int width, int height) {
-
         canvas.setPreferredSize(new Dimension(width, height));
         frame.pack();
 
