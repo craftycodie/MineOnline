@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/MineOnline.iml" filepath="$PROJECT_DIR$/MineOnline.iml" />
-      <module fileurl="file://$PROJECT_DIR$/PatchAgent/PatchAgent.iml" filepath="$PROJECT_DIR$/PatchAgent/PatchAgent.iml" />
     </modules>
   </component>
 </project>

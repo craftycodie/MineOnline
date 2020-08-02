@@ -1,6 +1,0 @@
-Manifest-Version: 1.0
-Premain-Class: gg.codie.mineonline.patchagent.PatchAgent
-Agent-Class: gg.codie.mineonline.patchagent.PatchAgent
-Launcher-Agent-Class: gg.codie.mineonline.patchagent.PatchAgent
-Can-Redefine-Classes: true
-Can-Retransform-Classes: true

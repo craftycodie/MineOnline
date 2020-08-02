@@ -101,13 +101,14 @@ public class Settings {
 
     public static void resetSettings() {
         settings = new JSONObject();
-        settings.put(SETTINGS_VERSION, 2);
+        settings.put(SETTINGS_VERSION, 3);
         settings.put(IS_PREMIUM, true);
         settings.put(REDIRECTED_DOMAINS, new String[] {
                 "www.minecraft.net:-1",
                 "skins.minecraft.net",
                 "session.minecraft.net",
                 "realms.minecraft.net",
+                "assets.minecraft.net",
                 "mcoapi.minecraft.net",
                 "snoop.minecraft.net",
                 "minecraft.net",
@@ -202,7 +203,26 @@ public class Settings {
                 saveSettings();
             } else {
                 switch (settings.getInt(SETTINGS_VERSION)) {
-                    // Upgrading goes here.
+//                    case 2:
+//                        settings.put(REDIRECTED_DOMAINS, new String[] {
+//                                "www.minecraft.net:-1",
+//                                "skins.minecraft.net",
+//                                "session.minecraft.net",
+//                                "realms.minecraft.net",
+//                                "assets.minecraft.net",
+//                                "mcoapi.minecraft.net",
+//                                "snoop.minecraft.net",
+//                                "minecraft.net",
+//                                "www.minecraft.net",
+//                                "s3.amazonaws.com",
+//                                "api.mojang.com",
+//                                "authserver.mojang.com",
+//                                "sessionserver.mojang.com",
+//
+//                                "banshee.alex231.com",
+//                                "mcauth-alex231.rhcloud.com"
+//                            }
+//                        );
                 }
             }
         } catch (IOException ex) {

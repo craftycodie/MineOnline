@@ -155,6 +155,18 @@ public class MinecraftLauncher extends Applet implements AppletStub{
            // ex.printStackTrace();
         }
 
+
+
+
+
+
+
+
+
+
+
+
+
 //        try {
 //
 //            LinkedList<String> args = new LinkedList<>();
@@ -349,6 +361,18 @@ public class MinecraftLauncher extends Applet implements AppletStub{
 //            if(e.getClass() != ClassNotFoundException.class)
 //                e.printStackTrace();
 //        }
+
+
+
+
+
+
+
+
+
+
+
+
 
         if (minecraftVersion != null && minecraftVersion.type.equals("launcher")) {
             String[] CMD_ARRAY = new String[] {
