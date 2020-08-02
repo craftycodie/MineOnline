@@ -33,6 +33,7 @@ public class MinecraftVersionInfo {
     public static MinecraftVersion getVersionByMD5(String md5) {
         List<MinecraftVersion> matches = versions.stream().filter(version -> version.md5.equals(md5)).collect(Collectors.toList());
         if(matches.size() < 1) {
+            System.out.println("Unrecognized jar " + md5);
             return null;
         }
         return matches.get(0);
@@ -45,28 +46,45 @@ public class MinecraftVersionInfo {
         public final String type;
         public final boolean baseURLHasNoPort;
         public final boolean enableScreenshotPatch;
-        public final String clientName;
+        public final String baseVersion;
         public final boolean hasHeartbeat;
         public final boolean enableFullscreenPatch;
         public final String info;
-        public final String[] clientMd5s;
+        public final String[] clientVersions;
         public final boolean forceFullscreenMacos;
         public final boolean enableMacosCursorPatch;
+        public final boolean legacy;
 
-        private MinecraftVersion(String sha256, String name, String md5, String type, boolean baseURLHasNoPort, boolean enableScreenshotPatch, String clientName, boolean hasHeartbeat, boolean enableFullscreenPatch, String info, String[] clientMd5s, boolean forceFullscreenMacos, boolean enableMacosCursorPatch) {
+        private MinecraftVersion(
+                String sha256,
+                String name,
+                String baseVersion,
+                String md5,
+                String type,
+                boolean baseURLHasNoPort,
+                boolean enableScreenshotPatch,
+                boolean hasHeartbeat,
+                boolean enableFullscreenPatch,
+                String info,
+                String[] clientVersions,
+                boolean forceFullscreenMacos,
+                boolean enableMacosCursorPatch,
+                boolean legacy
+        ) {
             this.sha256 = sha256;
             this.name = name;
             this.md5 = md5;
             this.type = type;
             this.baseURLHasNoPort = baseURLHasNoPort;
             this.enableScreenshotPatch = enableScreenshotPatch;
-            this.clientName = clientName;
+            this.baseVersion = baseVersion;
             this.hasHeartbeat = hasHeartbeat;
             this.enableFullscreenPatch = enableFullscreenPatch;
             this.info = info;
-            this.clientMd5s = clientMd5s;
+            this.clientVersions = clientVersions;
             this.forceFullscreenMacos = forceFullscreenMacos;
             this.enableMacosCursorPatch = enableMacosCursorPatch;
+            this.legacy = legacy;
         }
     }
 
@@ -116,21 +134,7 @@ public class MinecraftVersionInfo {
 
             while (versionIterator.hasNext()) {
                 JSONObject object = (JSONObject)versionIterator.next();
-                versions.add(new MinecraftVersion(
-                        (object.has("sha256") ? object.getString("sha256") : null),
-                        object.getString("name"),
-                        object.getString("md5"),
-                        object.getString("type"),
-                        (object.has("baseURLHasNoPort") && object.getBoolean("baseURLHasNoPort")),
-                        (object.has("enableScreenshotPatch") && object.getBoolean("enableScreenshotPatch")),
-                        (object.has("clientName") ? object.getString("clientName") : null),
-                        (object.has("hasHeartbeat") && object.getBoolean("hasHeartbeat")),
-                        (object.has("enableFullscreenPatch") && object.getBoolean("enableFullscreenPatch")),
-                        (object.has("info") ? object.getString("info") : null),
-                        (object.has("clientMd5s") ? JSONUtils.getStringArray(object.getJSONArray("clientMd5s")) : new String[0]),
-                        (object.has("forceFullscreenMacos") && object.getBoolean("forceFullscreenMacos")),
-                        (object.has("enableMacosCursorPatch") && object.getBoolean("enableMacosCursorPatch"))
-                ));
+                versions.add(fromJSONObject(object));
             }
         } catch (IOException ex) {
             System.err.println("Failed to load Minecraft Version information!");
@@ -155,21 +159,7 @@ public class MinecraftVersionInfo {
 
                 while (versionIterator.hasNext()) {
                     JSONObject object = (JSONObject)versionIterator.next();
-                    versions.add(new MinecraftVersion(
-                            (object.has("sha256") ? object.getString("sha256") : null),
-                            object.getString("name"),
-                            object.getString("md5"),
-                            object.getString("type"),
-                            (object.has("baseURLHasNoPort") && object.getBoolean("baseURLHasNoPort")),
-                            (object.has("enableScreenshotPatch") && object.getBoolean("enableScreenshotPatch")),
-                            (object.has("clientName") ? object.getString("clientName") : null),
-                            (object.has("hasHeartbeat") && object.getBoolean("hasHeartbeat")),
-                            (object.has("enableFullscreenPatch") && object.getBoolean("enableFullscreenPatch")),
-                            (object.has("info") ? object.getString("info") : null),
-                            (object.has("clientMd5s") ? JSONUtils.getStringArray(object.getJSONArray("clientMd5s")) : new String[0]),
-                            (object.has("forceFullscreenMacos") && object.getBoolean("forceFullscreenMacos")),
-                            (object.has("enableMacosCursorPatch") && object.getBoolean("enableMacosCursorPatch"))
-                    ));
+                    versions.add(fromJSONObject(object));
                 }
             } catch (IOException ex) {
                 System.err.println("Failed to load custom Minecraft Version information!");
@@ -248,12 +238,46 @@ public class MinecraftVersionInfo {
         return false;
     }
 
+    private static MinecraftVersion fromJSONObject(JSONObject object) {
+        return new MinecraftVersion(
+                (object.has("sha256") ? object.getString("sha256") : null),
+                object.getString("name"),
+                object.getString("baseVersion"),
+                object.getString("md5"),
+                object.getString("type"),
+                (object.has("baseURLHasNoPort") && object.getBoolean("baseURLHasNoPort")),
+                (object.has("enableScreenshotPatch") && object.getBoolean("enableScreenshotPatch")),
+                (object.has("hasHeartbeat") && object.getBoolean("hasHeartbeat")),
+                (object.has("enableFullscreenPatch") && object.getBoolean("enableFullscreenPatch")),
+                (object.has("info") ? object.getString("info") : null),
+                (object.has("clientVersions") ? JSONUtils.getStringArray(object.getJSONArray("clientVersions")) : new String[0]),
+                (object.has("forceFullscreenMacos") && object.getBoolean("forceFullscreenMacos")),
+                (object.has("enableMacosCursorPatch") && object.getBoolean("enableMacosCursorPatch")),
+                (object.has("legacy") && object.getBoolean("legacy"))
+        );
+    }
+
     public static MinecraftVersion getVersion(String path) {
         try {
             String md5 = MD5Checksum.getMD5Checksum(path);
             return getVersionByMD5(md5);
         } catch (Exception e) {
             return null;
+        }
+    }
+
+    public static void launchMinecraft(String jarPath, String serverIP, String serverPort, String mpPass) throws Exception {
+        MinecraftVersion minecraftVersion = getVersion(jarPath);
+
+        if(minecraftVersion != null) {
+            if (minecraftVersion.legacy) {
+                new LegacyMinecraftLauncher(jarPath, serverIP, serverPort, mpPass).startMinecraft();
+            } else {
+                MinecraftLauncher.startProcess(jarPath, serverIP, serverPort);
+            }
+        } else {
+            // TODO:
+            // - Look for the main class and guess if it's legacy.
         }
     }
 }

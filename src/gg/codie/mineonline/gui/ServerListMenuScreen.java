@@ -43,7 +43,7 @@ public class ServerListMenuScreen implements IMenuScreen {
                         String[] minecraftJars = Settings.settings.has(Settings.MINECRAFT_JARS) ? JSONUtils.getStringArray(Settings.settings.getJSONArray(Settings.MINECRAFT_JARS)) : new String[0];
 
                         if(serverVersion != null) {
-                            for (String compatibleClientMd5 : serverVersion.clientMd5s) {
+                            for (String compatibleClientMd5 : serverVersion.clientVersions) {
                                 for (String path : minecraftJars) {
                                     File file = new File(path);
 
@@ -65,7 +65,7 @@ public class ServerListMenuScreen implements IMenuScreen {
                                         }
                                         String mppass = MinecraftAPI.getMpPass(Session.session.getSessionToken(), selectedServer.server.ip, "" + selectedServer.server.port);
 
-                                        new LegacyMinecraftLauncher(path, selectedServer.server.ip, "" + selectedServer.server.port, mppass).startMinecraft();
+                                        MinecraftVersionInfo.launchMinecraft(path, selectedServer.server.ip, "" + selectedServer.server.port, mppass);
                                         return;
                                     }
                                 }
@@ -88,7 +88,7 @@ public class ServerListMenuScreen implements IMenuScreen {
                                 }
                                 String mppass = MinecraftAPI.getMpPass(Session.session.getSessionToken(), selectedServer.server.ip, "" + selectedServer.server.port);
                                 try {
-                                    new LegacyMinecraftLauncher(selectVersionMenuScreen.getSelectedPath(), selectedServer.server.ip, "" + selectedServer.server.port, mppass).startMinecraft();
+                                    MinecraftVersionInfo.launchMinecraft(selectVersionMenuScreen.getSelectedPath(), selectedServer.server.ip, "" + selectedServer.server.port, mppass);
                                 } catch (Exception ex) {
 
                                 }
