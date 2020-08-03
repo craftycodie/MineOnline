@@ -53,6 +53,9 @@ public class MinecraftVersionInfo {
         public final boolean forceFullscreenMacos;
         public final boolean enableMacosCursorPatch;
         public final boolean legacy;
+        public final String assetIndex;
+        public final String[] libraries;
+        public final String[] nativesWindows;
 
         private MinecraftVersion(
                 String sha256,
@@ -68,7 +71,10 @@ public class MinecraftVersionInfo {
                 String[] clientVersions,
                 boolean forceFullscreenMacos,
                 boolean enableMacosCursorPatch,
-                boolean legacy
+                boolean legacy,
+                String assetIndex,
+                String[] libraries,
+                String[] nativesWindows
         ) {
             this.sha256 = sha256;
             this.name = name;
@@ -84,6 +90,9 @@ public class MinecraftVersionInfo {
             this.forceFullscreenMacos = forceFullscreenMacos;
             this.enableMacosCursorPatch = enableMacosCursorPatch;
             this.legacy = legacy;
+            this.assetIndex = assetIndex;
+            this.libraries = libraries;
+            this.nativesWindows = nativesWindows;
         }
     }
 
@@ -191,7 +200,7 @@ public class MinecraftVersionInfo {
         return null;
     }
 
-    public static boolean isRunnableJar(String path) throws IOException {
+    public static boolean isLegacyJar(String path) throws IOException {
         JarFile jarFile = new JarFile(path);
         Enumeration allEntries = jarFile.entries();
         while (allEntries.hasMoreElements()) {
@@ -252,7 +261,10 @@ public class MinecraftVersionInfo {
                 (object.has("clientVersions") ? JSONUtils.getStringArray(object.getJSONArray("clientVersions")) : new String[0]),
                 (object.has("forceFullscreenMacos") && object.getBoolean("forceFullscreenMacos")),
                 (object.has("enableMacosCursorPatch") && object.getBoolean("enableMacosCursorPatch")),
-                (object.has("legacy") && object.getBoolean("legacy"))
+                (object.has("legacy") && object.getBoolean("legacy")),
+                (object.has("assetIndex") ? object.getString("assetIndex") : object.has("baseVersion") ? object.getString("baseVersion") : null),
+                (object.has("libraries") ? JSONUtils.getStringArray(object.getJSONArray("libraries")) : new String[0]),
+                (object.has("natives-windows") ? JSONUtils.getStringArray(object.getJSONArray("natives-windows")) : new String[0])
         );
     }
 
@@ -275,8 +287,17 @@ public class MinecraftVersionInfo {
                 MinecraftClientLauncher.startProcess(jarPath, serverIP, serverPort);
             }
         } else {
-            // TODO:
-            // - Look for the main class and guess if it's legacy.
+            if (isLegacyJar(jarPath)) {
+                new LegacyMinecraftClientLauncher(jarPath, serverIP, serverPort, mpPass).startMinecraft();
+            } else {
+                LibraryManager.addJarToClasspath(Paths.get(jarPath).toUri().toURL());
+                Class clazz = Class.forName("net.minecraft.client.main.Main");
+                if (clazz != null) {
+                    MinecraftClientLauncher.startProcess(jarPath, serverIP, serverPort);
+                } else {
+                    System.out.println("This jar file seems unsupported :(");
+                }
+            }
         }
     }
 }

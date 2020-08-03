@@ -56,7 +56,7 @@ public class SelectVersionMenuScreen implements IMenuScreen {
                             MinecraftVersionInfo.MinecraftVersion minecraftVersion = MinecraftVersionInfo.getVersion(file.getPath());
 
                             try {
-                                if (!MinecraftVersionInfo.isRunnableJar(file.getPath())) {
+                                if (!MinecraftVersionInfo.isLegacyJar(file.getPath())) {
                                     JOptionPane.showMessageDialog(null, "This jar file is incompatible:\nNo applet or main class found.");
                                     return;
                                 }

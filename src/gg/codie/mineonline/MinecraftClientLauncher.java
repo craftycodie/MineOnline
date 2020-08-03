@@ -127,46 +127,13 @@ public class MinecraftClientLauncher {
 
             LinkedList<String> args = new LinkedList<>();
 
-            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_AUTHLIB_PATH).toUri().toURL());
-            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_CODEC_JORBIS_PATH).toUri().toURL());
-            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_CODEC_WAV_PATH).toUri().toURL());
-            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_COMMONS_IO_PATH).toUri().toURL());
-            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_COMMONS_LANG3_PATH).toUri().toURL());
-            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_GSON_PATH).toUri().toURL());
-            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_GUAVA_PATH).toUri().toURL());
-            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_ICU4J_CORE_PATH).toUri().toURL());
-            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_JINPUT_PATH).toUri().toURL());
-            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_JOPT_SIMPLE_PATH).toUri().toURL());
-            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_JUTILS_PATH).toUri().toURL());
-            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_LIBRARY_LWJGL_OPENAL_PATH).toUri().toURL());
-            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_LIBRARY_JAVA_SOUND_PATH).toUri().toURL());
-            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_NETTY_ALL_PATH).toUri().toURL());
-            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_SOUNDSYSTEM_PATH).toUri().toURL());
-            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_TROVE4J_PATH).toUri().toURL());
-            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_VECMATH_PATH).toUri().toURL());
-            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_ARGO_PATH).toUri().toURL());
-            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_BCPROV_PATH).toUri().toURL());
-            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_LOG4J_CORE_PATH).toUri().toURL());
-            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_LOG4J_API_PATH).toUri().toURL());
-            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_FASTUTIL_PATH).toUri().toURL());
-            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_BRIGADIER_PATH).toUri().toURL());
-            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_DATAFIXERUPPER_PATH).toUri().toURL());
-            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_JAVABRIDGE_PATH).toUri().toURL());
-            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_PATCHY_PATH).toUri().toURL());
-            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_REALMS_PATH).toUri().toURL());
-            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_TEXT2SPEECH_PATH).toUri().toURL());
-            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_LWJGL_GLFW_PATH).toUri().toURL());
-            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_LWJGL_GLFW_NATIVES_PATH).toUri().toURL());
-            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_LWJGL_OPENGL_PATH).toUri().toURL());
-            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_LWJGL_OPENGL_NATIVES_PATH).toUri().toURL());
-            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_LWJGL_OPENAL_PATH).toUri().toURL());
-            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_LWJGL_OPENAL_NATIVES_PATH).toUri().toURL());
-            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_LWJGL_STB_PATH).toUri().toURL());
-            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_LWJGL_STB_NATIVES_PATH).toUri().toURL());
-            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_LWJGL_PATH).toUri().toURL());
-            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_LWJGL_NATIVES_PATH).toUri().toURL());
+            for(String library : minecraftVersion.libraries) {
+                LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_PATH + library).toUri().toURL());
+            }
 
-            LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_LWJGL_GLFW_PATH).toUri().toURL());
+            for(String nativeJar : minecraftVersion.nativesWindows) {
+                LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_PATH + nativeJar).toUri().toURL());
+            }
 
             Class clazz = Class.forName("net.minecraft.client.main.Main");
 
@@ -193,10 +160,10 @@ public class MinecraftClientLauncher {
             args.add(LauncherFiles.MINECRAFT_ASSETS_PATH);
 
             args.add("--assetIndex");
-            args.add("1.16");
+            args.add(minecraftVersion.assetIndex);
 
             args.add("--version");
-            args.add("1.16.1");
+            args.add(minecraftVersion.baseVersion);
 
             args.add("uuid");
             args.add("806f3493624332a29166b098a0b03fb0");

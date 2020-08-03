@@ -56,7 +56,17 @@ public class MinecraftServerProcess {
 
         LibraryManager.addJarToClasspath(Paths.get(args[0]).toUri().toURL());
 
-        Class mainClass = Class.forName("net.minecraft.server.Main");
+        Class mainClass = null;
+
+        try {
+            mainClass = Class.forName("net.minecraft.server.Main");
+        } catch (ClassNotFoundException ex) {
+            mainClass = Class.forName("net.minecraft.server.MinecraftServer");
+        }
+
+        if (mainClass == null) {
+            System.out.println("Main class not found!");
+        }
 
         Method main = mainClass.getMethod("main", String[].class);
         main.invoke(null, new Object[] { new String[] {}});
