@@ -2,9 +2,7 @@ package gg.codie.mineonline;
 
 import gg.codie.minecraft.client.Options;
 import gg.codie.mineonline.gui.rendering.DisplayManager;
-import gg.codie.mineonline.gui.rendering.Renderer;
 import gg.codie.utils.MD5Checksum;
-import gg.codie.utils.OSUtils;
 import org.lwjgl.opengl.Display;
 
 import java.io.File;
@@ -12,7 +10,7 @@ import java.lang.reflect.*;
 import java.nio.file.Paths;
 import java.util.*;
 
-public class MinecraftLauncher {
+public class MinecraftClientLauncher {
 
     private static final boolean DEBUG = true;
 
@@ -37,9 +35,13 @@ public class MinecraftLauncher {
                     "-javaagent:" + LauncherFiles.PATCH_AGENT_JAR,
                     "-Djava.util.Arrays.useLegacyMergeSort=true",
                     "-Djava.net.preferIPv4Stack=true",
+                    //TODO: Remove this:
+                    "-Xmx1G",
+                    "-Xms1G",
+
                     "-cp",
-                    new File(MinecraftLauncher.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath(),
-                    MinecraftLauncher.class.getCanonicalName(),
+                    new File(MinecraftClientLauncher.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath(),
+                    MinecraftClientLauncher.class.getCanonicalName(),
                     jarPath,
                     Session.session.getUsername(),
                     Session.session.getSessionToken(),
@@ -77,10 +79,10 @@ public class MinecraftLauncher {
     public static void main(String[] args) throws Exception {
         String serverAddress = args.length > 5 ? args[5] : null;
         String serverPort = args.length > 6 ? args[6] : null;
-        new MinecraftLauncher(args[0], args[1], args[2], args[3], args[4], serverAddress, serverPort).startMinecraft();
+        new MinecraftClientLauncher(args[0], args[1], args[2], args[3], args[4], serverAddress, serverPort).startMinecraft();
     }
 
-    public MinecraftLauncher(String jarPath, String username, String token, String width, String height, String serverAddress, String serverPort) throws Exception {
+    public MinecraftClientLauncher(String jarPath, String username, String token, String width, String height, String serverAddress, String serverPort) throws Exception {
         this.jarPath = jarPath;
         this.serverAddress = serverAddress;
         this.serverPort = serverPort;
@@ -216,17 +218,17 @@ public class MinecraftLauncher {
 
 
 
-            java.util.Properties props = System.getProperties();
-            ProcessBuilder processBuilder = new ProcessBuilder(args.toArray(new String[0]));
-            System.out.println(Arrays.toString(args.toArray(new String[0])));
-            processBuilder.redirectError(ProcessBuilder.Redirect.INHERIT);
-            processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
-            Map<String, String> env = processBuilder.environment();
-            for(String prop : props.stringPropertyNames()) {
-                env.put(prop, props.getProperty(prop));
-            }
-            System.setProperty("java.net.preferIPv4Stack", "true");
-            processBuilder.directory(new File(System.getProperty("user.dir")));
+//            java.util.Properties props = System.getProperties();
+//            ProcessBuilder processBuilder = new ProcessBuilder(args.toArray(new String[0]));
+//            System.out.println(Arrays.toString(args.toArray(new String[0])));
+//            processBuilder.redirectError(ProcessBuilder.Redirect.INHERIT);
+//            processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
+//            Map<String, String> env = processBuilder.environment();
+//            for(String prop : props.stringPropertyNames()) {
+//                env.put(prop, props.getProperty(prop));
+//            }
+//            System.setProperty("java.net.preferIPv4Stack", "true");
+//            processBuilder.directory(new File(System.getProperty("user.dir")));
 
             Method main = clazz.getMethod("main", String[].class);
             main.invoke(null, new Object[] {args.toArray(new String[0])});

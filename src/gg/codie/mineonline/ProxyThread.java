@@ -181,19 +181,19 @@ public class ProxyThread implements Runnable {
                         if (urlString.endsWith("/heartbeat.jsp")) {
                             // If there's a server running which has a connection hostname not equal to the bound IP address (like if you're using ngrok or something),
                             // Update the heartbeat to use that hostname.
-                            if (Server.serverlistAddress != null && !Server.serverlistAddress.isEmpty()) {
+                            if (MinecraftServerLauncher.serverlistAddress != null && !MinecraftServerLauncher.serverlistAddress.isEmpty()) {
                                 String query = new String(content);
                                 String ip = query.substring(query.indexOf("ip=") + 3);
                                 ip = ip.substring(0, ip.indexOf("&"));
                                 // Append "ip=" in case no IP was provided.
-                                query = query.replace("ip=" + ip, "ip=" + Server.serverlistAddress);
+                                query = query.replace("ip=" + ip, "ip=" + MinecraftServerLauncher.serverlistAddress);
                                 content = query.getBytes();
                             }
-                            if (Server.serverlistPort != null && !Server.serverlistPort.isEmpty()) {
+                            if (MinecraftServerLauncher.serverlistPort != null && !MinecraftServerLauncher.serverlistPort.isEmpty()) {
                                 String query = new String(content);
                                 String port = query.substring(query.indexOf("port=") + 5);
                                 port = port.substring(0, port.indexOf("&"));
-                                query = query.replace("port=" + port, "port=" + Server.serverlistPort);
+                                query = query.replace("port=" + port, "port=" + MinecraftServerLauncher.serverlistPort);
                                 content = query.getBytes();
                             }
 

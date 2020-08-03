@@ -6,7 +6,6 @@ import gg.codie.utils.MD5Checksum;
 import jdk.nashorn.api.scripting.URLReader;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.lwjgl.Sys;
 
 import java.io.File;
 import java.io.FileReader;
@@ -271,9 +270,9 @@ public class MinecraftVersionInfo {
 
         if(minecraftVersion != null) {
             if (minecraftVersion.legacy) {
-                new LegacyMinecraftLauncher(jarPath, serverIP, serverPort, mpPass).startMinecraft();
+                new LegacyMinecraftClientLauncher(jarPath, serverIP, serverPort, mpPass).startMinecraft();
             } else {
-                MinecraftLauncher.startProcess(jarPath, serverIP, serverPort);
+                MinecraftClientLauncher.startProcess(jarPath, serverIP, serverPort);
             }
         } else {
             // TODO:

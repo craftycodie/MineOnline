@@ -31,7 +31,7 @@ import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class LegacyMinecraftLauncher extends Applet implements AppletStub{
+public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
 
     private static final boolean DEBUG = true;
 
@@ -46,7 +46,7 @@ public class LegacyMinecraftLauncher extends Applet implements AppletStub{
 
     MinecraftVersionInfo.MinecraftVersion minecraftVersion;
 
-    public LegacyMinecraftLauncher(String jarPath, String serverAddress, String serverPort, String MPPass) {
+    public LegacyMinecraftClientLauncher(String jarPath, String serverAddress, String serverPort, String MPPass) {
         this.jarPath = jarPath;
         this.serverAddress = serverAddress;
         this.serverPort = serverPort;
