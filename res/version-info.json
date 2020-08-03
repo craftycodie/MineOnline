@@ -2087,7 +2087,127 @@
     "name": "Release 1.16.1",
     "md5": "9B94BEEC05C9580343F663165FA53D3F",
     "type": "client",
-    "baseVersion": "1.16.1"
+    "baseVersion": "1.16.1",
+    "assetIndex": "1.16",
+    "libraries": [
+      "com/mojang/patchy/1.1/patchy-1.1.jar",
+      "oshi-project/oshi-core/1.1/oshi-core-1.1.jar",
+      "net/java/dev/jna/jna/4.4.0/jna-4.4.0.jar",
+      "net/java/dev/jna/platform/3.4.0/platform-3.4.0.jar",
+      "com/ibm/icu/icu4j/66.1/icu4j-66.1.jar",
+      "com/mojang/javabridge/1.0.22/javabridge-1.0.22.jar",
+      "net/sf/jopt-simple/jopt-simple/5.0.3/jopt-simple-5.0.3.jar",
+      "io/netty/netty-all/4.1.25.Final/netty-all-4.1.25.Final.jar",
+      "com/google/guava/guava/21.0/guava-21.0.jar",
+      "org/apache/commons/commons-lang3/3.5/commons-lang3-3.5.jar",
+      "commons-io/commons-io/2.5/commons-io-2.5.jar",
+      "commons-codec/commons-codec/1.10/commons-codec-1.10.jar",
+      "net/java/jinput/jinput/2.0.5/jinput-2.0.5.jar",
+      "net/java/jutils/jutils/1.0.0/jutils-1.0.0.jar",
+      "com/mojang/brigadier/1.0.17/brigadier-1.0.17.jar",
+      "com/mojang/datafixerupper/3.0.25/datafixerupper-3.0.25.jar",
+      "com/google/code/gson/gson/2.8.0/gson-2.8.0.jar",
+      "com/mojang/authlib/1.6.25/authlib-1.6.25.jar",
+      "org/apache/commons/commons-compress/1.8.1/commons-compress-1.8.1.jar",
+      "org/apache/httpcomponents/httpclient/4.3.3/httpclient-4.3.3.jar",
+      "commons-logging/commons-logging/1.1.3/commons-logging-1.1.3.jar",
+      "org/apache/httpcomponents/httpcore/4.3.2/httpcore-4.3.2.jar",
+      "it/unimi/dsi/fastutil/8.2.1/fastutil-8.2.1.jar",
+      "org/apache/logging/log4j/log4j-api/2.8.1/log4j-api-2.8.1.jar",
+      "org/apache/logging/log4j/log4j-core/2.8.1/log4j-core-2.8.1.jar",
+      "org/lwjgl/lwjgl/3.2.1/lwjgl-3.2.1.jar",
+      "org/lwjgl/lwjgl/3.2.2/lwjgl-3.2.2.jar",
+      "org/lwjgl/lwjgl-jemalloc/3.2.1/lwjgl-jemalloc-3.2.1.jar",
+      "org/lwjgl/lwjgl-jemalloc/3.2.2/lwjgl-jemalloc-3.2.2.jar",
+      "org/lwjgl/lwjgl-openal/3.2.1/lwjgl-openal-3.2.1.jar",
+      "org/lwjgl/lwjgl-openal/3.2.2/lwjgl-openal-3.2.2.jar",
+      "org/lwjgl/lwjgl-opengl/3.2.1/lwjgl-opengl-3.2.1.jar",
+      "org/lwjgl/lwjgl-opengl/3.2.2/lwjgl-opengl-3.2.2.jar",
+      "org/lwjgl/lwjgl-glfw/3.2.1/lwjgl-glfw-3.2.1.jar",
+      "org/lwjgl/lwjgl-glfw/3.2.2/lwjgl-glfw-3.2.2.jar",
+      "org/lwjgl/lwjgl-stb/3.2.1/lwjgl-stb-3.2.1.jar",
+      "org/lwjgl/lwjgl-stb/3.2.2/lwjgl-stb-3.2.2.jar",
+      "org/lwjgl/lwjgl-tinyfd/3.2.1/lwjgl-tinyfd-3.2.1.jar",
+      "org/lwjgl/lwjgl-tinyfd/3.2.2/lwjgl-tinyfd-3.2.2.jar",
+      "org/lwjgl/lwjgl/3.2.1/lwjgl-3.2.1.jar",
+      "org/lwjgl/lwjgl/3.2.2/lwjgl-3.2.2.jar",
+      "org/lwjgl/lwjgl-jemalloc/3.2.1/lwjgl-jemalloc-3.2.1.jar",
+      "org/lwjgl/lwjgl-jemalloc/3.2.2/lwjgl-jemalloc-3.2.2.jar",
+      "org/lwjgl/lwjgl-openal/3.2.1/lwjgl-openal-3.2.1.jar",
+      "org/lwjgl/lwjgl-openal/3.2.2/lwjgl-openal-3.2.2.jar",
+      "org/lwjgl/lwjgl-opengl/3.2.1/lwjgl-opengl-3.2.1.jar",
+      "org/lwjgl/lwjgl-opengl/3.2.2/lwjgl-opengl-3.2.2.jar",
+      "org/lwjgl/lwjgl-glfw/3.2.1/lwjgl-glfw-3.2.1.jar",
+      "org/lwjgl/lwjgl-glfw/3.2.2/lwjgl-glfw-3.2.2.jar",
+      "org/lwjgl/lwjgl-stb/3.2.1/lwjgl-stb-3.2.1.jar",
+      "org/lwjgl/lwjgl-tinyfd/3.2.2/lwjgl-tinyfd-3.2.2.jar",
+      "org/lwjgl/lwjgl-tinyfd/3.2.1/lwjgl-tinyfd-3.2.1.jar",
+      "org/lwjgl/lwjgl-stb/3.2.2/lwjgl-stb-3.2.2.jar",
+      "com/mojang/text2speech/1.11.3/text2speech-1.11.3.jar",
+      "com/mojang/text2speech/1.11.3/text2speech-1.11.3.jar",
+      "ca/weblite/java-objc-bridge/1.0.0/java-objc-bridge-1.0.0.jar",
+      "ca/weblite/java-objc-bridge/1.0.0/java-objc-bridge-1.0.0.jar"
+    ],
+    "natives-windows": [
+      "org/lwjgl/lwjgl/3.2.1/lwjgl-3.2.1-natives-windows.jar",
+      "org/lwjgl/lwjgl/3.2.2/lwjgl-3.2.2-natives-windows.jar",
+      "org/lwjgl/lwjgl-jemalloc/3.2.1/lwjgl-jemalloc-3.2.1-natives-windows.jar",
+      "org/lwjgl/lwjgl-jemalloc/3.2.2/lwjgl-jemalloc-3.2.2-natives-windows.jar",
+      "org/lwjgl/lwjgl-openal/3.2.1/lwjgl-openal-3.2.1-natives-windows.jar",
+      "org/lwjgl/lwjgl-openal/3.2.2/lwjgl-openal-3.2.2-natives-windows.jar",
+      "org/lwjgl/lwjgl-opengl/3.2.1/lwjgl-opengl-3.2.1-natives-windows.jar",
+      "org/lwjgl/lwjgl-opengl/3.2.2/lwjgl-opengl-3.2.2-natives-windows.jar",
+      "org/lwjgl/lwjgl-glfw/3.2.1/lwjgl-glfw-3.2.1-natives-windows.jar",
+      "org/lwjgl/lwjgl-glfw/3.2.2/lwjgl-glfw-3.2.2-natives-windows.jar",
+      "org/lwjgl/lwjgl-stb/3.2.1/lwjgl-stb-3.2.1-natives-windows.jar",
+      "org/lwjgl/lwjgl-tinyfd/3.2.2/lwjgl-tinyfd-3.2.2-natives-windows.jar",
+      "org/lwjgl/lwjgl-tinyfd/3.2.1/lwjgl-tinyfd-3.2.1-natives-windows.jar",
+      "org/lwjgl/lwjgl-stb/3.2.2/lwjgl-stb-3.2.2-natives-windows.jar",
+      "com/mojang/text2speech/1.11.3/text2speech-1.11.3-natives-windows.jar"
+    ]
+  },
+
+  {
+    "name": "Release 1.6.2",
+    "md5": "1D43CDBA8B9752D7F557AB7D3E365964",
+    "type": "client",
+    "baseVersion": "1.6.2"
+  },
+
+
+  {
+    "name": "Release 1.6.2",
+    "md5": "39DF9F29E6904EA7B351FFB4FE949881",
+    "type": "server",
+    "baseVersion": "1.6.2",
+    "clientMd5s": [],
+    "clientVersions": ["1.6.2"],
+    "clientName": "1.6.2"
+  },
+
+  {
+    "name": "Release 1.5.2",
+    "md5": "6897C3287FB971C9F362EB3AB20F5DDD",
+    "type": "client",
+    "baseVersion": "1.5.2",
+    "legacy": true
+  },
+
+  {
+    "name": "Release 1.12.2",
+    "md5": "8C0443868B9E46C77D39DB61C755679D",
+    "type": "client",
+    "baseVersion": "1.12.2"
+  },
+
+  {
+    "name": "Release 1.16.1",
+    "md5": "6D4FCE96B7081F64389EAF8FE4BBFE2E",
+    "type": "server",
+    "baseVersion": "1.16.1",
+    "clientMd5s": [],
+    "clientVersions": ["1.16.1"],
+    "clientName": "1.16.1"
   },
 
 
