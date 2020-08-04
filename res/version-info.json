@@ -2180,7 +2180,6 @@
     "md5": "39DF9F29E6904EA7B351FFB4FE949881",
     "type": "server",
     "baseVersion": "1.6.2",
-    "clientMd5s": [],
     "clientVersions": ["1.6.2"],
     "clientName": "1.6.2"
   },
@@ -2205,7 +2204,6 @@
     "md5": "6D4FCE96B7081F64389EAF8FE4BBFE2E",
     "type": "server",
     "baseVersion": "1.16.1",
-    "clientMd5s": [],
     "clientVersions": ["1.16.1"],
     "clientName": "1.16.1"
   },
@@ -2525,9 +2523,6 @@
     "sha256": "19E399FBB8987B2C181125932895209BFBB2112400D371A0C05F053255724B33",
     "type": "server",
     "clientName": "Beta 1.0",
-    "clientMd5s": [
-      "5F8733DBBF09B4E7C874661A3C29C239"
-    ],
     "baseVersion": "b1.0-1"
   },
   {
@@ -2536,9 +2531,6 @@
     "sha256": "9512D38480FA2CEFB51C2353BF42092D3E7B30B565B34D41212BD764B120B173",
     "type": "server",
     "clientName": "Beta 1.0_01",
-    "clientMd5s": [
-      "03BD20B870DBBD121DE5DCA98AF4E1CE"
-    ],
     "baseVersion": "b1.0-2"
   },
   {
@@ -2559,9 +2551,6 @@
     "sha256": "5B5A5C8B4B3B5E69006EDFF279BF16E8DD5F2A03DD76BAB00B65329FABD57B54",
     "type": "server",
     "clientName": "Beta 1.1_01",
-    "clientMd5s": [
-      "1F9331F2BFCA81B6CE2ACDFC1F105837"
-    ],
     "baseVersion": "b1.1_01"
   },
   {
@@ -2570,9 +2559,6 @@
     "sha256": "DA4F2217DEE1364AB1EB2B8A1B1AC92F315CA734D00D8D80E757FBFC39BB0405",
     "type": "server",
     "clientName": "Beta 1.1_02",
-    "clientMd5s": [
-      "08B37BCA14ACAEC18D9B9EFCFA0BAAF0"
-    ],
     "baseVersion": "b1.1_02"
   },
   {
@@ -2581,9 +2567,6 @@
     "sha256": "D86E6A2527BB34C2B1CA1CC1047974CC745CB9DEE486D0A2352198E7FA4522E4",
     "type": "server",
     "clientName": "Beta 1.2",
-    "clientMd5s": [
-      "6426223EFE23C3931A4EF89685BE3349"
-    ],
     "baseVersion": "b1.2"
   },
   {
@@ -2592,9 +2575,6 @@
     "sha256": "3F265449F5A44A0E0740F68887A241124EFFCE6C1A46D922848BDC081CCB38E5",
     "type": "server",
     "clientName": "Beta 1.2_01",
-    "clientMd5s": [
-      "486D83EC00554B45FFA21AF2FAA0116A"
-    ],
     "baseVersion": "b1.2_01"
   },
   {
@@ -2639,9 +2619,6 @@
     "sha256": "40C21E165D361BED94C90CDC5E09E3353C9BC527F6A67EE47675388636920144",
     "type": "server",
     "clientName": "Beta 1.4_01",
-    "clientMd5s": [
-      "9379E54B581BA4EF3ACC3E326E87DB91"
-    ],
     "baseVersion": "b1.4_01"
   },
   {
@@ -2650,9 +2627,6 @@
     "sha256": "113281FEC6FBE8E26F01168EEF7980FDC726369D14DFF9B9753A6395B1A0BBDF",
     "type": "server",
     "clientName": "Beta 1.5",
-    "clientMd5s": [
-      "24289130902822D73F8722B52BC07CDB"
-    ],
     "baseVersion": "b1.5"
   },
   {
@@ -2661,9 +2635,6 @@
     "sha256": "AA3B415CBA1BEA6214B8BBCAA82AAC95EFD545E976CD9D87DFC942E5D29C5932",
     "type": "server",
     "clientName": "Beta 1.5_01",
-    "clientMd5s": [
-      "D02FA9998E30693D8D989D5F88CF0040"
-    ],
     "baseVersion": "b1.5_01"
   },
   {
@@ -2672,9 +2643,6 @@
     "sha256": "1EC78E3E975AEBA33F4BB88B25F9EA4829EF699E2B3A6EDAEE7A639B0E688BAB",
     "type": "server",
     "clientName": "Beta 1.5_01",
-    "clientMd5s": [
-      "D02FA9998E30693D8D989D5F88CF0040"
-    ],
     "baseVersion": "b1.5_02"
   },
   {
@@ -2683,10 +2651,7 @@
     "sha256": "E9F00186F9700B81D18907B431E10D077399F928E7A75EDCC43C1408AD35D6BA",
     "type": "server",
     "clientName": "Beta 1.6 Test Build 3",
-    "clientMd5s": [
-      "24BB085C5285283F7964F42854993B9B"
-    ],
-    "baseVersion": "b1.6 Test Build 3"
+    "baseVersion": "b1.6-tb3"
   },
   {
     "name": "Beta 1.6-trailer",
@@ -2703,9 +2668,6 @@
     "sha256": "00B26BA122135E7DA53E48B7A17F2A56E80452B6D3DBA77C2487532B0BD558F3",
     "type": "server",
     "clientName": "Beta 1.6",
-    "clientMd5s": [
-      "D531E221227A65392259D3141893280D"
-    ],
     "baseVersion": "b1.6"
   },
   {
@@ -2714,9 +2676,6 @@
     "sha256": "3604E04DB48E78DFD17AD93D7CD38CF5C8B2B2BDD79FB32380F546B0583C8139",
     "type": "server",
     "clientName": "Beta 1.6.1",
-    "clientMd5s": [
-      "A7E82C441A57EF4068C533F4D777336A"
-    ],
     "baseVersion": "b1.6.1"
   },
   {
@@ -2725,9 +2684,6 @@
     "sha256": "533A0616CF6518FC2FFA473C4939CF9ACA5655F116CCA697018161B7BF93B9A8",
     "type": "server",
     "clientName": "Beta 1.6.2",
-    "clientMd5s": [
-      "01330B1C930102A683A4DD8D792E632E"
-    ],
     "baseVersion": "b1.6.2"
   },
   {
@@ -2736,9 +2692,6 @@
     "sha256": "75ED7819002209DC564B476CE666DD8C98727AFDFAF238F5A209EF7149193360",
     "type": "server",
     "clientName": "Beta 1.6.3",
-    "clientMd5s": [
-      "EFC2BECCA965E4F8FEB5B4210C6A4FD1"
-    ],
     "baseVersion": "b1.6.3"
   },
   {
@@ -2747,9 +2700,6 @@
     "sha256": "8DC82D514B3EFC6B26B5A50DCDDDF97C115FA29DEBA15934100A3950172E7F80",
     "type": "server",
     "clientName": "Beta 1.6.4",
-    "clientMd5s": [
-      "5C4DF6F120336F113180698613853DBA"
-    ],
     "baseVersion": "b1.6.4"
   },
   {
@@ -2758,9 +2708,6 @@
     "sha256": "310EE8FB3F218FF8BD7AC95F8FA3B55C1690D4B0C76C57140F12DE5D59A9D91D",
     "type": "server",
     "clientName": "Beta 1.6.5",
-    "clientMd5s": [
-      "2ABA888864B32038C8D22EE5DF71B7C8"
-    ],
     "baseVersion": "b1.6.5"
   },
   {
@@ -2769,9 +2716,6 @@
     "sha256": "AF36C9C708EC9B322378ACB319B0DA8A1D76AC2185C595A077D0C069835B8916",
     "type": "server",
     "clientName": "Beta 1.6.6",
-    "clientMd5s": [
-      "CE80072464433CD5B05D505AA8FF29D1"
-    ],
     "baseVersion": "b1.6.6"
   },
   {
@@ -2780,9 +2724,6 @@
     "sha256": "AF2DE079B6B30286C205D9491F62A4CFF1136631142AE5A64BFB5AB76E62828E",
     "type": "server",
     "clientName": "Beta 1.7",
-    "clientMd5s": [
-      "682419E9ED1A236C3067822D53CDA1E4"
-    ],
     "baseVersion": "b1.7"
   },
   {
@@ -2791,9 +2732,6 @@
     "sha256": "8A4F2B14CA3B6ED7CB333D27338B8C975BA24E2635F74AD7A984AB26B176C514",
     "type": "server",
     "clientName": "Beta 1.7_01",
-    "clientMd5s": [
-      "DEFC33265DFBB21AFB37DA7C400800E9"
-    ],
     "baseVersion": "b1.7_01"
   },
   {
@@ -2802,9 +2740,6 @@
     "sha256": "05990438EAB2055FD5908EDD34926F2665AE89683C88A4FA4F660EF23B6110B3",
     "type": "server",
     "clientName": "Beta 1.7.2",
-    "clientMd5s": [
-      "DD9215AB1141170D4871F42BFF4AB302"
-    ],
     "baseVersion": "b1.7.2"
   },
   {
@@ -2813,9 +2748,6 @@
     "sha256": "033A127E4A25A60B038F15369C89305A3D53752242A1CFF11AE964954E79BA4D",
     "type": "server",
     "clientName": "Beta 1.7.3",
-    "clientMd5s": [
-      "EAE3353FDAA7E10A59B4CB5B45BFA10D"
-    ],
     "baseVersion": "b1.7.3"
   },
   {
@@ -2824,9 +2756,6 @@
     "sha256": "54B9411FCB4EFD526A64D9BA807DC98B6FA7EB53045B60C77C811F3DBDF585AE",
     "type": "server",
     "clientName": "Beta 1.8",
-    "clientMd5s": [
-      "A59A9FD4C726A573B0A2BDD10D857F59"
-    ],
     "baseVersion": "b1.8"
   },
   {
@@ -2835,9 +2764,6 @@
     "sha256": "ABB7C8A5B9AB5BAB3FD3CEDB7A42394D866CCD9EE5DCE792AE82281910106452",
     "type": "server",
     "clientName": "Beta 1.8.1",
-    "clientMd5s": [
-      "F8C5A2CCD3BC996792BBE436D8CC08BC"
-    ],
     "baseVersion": "b1.8.1"
   },
   {
@@ -2969,9 +2895,6 @@
     "sha256": "B01CF6322CE3C0BD573314CC5DA39B846C6C2A049F3E20EB2CD19CE72203993B",
     "type": "server",
     "clientName": "Release 1.0.0",
-    "clientMd5s": [
-      "3820D222B95D0B8C520D9596A756A6E6"
-    ],
     "baseVersion": "1.0.0"
   },
   {
@@ -2980,9 +2903,6 @@
     "sha256": "985C5AAACF1A27AE1579A41190D2ECFF0007B869CE68B57D893A6C6613EE2618",
     "type": "server",
     "clientName": "Release 1.0.0",
-    "clientMd5s": [
-      "3820D222B95D0B8C520D9596A756A6E6"
-    ],
     "baseVersion": "1.0.1"
   },
   {
@@ -2991,9 +2911,6 @@
     "sha256": "96DE0FCC7F9E90D32488AE6710CAAA9A3FE94584ECA6E7C6B13A2DF0707419E1",
     "type": "server",
     "clientName": "Release 1.1",
-    "clientMd5s": [
-      "E92302D2ACDBA7C97E0D8DF1E10D2006"
-    ],
     "baseVersion": "1.1"
   },
   {
@@ -3002,9 +2919,6 @@
     "sha256": "F705CD0709F2DFC19DA352768903FF0298E0C150B534E7A959398682FE502B8A",
     "type": "server",
     "clientName": "Release 1.2.1",
-    "clientMd5s": [
-      "97067A603EBA2B6EB75D3194F81F6BCD"
-    ],
     "baseVersion": "1.2.1"
   },
   {
@@ -3013,9 +2927,6 @@
     "sha256": "55A272924D52BD6ED3AF852A3B017D2E4DB8760939EDE9C87067F518047718EC",
     "type": "server",
     "clientName": "Release 1.2.2",
-    "clientMd5s": [
-      "6189E96EFAEA11E5164B4A4755574324"
-    ],
     "baseVersion": "1.2.2"
   },
   {
@@ -3024,9 +2935,6 @@
     "sha256": "7251FEAE7527569DE15EB10E79839D2D254FE5095D0FE46D29034FC90A3514D1",
     "type": "server",
     "clientName": "Release 1.2.3",
-    "clientMd5s": [
-      "12F6C4B1BDCC63F029E3C088A364B8E4"
-    ],
     "baseVersion": "1.2.3"
   },
   {
@@ -3035,9 +2943,6 @@
     "sha256": "6B6E4CDD448BB3F5C8943B5FCAC2BBBD0CEB716F5C73DEAF2888A1366D2539CA",
     "type": "server",
     "clientName": "Release 1.2.4",
-    "clientMd5s": [
-      "25423EAB6D8707F96CC6AD8A21A7250A"
-    ],
     "baseVersion": "1.2.4"
   },
   {
@@ -3046,9 +2951,6 @@
     "sha256": "19285D7D16AEE740F5A0584F0D80A4940F273A97F5A3EAF251FC1C6C3F2982D1",
     "type": "server",
     "clientName": "Release 1.2.5",
-    "clientMd5s": [
-      "8E8778078A175A33603A585257F28563"
-    ],
     "baseVersion": "1.2.5"
   },
   {
@@ -3057,9 +2959,6 @@
     "sha256": "62B8C8A3691FB5F51AF3BD7EFC34D1BC5A227E6162072E9827F439744DF994F2",
     "type": "server",
     "clientName": "Release 1.3.1",
-    "clientMd5s": [
-      "266CCBC9798AFD2EADF3D6C01B4C562A"
-    ],
     "baseVersion": "1.3.1"
   },
   {
@@ -3068,9 +2967,6 @@
     "sha256": "0795E098D970B459832750D4C6C2C4F58EF55A333A67281418318275E6026EBA",
     "type": "server",
     "clientName": "Release 1.3.2",
-    "clientMd5s": [
-      "969699F13E5BBE7F12E40AC4F32B7D9A"
-    ],
     "baseVersion": "1.3.2"
   },
   {
@@ -3079,9 +2975,6 @@
     "sha256": "16BC7305231D5CEBA8B81E43CCA8BDCD19CC6D92A488ED270BAA5AB827B0FA40",
     "type": "server",
     "clientName": "Release 1.4.2",
-    "clientMd5s": [
-      "771175C01778EA67395BC6919A5A9DC5"
-    ],
     "baseVersion": "1.4.2"
   },
   {
@@ -3090,9 +2983,6 @@
     "sha256": "2EA46E24C3C2931DBCE11E4D79A83668CD6F002B5BFE131645A98ECE099430A3",
     "type": "server",
     "clientName": "Release 1.4.4",
-    "clientMd5s": [
-      "7AA46C8058CBA2F38E9D2DDDDCC77C72"
-    ],
     "baseVersion": "1.4.4"
   },
   {
@@ -3101,9 +2991,6 @@
     "sha256": "B8AF871D6B0A03DD2FE65EE9238BB52C60DD5E30D3DED0F37A9EB860E5DF206D",
     "type": "server",
     "clientName": "Release 1.4.5",
-    "clientMd5s": [
-      "B15E2B2B6B4629F0D99A95B6B44412A0"
-    ],
     "baseVersion": "1.4.5"
   },
   {
@@ -3112,9 +2999,6 @@
     "sha256": "90B3B9CD466ABCD6ED9E932E1B81F8E34C5771F536670ED9AC493188B021000B",
     "type": "server",
     "clientName": "Release 1.4.6",
-    "clientMd5s": [
-      "48677DC4C2B98C29918722B5AB27B4FD"
-    ],
     "baseVersion": "1.4.6"
   },
   {
@@ -3123,9 +3007,6 @@
     "sha256": "96B7512AEAD2FB20DDF780D7DD74208D77F209E16058EA8944150179E65B4DD3",
     "type": "server",
     "clientName": "Release 1.4.7",
-    "clientMd5s": [
-      "8E80FB01B321C6B3C7EFCA397A3EEA35"
-    ],
     "baseVersion": "1.4.7"
   },
   {
@@ -3367,9 +3248,6 @@
     "sha256": "870C3BB6FA3B29DBB0A7EEF551186647BAC99EDD6BF55193B40E45C7381FEDD1",
     "type": "server",
     "clientName": "Beta 1.0",
-    "clientMd5s": [
-      "5F8733DBBF09B4E7C874661A3C29C239"
-    ],
     "baseVersion": "b1.0-1"
   },
   {
@@ -3378,9 +3256,6 @@
     "sha256": "2F7B1CD1A675A98A0337358E3B48C5519417D9834755D2E74E65100B85F566F9",
     "type": "server",
     "clientName": "Beta 1.1_02",
-    "clientMd5s": [
-      "08B37BCA14ACAEC18D9B9EFCFA0BAAF0"
-    ],
     "baseVersion": "b1.1_02"
   },
   {
@@ -3389,9 +3264,6 @@
     "sha256": "F638449B9C28E5BAD352DB56E38387AC36910A11FAE15CA1770A52495F34A1BA",
     "type": "server",
     "clientName": "Beta 1.2",
-    "clientMd5s": [
-      "6426223EFE23C3931A4EF89685BE3349"
-    ],
     "baseVersion": "b1.2"
   },
   {
@@ -3400,9 +3272,6 @@
     "sha256": "09E30159E8E96EFDAA67D6776A79BDC095112EDAA82955CEF24253E78612D8C3",
     "type": "server",
     "clientName": "Beta 1.2_01",
-    "clientMd5s": [
-      "486D83EC00554B45FFA21AF2FAA0116A"
-    ],
     "baseVersion": "b1.2_01"
   },
   {
@@ -3435,9 +3304,6 @@
     "sha256": "555E42900FCFB547349E54644754E70538B4CC724B800058E2BCC60A8981CFCB",
     "type": "server",
     "clientName": "Beta 1.4_01",
-    "clientMd5s": [
-      "9379E54B581BA4EF3ACC3E326E87DB91"
-    ],
     "baseVersion": "b1.4_01"
   },
   {
@@ -3446,9 +3312,6 @@
     "sha256": "BFDFDA517017CECD1153E1F99B19599A8287DB1A3E10B35631473BA4FEAB70D0",
     "type": "server",
     "clientName": "Beta 1.5",
-    "clientMd5s": [
-      "24289130902822D73F8722B52BC07CDB"
-    ],
     "baseVersion": "b1.5"
   },
   {
@@ -3457,9 +3320,6 @@
     "sha256": "0644647A9B7DBC9B62F231DFC8E12093F6D9E16EEA62C3E5D356C20A21B12EC5",
     "type": "server",
     "clientName": "Beta 1.5_01",
-    "clientMd5s": [
-      "D02FA9998E30693D8D989D5F88CF0040"
-    ],
     "baseVersion": "b1.5_02"
   },
   {
@@ -3468,9 +3328,6 @@
     "sha256": "0023D7B27561E90AF9BAF5085352E3DE61C1ED7D375B3D1E0C97E13308AD2FB1",
     "type": "server",
     "clientName": "Beta 1.6.2",
-    "clientMd5s": [
-      "01330B1C930102A683A4DD8D792E632E"
-    ],
     "baseVersion": "b1.6.2"
   },
   {
@@ -3479,9 +3336,6 @@
     "sha256": "2F8DF7769C65B5E3C351580C9CF44F818C4D290BAB52C1D7C7C54ADA19052A62",
     "type": "server",
     "clientName": "Beta 1.6.3",
-    "clientMd5s": [
-      "EFC2BECCA965E4F8FEB5B4210C6A4FD1"
-    ],
     "baseVersion": "b1.6.3"
   },
   {
@@ -3490,9 +3344,6 @@
     "sha256": "6E481C02B1764A9BD04A63EB0850E765E82C3A39842B36EF2CD50F9C29A1A4D6",
     "type": "server",
     "clientName": "Beta 1.6.4",
-    "clientMd5s": [
-      "5C4DF6F120336F113180698613853DBA"
-    ],
     "baseVersion": "b1.6.4"
   },
   {
@@ -3501,9 +3352,6 @@
     "sha256": "3E66038B3BED8BC67502DD5639AE1C585289D1F7B5C2FF7C6541172E0A12690B",
     "type": "server",
     "clientName": "Beta 1.6.5",
-    "clientMd5s": [
-      "2ABA888864B32038C8D22EE5DF71B7C8"
-    ],
     "baseVersion": "b1.6.5"
   },
   {
@@ -3512,9 +3360,6 @@
     "sha256": "752BACD17CE1FC92B98E3BAD0BA0B67F7DE0FDBA465ED0EA47015587274067F6",
     "type": "server",
     "clientName": "Beta 1.6.6",
-    "clientMd5s": [
-      "CE80072464433CD5B05D505AA8FF29D1"
-    ],
     "baseVersion": "b1.6.6"
   },
   {
@@ -3523,9 +3368,6 @@
     "sha256": "8D170E46A861159D96BEB9677B08EF8EF2BEBC5641D2E9ED5748ABF461D1B228",
     "type": "server",
     "clientName": "Beta 1.7_01",
-    "clientMd5s": [
-      "DEFC33265DFBB21AFB37DA7C400800E9"
-    ],
     "baseVersion": "b1.7_01"
   },
   {
@@ -3534,9 +3376,6 @@
     "sha256": "F6496797F414C251E1A3EDBE779593FC32A6E10B0E4F8551CECB87B04340F50F",
     "type": "server",
     "clientName": "Beta 1.7.2",
-    "clientMd5s": [
-      "DD9215AB1141170D4871F42BFF4AB302"
-    ],
     "baseVersion": "b1.7.2"
   },
   {
@@ -3545,9 +3384,6 @@
     "sha256": "B89FA51C5169EEDD3000CED6B36A5785F43068F576BE25FF6911C6672637581E",
     "type": "server",
     "clientName": "Beta 1.7.3",
-    "clientMd5s": [
-      "EAE3353FDAA7E10A59B4CB5B45BFA10D"
-    ],
     "baseVersion": "b1.7.3"
   },
   {
@@ -3556,9 +3392,6 @@
     "sha256": "F8341138E337B2186454FE24F09E725073C467F7B87CAE152E1AAC8F11943AD3",
     "type": "server",
     "clientName": "Beta 1.8",
-    "clientMd5s": [
-      "A59A9FD4C726A573B0A2BDD10D857F59"
-    ],
     "baseVersion": "b1.8"
   },
   {
@@ -3567,9 +3400,6 @@
     "sha256": "5EA4FC96F57826C1C53C2448274A8E0D43B834C4B0EB16F4639F474B6D0304C7",
     "type": "server",
     "clientName": "Beta 1.8.1",
-    "clientMd5s": [
-      "F8C5A2CCD3BC996792BBE436D8CC08BC"
-    ],
     "baseVersion": "b1.8.1"
   },
   {
@@ -3578,9 +3408,6 @@
     "sha256": "EDC43CD9360B039ADD5EED89A73DCD4E0509789675DBA9E5CE554C7386BF1B52",
     "type": "server",
     "clientName": "Release 1.0.0",
-    "clientMd5s": [
-      "3820D222B95D0B8C520D9596A756A6E6"
-    ],
     "baseVersion": "1.0.0"
   },
   {
@@ -3589,9 +3416,6 @@
     "sha256": "90BF8E4B655971F1DCC0DF09AF6C7BB43A256E76B7B06D34D01569D086E46250",
     "type": "server",
     "clientName": "Release 1.1",
-    "clientMd5s": [
-      "E92302D2ACDBA7C97E0D8DF1E10D2006"
-    ],
     "baseVersion": "1.1"
   },
   {
@@ -3600,9 +3424,6 @@
     "sha256": "5832807E9EAF580A4735E425B076DF273EE3783498B94F39CD4A51E4D2359D2B",
     "type": "server",
     "clientName": "Release 1.2.2",
-    "clientMd5s": [
-      "6189E96EFAEA11E5164B4A4755574324"
-    ],
     "baseVersion": "1.2.2"
   },
   {
@@ -3611,9 +3432,6 @@
     "sha256": "FB7ED00C46D5CC909B049F7414913AD05E5764790E479B20387D462BFDE22EFA",
     "type": "server",
     "clientName": "Release 1.2.3",
-    "clientMd5s": [
-      "12F6C4B1BDCC63F029E3C088A364B8E4"
-    ],
     "baseVersion": "1.2.3"
   },
   {
@@ -3622,9 +3440,6 @@
     "sha256": "397325710501CF2580075DABDA4367566DB4B576AC4F5C9323EFBB556D8716E9",
     "type": "server",
     "clientName": "Release 1.2.4",
-    "clientMd5s": [
-      "25423EAB6D8707F96CC6AD8A21A7250A"
-    ],
     "baseVersion": "1.2.4"
   },
   {
@@ -3633,9 +3448,6 @@
     "sha256": "43A3BEB0604939232C05AF032B8C00EAD05D1140A0A96A94148AC929462AA991",
     "type": "server",
     "clientName": "Release 1.2.5",
-    "clientMd5s": [
-      "8E8778078A175A33603A585257F28563"
-    ],
     "baseVersion": "1.2.5"
   },
   {
@@ -3644,9 +3456,6 @@
     "sha256": "C0D3CAAA9C61EAC0D145119B84F6E8A4B1C748AA2F594D28CB79CC3E6BD6A388",
     "type": "server",
     "clientName": "Release 1.3.1",
-    "clientMd5s": [
-      "266CCBC9798AFD2EADF3D6C01B4C562A"
-    ],
     "baseVersion": "1.3.1"
   },
   {
@@ -3655,9 +3464,6 @@
     "sha256": "D6B4D86AA2158146F891E3ABFEFF5F6B6EAA29F60A321F6F3FA26FB27E96A28D",
     "type": "server",
     "clientName": "Release 1.3.2",
-    "clientMd5s": [
-      "969699F13E5BBE7F12E40AC4F32B7D9A"
-    ],
     "baseVersion": "1.3.2"
   },
   {
@@ -3666,9 +3472,6 @@
     "sha256": "EA1A86E40AE76052C7828153C600A8A9B1DE438D7596977EADB252EE2A722847",
     "type": "server",
     "clientName": "Release 1.4.2",
-    "clientMd5s": [
-      "771175C01778EA67395BC6919A5A9DC5"
-    ],
     "baseVersion": "1.4.2"
   },
   {
@@ -3677,9 +3480,6 @@
     "sha256": "74AF8FA288B8662E89C0537543028D6F93135E66237D04C79E2E75607A65AE30",
     "type": "server",
     "clientName": "Release 1.4.4",
-    "clientMd5s": [
-      "7AA46C8058CBA2F38E9D2DDDDCC77C72"
-    ],
     "baseVersion": "1.4.4"
   },
   {
@@ -3688,9 +3488,6 @@
     "sha256": "5AD6EC711EA5FFFF4DF86EAD47554687449A011F55819A324EBD671615B9EBBF",
     "type": "server",
     "clientName": "Release 1.4.5",
-    "clientMd5s": [
-      "B15E2B2B6B4629F0D99A95B6B44412A0"
-    ],
     "baseVersion": "1.4.5"
   },
   {
@@ -3699,9 +3496,6 @@
     "sha256": "80A64532FC14F982814C5196BD19FBDBD6E3180069ADDEAFD2806B8961FC5D11",
     "type": "server",
     "clientName": "Release 1.4.6",
-    "clientMd5s": [
-      "48677DC4C2B98C29918722B5AB27B4FD"
-    ],
     "baseVersion": "1.4.6"
   },
   {
@@ -3710,9 +3504,6 @@
     "sha256": "7F09C364C10DA8B9BCACDC93F8C4ACB37A5E273CE5E2F7C9D20A33BB9C790729",
     "type": "server",
     "clientName": "Release 1.4.7",
-    "clientMd5s": [
-      "8E80FB01B321C6B3C7EFCA397A3EEA35"
-    ],
     "baseVersion": "1.4.7"
   },
   {
@@ -3735,133 +3526,105 @@
     "md5": "B85FBC96DF78464A797AB8A7A474EDDD",
     "type": "client",
     "info": "Beta 1.7.3 mod",
-    "baseVersion": "Banshee 0.0.5.0"
+    "baseVersion": "banshee-0.0.5.0"
   },
   {
     "name": "Banshee 0.1.1.0",
     "md5": "A631F9CBC511BC9339FBC54994E62FA9",
     "type": "client",
     "info": "Beta 1.7.3 mod",
-    "baseVersion": "Banshee 0.1.1.0"
+    "baseVersion": "banshee-0.1.1.0"
   },
   {
     "name": "Banshee 0.1.1.2",
     "md5": "B13A330252A68443969FD7F541B96999",
     "type": "client",
     "info": "Beta 1.7.3 mod",
-    "baseVersion": "Banshee 0.1.1.2"
+    "baseVersion": "banshee-0.1.1.2"
   },
   {
     "name": "Banshee 0.1.1.3",
     "md5": "DD0AF264A6E5DB719F8BD92F8D5CAE42",
     "type": "client",
     "info": "Beta 1.7.3 mod",
-    "baseVersion": "Banshee 0.1.1.3"
+    "baseVersion": "banshee-0.1.1.3"
   },
   {
     "name": "Banshee 0.1.1.4",
     "md5": "DF651F4025BADC527D91A05AFA93BD21",
     "type": "client",
     "info": "Beta 1.7.3 mod",
-    "baseVersion": "Banshee 0.1.1.4"
+    "baseVersion": "banshee-0.1.1.4"
   },
   {
     "name": "Banshee 0.1.1.5",
     "md5": "210197E5FF27EE4FFF16C04DA4E02181",
     "type": "client",
     "info": "Beta 1.7.3 mod",
-    "baseVersion": "Banshee 0.1.1.5"
+    "baseVersion": "banshee-0.1.1.5"
   },
   {
     "name": "Banshee 0.1.1.6",
     "md5": "843D72A3972E369C71B533499141911D",
     "type": "client",
     "info": "Beta 1.7.3 mod",
-    "baseVersion": "Banshee 0.1.1.6"
+    "baseVersion": "banshee-0.1.1.6"
   },
   {
     "name": "Banshee 0.0.5.0",
     "md5": "27ADBA2B0DD3610E13E117FF18DC60BF",
     "type": "server",
     "info": "Beta 1.7.3 mod",
-    "baseVersion": "Banshee 0.0.5.0"
+    "baseVersion": "banshee-0.0.5.0"
   },
   {
     "name": "Banshee 0.1.1.0",
     "md5": "D07AF292AD6873BFB173243EE807F146",
     "type": "server",
     "info": "Beta 1.7.3 mod",
-    "baseVersion": "Banshee 0.1.1.0"
+    "baseVersion": "banshee-0.1.1.0"
   },
   {
     "name": "Banshee 0.1.1.2",
     "md5": "B2BCDCE9F18118AD9234743641532336",
     "type": "server",
     "info": "Beta 1.7.3 mod",
-    "baseVersion": "Banshee 0.1.1.2"
+    "baseVersion": "banshee-0.1.1.2"
   },
   {
     "name": "Banshee 0.1.1.3",
     "md5": "A4212E714E84121C2E82042AC5CD109D",
     "type": "server",
     "info": "Beta 1.7.3 mod",
-    "baseVersion": "Banshee 0.1.1.3"
+    "baseVersion": "banshee-0.1.1.3"
   },
   {
     "name": "Banshee 0.1.1.4",
     "md5": "58616E188132745FCA7ACF6FEF1FEEF1",
     "type": "server",
     "info": "Beta 1.7.3 mod",
-    "baseVersion": "Banshee 0.1.1.4"
+    "baseVersion": "banshee-0.1.1.4"
   },
   {
     "name": "Banshee 0.1.1.5",
     "md5": "4A10FA3251CD42B9B3B0F2C6278E5B3F",
     "type": "server",
     "info": "Beta 1.7.3 mod",
-    "baseVersion": "Banshee 0.1.1.5"
+    "baseVersion": "banshee-0.1.1.5"
   },
   {
     "name": "Banshee 0.1.1.6",
     "md5": "7E74F5ADE94EF00E5C15BBF2AD908D3B",
     "type": "server",
     "info": "Beta 1.7.3 mod",
-    "baseVersion": "Banshee 0.1.1.6"
-  },
-  {
-    "name": "Puucraft 0.1.0.0",
-    "md5": "A19C83410023F4D96CE0DE3DAF613DCF",
-    "type": "client",
-    "info": "Beta 1.7.3 mod",
-    "baseVersion": "Puucraft 0.1.0.0"
-  },
-  {
-    "name": "Puucraft 0.1.1.0",
-    "md5": "B0D44C2B3B848037705EF6D24B9994C8",
-    "type": "client",
-    "info": "Beta 1.7.3 mod",
-    "baseVersion": "Puucraft 0.1.1.0"
-  },
-  {
-    "name": "Puucraft 0.2.0.1 (Pre-Release)",
-    "md5": "7ADDA28EB4BBF6FE1E28F2E664E80F7A",
-    "type": "client",
-    "info": "Beta 1.7.3 mod",
-    "baseVersion": "Puucraft 0.2.0.1 (Pre-Release)"
-  },
-  {
-    "name": "Puucraft 0.2.0.1",
-    "md5": "27EF3CD6AB2DF7A1877840EB64F9DC0B",
-    "type": "client",
-    "info": "Beta 1.7.3 mod",
-    "baseVersion": "Puucraft 0.2.0.1"
+    "baseVersion": "banshee-0.1.1.6"
   },
   {
     "name": "Skylands 0.1",
     "md5": "F8F78A4ED4033547CC1EA28C776DA7AE",
     "type": "client",
     "info": "Beta 1.7.3 mod",
-    "baseVersion": "Skylands 0.1"
+    "baseVersion": "b1.7.3-skylands0.1"
   },
   {
     "name": "Skylands 0.1",
@@ -3870,10 +3633,10 @@
     "info": "Beta 1.7.3 mod",
     "clientName": "Beta 1.7.3",
     "clientMd5s": [
-      "F8F78A4ED4033547CC1EA28C776DA7AE",
-      "EAE3353FDAA7E10A59B4CB5B45BFA10D"
+      "b1.7.3",
+      "b1.7.3-skylands0.1"
     ],
-    "baseVersion": "Skylands 0.1"
+    "baseVersion": "b1.7.3-skylands0.1"
   },
   {
     "name": "Skylands 0.2",
@@ -3882,10 +3645,10 @@
     "info": "Beta 1.7.3 mod",
     "clientName": "Beta 1.7.3",
     "clientMd5s": [
-      "F8F78A4ED4033547CC1EA28C776DA7AE",
-      "EAE3353FDAA7E10A59B4CB5B45BFA10D"
+      "b1.7.3",
+      "b1.7.3-skylands0.1"
     ],
-    "baseVersion": "Skylands 0.2"
+    "baseVersion": "b1.7.3-skylands0.2"
   },
   {
     "name": "Skylands 0.3",
@@ -3894,10 +3657,10 @@
     "info": "Beta 1.7.3 mod",
     "clientName": "Beta 1.7.3",
     "clientMd5s": [
-      "F8F78A4ED4033547CC1EA28C776DA7AE",
-      "EAE3353FDAA7E10A59B4CB5B45BFA10D"
+      "b1.7.3",
+      "b1.7.3-skylands0.1"
     ],
-    "baseVersion": "Skylands 0.3"
+    "baseVersion": "b1.7.3-skylands0.3"
   },
   {
     "name": "c0.0.17a",

@@ -22,6 +22,7 @@ import org.lwjgl.util.vector.Vector3f;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.LinkedList;
 
 public class SelectableServerList extends GUIObject {
@@ -74,7 +75,7 @@ public class SelectableServerList extends GUIObject {
                 MinecraftVersionInfo.MinecraftVersion minecraftVersion = MinecraftVersionInfo.getVersion(path);
 
                 try {
-                    if (!MinecraftVersionInfo.isRunnableJar(file.getPath())) {
+                    if (!MinecraftVersionInfo.isLegacyJar(file.getPath())) {
                         continue;
                     }
                 } catch (IOException ex) {
@@ -89,8 +90,8 @@ public class SelectableServerList extends GUIObject {
                 MinecraftVersionInfo.MinecraftVersion version = MinecraftVersionInfo.getVersionByMD5(server.md5);
                 String info2 = "Unknown Version";
                 if(version != null) {
-                    if(version.clientVersions[0] != null) {
-                        info2 = version.clientVersions[0];
+                    if(version.clientVersions.length > 0) {
+                        info2 = Arrays.toString(version.clientVersions).replace("[", "").replace("]", "");
                     } else {
                         info2 = version.name;
                     }
@@ -231,7 +232,7 @@ public class SelectableServerList extends GUIObject {
 
             if(scrollWheel != 0) {
                 //System.out.println(dy / scrollableHeight);
-                scrollbarPosition -= scrollWheel / scrollableHeight;
+                scrollbarPosition -= scrollWheel / viewportHeight;
 
                 if (scrollbarPosition < 0) {
                     scrollbarPosition = 0;

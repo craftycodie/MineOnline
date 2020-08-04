@@ -258,7 +258,7 @@ public class MinecraftVersionInfo {
                 (object.has("hasHeartbeat") && object.getBoolean("hasHeartbeat")),
                 (object.has("enableFullscreenPatch") && object.getBoolean("enableFullscreenPatch")),
                 (object.has("info") ? object.getString("info") : null),
-                (object.has("clientVersions") ? JSONUtils.getStringArray(object.getJSONArray("clientVersions")) : new String[0]),
+                (object.has("clientVersions") ? JSONUtils.getStringArray(object.getJSONArray("clientVersions")) : new String[] { object.getString("baseVersion")}),
                 (object.has("forceFullscreenMacos") && object.getBoolean("forceFullscreenMacos")),
                 (object.has("enableMacosCursorPatch") && object.getBoolean("enableMacosCursorPatch")),
                 (object.has("legacy") && object.getBoolean("legacy")),

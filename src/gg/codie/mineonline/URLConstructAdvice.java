@@ -8,16 +8,19 @@ class URLConstructAdvice {
     @Advice.OnMethodEnter
     static void intercept(@Advice.Argument(0) String url) {
         try {
-            if(!url.isEmpty() && !url.startsWith("file:"))
-                System.out.println("HOST: " + url);
-            else
+            if (url.startsWith("http"))
+                System.out.println(url);
+            if (url.isEmpty() || url.startsWith("file:"))
                 return;
+            else
+                System.out.println("Original URL: " + url);
 
 //            JSONObject settings = (JSONObject)Class.forName(Settings.class.getCanonicalName()).getDeclaredField("settings").get(null);
 //
 //            Settings.loadSettings();
 //            System.out.println("Settings: " + settings);
             for(String replaceHost : new String[] {
+                    "textures.minecraft.net",
                     "pc.realms.minecraft.net",
                     "www.minecraft.net:-1",
                     "skins.minecraft.net",
@@ -36,7 +39,6 @@ class URLConstructAdvice {
                     "banshee.alex231.com",
                     "mcauth-alex231.rhcloud.com",
             }) {
-//                System.out.println(replaceHost);
                 if(url.contains(replaceHost)) {
                     Field f = String.class.getDeclaredField("value");
                     f.setAccessible(true);

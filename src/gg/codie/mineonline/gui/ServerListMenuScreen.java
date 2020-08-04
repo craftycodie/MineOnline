@@ -57,7 +57,7 @@ public class ServerListMenuScreen implements IMenuScreen {
                                         continue;
                                     }
 
-                                    if (clientVersion != null && clientVersion.md5.equals(compatibleClientMd5)) {
+                                    if (clientVersion != null && clientVersion.baseVersion.equals(compatibleClientMd5)) {
                                         try {
                                             new Options(LauncherFiles.MINECRAFT_OPTIONS_PATH).setOption("lastServer", selectedServer.server.ip + "_" + selectedServer.server.port);
                                         } catch (Exception ex) {
