@@ -3,10 +3,11 @@ package gg.codie.mineonline;
 import gg.codie.mineonline.api.MinecraftAPI;
 import gg.codie.utils.JSONUtils;
 import gg.codie.utils.MD5Checksum;
+import gg.codie.utils.OSUtils;
 import jdk.nashorn.api.scripting.URLReader;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
-import org.lwjgl.Sys;
 
 import java.io.File;
 import java.io.FileReader;
@@ -33,6 +34,7 @@ public class MinecraftVersionInfo {
     public static MinecraftVersion getVersionByMD5(String md5) {
         List<MinecraftVersion> matches = versions.stream().filter(version -> version.md5.equals(md5)).collect(Collectors.toList());
         if(matches.size() < 1) {
+            System.out.println("Unrecognized jar " + md5);
             return null;
         }
         return matches.get(0);
@@ -45,32 +47,60 @@ public class MinecraftVersionInfo {
         public final String type;
         public final boolean baseURLHasNoPort;
         public final boolean enableScreenshotPatch;
-        public final String clientName;
+        public final String baseVersion;
         public final boolean hasHeartbeat;
         public final boolean enableFullscreenPatch;
         public final String info;
-        public final String[] clientMd5s;
+        public final String[] clientVersions;
         public final boolean forceFullscreenMacos;
         public final boolean enableMacosCursorPatch;
+        public final boolean legacy;
+        public final String assetIndex;
+        public final String[] libraries;
+        public final String[] natives;
         public final boolean useMinecraftImpl;
         public final String minecraftImplClass;
 
-        private MinecraftVersion(String sha256, String name, String md5, String type, boolean baseURLHasNoPort, boolean enableScreenshotPatch, String clientName, boolean hasHeartbeat, boolean enableFullscreenPatch, String info, String[] clientMd5s, boolean forceFullscreenMacos, boolean enableMacosCursorPatch, boolean useMinecraftImpl, String minecraftImplClass) {
+        private MinecraftVersion(
+                String sha256,
+                String name,
+                String baseVersion,
+                String md5,
+                String type,
+                boolean baseURLHasNoPort,
+                boolean enableScreenshotPatch,
+                boolean hasHeartbeat,
+                boolean enableFullscreenPatch,
+                String info,
+                String[] clientVersions,
+                boolean forceFullscreenMacos,
+                boolean enableMacosCursorPatch,
+                boolean legacy,
+                String assetIndex,
+                String[] libraries,
+                String[] nativesWindows,
+                boolean useMinecraftImpl,
+                String minecraftImplClass
+        ) {
             this.sha256 = sha256;
             this.name = name;
             this.md5 = md5;
             this.type = type;
             this.baseURLHasNoPort = baseURLHasNoPort;
             this.enableScreenshotPatch = enableScreenshotPatch;
-            this.clientName = clientName;
             this.hasHeartbeat = hasHeartbeat;
+            this.baseVersion = baseVersion;
             this.enableFullscreenPatch = enableFullscreenPatch;
             this.info = info;
-            this.clientMd5s = clientMd5s;
             this.forceFullscreenMacos = forceFullscreenMacos;
+            this.clientVersions = clientVersions;
             this.enableMacosCursorPatch = enableMacosCursorPatch;
             this.useMinecraftImpl = useMinecraftImpl;
             this.minecraftImplClass = minecraftImplClass;
+            this.legacy = legacy;
+            this.assetIndex = assetIndex;
+            this.libraries = libraries;
+            this.natives = nativesWindows;
         }
     }
 
@@ -120,27 +150,41 @@ public class MinecraftVersionInfo {
 
             while (versionIterator.hasNext()) {
                 JSONObject object = (JSONObject)versionIterator.next();
-                versions.add(new MinecraftVersion(
-                        (object.has("sha256") ? object.getString("sha256") : null),
-                        object.getString("name"),
-                        object.getString("md5"),
-                        object.getString("type"),
-                        (object.has("baseURLHasNoPort") && object.getBoolean("baseURLHasNoPort")),
-                        (object.has("enableScreenshotPatch") && object.getBoolean("enableScreenshotPatch")),
-                        (object.has("clientName") ? object.getString("clientName") : null),
-                        (object.has("hasHeartbeat") && object.getBoolean("hasHeartbeat")),
-                        (object.has("enableFullscreenPatch") && object.getBoolean("enableFullscreenPatch")),
-                        (object.has("info") ? object.getString("info") : null),
-                        (object.has("clientMd5s") ? JSONUtils.getStringArray(object.getJSONArray("clientMd5s")) : new String[0]),
-                        (object.has("forceFullscreenMacos") && object.getBoolean("forceFullscreenMacos")),
-                        (object.has("enableMacosCursorPatch") && object.getBoolean("enableMacosCursorPatch")),
-                        (object.has("useMinecraftImpl") && object.getBoolean("useMinecraftImpl")),
-                        (object.has("minecraftImplClass") ? object.getString("minecraftImplClass") : null)
-                ));
+                versions.add(fromJSONObject(object));
             }
         } catch (IOException ex) {
             System.err.println("Failed to load Minecraft Version information!");
             versions = new LinkedList<>();
+        } catch (JSONException jex) {
+            try {
+                if (path.equals(Paths.get(LauncherFiles.CACHED_VERSION_INFO_PATH).toUri().toURL())) {
+                    try (URLReader input = new URLReader(LauncherFiles.VERSION_INFO_PATH)) {
+                        // load a settings file
+                        char[] buffer = new char[8096];
+                        int bytes_read = 0;
+                        StringBuffer stringBuffer = new StringBuffer();
+                        while ((bytes_read = input.read(buffer, 0, 8096)) != -1) {
+                            for(int i = 0; i < bytes_read; i++) {
+                                stringBuffer.append(buffer[i]);
+                            }
+                        }
+
+                        versionsJson = new JSONArray(stringBuffer.toString());
+
+                        Iterator versionIterator = versionsJson.iterator();
+
+                        while (versionIterator.hasNext()) {
+                            JSONObject object = (JSONObject)versionIterator.next();
+                            versions.add(fromJSONObject(object));
+                        }
+                    } catch (IOException ex) {
+                        System.err.println("Failed to load Minecraft Version information!");
+                        versions = new LinkedList<>();
+                    }
+                }
+            } catch (Exception ex) {
+
+            }
         }
 
         if (new File(LauncherFiles.CUSTOM_VERSION_INFO_PATH).exists()) {
@@ -161,23 +205,7 @@ public class MinecraftVersionInfo {
 
                 while (versionIterator.hasNext()) {
                     JSONObject object = (JSONObject)versionIterator.next();
-                    versions.add(new MinecraftVersion(
-                            (object.has("sha256") ? object.getString("sha256") : null),
-                            object.getString("name"),
-                            object.getString("md5"),
-                            object.getString("type"),
-                            (object.has("baseURLHasNoPort") && object.getBoolean("baseURLHasNoPort")),
-                            (object.has("enableScreenshotPatch") && object.getBoolean("enableScreenshotPatch")),
-                            (object.has("clientName") ? object.getString("clientName") : null),
-                            (object.has("hasHeartbeat") && object.getBoolean("hasHeartbeat")),
-                            (object.has("enableFullscreenPatch") && object.getBoolean("enableFullscreenPatch")),
-                            (object.has("info") ? object.getString("info") : null),
-                            (object.has("clientMd5s") ? JSONUtils.getStringArray(object.getJSONArray("clientMd5s")) : new String[0]),
-                            (object.has("forceFullscreenMacos") && object.getBoolean("forceFullscreenMacos")),
-                            (object.has("enableMacosCursorPatch") && object.getBoolean("enableMacosCursorPatch")),
-                            (object.has("useMinecraftImpl") && object.getBoolean("useMinecraftImpl")),
-                            (object.has("minecraftImplClass") ? object.getString("minecraftImplClass") : null)
-                    ));
+                    versions.add(fromJSONObject(object));
                 }
             } catch (IOException ex) {
                 System.err.println("Failed to load custom Minecraft Version information!");
@@ -210,7 +238,7 @@ public class MinecraftVersionInfo {
         return null;
     }
 
-    public static boolean isRunnableJar(String path) throws IOException {
+    public static boolean isLegacyJar(String path) throws IOException {
         JarFile jarFile = new JarFile(path);
         Enumeration allEntries = jarFile.entries();
         while (allEntries.hasMoreElements()) {
@@ -233,18 +261,12 @@ public class MinecraftVersionInfo {
             } else if (className.equals("Minecraft")) {
                 return true;
             }
-//            else if (className.equals("MinecraftLauncher")) {
-//                return true;
-//            }
             else if (className.equals("LauncherFrame")) {
                 return true;
             }
             else if (className.equals("RubyDung")) {
                 return true;
             }
-//            else if (className.equals("Main")) {
-//                return true;
-//            }
         }
         
         try {
@@ -256,12 +278,98 @@ public class MinecraftVersionInfo {
         return false;
     }
 
+    public static boolean isPlayableJar(String path) throws IOException {
+        if(isLegacyJar(path))
+            return true;
+
+        JarFile jarFile = new JarFile(path);
+        Enumeration allEntries = jarFile.entries();
+        while (allEntries.hasMoreElements()) {
+            JarEntry entry = (JarEntry) allEntries.nextElement();
+            String classCanonicalName = entry.getName();
+
+            if(!classCanonicalName.contains(".class"))
+                continue;
+
+            classCanonicalName = classCanonicalName.replace("/", ".");
+            classCanonicalName = classCanonicalName.replace(".class", "");
+
+            String className = classCanonicalName;
+            if(classCanonicalName.lastIndexOf(".") > -1) {
+                className = classCanonicalName.substring(classCanonicalName.lastIndexOf(".") + 1);
+            }
+
+//            else if (className.equals("MinecraftLauncher")) {
+//                return true;
+//            }
+            if (className.equals("Main")) {
+                return true;
+            }
+        }
+
+        try {
+            System.out.println("Incompatible Jar MD5: " + MD5Checksum.getMD5Checksum(path));
+        } catch (Exception ex) {
+
+        }
+
+        return false;
+    }
+
+    private static MinecraftVersion fromJSONObject(JSONObject object) {
+        return new MinecraftVersion(
+                (object.has("sha256") ? object.getString("sha256") : null),
+                object.getString("name"),
+                object.getString("baseVersion"),
+                object.getString("md5"),
+                object.getString("type"),
+                (object.has("baseURLHasNoPort") && object.getBoolean("baseURLHasNoPort")),
+                (object.has("enableScreenshotPatch") && object.getBoolean("enableScreenshotPatch")),
+                (object.has("hasHeartbeat") && object.getBoolean("hasHeartbeat")),
+                (object.has("enableFullscreenPatch") && object.getBoolean("enableFullscreenPatch")),
+                (object.has("info") ? object.getString("info") : null),
+                (object.has("clientVersions") ? JSONUtils.getStringArray(object.getJSONArray("clientVersions")) : new String[] { object.getString("baseVersion")}),
+                (object.has("forceFullscreenMacos") && object.getBoolean("forceFullscreenMacos")),
+                (object.has("enableMacosCursorPatch") && object.getBoolean("enableMacosCursorPatch")),
+                (object.has("legacy") && object.getBoolean("legacy")),
+                (object.has("assetIndex") ? object.getString("assetIndex") : object.has("baseVersion") ? object.getString("baseVersion") : null),
+                (object.has("libraries") ? JSONUtils.getStringArray(object.getJSONArray("libraries")) : new String[0]),
+                (object.has("natives") && object.getJSONObject("natives").has(OSUtils.getPlatform().name()) ? JSONUtils.getStringArray(object.getJSONObject("natives").getJSONArray(OSUtils.getPlatform().name())) : new String[0]),
+                (object.has("useMinecraftImpl") && object.getBoolean("useMinecraftImpl")),
+                (object.has("minecraftImplClass") ? object.getString("minecraftImplClass") : null)
+        );
+    }
+
     public static MinecraftVersion getVersion(String path) {
         try {
             String md5 = MD5Checksum.getMD5Checksum(path);
             return getVersionByMD5(md5);
         } catch (Exception e) {
             return null;
+        }
+    }
+
+    public static void launchMinecraft(String jarPath, String serverIP, String serverPort, String mpPass) throws Exception {
+        MinecraftVersion minecraftVersion = getVersion(jarPath);
+
+        if(minecraftVersion != null) {
+            if (minecraftVersion.legacy) {
+                new LegacyMinecraftClientLauncher(jarPath, serverIP, serverPort, mpPass).startMinecraft();
+            } else {
+                MinecraftClientLauncher.startProcess(jarPath, serverIP, serverPort);
+            }
+        } else {
+            if (isLegacyJar(jarPath)) {
+                new LegacyMinecraftClientLauncher(jarPath, serverIP, serverPort, mpPass).startMinecraft();
+            } else {
+                LibraryManager.addJarToClasspath(Paths.get(jarPath).toUri().toURL());
+                Class clazz = Class.forName("net.minecraft.client.main.Main");
+                if (clazz != null) {
+                    MinecraftClientLauncher.startProcess(jarPath, serverIP, serverPort);
+                } else {
+                    System.out.println("This jar file seems unsupported :(");
+                }
+            }
         }
     }
 }

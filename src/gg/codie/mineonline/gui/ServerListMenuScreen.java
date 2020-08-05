@@ -43,21 +43,21 @@ public class ServerListMenuScreen implements IMenuScreen {
                         String[] minecraftJars = Settings.settings.has(Settings.MINECRAFT_JARS) ? JSONUtils.getStringArray(Settings.settings.getJSONArray(Settings.MINECRAFT_JARS)) : new String[0];
 
                         if(serverVersion != null) {
-                            for (String compatibleClientMd5 : serverVersion.clientMd5s) {
+                            for (String compatibleClientMd5 : serverVersion.clientVersions) {
                                 for (String path : minecraftJars) {
                                     File file = new File(path);
 
                                     MinecraftVersionInfo.MinecraftVersion clientVersion = MinecraftVersionInfo.getVersion(path);
 
                                     try {
-                                        if (!MinecraftVersionInfo.isRunnableJar(file.getPath())) {
+                                        if (!MinecraftVersionInfo.isPlayableJar(file.getPath())) {
                                             continue;
                                         }
                                     } catch (IOException ex) {
                                         continue;
                                     }
 
-                                    if (clientVersion != null && clientVersion.md5.equals(compatibleClientMd5)) {
+                                    if (clientVersion != null && clientVersion.baseVersion.equals(compatibleClientMd5)) {
                                         try {
                                             new Options(LauncherFiles.MINECRAFT_OPTIONS_PATH).setOption("lastServer", selectedServer.server.ip + "_" + selectedServer.server.port);
                                         } catch (Exception ex) {
@@ -65,7 +65,7 @@ public class ServerListMenuScreen implements IMenuScreen {
                                         }
                                         String mppass = MinecraftAPI.getMpPass(Session.session.getSessionToken(), selectedServer.server.ip, "" + selectedServer.server.port);
 
-                                        new MinecraftLauncher(path, selectedServer.server.ip, "" + selectedServer.server.port, mppass).startMinecraft();
+                                        MinecraftVersionInfo.launchMinecraft(path, selectedServer.server.ip, "" + selectedServer.server.port, mppass);
                                         return;
                                     }
                                 }
@@ -88,7 +88,7 @@ public class ServerListMenuScreen implements IMenuScreen {
                                 }
                                 String mppass = MinecraftAPI.getMpPass(Session.session.getSessionToken(), selectedServer.server.ip, "" + selectedServer.server.port);
                                 try {
-                                    new MinecraftLauncher(selectVersionMenuScreen.getSelectedPath(), selectedServer.server.ip, "" + selectedServer.server.port, mppass).startMinecraft();
+                                    MinecraftVersionInfo.launchMinecraft(selectVersionMenuScreen.getSelectedPath(), selectedServer.server.ip, "" + selectedServer.server.port, mppass);
                                 } catch (Exception ex) {
 
                                 }

@@ -16,6 +16,11 @@ public class LauncherFiles {
   
     public static final String LWJGL_JAR = MINEONLINE_LIBRARY_FOLDER + "lwjgl-modded.jar";
     public static final String LWJGL_UTIL_JAR = MINEONLINE_LIBRARY_FOLDER + "lwjgl_util.jar";
+    public static final String PATCH_AGENT_JAR = MINEONLINE_LIBRARY_FOLDER + "byte-buddy-agent.jar";
+    public static final String JSON_JAR = MINEONLINE_LIBRARY_FOLDER + "json.jar";
+    public static final String BYTEBUDDY_JAR = MINEONLINE_LIBRARY_FOLDER + "byte-buddy-1.10.14.jar";
+    public static final String BYTEBUDDY_DEP_JAR = MINEONLINE_LIBRARY_FOLDER + "byte-buddy-dep-1.10.14.jar";
+
 
     public static final String MINEONLNE_NATIVES_FOLDER = MINEONLINE_LIBRARY_FOLDER + "native" + File.separator + OSUtils.getPlatform().toString();
 
@@ -29,9 +34,11 @@ public class LauncherFiles {
     public static final String CUSTOM_VERSION_INFO_PATH = MINEONLINE_FOLDER + "custom-version-info.json";
 
     public static final String MINECRAFT_RESOURCES_PATH = getMinecraftDirectory() + File.separator + "resources" + File.separator;
+    public static final String MINECRAFT_ASSETS_PATH = getMinecraftDirectory() + File.separator + "assets" + File.separator;
     public static final String MINECRAFT_SCREENSHOTS_PATH = getMinecraftDirectory() + File.separator + "screenshots" + File.separator;
     public static final String MINECRAFT_OPTIONS_PATH = getMinecraftDirectory() + File.separator + "options.txt";
     public static final String MINECRAFT_VERSIONS_PATH = getMinecraftDirectory() + File.separator + "versions" + File.separator;
+    public static final String MINECRAFT_LIBRARIES_PATH = getMinecraftDirectory() + File.separator + "libraries" + File.separator;
 
     public static final URL TEMPLATE_SKIN_PATH = LauncherFiles.class.getResource("/img/skin.png");
     public static final URL TEMPLATE_CLOAK_PATH = LauncherFiles.class.getResource("/img/cloak.png");

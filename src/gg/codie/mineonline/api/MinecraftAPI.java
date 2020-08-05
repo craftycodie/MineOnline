@@ -76,18 +76,16 @@ public class MinecraftAPI {
         }
     }
 
-    public static boolean uploadSkin(String username, String sessionId, InputStream skinFile) {
+    public static boolean uploadSkin(String uuid, String sessionId, InputStream skinFile) {
         HttpURLConnection connection = null;
 
         try {
-            URL url = new URL("http://" + Globals.API_HOSTNAME + "/mineonline/skin.jsp");
+            URL url = new URL("http://" + Globals.API_HOSTNAME + "/mineonline/player/" + uuid + "/skin");
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
             connection.setDoInput(true);
             connection.setDoOutput(true);
 
-            connection.getOutputStream().write(ByteBuffer.allocate(2).putShort((short)username.length()).array());
-            connection.getOutputStream().write(username.getBytes(Charset.forName("UTF-8")));
             connection.getOutputStream().write(ByteBuffer.allocate(2).putShort((short)sessionId.length()).array());
             connection.getOutputStream().write(sessionId.getBytes(Charset.forName("UTF-8")));
 
@@ -127,18 +125,16 @@ public class MinecraftAPI {
 
     }
 
-    public static boolean uploadCloak(String username, String sessionId, InputStream cloakFile) {
+    public static boolean uploadCloak(String uuid, String sessionId, InputStream cloakFile) {
         HttpURLConnection connection = null;
 
         try {
-            URL url = new URL("http://" + Globals.API_HOSTNAME + "/mineonline/cloak.jsp");
+            URL url = new URL("http://" + Globals.API_HOSTNAME + "/mineonline/player/" + uuid + "/cloak.jsp");
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
             connection.setDoInput(true);
             connection.setDoOutput(true);
 
-            connection.getOutputStream().write(ByteBuffer.allocate(2).putShort((short)username.length()).array());
-            connection.getOutputStream().write(username.getBytes(Charset.forName("UTF-8")));
             connection.getOutputStream().write(ByteBuffer.allocate(2).putShort((short)sessionId.length()).array());
             connection.getOutputStream().write(sessionId.getBytes(Charset.forName("UTF-8")));
 
@@ -255,7 +251,7 @@ public class MinecraftAPI {
         }
     }
 
-    public static boolean listServer(String ip, String port, int users, int maxUsers, String name, boolean onlineMode, String md5, boolean whitelisted, String[] whitelistUsers, String[] whitelistIPs, String[] bannedUsers, String[] bannedIPs) {
+    public static boolean listServer(String ip, String port, int users, int maxUsers, String name, boolean onlineMode, String md5, boolean whitelisted, String[] whitelistUsers, String[] whitelistIPs, String[] whitelistUUIDs, String[] bannedUsers, String[] bannedIPs, String[] bannedUUIDs) {
         HttpURLConnection connection = null;
 
         try {
@@ -272,8 +268,10 @@ public class MinecraftAPI {
             jsonObject.put("whitelisted", whitelisted);
             jsonObject.put("whitelistUsers", whitelistUsers);
             jsonObject.put("whitelistIPs", whitelistIPs);
+            jsonObject.put("whitelistUUIDs", whitelistUUIDs);
             jsonObject.put("bannedUsers", bannedUsers);
             jsonObject.put("bannedIPs", bannedIPs);
+            jsonObject.put("bannedUUIDs", bannedUUIDs);
 
             String json = jsonObject.toString();
 
@@ -307,10 +305,10 @@ public class MinecraftAPI {
         }
     }
 
-    public static LinkedList<MineOnlineServer> listServers(String username, String sessionId) throws IOException, ParseException {
+    public static LinkedList<MineOnlineServer> listServers(String uuid, String sessionId) throws IOException, ParseException {
         HttpURLConnection connection = null;
 
-        String parameters = "sessionId=" + URLEncoder.encode(sessionId, "UTF-8") + "&user=" + URLEncoder.encode(username, "UTF-8");
+        String parameters = "sessionId=" + URLEncoder.encode(sessionId, "UTF-8") + "&user=" + URLEncoder.encode(uuid, "UTF-8");
         URL url = new URL("http://" + Globals.API_HOSTNAME + "/mineonline/listservers.jsp?" + parameters);
         connection = (HttpURLConnection) url.openConnection();
         connection.setDoInput(true);

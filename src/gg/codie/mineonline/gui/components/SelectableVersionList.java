@@ -78,7 +78,7 @@ public class SelectableVersionList extends GUIObject {
                                 MinecraftVersionInfo.MinecraftVersion minecraftVersion = MinecraftVersionInfo.getVersion(file.getPath());
 
                                 try {
-                                    if (!MinecraftVersionInfo.isRunnableJar(file.getPath())) {
+                                    if (!MinecraftVersionInfo.isPlayableJar(file.getPath())) {
                                         continue;
                                     }
                                 } catch (IOException ex) {
@@ -166,7 +166,7 @@ public class SelectableVersionList extends GUIObject {
             MinecraftVersionInfo.MinecraftVersion minecraftVersion = MinecraftVersionInfo.getVersion(path);
 
             try {
-                if (!MinecraftVersionInfo.isRunnableJar(file.getPath())) {
+                if (!MinecraftVersionInfo.isPlayableJar(file.getPath())) {
                     continue;
                 }
             } catch (IOException ex) {

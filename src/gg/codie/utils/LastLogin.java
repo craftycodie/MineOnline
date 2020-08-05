@@ -11,8 +11,9 @@ import java.util.Random;
 public class LastLogin {
     public final String username;
     public final String password;
+    public final String uuid;
 
-    public static void writeLastLogin(String username, String password) {
+    public static void writeLastLogin(String username, String password, String uuid) {
         try {
             DataOutputStream dos;
             File lastLogin = new File(LauncherFiles.LAST_LOGIN_PATH);
@@ -25,6 +26,7 @@ public class LastLogin {
             }
             dos.writeUTF(username);
             dos.writeUTF(password);
+            dos.writeUTF(uuid);
             dos.close();
         } catch (Exception e) {
             e.printStackTrace();
@@ -61,8 +63,9 @@ public class LastLogin {
             }
             String username = dis.readUTF();
             String password = dis.readUTF();
+            String uuid = dis.readUTF();
             if(username.length() > 0 && password.length() > 0) {
-                return new LastLogin(username, password);
+                return new LastLogin(username, password, uuid);
             }
             dis.close();
         } catch (Exception e) {
@@ -71,8 +74,9 @@ public class LastLogin {
         return null;
     }
 
-    private LastLogin(String username, String password) {
+    private LastLogin(String username, String password, String uuid) {
         this.username = username;
         this.password = password;
+        this.uuid = uuid;
     }
 }

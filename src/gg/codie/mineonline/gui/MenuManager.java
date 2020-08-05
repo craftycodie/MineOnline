@@ -3,6 +3,7 @@ package gg.codie.mineonline.gui;
 import gg.codie.mineonline.Globals;
 import gg.codie.mineonline.LibraryManager;
 import gg.codie.mineonline.Session;
+import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.mineonline.api.MinecraftAPI;
 import gg.codie.mineonline.gui.font.FontType;
 import gg.codie.mineonline.gui.font.GUIText;
@@ -116,13 +117,18 @@ public class MenuManager {
         TexturedModel texturedModel =  new TexturedModel(model, modelTexture);
         GameObject backgroundImage = new GUIObject("Background", texturedModel, new Vector3f(0, 0, 0), new Vector3f(), new Vector3f(75f, 75f, 75f));
 
-        LastLogin lastLogin = LastLogin.readLastLogin();
+        LastLogin lastLogin = null;
+
+        if(!"true".equals(System.getProperty("mineonline.multiinstance")))
+            lastLogin = LastLogin.readLastLogin();
+
         if(lastLogin != null ) {
             try {
                 String sessionToken = MinecraftAPI.login(lastLogin.username, lastLogin.password);
+                String uuid = MineOnlineAPI.playeruuid(lastLogin.username, sessionToken);
                 if (sessionToken != null) {
-                    new Session(lastLogin.username, sessionToken);
-                    LastLogin.writeLastLogin(lastLogin.username, lastLogin.password);
+                    new Session(lastLogin.username, sessionToken, uuid);
+                    LastLogin.writeLastLogin(lastLogin.username, lastLogin.password, uuid);
                     setMenuScreen(new MainMenuScreen());
                 } else {
                     setMenuScreen(new LoginMenuScreen(false));

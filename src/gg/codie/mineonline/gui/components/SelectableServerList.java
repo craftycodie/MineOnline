@@ -22,6 +22,7 @@ import org.lwjgl.util.vector.Vector3f;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.LinkedList;
 
 public class SelectableServerList extends GUIObject {
@@ -62,7 +63,7 @@ public class SelectableServerList extends GUIObject {
         emptyText.setColour(0.5f, 0.5f, 0.5f);
 
         try {
-            LinkedList<MineOnlineServer> servers = MinecraftAPI.listServers(Session.session.getUsername(), Session.session.getSessionToken());
+            LinkedList<MineOnlineServer> servers = MinecraftAPI.listServers(Session.session.getUuid(), Session.session.getSessionToken());
 
             Settings.loadSettings();
             String[] minecraftJars = Settings.settings.has(Settings.MINECRAFT_JARS) ? JSONUtils.getStringArray(Settings.settings.getJSONArray(Settings.MINECRAFT_JARS)) : new String[0];
@@ -74,7 +75,7 @@ public class SelectableServerList extends GUIObject {
                 MinecraftVersionInfo.MinecraftVersion minecraftVersion = MinecraftVersionInfo.getVersion(path);
 
                 try {
-                    if (!MinecraftVersionInfo.isRunnableJar(file.getPath())) {
+                    if (!MinecraftVersionInfo.isPlayableJar(file.getPath())) {
                         continue;
                     }
                 } catch (IOException ex) {
@@ -89,8 +90,8 @@ public class SelectableServerList extends GUIObject {
                 MinecraftVersionInfo.MinecraftVersion version = MinecraftVersionInfo.getVersionByMD5(server.md5);
                 String info2 = "Unknown Version";
                 if(version != null) {
-                    if(version.clientName != null) {
-                        info2 = version.clientName;
+                    if(version.clientVersions.length > 0) {
+                        info2 = Arrays.toString(version.clientVersions).replace("[", "").replace("]", "");
                     } else {
                         info2 = version.name;
                     }
@@ -98,9 +99,9 @@ public class SelectableServerList extends GUIObject {
                     boolean clientInstalled = false;
 
                     found:
-                    for (String compatibleClientMd5 : version.clientMd5s) {
+                    for (String clientversion : version.clientVersions) {
                         for(MinecraftVersionInfo.MinecraftVersion installedClient : installedClients) {
-                            if(installedClient.md5.equals(compatibleClientMd5)) {
+                            if(installedClient.baseVersion.equals(clientversion)) {
                                 clientInstalled = true;
                                 break found;
                             }
@@ -231,7 +232,7 @@ public class SelectableServerList extends GUIObject {
 
             if(scrollWheel != 0) {
                 //System.out.println(dy / scrollableHeight);
-                scrollbarPosition -= scrollWheel / scrollableHeight;
+                scrollbarPosition -= scrollWheel / viewportHeight;
 
                 if (scrollbarPosition < 0) {
                     scrollbarPosition = 0;

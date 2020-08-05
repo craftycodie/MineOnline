@@ -6,6 +6,7 @@ import gg.codie.mineonline.gui.rendering.*;
 import gg.codie.mineonline.gui.rendering.Renderer;
 import gg.codie.mineonline.lwjgl.OnCreateListener;
 import gg.codie.mineonline.lwjgl.OnUpdateListener;
+import gg.codie.utils.ArrayUtils;
 import gg.codie.utils.MD5Checksum;
 import gg.codie.utils.OSUtils;
 import org.lwjgl.BufferUtils;
@@ -21,21 +22,16 @@ import java.applet.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import java.lang.reflect.*;
 import java.net.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.nio.ByteBuffer;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
 
-public class MinecraftLauncher extends Applet implements AppletStub{
+public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
 
     private static final boolean DEBUG = true;
 
@@ -50,7 +46,7 @@ public class MinecraftLauncher extends Applet implements AppletStub{
 
     MinecraftVersionInfo.MinecraftVersion minecraftVersion;
 
-    public MinecraftLauncher(String jarPath, String serverAddress, String serverPort, String MPPass) {
+    public LegacyMinecraftClientLauncher(String jarPath, String serverAddress, String serverPort, String MPPass) {
         this.jarPath = jarPath;
         this.serverAddress = serverAddress;
         this.serverPort = serverPort;
@@ -59,8 +55,6 @@ public class MinecraftLauncher extends Applet implements AppletStub{
         if(serverAddress != null && serverPort == null)
             this.serverPort = "25565";
 
-        minecraftVersion = MinecraftVersionInfo.getVersion(jarPath);
-
         try {
             LibraryManager.addJarToClasspath(Paths.get(jarPath).toUri().toURL());
         } catch (Exception e) {
@@ -68,6 +62,8 @@ public class MinecraftLauncher extends Applet implements AppletStub{
             e.printStackTrace();
             System.exit(1);
         }
+
+        minecraftVersion = MinecraftVersionInfo.getVersion(jarPath);
     }
 
     public static char getClasspathSeparator() {
@@ -94,6 +90,14 @@ public class MinecraftLauncher extends Applet implements AppletStub{
         System.out.println("Launching Jar, MD5: " + MD5Checksum.getMD5Checksum(jarPath));
 
         fullscreen = Settings.settings.has(Settings.FULLSCREEN) && Settings.settings.getBoolean(Settings.FULLSCREEN);
+
+        String CP = "-cp";
+        String proxySet = "-DproxySet=true";
+        String proxyHost = "-Dhttp.proxyHost=127.0.0.1";
+        String proxyPortArgument = "-Dhttp.proxyPort=";
+
+        String classpath = System.getProperty("java.class.path").replace("\"", "");
+        String natives = "-Djava.library.path=" + LauncherFiles.MINEONLNE_NATIVES_FOLDER;
 
         try {
             Class rubyDungClass;
@@ -124,19 +128,11 @@ public class MinecraftLauncher extends Applet implements AppletStub{
 //
 //            mainFunction.invoke(null, (Object)params);
 
-            String CP = "-cp";
-            String proxySet = "-DproxySet=true";
-            String proxyHost = "-Dhttp.proxyHost=127.0.0.1";
-            String proxyPortArgument = "-Dhttp.proxyPort=";
-
-            String classpath = System.getProperty("java.class.path").replace("\"", "");
-            String natives = "-Djava.library.path=" + LauncherFiles.MINEONLNE_NATIVES_FOLDER;
-
             String[] CMD_ARRAY = new String[] {
                     Settings.settings.getString(Settings.JAVA_COMMAND),
-                    proxySet, proxyHost, proxyPortArgument + System.getProperty("http.proxyHost"),
+                    proxySet, proxyHost, proxyPortArgument + System.getProperty("http.proxyPort"),
                     CP, classpath + getClasspathSeparator() + LauncherFiles.LWJGL_JAR + getClasspathSeparator() + LauncherFiles.LWJGL_UTIL_JAR + getClasspathSeparator() + jarPath,
-                    natives,
+                    "-Djava.library.path=" + LauncherFiles.MINECRAFT_VERSIONS_PATH + "1.6.2/natives",
                     rubyDungClass.getCanonicalName()
             };
 
@@ -159,15 +155,12 @@ public class MinecraftLauncher extends Applet implements AppletStub{
            // ex.printStackTrace();
         }
 
-        if (minecraftVersion.type.equals("launcher")) {
-            String CP = "-cp";
-            String proxySet = "-DproxySet=true";
-            String proxyHost = "-Dhttp.proxyHost=127.0.0.1";
-            String proxyPortArgument = "-Dhttp.proxyPort=";
 
+        if (minecraftVersion != null && minecraftVersion.type.equals("launcher")) {
             String[] CMD_ARRAY = new String[] {
                     Settings.settings.getString(Settings.JAVA_COMMAND),
-                    proxySet, proxyHost, proxyPortArgument + System.getProperty("http.proxyHost"),
+                    proxySet, proxyHost, proxyPortArgument + System.getProperty("http.proxyPort"),
+                    //"-javaagent:" + LauncherFiles.PATCH_AGENT_JAR,
                     "-Dsun.java2d.noddraw=true",
                     "-Dsun.java2d.d3d=false",
                     "-Dsun.java2d.opengl=false",
@@ -317,7 +310,12 @@ public class MinecraftLauncher extends Applet implements AppletStub{
                             if (constructor != null) {
                                 System.out.println("found MinecraftImpl: " + file.getName());
 
-                                minecraftImpl = (Runnable) constructor.newInstance(null, DisplayManager.getCanvas(), null, Display.getWidth(), Display.getHeight(), fullscreen, frame);
+                                try {
+                                    minecraftImpl = (Runnable) constructor.newInstance(null, DisplayManager.getCanvas(), null, Display.getWidth(), Display.getHeight(), fullscreen, frame);
+                                } catch(InvocationTargetException e) {
+                                    constructor = null;
+                                    minecraftImpl = null;
+                                }
                             }
 
                             // If we're manually creating MinecraftImpl there's a couple of other things to do:

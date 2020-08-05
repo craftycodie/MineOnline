@@ -1,8 +1,13 @@
 package gg.codie.mineonline;
 
 import java.io.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.net.*;
 import java.util.Map;
+
+
 
 public class Proxy {
 
@@ -31,6 +36,15 @@ public class Proxy {
     private static Process launcherProcess;
 
     public static void main(String[] args) throws IOException, URISyntaxException {
+//        System.out.println(String.format("%02x", (byte)0xE));
+
+        boolean multiInstance = false;
+
+        for(String arg : args) {
+            if (arg.equals("-multiinstance"))
+                multiInstance = true;
+        }
+
         LibraryManager.extractLibraries();
         LibraryManager.updateClasspath();
 
@@ -40,7 +54,9 @@ public class Proxy {
         java.util.Properties props = System.getProperties();
         ProcessBuilder processBuilder = new ProcessBuilder(
                 Settings.settings.getString(Settings.JAVA_COMMAND),
+                "-javaagent:" + LauncherFiles.PATCH_AGENT_JAR,
                 "-Djava.util.Arrays.useLegacyMergeSort=true",
+                multiInstance ? "-Dmineonline.multiinstance=true" : "",
                 "-cp",
                 new File(Proxy.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath(),
                 MineOnline.class.getCanonicalName(),
