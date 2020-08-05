@@ -45,10 +45,6 @@ public class MinecraftClientLauncher {
                     "-Dmineonline.username=" + Session.session.getUsername(),
                     "-Dmineonline.token=" + Session.session.getSessionToken(),
                     "-Dmineonline.uuid=" + Session.session.getUuid(),
-                    //TODO: Remove this:
-                    "-Xmx1G",
-                    "-Xms1G",
-
                     "-cp",
                     new File(MinecraftClientLauncher.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath(),
                     MinecraftClientLauncher.class.getCanonicalName(),

@@ -23,10 +23,6 @@ public class MinecraftServerProcess {
                 Settings.settings.getString(Settings.JAVA_COMMAND),
                 "-javaagent:" + LauncherFiles.PATCH_AGENT_JAR,
                 "-Djava.util.Arrays.useLegacyMergeSort=true",
-                //TODO: Remove this:
-                "-Xmx1G",
-                "-Xms1G",
-
                 "-cp",
                 new File(Proxy.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath(),
                 MinecraftServerProcess.class.getCanonicalName(),
