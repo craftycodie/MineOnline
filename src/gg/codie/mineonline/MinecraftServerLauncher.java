@@ -1,7 +1,10 @@
 package gg.codie.mineonline;
 
 import gg.codie.mineonline.api.MinecraftAPI;
+import gg.codie.utils.ArrayUtils;
+import gg.codie.utils.JSONUtils;
 import gg.codie.utils.MD5Checksum;
+import org.json.JSONArray;
 
 import java.io.*;
 import java.nio.file.Paths;
@@ -67,8 +70,11 @@ public class MinecraftServerLauncher {
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(stdin));
 
         String whitelistPath = args[0].replace(Paths.get(args[0]).getFileName().toString(), "whitelist.txt");
+        String whitelistUUIDsPath = args[0].replace(Paths.get(args[0]).getFileName().toString(), "whitelist.json");
         String bannedPath = args[0].replace(Paths.get(args[0]).getFileName().toString(), "banned-players.txt");
         String bannedIpsPath = args[0].replace(Paths.get(args[0]).getFileName().toString(), "banned-ips.txt");
+        String bannedIpsJSONPath = args[0].replace(Paths.get(args[0]).getFileName().toString(), "banned-ips.json");
+        String bannedUUIDsPath = args[0].replace(Paths.get(args[0]).getFileName().toString(), "banned-players.json");
 
         Scanner scanner = new Scanner(System.in);
         long lastPing = System.currentTimeMillis();
@@ -88,8 +94,10 @@ public class MinecraftServerLauncher {
                 try {
                     String[] whitelistedPlayers = new String[0];
                     String[] whitelistedIPs = new String[0];
+                    String[] whitelistedUUIDs = new String[0];
                     String[] bannedPlayers = readUsersFile(bannedPath);
-                    String[] bannedIPs = readUsersFile(bannedIpsPath);
+                    String[] bannedIPs = ArrayUtils.concatenate(readUsersFile(bannedIpsPath), readUsersFile(bannedIpsJSONPath));
+                    String[] bannedUUIDs = readUsersFile(bannedUUIDsPath);
 
                     if (!hasHeartbeat) {
                         playerCountRequested++;
@@ -105,6 +113,7 @@ public class MinecraftServerLauncher {
 
                     if(whitelisted) {
                         whitelistedPlayers = readUsersFile(whitelistPath);
+                        whitelistedUUIDs = readUsersFile(whitelistUUIDsPath);
                     }
 
                     MinecraftAPI.listServer(
@@ -118,8 +127,10 @@ public class MinecraftServerLauncher {
                             whitelisted,
                             whitelistedPlayers,
                             whitelistedIPs,
+                            whitelistedUUIDs,
                             bannedPlayers,
-                            bannedIPs
+                            bannedIPs,
+                            bannedUUIDs
                     );
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -131,7 +142,7 @@ public class MinecraftServerLauncher {
 //
         scanner.close();
 
-        Proxy.stopProxy();
+//        Proxy.stopProxy();
 
         serverProcess.destroyForcibly();
         System.exit(0);
@@ -148,7 +159,11 @@ public class MinecraftServerLauncher {
                     list.add(line);
                 }
                 reader.close();
-                return (String[])list.toArray(new String[0]);
+                if(path.endsWith(".json")) {
+                    return JSONUtils.getStringArray(new JSONArray(String.join("", (String[])list.toArray(new String[0]))));
+                } else {
+                    return (String[])list.toArray(new String[0]);
+                }
             }
         } catch (IOException ex) {
             ex.printStackTrace();

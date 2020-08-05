@@ -2,6 +2,8 @@ package gg.codie.mineonline;
 
 import gg.codie.minecraft.client.Options;
 import gg.codie.mineonline.gui.rendering.DisplayManager;
+import gg.codie.mineonline.patches.PropertiesSignaturePatch;
+import gg.codie.mineonline.patches.URLPatch;
 import gg.codie.utils.MD5Checksum;
 import org.lwjgl.opengl.Display;
 
@@ -14,11 +16,17 @@ public class MinecraftClientLauncher {
 
     private static final boolean DEBUG = true;
 
+    public static final String PROP_ENV = "minecraft.api.env";
+    public static final String PROP_AUTH_HOST = "minecraft.api.auth.host";
+    public static final String PROP_ACCOUNT_HOST = "minecraft.api.account.host";
+    public static final String PROP_SESSION_HOST = "minecraft.api.session.host";
+
     String jarPath;
     String serverAddress;
     String serverPort;
     String username;
     String token;
+    String uuid;
     String width;
     String height;
 
@@ -35,6 +43,9 @@ public class MinecraftClientLauncher {
                     "-javaagent:" + LauncherFiles.PATCH_AGENT_JAR,
                     "-Djava.util.Arrays.useLegacyMergeSort=true",
                     "-Djava.net.preferIPv4Stack=true",
+                    "-Dmineonline.username=" + Session.session.getUsername(),
+                    "-Dmineonline.token=" + Session.session.getSessionToken(),
+                    "-Dmineonline.uuid=" + Session.session.getUuid(),
                     //TODO: Remove this:
                     "-Xmx1G",
                     "-Xms1G",
@@ -43,8 +54,6 @@ public class MinecraftClientLauncher {
                     new File(MinecraftClientLauncher.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath(),
                     MinecraftClientLauncher.class.getCanonicalName(),
                     jarPath,
-                    Session.session.getUsername(),
-                    Session.session.getSessionToken(),
                     "" + Display.getWidth(),
                     "" + Display.getHeight(),
                     serverIP != null ? serverIP : "",
@@ -77,17 +86,18 @@ public class MinecraftClientLauncher {
     }
 
     public static void main(String[] args) throws Exception {
-        String serverAddress = args.length > 5 ? args[5] : null;
-        String serverPort = args.length > 6 ? args[6] : null;
-        new MinecraftClientLauncher(args[0], args[1], args[2], args[3], args[4], serverAddress, serverPort).startMinecraft();
+        String serverAddress = args.length > 5 ? args[3] : null;
+        String serverPort = args.length > 6 ? args[4] : null;
+        new MinecraftClientLauncher(args[0], args[1], args[2], serverAddress, serverPort).startMinecraft();
     }
 
-    public MinecraftClientLauncher(String jarPath, String username, String token, String width, String height, String serverAddress, String serverPort) throws Exception {
+    public MinecraftClientLauncher(String jarPath, String width, String height, String serverAddress, String serverPort) throws Exception {
         this.jarPath = jarPath;
         this.serverAddress = serverAddress;
         this.serverPort = serverPort;
-        this.username = username;
-        this.token = token;
+        this.username = System.getProperty("mineonline.username");
+        this.token = System.getProperty("mineonline.token");
+        this.uuid = System.getProperty("mineonline.uuid");
         this.width = width;
         this.height = height;
 
@@ -110,8 +120,6 @@ public class MinecraftClientLauncher {
     }
 
     public void startMinecraft() throws Exception {
-        URLPatch.redefineURL();
-
         if(serverAddress != null) {
             try {
                 new Options(LauncherFiles.MINECRAFT_OPTIONS_PATH).setOption("lastServer", serverAddress + "_" + serverPort);
@@ -134,6 +142,13 @@ public class MinecraftClientLauncher {
             for(String nativeJar : minecraftVersion.nativesWindows) {
                 LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_PATH + nativeJar).toUri().toURL());
             }
+
+            new Session(username, token, uuid);
+
+            URLPatch.redefineURL();
+            //GameProfileUUIDPatch.redefineGetId();
+            PropertiesSignaturePatch.redefineIsSignatureValid();
+
 
             Class clazz = Class.forName("net.minecraft.client.main.Main");
 
@@ -165,8 +180,8 @@ public class MinecraftClientLauncher {
             args.add("--version");
             args.add(minecraftVersion.baseVersion);
 
-            args.add("uuid");
-            args.add("806f3493624332a29166b098a0b03fb0");
+            args.add("--uuid");
+            args.add(uuid);
 
             args.add("--username");
             args.add(username);
@@ -183,21 +198,13 @@ public class MinecraftClientLauncher {
             if (Settings.settings.has(Settings.IS_PREMIUM) && !Settings.settings.getBoolean(Settings.IS_PREMIUM))
                 args.add("--demo");
 
-
-
-//            java.util.Properties props = System.getProperties();
-//            ProcessBuilder processBuilder = new ProcessBuilder(args.toArray(new String[0]));
-//            System.out.println(Arrays.toString(args.toArray(new String[0])));
-//            processBuilder.redirectError(ProcessBuilder.Redirect.INHERIT);
-//            processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
-//            Map<String, String> env = processBuilder.environment();
-//            for(String prop : props.stringPropertyNames()) {
-//                env.put(prop, props.getProperty(prop));
-//            }
-//            System.setProperty("java.net.preferIPv4Stack", "true");
-//            processBuilder.directory(new File(System.getProperty("user.dir")));
-
             Method main = clazz.getMethod("main", String[].class);
+
+            System.setProperty(PROP_AUTH_HOST, "http://" + Globals.API_HOSTNAME);
+            System.setProperty(PROP_ACCOUNT_HOST, "http://" + Globals.API_HOSTNAME);
+            System.setProperty(PROP_SESSION_HOST, "http://" + Globals.API_HOSTNAME);
+
+
             main.invoke(null, new Object[] {args.toArray(new String[0])});
 
             System.exit(0);

@@ -32,6 +32,17 @@ public class ArrayUtils {
 
     }
 
+    public static Byte[] fromPrimitives(byte[] oBytes)
+    {
+
+        Byte[] bytes = new Byte[oBytes.length];
+        for(int i = 0; i < oBytes.length; i++){
+            bytes[i] = oBytes[i];
+        }
+        return bytes;
+
+    }
+
     public static float[] toPrimitives(Float[] oFloats)
     {
 

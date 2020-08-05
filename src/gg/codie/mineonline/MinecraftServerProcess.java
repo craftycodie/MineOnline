@@ -1,5 +1,7 @@
 package gg.codie.mineonline;
 
+import gg.codie.mineonline.patches.PropertiesSignaturePatch;
+import gg.codie.mineonline.patches.URLPatch;
 import gg.codie.utils.ArrayUtils;
 
 import java.io.File;
@@ -8,6 +10,12 @@ import java.nio.file.Paths;
 import java.util.Map;
 
 public class MinecraftServerProcess {
+
+    public static final String PROP_ENV = "minecraft.api.env";
+    public static final String PROP_AUTH_HOST = "minecraft.api.auth.host";
+    public static final String PROP_ACCOUNT_HOST = "minecraft.api.account.host";
+    public static final String PROP_SESSION_HOST = "minecraft.api.session.host";
+
     public static Process startMinecraftServer(String[] args) throws Exception {
         // Start the proxy as a new process.
         java.util.Properties props = System.getProperties();
@@ -48,6 +56,7 @@ public class MinecraftServerProcess {
 
         URLPatch.redefineURL();
 
+
         File jarFile = new File(args[0]);
         if(!jarFile.exists()) {
             System.err.println("Couldn't find jar file " + args[0]);
@@ -55,6 +64,8 @@ public class MinecraftServerProcess {
         }
 
         LibraryManager.addJarToClasspath(Paths.get(args[0]).toUri().toURL());
+
+        PropertiesSignaturePatch.redefineIsSignatureValid();
 
         Class mainClass = null;
 
@@ -69,6 +80,11 @@ public class MinecraftServerProcess {
         }
 
         Method main = mainClass.getMethod("main", String[].class);
+
+        System.setProperty(PROP_AUTH_HOST, "http://" + Globals.API_HOSTNAME);
+        System.setProperty(PROP_ACCOUNT_HOST, "http://" + Globals.API_HOSTNAME);
+        System.setProperty(PROP_SESSION_HOST, "http://" + Globals.API_HOSTNAME);
+
         main.invoke(null, new Object[] { new String[] {}});
     }
 }

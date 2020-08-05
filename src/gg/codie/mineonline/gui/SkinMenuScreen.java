@@ -96,7 +96,7 @@ public class SkinMenuScreen implements IMenuScreen {
                                         ByteArrayOutputStream os = new ByteArrayOutputStream();
                                         ImageIO.write(bufferedImage, "png", os);
                                         ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
-                                        MinecraftAPI.uploadSkin(Session.session.getUsername(), Session.session.getSessionToken(), is);
+                                        MinecraftAPI.uploadSkin(Session.session.getUuid(), Session.session.getSessionToken(), is);
                                     } catch (IOException ex) {
                                         JOptionPane.showMessageDialog(null, "Failed to upload skin.");
                                         failed = true;
@@ -145,7 +145,7 @@ public class SkinMenuScreen implements IMenuScreen {
                                         ByteArrayOutputStream os = new ByteArrayOutputStream();
                                         ImageIO.write(bufferedImage, "png", os);
                                         ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
-                                        MinecraftAPI.uploadCloak(Session.session.getUsername(), Session.session.getSessionToken(), is);
+                                        MinecraftAPI.uploadCloak(Session.session.getUuid(), Session.session.getSessionToken(), is);
                                     } catch (IOException ex) {
                                         JOptionPane.showMessageDialog(null, "Failed to upload skin.");
                                         failed = true;

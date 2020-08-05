@@ -6,6 +6,7 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Paths;
+import java.util.UUID;
 
 public class Session {
 
@@ -23,6 +24,12 @@ public class Session {
 
     private String sessionToken;
 
+    public String getUuid() {
+        return uuid;
+    }
+
+    private String uuid;
+
     public boolean isOnline() {
         return sessionToken != null;
     }
@@ -30,13 +37,15 @@ public class Session {
     public Session(String username) {
         session = this;
         this.username = username;
+        this.uuid = UUID.randomUUID().toString();
         cacheSkin();
     }
 
-    public Session(String username, String sessionToken) {
+    public Session(String username, String sessionToken, String uuid) {
         session = this;
         this.username = username;
         this.sessionToken = sessionToken;
+        this.uuid = uuid;
         cacheSkin();
     }
 
@@ -51,7 +60,7 @@ public class Session {
             public void run() {
                 Settings.loadSettings();
 
-                try (BufferedInputStream in = new BufferedInputStream(new URL("http://" + Globals.API_HOSTNAME + "/MinecraftSkins/" + username + ".png").openStream())) {
+                try (BufferedInputStream in = new BufferedInputStream(new URL("http://" + Globals.API_HOSTNAME + "/mineonline/player/" + uuid + "/skin").openStream())) {
 
                     // Delete the currently cached skin.
                     File cachedSkin = new File(LauncherFiles.CACHED_SKIN_PATH);
@@ -73,7 +82,7 @@ public class Session {
                     // handle exception
                 }
 
-                try (BufferedInputStream in = new BufferedInputStream(new URL("http://" + Globals.API_HOSTNAME + "/MinecraftCloaks/" + username + ".png").openStream())) {
+                try (BufferedInputStream in = new BufferedInputStream(new URL("http://" + Globals.API_HOSTNAME + "/mineonline/player/" + uuid + "/cloak").openStream())) {
 
                     // Delete the currently cached skin.
                     File cachedCloak = new File(LauncherFiles.CACHED_CLOAK_PATH);

@@ -63,7 +63,7 @@ public class SelectableServerList extends GUIObject {
         emptyText.setColour(0.5f, 0.5f, 0.5f);
 
         try {
-            LinkedList<MineOnlineServer> servers = MinecraftAPI.listServers(Session.session.getUsername(), Session.session.getSessionToken());
+            LinkedList<MineOnlineServer> servers = MinecraftAPI.listServers(Session.session.getUuid(), Session.session.getSessionToken());
 
             Settings.loadSettings();
             String[] minecraftJars = Settings.settings.has(Settings.MINECRAFT_JARS) ? JSONUtils.getStringArray(Settings.settings.getJSONArray(Settings.MINECRAFT_JARS)) : new String[0];

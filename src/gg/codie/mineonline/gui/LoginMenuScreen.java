@@ -2,6 +2,7 @@ package gg.codie.mineonline.gui;
 
 import gg.codie.mineonline.Globals;
 import gg.codie.mineonline.Session;
+import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.mineonline.api.MinecraftAPI;
 import gg.codie.mineonline.gui.events.IOnClickListener;
 import gg.codie.mineonline.gui.font.GUIText;
@@ -72,9 +73,10 @@ public class LoginMenuScreen implements IMenuScreen {
             public void onClick() {
                 try {
                     String sessionToken = MinecraftAPI.login(usernameInput.getValue(), passwordInput.getValue());
+                    String uuid = MineOnlineAPI.playeruuid(usernameInput.getValue(), sessionToken);
                     if (sessionToken != null) {
-                        new Session(usernameInput.getValue(), sessionToken);
-                        LastLogin.writeLastLogin(usernameInput.getValue(), passwordInput.getValue());
+                        new Session(usernameInput.getValue(), sessionToken, uuid);
+                        LastLogin.writeLastLogin(usernameInput.getValue(), passwordInput.getValue(), uuid);
                         MenuManager.setMenuScreen(new MainMenuScreen());
                     } else {
                         if (errorText != null)
