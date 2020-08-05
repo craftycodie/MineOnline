@@ -92,6 +92,12 @@ public class MinecraftServerLauncher {
 
             if (Boolean.parseBoolean(serverProperties.getProperty("public", "true")) && System.currentTimeMillis() - lastPing > 45000) {
                 try {
+                    try {
+                        serverProperties = gg.codie.minecraft.server.Properties.loadServerProperties(args[0]);
+                    } catch (Exception ex) {
+                        // use whatever is in memory.
+                    }
+
                     String[] whitelistedPlayers = new String[0];
                     String[] whitelistedIPs = new String[0];
                     String[] whitelistedUUIDs = new String[0];

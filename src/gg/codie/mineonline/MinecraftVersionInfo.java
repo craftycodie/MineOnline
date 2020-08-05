@@ -57,6 +57,8 @@ public class MinecraftVersionInfo {
         public final String assetIndex;
         public final String[] libraries;
         public final String[] natives;
+        public final boolean useMinecraftImpl;
+        public final String minecraftImplClass;
 
         private MinecraftVersion(
                 String sha256,
@@ -75,7 +77,9 @@ public class MinecraftVersionInfo {
                 boolean legacy,
                 String assetIndex,
                 String[] libraries,
-                String[] nativesWindows
+                String[] nativesWindows,
+                boolean useMinecraftImpl,
+                String minecraftImplClass
         ) {
             this.sha256 = sha256;
             this.name = name;
@@ -83,13 +87,15 @@ public class MinecraftVersionInfo {
             this.type = type;
             this.baseURLHasNoPort = baseURLHasNoPort;
             this.enableScreenshotPatch = enableScreenshotPatch;
-            this.baseVersion = baseVersion;
             this.hasHeartbeat = hasHeartbeat;
+            this.baseVersion = baseVersion;
             this.enableFullscreenPatch = enableFullscreenPatch;
             this.info = info;
-            this.clientVersions = clientVersions;
             this.forceFullscreenMacos = forceFullscreenMacos;
+            this.clientVersions = clientVersions;
             this.enableMacosCursorPatch = enableMacosCursorPatch;
+            this.useMinecraftImpl = useMinecraftImpl;
+            this.minecraftImplClass = minecraftImplClass;
             this.legacy = legacy;
             this.assetIndex = assetIndex;
             this.libraries = libraries;
@@ -233,9 +239,9 @@ public class MinecraftVersionInfo {
             else if (className.equals("RubyDung")) {
                 return true;
             }
-            else if (className.equals("Main")) {
-                return true;
-            }
+//            else if (className.equals("Main")) {
+//                return true;
+//            }
         }
         
         try {
@@ -265,7 +271,9 @@ public class MinecraftVersionInfo {
                 (object.has("legacy") && object.getBoolean("legacy")),
                 (object.has("assetIndex") ? object.getString("assetIndex") : object.has("baseVersion") ? object.getString("baseVersion") : null),
                 (object.has("libraries") ? JSONUtils.getStringArray(object.getJSONArray("libraries")) : new String[0]),
-                (object.has("natives") && object.getJSONObject("natives").has(OSUtils.getPlatform().name()) ? JSONUtils.getStringArray(object.getJSONObject("natives").getJSONArray(OSUtils.getPlatform().name())) : new String[0])
+                (object.has("natives") && object.getJSONObject("natives").has(OSUtils.getPlatform().name()) ? JSONUtils.getStringArray(object.getJSONObject("natives").getJSONArray(OSUtils.getPlatform().name())) : new String[0]),
+                (object.has("useMinecraftImpl") && object.getBoolean("useMinecraftImpl")),
+                (object.has("minecraftImplClass") ? object.getString("minecraftImplClass") : null)
         );
     }
 

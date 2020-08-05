@@ -248,7 +248,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
 
         Runnable minecraftImpl = null;
 
-        if (minecraftClass != null) {
+        if (minecraftClass != null && !(minecraftVersion != null && !minecraftVersion.useMinecraftImpl)) {
             try {
                 File jarFile = new File(jarPath);
 
@@ -256,96 +256,105 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
                     return;
 
                 Constructor constructor = null;
-                // If the jar isn't obfuscated (debug) find the class by name.
-                try {
-                    Class clazz = Class.forName("net.minecraft.src.MinecraftImpl");
-                    constructor = clazz.getDeclaredConstructor(
-                            Component.class, Canvas.class, appletClass, int.class, int.class, boolean.class, Frame.class
-                    );
-                } catch (Throwable e) {
 
-                }
+                if(minecraftVersion != null && minecraftVersion.minecraftImplClass != null) {
+                    // If a class name was provided in the version manifest, use it.
+                    try {
+                        Class clazz = Class.forName(minecraftVersion.minecraftImplClass);
+                        constructor = clazz.getDeclaredConstructor(
+                                Component.class, Canvas.class, appletClass, int.class, int.class, boolean.class, Frame.class
+                        );
+                    } catch (Throwable e) {
 
-                if (constructor == null) {
-                    java.util.jar.JarFile jar = new java.util.jar.JarFile(jarFile.getPath());
-                    java.util.Enumeration enumEntries = jar.entries();
-                    while (enumEntries.hasMoreElements()) {
-                        java.util.jar.JarEntry file = (java.util.jar.JarEntry) enumEntries.nextElement();
-                        String fileName = file.getName();
-                        if (file.isDirectory() || !fileName.endsWith(".class")) {
-                            continue;
-                        }
+                    }
+                } else {
+                    // If the jar isn't obfuscated (debug) find the class by name.
+                    try {
+                        Class clazz = Class.forName("net.minecraft.src.MinecraftImpl");
+                        constructor = clazz.getDeclaredConstructor(
+                                Component.class, Canvas.class, appletClass, int.class, int.class, boolean.class, Frame.class
+                        );
+                    } catch (Throwable e) {
 
-                        if (fileName.contains("/"))
-                            fileName = fileName.substring(fileName.lastIndexOf("/") + 1);
+                    }
 
-                        if (constructor == null) {
-                            // Ideally, we'd check if the class extends Minecraft
-                            // But due to obfuscation we have to settle for this.
-                            try {
-                                if (fileName.equals("Minecraft.class")) {
-                                    continue;
-                                }
-
-                                Class clazz = Class.forName(file.getName().replace(".class", "").replace("/", "."));
-                                constructor = clazz.getDeclaredConstructor(
-                                        Component.class, Canvas.class, appletClass, int.class, int.class, boolean.class, Frame.class
-                                );
-
-//                                if(!Arrays.equals(constructor.getParameterTypes(), new Class[] {Component.class, Canvas.class, appletClass, int.class, int.class, boolean.class, Frame.class})) {
-//                                    constructor = null;
-//                                    continue;
-//                                }
-                            } catch (Throwable e) {
+                    if (constructor == null) {
+                        java.util.jar.JarFile jar = new java.util.jar.JarFile(jarFile.getPath());
+                        java.util.Enumeration enumEntries = jar.entries();
+                        while (enumEntries.hasMoreElements()) {
+                            java.util.jar.JarEntry file = (java.util.jar.JarEntry) enumEntries.nextElement();
+                            String fileName = file.getName();
+                            if (file.isDirectory() || !fileName.endsWith(".class")) {
+                                continue;
                             }
-                        }
 
-                        if (constructor != null) {
-                            System.out.println("found MinecraftImpl: " + file.getName());
+                            if (fileName.contains("/"))
+                                fileName = fileName.substring(fileName.lastIndexOf("/") + 1);
 
-                            try {
-                                minecraftImpl = (Runnable) constructor.newInstance(null, DisplayManager.getCanvas(), null, Display.getWidth(), Display.getHeight(), fullscreen, frame);
-                            } catch(InvocationTargetException e) {
-                                constructor = null;
-                                minecraftImpl = null;
-                            }
-                        }
-
-                        // If we're manually creating MinecraftImpl there's a couple of other things to do:
-                        if (minecraftImpl != null) {
-                            // Setup the minecraft session.
-                            for (Field field : minecraftClass.getDeclaredFields()) {
+                            if (constructor == null) {
+                                // Ideally, we'd check if the class extends Minecraft
+                                // But due to obfuscation we have to settle for this.
                                 try {
-                                    constructor = field.getType().getConstructor(
-                                            String.class, String.class
-                                    );
-                                    if (constructor == null) {
+                                    if (fileName.equals("Minecraft.class")) {
                                         continue;
                                     }
-                                    field.set(minecraftImpl, constructor.newInstance(Session.session.getUsername(), Session.session.getSessionToken()));
-                                    break;
-                                } catch (Exception e) {
-                                    continue;
+
+                                    Class clazz = Class.forName(file.getName().replace(".class", "").replace("/", "."));
+                                    constructor = clazz.getDeclaredConstructor(
+                                            Component.class, Canvas.class, appletClass, int.class, int.class, boolean.class, Frame.class
+                                    );
+                                } catch (Throwable e) {
                                 }
                             }
-                            // Join a server (if provided)
-                            if (serverAddress != null && serverPort != null) {
-                                for (Method method : minecraftClass.getMethods()) {
+
+                            if (constructor != null) {
+                                System.out.println("found MinecraftImpl: " + file.getName());
+
+                                try {
+                                    minecraftImpl = (Runnable) constructor.newInstance(null, DisplayManager.getCanvas(), null, Display.getWidth(), Display.getHeight(), fullscreen, frame);
+                                } catch(InvocationTargetException e) {
+                                    constructor = null;
+                                    minecraftImpl = null;
+                                }
+                            }
+
+                            // If we're manually creating MinecraftImpl there's a couple of other things to do:
+                            if (minecraftImpl != null) {
+                                // Setup the minecraft session.
+                                for (Field field : minecraftClass.getDeclaredFields()) {
                                     try {
-                                        if (Arrays.equals(method.getParameterTypes(), (new Object[]{String.class, int.class}))) {
-                                            method.invoke(minecraftImpl, serverAddress, Integer.parseInt(serverPort));
-                                            break;
+                                        constructor = field.getType().getConstructor(
+                                                String.class, String.class
+                                        );
+                                        if (constructor == null) {
+                                            continue;
                                         }
+                                        field.set(minecraftImpl, constructor.newInstance(Session.session.getUsername(), Session.session.getSessionToken()));
+                                        break;
                                     } catch (Exception e) {
                                         continue;
                                     }
                                 }
+                                // Join a server (if provided)
+                                if (serverAddress != null && serverPort != null) {
+                                    for (Method method : minecraftClass.getMethods()) {
+                                        try {
+                                            if (Arrays.equals(method.getParameterTypes(), (new Object[]{String.class, int.class}))) {
+                                                method.invoke(minecraftImpl, serverAddress, Integer.parseInt(serverPort));
+                                                break;
+                                            }
+                                        } catch (Exception e) {
+                                            continue;
+                                        }
+                                    }
+                                }
+                                break;
                             }
-                            break;
+
                         }
 
+                        jar.close();
                     }
-                    jar.close();
                 }
             } catch(Exception e){
                 e.printStackTrace();
