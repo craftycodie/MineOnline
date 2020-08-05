@@ -2148,23 +2148,25 @@
       "ca/weblite/java-objc-bridge/1.0.0/java-objc-bridge-1.0.0.jar",
       "ca/weblite/java-objc-bridge/1.0.0/java-objc-bridge-1.0.0.jar"
     ],
-    "natives-windows": [
-      "org/lwjgl/lwjgl/3.2.1/lwjgl-3.2.1-natives-windows.jar",
-      "org/lwjgl/lwjgl/3.2.2/lwjgl-3.2.2-natives-windows.jar",
-      "org/lwjgl/lwjgl-jemalloc/3.2.1/lwjgl-jemalloc-3.2.1-natives-windows.jar",
-      "org/lwjgl/lwjgl-jemalloc/3.2.2/lwjgl-jemalloc-3.2.2-natives-windows.jar",
-      "org/lwjgl/lwjgl-openal/3.2.1/lwjgl-openal-3.2.1-natives-windows.jar",
-      "org/lwjgl/lwjgl-openal/3.2.2/lwjgl-openal-3.2.2-natives-windows.jar",
-      "org/lwjgl/lwjgl-opengl/3.2.1/lwjgl-opengl-3.2.1-natives-windows.jar",
-      "org/lwjgl/lwjgl-opengl/3.2.2/lwjgl-opengl-3.2.2-natives-windows.jar",
-      "org/lwjgl/lwjgl-glfw/3.2.1/lwjgl-glfw-3.2.1-natives-windows.jar",
-      "org/lwjgl/lwjgl-glfw/3.2.2/lwjgl-glfw-3.2.2-natives-windows.jar",
-      "org/lwjgl/lwjgl-stb/3.2.1/lwjgl-stb-3.2.1-natives-windows.jar",
-      "org/lwjgl/lwjgl-tinyfd/3.2.2/lwjgl-tinyfd-3.2.2-natives-windows.jar",
-      "org/lwjgl/lwjgl-tinyfd/3.2.1/lwjgl-tinyfd-3.2.1-natives-windows.jar",
-      "org/lwjgl/lwjgl-stb/3.2.2/lwjgl-stb-3.2.2-natives-windows.jar",
-      "com/mojang/text2speech/1.11.3/text2speech-1.11.3-natives-windows.jar"
-    ]
+    "natives": {
+      "windows": [
+        "org/lwjgl/lwjgl/3.2.1/lwjgl-3.2.1-natives-windows.jar",
+        "org/lwjgl/lwjgl/3.2.2/lwjgl-3.2.2-natives-windows.jar",
+        "org/lwjgl/lwjgl-jemalloc/3.2.1/lwjgl-jemalloc-3.2.1-natives-windows.jar",
+        "org/lwjgl/lwjgl-jemalloc/3.2.2/lwjgl-jemalloc-3.2.2-natives-windows.jar",
+        "org/lwjgl/lwjgl-openal/3.2.1/lwjgl-openal-3.2.1-natives-windows.jar",
+        "org/lwjgl/lwjgl-openal/3.2.2/lwjgl-openal-3.2.2-natives-windows.jar",
+        "org/lwjgl/lwjgl-opengl/3.2.1/lwjgl-opengl-3.2.1-natives-windows.jar",
+        "org/lwjgl/lwjgl-opengl/3.2.2/lwjgl-opengl-3.2.2-natives-windows.jar",
+        "org/lwjgl/lwjgl-glfw/3.2.1/lwjgl-glfw-3.2.1-natives-windows.jar",
+        "org/lwjgl/lwjgl-glfw/3.2.2/lwjgl-glfw-3.2.2-natives-windows.jar",
+        "org/lwjgl/lwjgl-stb/3.2.1/lwjgl-stb-3.2.1-natives-windows.jar",
+        "org/lwjgl/lwjgl-tinyfd/3.2.2/lwjgl-tinyfd-3.2.2-natives-windows.jar",
+        "org/lwjgl/lwjgl-tinyfd/3.2.1/lwjgl-tinyfd-3.2.1-natives-windows.jar",
+        "org/lwjgl/lwjgl-stb/3.2.2/lwjgl-stb-3.2.2-natives-windows.jar",
+        "com/mojang/text2speech/1.11.3/text2speech-1.11.3-natives-windows.jar"
+      ]
+    }
   },
 
   {

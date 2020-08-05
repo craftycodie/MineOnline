@@ -3,6 +3,7 @@ package gg.codie.mineonline;
 import gg.codie.mineonline.api.MinecraftAPI;
 import gg.codie.utils.JSONUtils;
 import gg.codie.utils.MD5Checksum;
+import gg.codie.utils.OSUtils;
 import jdk.nashorn.api.scripting.URLReader;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -55,7 +56,7 @@ public class MinecraftVersionInfo {
         public final boolean legacy;
         public final String assetIndex;
         public final String[] libraries;
-        public final String[] nativesWindows;
+        public final String[] natives;
 
         private MinecraftVersion(
                 String sha256,
@@ -92,7 +93,7 @@ public class MinecraftVersionInfo {
             this.legacy = legacy;
             this.assetIndex = assetIndex;
             this.libraries = libraries;
-            this.nativesWindows = nativesWindows;
+            this.natives = nativesWindows;
         }
     }
 
@@ -264,7 +265,7 @@ public class MinecraftVersionInfo {
                 (object.has("legacy") && object.getBoolean("legacy")),
                 (object.has("assetIndex") ? object.getString("assetIndex") : object.has("baseVersion") ? object.getString("baseVersion") : null),
                 (object.has("libraries") ? JSONUtils.getStringArray(object.getJSONArray("libraries")) : new String[0]),
-                (object.has("natives-windows") ? JSONUtils.getStringArray(object.getJSONArray("natives-windows")) : new String[0])
+                (object.has("natives") && object.getJSONObject("natives").has(OSUtils.getPlatform().name()) ? JSONUtils.getStringArray(object.getJSONObject("natives").getJSONArray(OSUtils.getPlatform().name())) : new String[0])
         );
     }
 

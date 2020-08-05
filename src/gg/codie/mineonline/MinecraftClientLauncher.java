@@ -78,7 +78,7 @@ public class MinecraftClientLauncher {
 
             }
 
-            System.exit(0);
+            Runtime.getRuntime().halt(0);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -138,7 +138,7 @@ public class MinecraftClientLauncher {
                 LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_PATH + library).toUri().toURL());
             }
 
-            for(String nativeJar : minecraftVersion.nativesWindows) {
+            for(String nativeJar : minecraftVersion.natives) {
                 LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_PATH + nativeJar).toUri().toURL());
             }
 
