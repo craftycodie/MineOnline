@@ -75,7 +75,7 @@ public class SelectableServerList extends GUIObject {
                 MinecraftVersionInfo.MinecraftVersion minecraftVersion = MinecraftVersionInfo.getVersion(path);
 
                 try {
-                    if (!MinecraftVersionInfo.isLegacyJar(file.getPath())) {
+                    if (!MinecraftVersionInfo.isPlayableJar(file.getPath())) {
                         continue;
                     }
                 } catch (IOException ex) {

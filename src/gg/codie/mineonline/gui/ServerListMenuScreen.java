@@ -50,7 +50,7 @@ public class ServerListMenuScreen implements IMenuScreen {
                                     MinecraftVersionInfo.MinecraftVersion clientVersion = MinecraftVersionInfo.getVersion(path);
 
                                     try {
-                                        if (!MinecraftVersionInfo.isLegacyJar(file.getPath())) {
+                                        if (!MinecraftVersionInfo.isPlayableJar(file.getPath())) {
                                             continue;
                                         }
                                     } catch (IOException ex) {

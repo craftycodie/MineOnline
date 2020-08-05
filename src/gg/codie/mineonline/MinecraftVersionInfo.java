@@ -6,6 +6,7 @@ import gg.codie.utils.MD5Checksum;
 import gg.codie.utils.OSUtils;
 import jdk.nashorn.api.scripting.URLReader;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -154,6 +155,36 @@ public class MinecraftVersionInfo {
         } catch (IOException ex) {
             System.err.println("Failed to load Minecraft Version information!");
             versions = new LinkedList<>();
+        } catch (JSONException jex) {
+            try {
+                if (path.equals(Paths.get(LauncherFiles.CACHED_VERSION_INFO_PATH).toUri().toURL())) {
+                    try (URLReader input = new URLReader(LauncherFiles.VERSION_INFO_PATH)) {
+                        // load a settings file
+                        char[] buffer = new char[8096];
+                        int bytes_read = 0;
+                        StringBuffer stringBuffer = new StringBuffer();
+                        while ((bytes_read = input.read(buffer, 0, 8096)) != -1) {
+                            for(int i = 0; i < bytes_read; i++) {
+                                stringBuffer.append(buffer[i]);
+                            }
+                        }
+
+                        versionsJson = new JSONArray(stringBuffer.toString());
+
+                        Iterator versionIterator = versionsJson.iterator();
+
+                        while (versionIterator.hasNext()) {
+                            JSONObject object = (JSONObject)versionIterator.next();
+                            versions.add(fromJSONObject(object));
+                        }
+                    } catch (IOException ex) {
+                        System.err.println("Failed to load Minecraft Version information!");
+                        versions = new LinkedList<>();
+                    }
+                }
+            } catch (Exception ex) {
+
+            }
         }
 
         if (new File(LauncherFiles.CUSTOM_VERSION_INFO_PATH).exists()) {
@@ -230,20 +261,52 @@ public class MinecraftVersionInfo {
             } else if (className.equals("Minecraft")) {
                 return true;
             }
-//            else if (className.equals("MinecraftLauncher")) {
-//                return true;
-//            }
             else if (className.equals("LauncherFrame")) {
                 return true;
             }
             else if (className.equals("RubyDung")) {
                 return true;
             }
-//            else if (className.equals("Main")) {
-//                return true;
-//            }
         }
         
+        try {
+            System.out.println("Incompatible Jar MD5: " + MD5Checksum.getMD5Checksum(path));
+        } catch (Exception ex) {
+
+        }
+
+        return false;
+    }
+
+    public static boolean isPlayableJar(String path) throws IOException {
+        if(isLegacyJar(path))
+            return true;
+
+        JarFile jarFile = new JarFile(path);
+        Enumeration allEntries = jarFile.entries();
+        while (allEntries.hasMoreElements()) {
+            JarEntry entry = (JarEntry) allEntries.nextElement();
+            String classCanonicalName = entry.getName();
+
+            if(!classCanonicalName.contains(".class"))
+                continue;
+
+            classCanonicalName = classCanonicalName.replace("/", ".");
+            classCanonicalName = classCanonicalName.replace(".class", "");
+
+            String className = classCanonicalName;
+            if(classCanonicalName.lastIndexOf(".") > -1) {
+                className = classCanonicalName.substring(classCanonicalName.lastIndexOf(".") + 1);
+            }
+
+//            else if (className.equals("MinecraftLauncher")) {
+//                return true;
+//            }
+            if (className.equals("Main")) {
+                return true;
+            }
+        }
+
         try {
             System.out.println("Incompatible Jar MD5: " + MD5Checksum.getMD5Checksum(path));
         } catch (Exception ex) {
