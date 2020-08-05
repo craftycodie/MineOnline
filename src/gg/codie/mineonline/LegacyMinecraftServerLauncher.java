@@ -1,5 +1,6 @@
 package gg.codie.mineonline;
 
+import gg.codie.minecraft.server.Files;
 import gg.codie.mineonline.api.MinecraftAPI;
 import gg.codie.utils.ArrayUtils;
 import gg.codie.utils.JSONUtils;
@@ -88,11 +89,11 @@ public class LegacyMinecraftServerLauncher {
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(stdin));
 
         String whitelistPath = args[0].replace(Paths.get(args[0]).getFileName().toString(), "whitelist.txt");
-        String whitelistUUIDsPath = args[0].replace(Paths.get(args[0]).getFileName().toString(), "whitelist.json");
+        String whitelistPlayersJSONPath = args[0].replace(Paths.get(args[0]).getFileName().toString(), "whitelist.json");
         String bannedPath = args[0].replace(Paths.get(args[0]).getFileName().toString(), "banned-players.txt");
         String bannedIpsPath = args[0].replace(Paths.get(args[0]).getFileName().toString(), "banned-ips.txt");
         String bannedIpsJSONPath = args[0].replace(Paths.get(args[0]).getFileName().toString(), "banned-ips.json");
-        String bannedUUIDsPath = args[0].replace(Paths.get(args[0]).getFileName().toString(), "banned-players.json");
+        String bannedPlayersJSONPath = args[0].replace(Paths.get(args[0]).getFileName().toString(), "banned-players.json");
 
         Scanner scanner = new Scanner(System.in);
         long lastPing = System.currentTimeMillis();
@@ -119,9 +120,9 @@ public class LegacyMinecraftServerLauncher {
                     String[] whitelistedPlayers = new String[0];
                     String[] whitelistedIPs = new String[0];
                     String[] whitelistedUUIDs = new String[0];
-                    String[] bannedPlayers = readUsersFile(bannedPath);
-                    String[] bannedIPs = ArrayUtils.concatenate(readUsersFile(bannedIpsPath), readUsersFile(bannedIpsJSONPath));
-                    String[] bannedUUIDs = readUsersFile(bannedUUIDsPath);
+                    String[] bannedPlayers ;
+                    String[] bannedIPs;
+                    String[] bannedUUIDs;
 
                     if (!hasHeartbeat) {
                         playerCountRequested++;
@@ -136,9 +137,19 @@ public class LegacyMinecraftServerLauncher {
                     }
 
                     if(whitelisted) {
-                        whitelistedPlayers = readUsersFile(whitelistPath);
-                        whitelistedUUIDs = readUsersFile(whitelistUUIDsPath);
+                        whitelistedPlayers = Files.readUsersFile(whitelistPath);
+                        String[][] jsonData = Files.readPlayersJSON(whitelistPlayersJSONPath);
+                        whitelistedPlayers = ArrayUtils.concatenate(whitelistedPlayers, jsonData[1]);
+                        whitelistedUUIDs = jsonData[0];
                     }
+
+                    bannedPlayers = Files.readUsersFile(bannedPath);
+                    String[][] jsonData = Files.readPlayersJSON(bannedPlayersJSONPath);
+                    bannedPlayers = ArrayUtils.concatenate(bannedPlayers, jsonData[1]);
+                    bannedUUIDs = jsonData[0];
+
+                    bannedIPs = Files.readUsersFile(bannedIpsPath);
+                    bannedIPs = ArrayUtils.concatenate(bannedIPs, Files.readBannedIPsJSON(bannedIpsJSONPath));
 
                     MinecraftAPI.listServer(
                             serverlistAddress != null && !serverlistAddress.isEmpty() ? serverlistAddress : serverProperties.getProperty("server-ip", null),
@@ -170,30 +181,6 @@ public class LegacyMinecraftServerLauncher {
 
         serverProcess.destroyForcibly();
         System.exit(0);
-    }
-
-    private static String[] readUsersFile(String path) {
-        try {
-            File usersFile = new File(path);
-            if (usersFile.exists()) {
-                LinkedList list = new LinkedList();
-                BufferedReader reader = new BufferedReader(new FileReader(usersFile));
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    list.add(line);
-                }
-                reader.close();
-                if(path.endsWith(".json")) {
-                    return JSONUtils.getStringArray(new JSONArray(String.join("", (String[])list.toArray(new String[0]))));
-                } else {
-                    return (String[])list.toArray(new String[0]);
-                }
-            }
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-
-        return new String[0];
     }
 
     // If the player count was requested by MineOnline we remove that from stdout to avoid spamming logs.
