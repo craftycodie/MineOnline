@@ -61,7 +61,8 @@ public class LoginMenuScreen implements IMenuScreen {
                 @Override
                 public void onClick() {
                     try {
-                        MenuManager.setMenuScreen(new ServerListMenuScreen());
+                        new Session(usernameInput.getValue());
+                        MenuManager.setMenuScreen(new MainMenuScreen());
                     } catch (Exception ex) {
                     }
                 }
