@@ -2,8 +2,7 @@ package gg.codie.mineonline;
 
 import gg.codie.minecraft.client.Options;
 import gg.codie.mineonline.gui.rendering.DisplayManager;
-import gg.codie.mineonline.patches.PropertiesSignaturePatch;
-import gg.codie.mineonline.patches.URLPatch;
+import gg.codie.mineonline.patches.*;
 import gg.codie.utils.MD5Checksum;
 import org.lwjgl.opengl.Display;
 
@@ -86,8 +85,8 @@ public class MinecraftClientLauncher {
     }
 
     public static void main(String[] args) throws Exception {
-        String serverAddress = args.length > 5 ? args[3] : null;
-        String serverPort = args.length > 6 ? args[4] : null;
+        String serverAddress = args.length > 3 ? args[3] : null;
+        String serverPort = args.length > 4 ? args[4] : null;
         new MinecraftClientLauncher(args[0], args[1], args[2], serverAddress, serverPort).startMinecraft();
     }
 
@@ -146,8 +145,8 @@ public class MinecraftClientLauncher {
             new Session(username, token, uuid);
 
             URLPatch.redefineURL();
-            //GameProfileUUIDPatch.redefineGetId();
             PropertiesSignaturePatch.redefineIsSignatureValid();
+            YggdrasilMinecraftSessionServicePatch.allowMineonlineSkins();
 
 
             Class clazz = Class.forName("net.minecraft.client.main.Main");

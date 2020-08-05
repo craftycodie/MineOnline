@@ -14,10 +14,6 @@ class URLSetAdvice {
             else
                 return;
 
-//            JSONObject settings = (JSONObject)Class.forName(Settings.class.getCanonicalName()).getDeclaredField("settings").get(null);
-//
-//            Settings.loadSettings();
-//            System.out.println("Settings: " + settings);
             for(String replaceHost : new String[] {
                     "pc.realms.minecraft.net",
                     "www.minecraft.net:-1",

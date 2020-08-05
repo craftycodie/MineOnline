@@ -1,6 +1,5 @@
 package gg.codie.mineonline;
 
-import gg.codie.mineonline.patches.PropertiesSignaturePatch;
 import gg.codie.mineonline.patches.URLPatch;
 import gg.codie.utils.ArrayUtils;
 
@@ -65,9 +64,7 @@ public class MinecraftServerProcess {
 
         LibraryManager.addJarToClasspath(Paths.get(args[0]).toUri().toURL());
 
-        PropertiesSignaturePatch.redefineIsSignatureValid();
-
-        Class mainClass = null;
+        Class mainClass;
 
         try {
             mainClass = Class.forName("net.minecraft.server.Main");

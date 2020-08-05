@@ -11,12 +11,10 @@ class URLConstructAdvice {
     @Advice.OnMethodEnter
     static void intercept(@Advice.Argument(0) String url) {
         try {
-            if (url.startsWith("http"))
-                System.out.println(url);
             if (url.isEmpty() || url.startsWith("file:"))
                 return;
-            else
-                System.out.println("Original URL: " + url);
+//            else
+//                System.out.println("Original URL: " + url);
 
             for(String replaceHost : new String[] {
                     "textures.minecraft.net",
@@ -44,7 +42,7 @@ class URLConstructAdvice {
                     f.set(url, url.replace(replaceHost, Globals.API_HOSTNAME).toCharArray());
                     f.set(url, url.replace("https", "http").toCharArray());
 
-                    System.out.println("New URL: " + url);
+//                    System.out.println("New URL: " + url);
                 }
             }
 
