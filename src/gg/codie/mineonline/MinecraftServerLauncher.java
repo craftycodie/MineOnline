@@ -3,10 +3,7 @@ package gg.codie.mineonline;
 import gg.codie.minecraft.server.Files;
 import gg.codie.mineonline.api.MinecraftAPI;
 import gg.codie.utils.ArrayUtils;
-import gg.codie.utils.JSONUtils;
 import gg.codie.utils.MD5Checksum;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.io.*;
 import java.nio.file.Paths;
@@ -46,7 +43,7 @@ public class MinecraftServerLauncher {
             serverlistPort = serverProperties.getProperty("serverlist-port");
         }
 
-        String md5 = MD5Checksum.getMD5Checksum(jarFile.getPath());
+        String md5 = MD5Checksum.getMD5ChecksumForFile(jarFile.getPath());
         MinecraftVersionInfo.MinecraftVersion serverVersion = MinecraftVersionInfo.getVersionByMD5(md5);
 
         boolean hasHeartbeat = serverVersion != null && serverVersion.hasHeartbeat;
