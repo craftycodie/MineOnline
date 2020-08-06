@@ -150,7 +150,8 @@ public class MinecraftVersionInfo {
 
             while (versionIterator.hasNext()) {
                 JSONObject object = (JSONObject)versionIterator.next();
-                versions.add(fromJSONObject(object));
+                if(object.has("md5"))
+                    versions.add(fromJSONObject(object));
             }
         } catch (IOException ex) {
             System.err.println("Failed to load Minecraft Version information!");
@@ -175,7 +176,8 @@ public class MinecraftVersionInfo {
 
                         while (versionIterator.hasNext()) {
                             JSONObject object = (JSONObject)versionIterator.next();
-                            versions.add(fromJSONObject(object));
+                            if(object.has("md5"))
+                                versions.add(fromJSONObject(object));
                         }
                     } catch (IOException ex) {
                         System.err.println("Failed to load Minecraft Version information!");
@@ -183,7 +185,7 @@ public class MinecraftVersionInfo {
                     }
                 }
             } catch (Exception ex) {
-
+                ex.printStackTrace();
             }
         }
 
@@ -205,7 +207,8 @@ public class MinecraftVersionInfo {
 
                 while (versionIterator.hasNext()) {
                     JSONObject object = (JSONObject)versionIterator.next();
-                    versions.add(fromJSONObject(object));
+                    if(object.has("md5"))
+                        versions.add(fromJSONObject(object));
                 }
             } catch (IOException ex) {
                 System.err.println("Failed to load custom Minecraft Version information!");
