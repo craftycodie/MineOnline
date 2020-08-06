@@ -28,10 +28,10 @@ public class LauncherFiles {
 
     public static final String CACHED_SKIN_PATH = MINEONLINE_CACHE_FOLDER + "skin.png";
     public static final String CACHED_CLOAK_PATH = MINEONLINE_CACHE_FOLDER + "cloak.png";
-    public static final String CACHED_VERSION_INFO_PATH = MINEONLINE_CACHE_FOLDER + "version-info.json";
 
     public static final String LAST_LOGIN_PATH = MINEONLINE_CACHE_FOLDER + "lastlogin";
-    public static final String CUSTOM_VERSION_INFO_PATH = MINEONLINE_FOLDER + "custom-version-info.json";
+    public static final String MINEONLINE_CUSTOM_VERSIONS_FOLDER = MINEONLINE_FOLDER + "custom-versions" + File.separator;
+    public static final String MINEONLINE_VERSIONS_FOLDER = MINEONLINE_FOLDER + "versions" + File.separator;
 
     public static final String MINECRAFT_RESOURCES_PATH = getMinecraftDirectory() + File.separator + "resources" + File.separator;
     public static final String MINECRAFT_ASSETS_PATH = getMinecraftDirectory() + File.separator + "assets" + File.separator;
@@ -43,8 +43,7 @@ public class LauncherFiles {
     public static final URL TEMPLATE_SKIN_PATH = LauncherFiles.class.getResource("/img/skin.png");
     public static final URL TEMPLATE_CLOAK_PATH = LauncherFiles.class.getResource("/img/cloak.png");
     public static final URL MISSING_TEXTURE = LauncherFiles.class.getResource("/img/missing.png");
-    public static final URL VERSION_INFO_PATH = LauncherFiles.class.getResource("/version-info.json");
-
+    public static final URL VERSIONS_RESOURCE = LauncherFiles.class.getResource("/versions/");
 
     public static File getMinecraftDirectory() {
         File workingDirectory;

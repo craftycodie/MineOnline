@@ -6,6 +6,8 @@ import gg.codie.mineonline.patches.*;
 import gg.codie.utils.MD5Checksum;
 import org.lwjgl.opengl.Display;
 
+import javax.swing.*;
+import java.awt.*;
 import java.io.File;
 import java.lang.reflect.*;
 import java.nio.file.Paths;
@@ -74,7 +76,18 @@ public class MinecraftClientLauncher {
 
             }
 
-            Runtime.getRuntime().halt(0);
+            if(gameProcess.exitValue() == 1) {
+                EventQueue.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        JOptionPane.showMessageDialog(null, "Failed to launch Minecraft.\nPlease make sure all libraries are present.");
+                    }
+                });
+                DisplayManager.getFrame().setVisible(true);
+
+            } else {
+                Runtime.getRuntime().halt(0);
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -123,7 +136,7 @@ public class MinecraftClientLauncher {
             }
         }
 
-        System.out.println("Launching Jar, MD5: " + MD5Checksum.getMD5Checksum(jarPath));
+        System.out.println("Launching Jar, MD5: " + MD5Checksum.getMD5ChecksumForFile(jarPath));
 
 
         try {
@@ -206,6 +219,8 @@ public class MinecraftClientLauncher {
         } catch (Throwable e) {
             if(e.getClass() != ClassNotFoundException.class)
                 e.printStackTrace();
+
+            System.exit(1);
         }
 
     }

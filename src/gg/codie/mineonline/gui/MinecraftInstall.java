@@ -1,6 +1,5 @@
 package gg.codie.mineonline.gui;
 
-import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.MinecraftVersionInfo;
 import gg.codie.utils.MD5Checksum;
 
@@ -52,7 +51,7 @@ public class MinecraftInstall {
                 }
             });
 
-            this.jarMD5 = MD5Checksum.getMD5Checksum(jarPath);
+            this.jarMD5 = MD5Checksum.getMD5ChecksumForFile(jarPath);
 
             MinecraftVersionInfo.MinecraftVersion version = MinecraftVersionInfo.getVersionByMD5(jarMD5);
 
@@ -73,7 +72,7 @@ public class MinecraftInstall {
         this.jarPath = jarPath;
 
         try {
-            this.jarMD5 = MD5Checksum.getMD5Checksum(jarPath);
+            this.jarMD5 = MD5Checksum.getMD5ChecksumForFile(jarPath);
 
             MinecraftVersionInfo.MinecraftVersion version = MinecraftVersionInfo.getVersionByMD5(jarMD5);
 

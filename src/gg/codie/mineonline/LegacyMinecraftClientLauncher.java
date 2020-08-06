@@ -6,7 +6,6 @@ import gg.codie.mineonline.gui.rendering.*;
 import gg.codie.mineonline.gui.rendering.Renderer;
 import gg.codie.mineonline.lwjgl.OnCreateListener;
 import gg.codie.mineonline.lwjgl.OnUpdateListener;
-import gg.codie.utils.ArrayUtils;
 import gg.codie.utils.MD5Checksum;
 import gg.codie.utils.OSUtils;
 import org.lwjgl.BufferUtils;
@@ -87,7 +86,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
             }
         }
 
-        System.out.println("Launching Jar, MD5: " + MD5Checksum.getMD5Checksum(jarPath));
+        System.out.println("Launching Jar, MD5: " + MD5Checksum.getMD5ChecksumForFile(jarPath));
 
         fullscreen = Settings.settings.has(Settings.FULLSCREEN) && Settings.settings.getBoolean(Settings.FULLSCREEN);
 
