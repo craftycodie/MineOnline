@@ -8,8 +8,10 @@ import gg.codie.utils.OSUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.nio.file.*;
 import java.util.*;
@@ -68,6 +70,53 @@ public class MinecraftVersionInfo {
                     System.out.println("Bad version file " + versionFile.getPath());
                 }
             }
+        }
+
+        return (MinecraftVersion[])versions.toArray(new MinecraftVersion[0]);
+    }
+
+    private static MinecraftVersion[] getResourceVersions() {
+        LinkedList versions = new LinkedList();
+
+        try {
+            File jarFile = new File(LibraryManager.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+
+            if(!jarFile.exists() || jarFile.isDirectory())
+                return new MinecraftVersion[0];
+
+            java.util.jar.JarFile jar = new java.util.jar.JarFile(jarFile.getPath());
+            java.util.Enumeration enumEntries = jar.entries();
+
+            while (enumEntries.hasMoreElements()) {
+                java.util.jar.JarEntry file = (java.util.jar.JarEntry) enumEntries.nextElement();
+                if (!file.getName().startsWith("versions")) {
+                    continue;
+                }
+
+                if (versions == null)
+                    continue;
+
+                if (file.getName().length() < 37 || file.isDirectory())
+                    continue;
+
+                try {
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(jar.getInputStream(file)));
+                    StringBuffer sb = new StringBuffer();
+                    String str;
+                    while ((str = reader.readLine()) != null) {
+                        sb.append(str);
+                    }
+
+                    MinecraftVersion version = fromJSONObject(new JSONObject(str));
+                    versions.add(version);
+                } catch (IOException ex) {
+                    System.out.println("Bad version file " + file.getName());
+                }
+
+            }
+        } catch (Exception ioe) {
+            System.out.println("Failed to load resource versions.");
+            return new MinecraftVersion[0];
         }
 
         return (MinecraftVersion[])versions.toArray(new MinecraftVersion[0]);
@@ -200,7 +249,7 @@ public class MinecraftVersionInfo {
         // If there's a resource version that's not in the cache, extract it.
         MinecraftVersion[] cachedVersions = getVersions(LauncherFiles.MINEONLINE_VERSIONS_FOLDER);
         try {
-            for (MinecraftVersion version : getVersions(Paths.get(LauncherFiles.VERSIONS_RESOURCE.toURI()).toString())) {
+            for (MinecraftVersion version : getResourceVersions()) {
                 if(getVersionByMD5(version.md5, cachedVersions) == null) {
                     try {
                         File resource = new File(Paths.get(LauncherFiles.VERSIONS_RESOURCE.toURI()).toString() + File.separator + version.type + File.separator + version.name + " " + version.md5 + ".json");
