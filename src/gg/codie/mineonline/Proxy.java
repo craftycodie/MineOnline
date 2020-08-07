@@ -1,10 +1,9 @@
 package gg.codie.mineonline;
 
-import java.io.*;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
-import java.net.*;
+import java.io.File;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.URISyntaxException;
 import java.util.Map;
 
 
@@ -56,7 +55,6 @@ public class Proxy {
                 Settings.settings.getString(Settings.JAVA_COMMAND),
                 "-javaagent:" + LauncherFiles.PATCH_AGENT_JAR,
                 "-Djava.util.Arrays.useLegacyMergeSort=true",
-                multiInstance ? "-Dmineonline.multiinstance=true" : "",
                 "-cp",
                 new File(Proxy.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath(),
                 MineOnline.class.getCanonicalName(),
