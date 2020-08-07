@@ -2,16 +2,19 @@ package gg.codie.mineonline;
 
 import gg.codie.minecraft.client.Options;
 import gg.codie.mineonline.gui.rendering.DisplayManager;
-import gg.codie.mineonline.patches.*;
+import gg.codie.mineonline.patches.PropertiesSignaturePatch;
+import gg.codie.mineonline.patches.URLPatch;
+import gg.codie.mineonline.patches.YggdrasilMinecraftSessionServicePatch;
 import gg.codie.utils.MD5Checksum;
 import org.lwjgl.opengl.Display;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
-import java.lang.reflect.*;
+import java.lang.reflect.Method;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.LinkedList;
+import java.util.Map;
 
 public class MinecraftClientLauncher {
 
@@ -44,6 +47,7 @@ public class MinecraftClientLauncher {
                     "-javaagent:" + LauncherFiles.PATCH_AGENT_JAR,
                     "-Djava.util.Arrays.useLegacyMergeSort=true",
                     "-Djava.net.preferIPv4Stack=true",
+                    "-XstartOnFirstThread",
                     "-Dmineonline.username=" + Session.session.getUsername(),
                     "-Dmineonline.token=" + Session.session.getSessionToken(),
                     "-Dmineonline.uuid=" + Session.session.getUuid(),
