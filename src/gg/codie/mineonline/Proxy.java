@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.URISyntaxException;
+import java.util.LinkedList;
 import java.util.Map;
 
 
@@ -48,6 +49,17 @@ public class Proxy {
         LibraryManager.updateClasspath();
 
         launchProxy();
+
+        LinkedList<String> launchArgs = new LinkedList();
+        launchArgs.add(Settings.settings.getString(Settings.JAVA_COMMAND));
+        launchArgs.add("-javaagent:" + LauncherFiles.PATCH_AGENT_JAR);
+        launchArgs.add("-Djava.util.Arrays.useLegacyMergeSort=true");
+        if (multiInstance)
+            launchArgs.add("-Dmineonline.multiinstance=true");
+        launchArgs.add("-cp");
+        launchArgs.add(new File(Proxy.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath());
+        launchArgs.add(MineOnline.class.getCanonicalName());
+        launchArgs.add("" + proxyPort);
 
         // Start the proxy as a new process.
         java.util.Properties props = System.getProperties();

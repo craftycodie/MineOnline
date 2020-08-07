@@ -6,6 +6,7 @@ import gg.codie.mineonline.patches.PropertiesSignaturePatch;
 import gg.codie.mineonline.patches.URLPatch;
 import gg.codie.mineonline.patches.YggdrasilMinecraftSessionServicePatch;
 import gg.codie.utils.MD5Checksum;
+import gg.codie.utils.OSUtils;
 import org.lwjgl.opengl.Display;
 
 import javax.swing.*;
@@ -42,23 +43,30 @@ public class MinecraftClientLauncher {
         try {
 
             java.util.Properties props = System.getProperties();
-            ProcessBuilder processBuilder = new ProcessBuilder(
-                    Settings.settings.getString(Settings.JAVA_COMMAND),
-                    "-javaagent:" + LauncherFiles.PATCH_AGENT_JAR,
-                    "-Djava.util.Arrays.useLegacyMergeSort=true",
-                    "-Djava.net.preferIPv4Stack=true",
-                    "-XstartOnFirstThread",
-                    "-Dmineonline.username=" + Session.session.getUsername(),
-                    "-Dmineonline.token=" + Session.session.getSessionToken(),
-                    "-Dmineonline.uuid=" + Session.session.getUuid(),
-                    "-cp",
-                    new File(MinecraftClientLauncher.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath(),
-                    MinecraftClientLauncher.class.getCanonicalName(),
-                    jarPath,
-                    "" + Display.getWidth(),
-                    "" + Display.getHeight(),
-                    serverIP != null ? serverIP : "",
-                    serverPort != null ? serverPort : "");
+
+            LinkedList<String> launchArgs = new LinkedList();
+            launchArgs.add(Settings.settings.getString(Settings.JAVA_COMMAND));
+            launchArgs.add("-javaagent:" + LauncherFiles.PATCH_AGENT_JAR);
+            launchArgs.add("-Djava.util.Arrays.useLegacyMergeSort=true");
+            launchArgs.add("-Djava.net.preferIPv4Stack=true");
+            if(OSUtils.isMac())
+                launchArgs.add("-XstartOnFirstThread");
+            launchArgs.add("-Dmineonline.username=" + Session.session.getUsername());
+            launchArgs.add("-Dmineonline.token=" + Session.session.getSessionToken());
+            launchArgs.add("-Dmineonline.uuid=" + Session.session.getUuid());
+            launchArgs.add("-cp");
+            launchArgs.add(new File(MinecraftClientLauncher.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath());
+            launchArgs.add(MinecraftClientLauncher.class.getCanonicalName());
+            launchArgs.add(jarPath);
+            launchArgs.add("" + Display.getWidth());
+            launchArgs.add("" + Display.getHeight());
+            if(serverIP != null) {
+                launchArgs.add(serverIP);
+                if(serverPort != null)
+                    launchArgs.add(serverPort);
+            }
+
+            ProcessBuilder processBuilder = new ProcessBuilder(launchArgs.toArray(new String[0]));
 
             Map<String, String> env = processBuilder.environment();
             for (String prop : props.stringPropertyNames()) {
