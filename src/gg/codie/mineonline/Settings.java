@@ -18,7 +18,6 @@ public class Settings {
 
     public static final String SETTINGS_VERSION = "settingsVersion";
     public static final String IS_PREMIUM = "isPremium";
-    public static final String REDIRECTED_DOMAINS = "redirectedDomains";
     public static final String JAVA_COMMAND = "javaCommand";
     public static final String SELECTED_JAR = "selectedJar";
     public static final String MINECRAFT_JARS = "minecraftJars";
@@ -103,25 +102,6 @@ public class Settings {
         settings = new JSONObject();
         settings.put(SETTINGS_VERSION, 3);
         settings.put(IS_PREMIUM, true);
-        settings.put(REDIRECTED_DOMAINS, new String[] {
-                "www.minecraft.net:-1",
-                "skins.minecraft.net",
-                "session.minecraft.net",
-                "realms.minecraft.net",
-                "assets.minecraft.net",
-                "mcoapi.minecraft.net",
-                "snoop.minecraft.net",
-                "minecraft.net",
-                "www.minecraft.net",
-                "s3.amazonaws.com",
-                "api.mojang.com",
-                "authserver.mojang.com",
-                "sessionserver.mojang.com",
-
-                "banshee.alex231.com",
-                "mcauth-alex231.rhcloud.com"
-            }
-        );
         settings.put(MINECRAFT_JARS, new String[0]);
         settings.put(JAVA_COMMAND, "java");
         settings.put(SELECTED_JAR, "");
@@ -180,7 +160,6 @@ public class Settings {
                 String[] oldKeys = new String[] {
                         IS_PREMIUM,
                         JAVA_COMMAND,
-                        //REDIRECTED_DOMAINS, handle manually
                         SELECTED_JAR,
                         MINECRAFT_JARS,
                         FULLSCREEN,
@@ -194,37 +173,15 @@ public class Settings {
                         settings.put(key, oldSettings.get(key));
                 }
 
-                if(oldSettings.has(REDIRECTED_DOMAINS)) {
-                    JSONArray domains = oldSettings.getJSONArray(REDIRECTED_DOMAINS);
-                    domains.put("session.minecraft.net");
-                    settings.put(REDIRECTED_DOMAINS, domains);
-                }
-
                 saveSettings();
             } else {
                 switch (settings.getInt(SETTINGS_VERSION)) {
-//                    case 2:
-//                        settings.put(REDIRECTED_DOMAINS, new String[] {
-//                                "www.minecraft.net:-1",
-//                                "skins.minecraft.net",
-//                                "session.minecraft.net",
-//                                "realms.minecraft.net",
-//                                "assets.minecraft.net",
-//                                "mcoapi.minecraft.net",
-//                                "snoop.minecraft.net",
-//                                "minecraft.net",
-//                                "www.minecraft.net",
-//                                "s3.amazonaws.com",
-//                                "api.mojang.com",
-//                                "authserver.mojang.com",
-//                                "sessionserver.mojang.com",
-//
-//                                "banshee.alex231.com",
-//                                "mcauth-alex231.rhcloud.com"
-//                            }
-//                        );
+
                 }
             }
+
+            if (settings.has("redirectedDomains"))
+                settings.remove("redirectedDomains");
         } catch (IOException ex) {
             saveSettings();
         }

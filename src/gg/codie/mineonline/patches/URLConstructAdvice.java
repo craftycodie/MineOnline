@@ -7,7 +7,8 @@ import org.json.JSONObject;
 import java.lang.reflect.Field;
 import java.util.UUID;
 
-class URLConstructAdvice {
+public class URLConstructAdvice {
+
     @Advice.OnMethodEnter
     static void intercept(@Advice.Argument(0) String url) {
         try {
@@ -15,6 +16,9 @@ class URLConstructAdvice {
                 return;
 //            else
 //                System.out.println("Original URL: " + url);
+
+            // The string have to be copied here as this method is used before any class is loaded,
+            // and catching class not founds doesn't here for some reason.
 
             for(String replaceHost : new String[] {
                     "textures.minecraft.net",
@@ -26,8 +30,8 @@ class URLConstructAdvice {
                     "assets.minecraft.net",
                     "mcoapi.minecraft.net",
                     "snoop.minecraft.net",
-                    "minecraft.net",
                     "www.minecraft.net",
+                    "minecraft.net",
                     "s3.amazonaws.com",
                     "api.mojang.com",
                     "authserver.mojang.com",

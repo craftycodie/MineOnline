@@ -1,5 +1,6 @@
 package gg.codie.mineonline;
 
+import gg.codie.mineonline.patches.URLConstructAdvice;
 import gg.codie.utils.ArrayUtils;
 import gg.codie.utils.JSONUtils;
 
@@ -39,7 +40,7 @@ public class ProxyThread implements Runnable {
         System.setProperty("java.net.preferIPv4Stack", "true");
 
         Settings.loadSettings();
-        String[] redirectedDomains = JSONUtils.getStringArray(Settings.settings.getJSONArray(Settings.REDIRECTED_DOMAINS));
+        String[] redirectedDomains = Globals.REDIRECTED_DOMAINS;
 
         Socket clientSocket = null;
 

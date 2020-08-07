@@ -12,6 +12,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.*;
 import java.util.*;
@@ -107,7 +108,7 @@ public class MinecraftVersionInfo {
                         sb.append(str);
                     }
 
-                    MinecraftVersion version = fromJSONObject(new JSONObject(str));
+                    MinecraftVersion version = fromJSONObject(new JSONObject(sb.toString()));
                     versions.add(version);
                 } catch (IOException ex) {
                     System.out.println("Bad version file " + file.getName());
@@ -116,6 +117,7 @@ public class MinecraftVersionInfo {
             }
         } catch (Exception ioe) {
             System.out.println("Failed to load resource versions.");
+            ioe.printStackTrace();
             return new MinecraftVersion[0];
         }
 
@@ -208,8 +210,6 @@ public class MinecraftVersionInfo {
                                 String cachedInfoMd5 = MD5Checksum.getMD5ChecksumForString(String.join("\n", Files.readAllLines(Paths.get(cachedInfo.getPath()))));
 
                                 if (!infoMd5.equals(cachedInfoMd5)) {
-                                    System.out.println("Download " + infoMd5);
-                                    System.out.println("Cached " + cachedInfoMd5);
                                     cachedInfo.delete();
                                 } else {
                                     alreadyDownloaded = true;
@@ -228,9 +228,12 @@ public class MinecraftVersionInfo {
                     String downloadVersionText = MineOnlineAPI.getVersionInfo(((JSONObject) versionPathObject).getString("url"));
                     MinecraftVersion downloadVersion = fromJSONObject(new JSONObject(downloadVersionText));
 
-                    Path target = Paths.get(LauncherFiles.MINECRAFT_VERSIONS_PATH + downloadVersion.type + File.separator + downloadVersion.name + " " + downloadVersion.md5 + ".json");
-                    new File(target.toUri()).getParentFile().mkdirs();
-                    new File(target.toUri()).createNewFile();
+                    Path target = Paths.get(LauncherFiles.MINEONLINE_VERSIONS_FOLDER + downloadVersion.type + File.separator + downloadVersion.name + " " + downloadVersion.md5 + ".json");
+                    File targetFile = new File(target.toUri());
+                    targetFile.getParentFile().mkdirs();
+                    if(!targetFile.exists())
+                        targetFile.createNewFile();
+
                     Files.write(target, downloadVersionText.getBytes(), StandardOpenOption.WRITE);
 
                 } catch (Exception ex) {
@@ -248,22 +251,18 @@ public class MinecraftVersionInfo {
     private static void loadVersions() {
         // If there's a resource version that's not in the cache, extract it.
         MinecraftVersion[] cachedVersions = getVersions(LauncherFiles.MINEONLINE_VERSIONS_FOLDER);
-        try {
-            for (MinecraftVersion version : getResourceVersions()) {
-                if(getVersionByMD5(version.md5, cachedVersions) == null) {
-                    try {
-                        File resource = new File(Paths.get(LauncherFiles.VERSIONS_RESOURCE.toURI()).toString() + File.separator + version.type + File.separator + version.name + " " + version.md5 + ".json");
-                        File target = new File(LauncherFiles.MINEONLINE_VERSIONS_FOLDER + version.type + File.separator + version.name + " " + version.md5 + ".json");
-                        target.getParentFile().mkdirs();
-                        Files.copy(Paths.get(resource.toURI()), Paths.get(target.toURI()));
-                    } catch (IOException ex) {
-                        System.out.println("Failed to extract version " + version.md5);
-                        ex.printStackTrace();
-                    }
+        for (MinecraftVersion version : getResourceVersions()) {
+            if(getVersionByMD5(version.md5, cachedVersions) == null) {
+                try {
+                    System.out.println("Extracting version " + version.name + " " + version.md5);
+                    File target = new File(LauncherFiles.MINEONLINE_VERSIONS_FOLDER + version.type + File.separator + version.name + " " + version.md5 + ".json");
+                    target.getParentFile().mkdirs();
+                    Files.copy(MinecraftVersionInfo.class.getResourceAsStream("/versions/" + version.type + "/" + version.name + " " + version.md5 + ".json"), Paths.get(target.toURI()), StandardCopyOption.REPLACE_EXISTING);
+                } catch (Exception ex) {
+                    System.out.println("Failed to extract version " + version.md5);
+                    ex.printStackTrace();
                 }
             }
-        } catch (URISyntaxException ex) {
-            ex.printStackTrace();
         }
         // Fetch latest versions from the API
         fetchVersions();
