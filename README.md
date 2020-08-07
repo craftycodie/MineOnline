@@ -1,9 +1,9 @@
 ![logo](mineonlinelogo.png)
 
-Launch old versions of minecraft just as you remembered them, only without a browser.
+Launch old versions of minecraft just as you remembered them.
 
 ## What is MineOnline?
-MineOnline is a launcher for pre-release Minecraft versions capable of running web applets without a browser, and redirecting old web requests to a new API.
+MineOnline is a launcher Minecraft capable of running web applets without a browser, and redirecting web requests to a new API.
 
 For example, if you wanted to play classic right now, you'd have no way to launch it without a lot of outdated vulnerable software and luck. And even if you pulled it off, you'd be running a stipped down version of the game, with no skins, no server authentication and no online map saving. MineOnline fixes this.
 
@@ -12,7 +12,7 @@ The program can also run regular desktop versions of the game, and even old laun
 [Download](https://github.com/codieradical/MineOnline/releases)
 
 ## Features
-These are features MineOnline will bring to pre-release Minecraft.
+These are features MineOnline will bring to Minecraft.
 
 - Launcher Authentication and Updates
 
@@ -29,6 +29,8 @@ These are features MineOnline will bring to pre-release Minecraft.
 - Resizable & Fullscreenable Applets
 
 - Screenshots (F2)
+
+- Minecraft Realms (for all release versions)
 
 ![launcher](launcherdemo.png)
 
@@ -47,17 +49,27 @@ If you don't want your server to appear on the list, set `dont-list: true` in `s
 You can optionally provide a "serverlist-ip" and or "serverlist-port" in your server.properties, if you'd like a different IP/hostname/port to be listed.
 
 ## For Modders
-You can add custom version information to the launcher by creating the file `.minecraft\mineonline\custom-version-info.json`.
+You can add custom version information to the launcher by creating a version info file at `.minecraft\mineonline\custom-versions\`.
+The file should be in a directory named client or server, and it's name should contain the version name and md5.
+For example:
+`.minecraft\mineonline\custom-versions\client\Skylands 0.1 F8F78A4ED4033547CC1EA28C776DA7AE.json`
 This file should contain an array of JSON versions, like this:
 
 ```json
-[
-  { "name": "Skylands 0.1", "md5": "F8F78A4ED4033547CC1EA28C776DA7AE", "type": "client", "info": "Beta 1.7.3 mod" },
-  { "name": "Skylands 0.1", "md5": "22D6B302995BA88549C98ED1996A5430", "type": "server", "info": "Beta 1.7.3 mod", "clientName": "Beta 1.7.3", "clientMd5s": ["F8F78A4ED4033547CC1EA28C776DA7AE", "EAE3353FDAA7E10A59B4CB5B45BFA10D"] }
-]
+{ 
+  "name": "Skylands 0.1", 
+  "md5": "F8F78A4ED4033547CC1EA28C776DA7AE", 
+  "type": "client",
+  "baseVersion": "b1.7.3",
+  "info": "Beta 1.7.3 mod",
+  "legacy": true
+}
 ```
 
-If you would like a version to be added to the main list, contact me (Codie) and I can add it to the API.
+Legacy is true for any pre-1.6 minecraft version.
+For 1.6 and above, libraries should be provided. Examples can be found [here](https://github.com/codieradical/MineOnline/blob/master/res/versions/client/).
+
+If you would like a version to be added to the main list, contact me (Codie).
 
 ## For Developers
 As per the license you are welcome to use the launcher code under non-commercial conditions.
