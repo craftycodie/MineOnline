@@ -1,1 +1,8 @@
-{"name":"Release 1.4.2","md5":"E983C2F185AB8988856CD20914286D49","sha256":"EA1A86E40AE76052C7828153C600A8A9B1DE438D7596977EADB252EE2A722847","type":"server","clientName":"Release 1.4.2","baseVersion":"1.4.2"}
+{
+  "name": "Release 1.4.2",
+  "md5": "E983C2F185AB8988856CD20914286D49",
+  "sha256": "EA1A86E40AE76052C7828153C600A8A9B1DE438D7596977EADB252EE2A722847",
+  "type": "server",
+  "clientName": "Release 1.4.2",
+  "baseVersion": "1.4.2"
+}

@@ -1,1 +1,10 @@
-{"name":"Alpha 0.1.0","md5":"780653B7A1546EDF983D2AE079EBF15F","sha256":"4DA36081487A1FE25C3E6002E34B110D92616DD9C2A0DA5125D885C0EF783B6F","type":"server","clientVersions":["a1.0.15"],"baseVersion":"a1.0.15"}
+{
+  "name": "Alpha 0.1.0",
+  "md5": "780653B7A1546EDF983D2AE079EBF15F",
+  "sha256": "4DA36081487A1FE25C3E6002E34B110D92616DD9C2A0DA5125D885C0EF783B6F",
+  "type": "server",
+  "clientVersions": [
+    "a1.0.15"
+  ],
+  "baseVersion": "a1.0.15"
+}

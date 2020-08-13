@@ -1,1 +1,7 @@
-{"name":"Banshee 0.0.5.0","md5":"27ADBA2B0DD3610E13E117FF18DC60BF","type":"server","info":"Beta 1.7.3 mod","baseVersion":"banshee-0.0.5.0"}
+{
+  "name": "Banshee 0.0.5.0",
+  "md5": "27ADBA2B0DD3610E13E117FF18DC60BF",
+  "type": "server",
+  "info": "Beta 1.7.3 mod",
+  "baseVersion": "banshee-0.0.5.0"
+}

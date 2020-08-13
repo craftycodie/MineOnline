@@ -1,1 +1,10 @@
-{"name":"Snapshot 17w17b","baseVersion":"17w17b","type":"server","clientVersions":["17w17b"],"md5":"5360A96922E1DB5FE9CD7785C11CE5C7","sha256":"A0CC570906AC5CDA9995EDD7648189F3DF1C42B11E6FF48EE304FA6F0406B366"}
+{
+  "name": "Snapshot 17w17b",
+  "baseVersion": "17w17b",
+  "type": "server",
+  "clientVersions": [
+    "17w17b"
+  ],
+  "md5": "5360A96922E1DB5FE9CD7785C11CE5C7",
+  "sha256": "A0CC570906AC5CDA9995EDD7648189F3DF1C42B11E6FF48EE304FA6F0406B366"
+}

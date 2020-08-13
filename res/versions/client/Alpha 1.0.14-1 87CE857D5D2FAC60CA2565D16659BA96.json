@@ -1,1 +1,9 @@
-{"name":"Alpha 1.0.14-1","md5":"87CE857D5D2FAC60CA2565D16659BA96","sha256":"49CDEC4BE20E799A56E95E7F04A9EC88E2D0E2CC1B7BDBF47273F5429EE363CB","type":"client","enableScreenshotPatch":true,"legacy":true,"baseVersion":"a1.0.14-1"}
+{
+  "name": "Alpha 1.0.14-1",
+  "md5": "87CE857D5D2FAC60CA2565D16659BA96",
+  "sha256": "49CDEC4BE20E799A56E95E7F04A9EC88E2D0E2CC1B7BDBF47273F5429EE363CB",
+  "type": "client",
+  "enableScreenshotPatch": true,
+  "legacy": true,
+  "baseVersion": "a1.0.14-1"
+}

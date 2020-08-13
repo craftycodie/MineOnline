@@ -1,1 +1,10 @@
-{"name":"Snapshot 14w32b","baseVersion":"14w32b","type":"server","clientVersions":["14w32b"],"md5":"A0D7675D9E5EA0E76DDB4F67B4629B0D","sha256":"C2C4FF5940197E7AB6EF922CCCCE04F9CEE0EF118052C4D607D9351B930F3AE5"}
+{
+  "name": "Snapshot 14w32b",
+  "baseVersion": "14w32b",
+  "type": "server",
+  "clientVersions": [
+    "14w32b"
+  ],
+  "md5": "A0D7675D9E5EA0E76DDB4F67B4629B0D",
+  "sha256": "C2C4FF5940197E7AB6EF922CCCCE04F9CEE0EF118052C4D607D9351B930F3AE5"
+}

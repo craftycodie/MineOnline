@@ -1,1 +1,10 @@
-{"name":"Release 1.9.2","baseVersion":"1.9.2","type":"server","clientVersions":["1.9.2"],"md5":"560D467028F17A70997151ED0053DEB6","sha256":"A972D127BE3B9D5FAFE5BD610A173563CB24331B6664A3DC5F73B3CC76D77081"}
+{
+  "name": "Release 1.9.2",
+  "baseVersion": "1.9.2",
+  "type": "server",
+  "clientVersions": [
+    "1.9.2"
+  ],
+  "md5": "560D467028F17A70997151ED0053DEB6",
+  "sha256": "A972D127BE3B9D5FAFE5BD610A173563CB24331B6664A3DC5F73B3CC76D77081"
+}

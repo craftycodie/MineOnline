@@ -1,1 +1,12 @@
-{"name":"c0.30-c-renew","md5":"FCFD7F83A6B27503CF48202381A5ADF2","sha256":"3BFAA9CECCFD49F62D4C1863D5CD565C24DE1F83BAB982A38E4811AC369993A5","type":"client","enableScreenshotPatch":true,"forceFullscreenMacos":true,"enableFullscreenPatch":true,"enableMacosCursorPatch":true,"legacy":true,"baseVersion":"c0.30-c-renew"}
+{
+  "name": "c0.30-c-renew",
+  "md5": "FCFD7F83A6B27503CF48202381A5ADF2",
+  "sha256": "3BFAA9CECCFD49F62D4C1863D5CD565C24DE1F83BAB982A38E4811AC369993A5",
+  "type": "client",
+  "enableScreenshotPatch": true,
+  "forceFullscreenMacos": true,
+  "enableFullscreenPatch": true,
+  "enableMacosCursorPatch": true,
+  "legacy": true,
+  "baseVersion": "c0.30-c-renew"
+}

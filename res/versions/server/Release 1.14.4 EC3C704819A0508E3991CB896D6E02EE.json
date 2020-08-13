@@ -1,1 +1,10 @@
-{"name":"Release 1.14.4","baseVersion":"1.14.4","type":"server","clientVersions":["1.14.4"],"md5":"EC3C704819A0508E3991CB896D6E02EE","sha256":"5ECDEDAB3A6E129321A444490D0A467C25EA702A24A99CEBE3B6AED41F8F5729"}
+{
+  "name": "Release 1.14.4",
+  "baseVersion": "1.14.4",
+  "type": "server",
+  "clientVersions": [
+    "1.14.4"
+  ],
+  "md5": "EC3C704819A0508E3991CB896D6E02EE",
+  "sha256": "5ECDEDAB3A6E129321A444490D0A467C25EA702A24A99CEBE3B6AED41F8F5729"
+}

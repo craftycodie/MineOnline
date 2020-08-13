@@ -1,1 +1,10 @@
-{"name":"Snapshot 14w32a","baseVersion":"14w32a","type":"server","clientVersions":["14w32a"],"md5":"0AF515A88B7F3DE7E152DA768B24FE89","sha256":"6969688AD556EE91AE078D31E7D5D84B24DD907EA0EE55976B90A1B16981DDBB"}
+{
+  "name": "Snapshot 14w32a",
+  "baseVersion": "14w32a",
+  "type": "server",
+  "clientVersions": [
+    "14w32a"
+  ],
+  "md5": "0AF515A88B7F3DE7E152DA768B24FE89",
+  "sha256": "6969688AD556EE91AE078D31E7D5D84B24DD907EA0EE55976B90A1B16981DDBB"
+}

@@ -1,1 +1,10 @@
-{"name":"Release 1.7.6","baseVersion":"1.7.6","type":"server","clientVersions":["1.7.6"],"md5":"7C34FEB800DF7B2AEB5A4D590A064C5A","sha256":"5CDC6AB6168AE496CE1D1AE96C0B165360184518D030417429EC7687C0B9D527"}
+{
+  "name": "Release 1.7.6",
+  "baseVersion": "1.7.6",
+  "type": "server",
+  "clientVersions": [
+    "1.7.6"
+  ],
+  "md5": "7C34FEB800DF7B2AEB5A4D590A064C5A",
+  "sha256": "5CDC6AB6168AE496CE1D1AE96C0B165360184518D030417429EC7687C0B9D527"
+}

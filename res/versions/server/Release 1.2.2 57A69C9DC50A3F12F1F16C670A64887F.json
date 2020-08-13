@@ -1,1 +1,8 @@
-{"name":"Release 1.2.2","md5":"57A69C9DC50A3F12F1F16C670A64887F","sha256":"5832807E9EAF580A4735E425B076DF273EE3783498B94F39CD4A51E4D2359D2B","type":"server","clientName":"Release 1.2.2","baseVersion":"1.2.2"}
+{
+  "name": "Release 1.2.2",
+  "md5": "57A69C9DC50A3F12F1F16C670A64887F",
+  "sha256": "5832807E9EAF580A4735E425B076DF273EE3783498B94F39CD4A51E4D2359D2B",
+  "type": "server",
+  "clientName": "Release 1.2.2",
+  "baseVersion": "1.2.2"
+}

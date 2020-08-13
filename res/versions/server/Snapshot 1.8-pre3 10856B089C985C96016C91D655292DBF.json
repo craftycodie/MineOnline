@@ -1,1 +1,10 @@
-{"name":"Snapshot 1.8-pre3","baseVersion":"1.8-pre3","type":"server","clientVersions":["1.8-pre3"],"md5":"10856B089C985C96016C91D655292DBF","sha256":"DA969B62FFDE078C8890C40B05C47082BC691AD53B026534C87057A2F4CD0118"}
+{
+  "name": "Snapshot 1.8-pre3",
+  "baseVersion": "1.8-pre3",
+  "type": "server",
+  "clientVersions": [
+    "1.8-pre3"
+  ],
+  "md5": "10856B089C985C96016C91D655292DBF",
+  "sha256": "DA969B62FFDE078C8890C40B05C47082BC691AD53B026534C87057A2F4CD0118"
+}

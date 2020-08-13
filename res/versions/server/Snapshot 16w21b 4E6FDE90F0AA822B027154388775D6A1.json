@@ -1,1 +1,10 @@
-{"name":"Snapshot 16w21b","baseVersion":"16w21b","type":"server","clientVersions":["16w21b"],"md5":"4E6FDE90F0AA822B027154388775D6A1","sha256":"52D3B46DAC4F555930879F5EB7D326E55DD79A90EEF381BD178FCFCA42A263DA"}
+{
+  "name": "Snapshot 16w21b",
+  "baseVersion": "16w21b",
+  "type": "server",
+  "clientVersions": [
+    "16w21b"
+  ],
+  "md5": "4E6FDE90F0AA822B027154388775D6A1",
+  "sha256": "52D3B46DAC4F555930879F5EB7D326E55DD79A90EEF381BD178FCFCA42A263DA"
+}

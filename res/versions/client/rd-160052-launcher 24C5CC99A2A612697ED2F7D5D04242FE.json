@@ -1,1 +1,9 @@
-{"name":"rd-160052-launcher","md5":"24C5CC99A2A612697ED2F7D5D04242FE","sha256":"BBD6E24A276C5082F8AAFAE152BED450C161D56FF776472821DE56C0DAA7FE1E","type":"client","enableScreenshotPatch":true,"legacy":true,"baseVersion":"rd-160052-launcher"}
+{
+  "name": "rd-160052-launcher",
+  "md5": "24C5CC99A2A612697ED2F7D5D04242FE",
+  "sha256": "BBD6E24A276C5082F8AAFAE152BED450C161D56FF776472821DE56C0DAA7FE1E",
+  "type": "client",
+  "enableScreenshotPatch": true,
+  "legacy": true,
+  "baseVersion": "rd-160052-launcher"
+}

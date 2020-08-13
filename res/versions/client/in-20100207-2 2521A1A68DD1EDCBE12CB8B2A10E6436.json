@@ -1,1 +1,11 @@
-{"name":"in-20100207-2","md5":"2521A1A68DD1EDCBE12CB8B2A10E6436","sha256":"A47206A25F490BC5CFB3B3484B86C4F6EBF6475EC559BE9DB7493CA14DAEACC2","type":"client","enableScreenshotPatch":true,"baseURLHasNoPort":true,"forceFullscreenMacos":true,"legacy":true,"baseVersion":"in-20100207-2"}
+{
+  "name": "in-20100207-2",
+  "md5": "2521A1A68DD1EDCBE12CB8B2A10E6436",
+  "sha256": "A47206A25F490BC5CFB3B3484B86C4F6EBF6475EC559BE9DB7493CA14DAEACC2",
+  "type": "client",
+  "enableScreenshotPatch": true,
+  "baseURLHasNoPort": true,
+  "forceFullscreenMacos": true,
+  "legacy": true,
+  "baseVersion": "in-20100207-2"
+}

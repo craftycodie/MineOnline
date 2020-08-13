@@ -1,1 +1,10 @@
-{"name":"Release 1.11.2","baseVersion":"1.11.2","type":"server","clientVersions":["1.11.2"],"md5":"E576E5EB43CD176158917585200CB37D","sha256":"DEC47D36B429FD05076B90B1F42C2A25138BC39204AA51B9674EF2A98D64D88A"}
+{
+  "name": "Release 1.11.2",
+  "baseVersion": "1.11.2",
+  "type": "server",
+  "clientVersions": [
+    "1.11.2"
+  ],
+  "md5": "E576E5EB43CD176158917585200CB37D",
+  "sha256": "DEC47D36B429FD05076B90B1F42C2A25138BC39204AA51B9674EF2A98D64D88A"
+}

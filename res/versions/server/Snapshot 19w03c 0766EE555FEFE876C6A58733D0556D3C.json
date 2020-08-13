@@ -1,1 +1,10 @@
-{"name":"Snapshot 19w03c","baseVersion":"19w03c","type":"server","clientVersions":["19w03c"],"md5":"0766EE555FEFE876C6A58733D0556D3C","sha256":"420A09A8011532B5F14AFF99C4FFC3EAA63AC55732F7701998D9EEA62ED8F16F"}
+{
+  "name": "Snapshot 19w03c",
+  "baseVersion": "19w03c",
+  "type": "server",
+  "clientVersions": [
+    "19w03c"
+  ],
+  "md5": "0766EE555FEFE876C6A58733D0556D3C",
+  "sha256": "420A09A8011532B5F14AFF99C4FFC3EAA63AC55732F7701998D9EEA62ED8F16F"
+}

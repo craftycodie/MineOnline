@@ -1,1 +1,11 @@
-{"name":"c0.24_st_03","md5":"46D3A4626407E14881D47CF60CB187AE","sha256":"7318CDD2F29584A7E1F2258B2368501264A18CAD7AAE326655351F236CBE203E","type":"client","enableScreenshotPatch":true,"forceFullscreenMacos":true,"enableMacosCursorPatch":true,"legacy":true,"baseVersion":"c0.24_st_03"}
+{
+  "name": "c0.24_st_03",
+  "md5": "46D3A4626407E14881D47CF60CB187AE",
+  "sha256": "7318CDD2F29584A7E1F2258B2368501264A18CAD7AAE326655351F236CBE203E",
+  "type": "client",
+  "enableScreenshotPatch": true,
+  "forceFullscreenMacos": true,
+  "enableMacosCursorPatch": true,
+  "legacy": true,
+  "baseVersion": "c0.24_st_03"
+}

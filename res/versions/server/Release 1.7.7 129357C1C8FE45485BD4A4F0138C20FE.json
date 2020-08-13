@@ -1,1 +1,10 @@
-{"name":"Release 1.7.7","baseVersion":"1.7.7","type":"server","clientVersions":["1.7.7"],"md5":"129357C1C8FE45485BD4A4F0138C20FE","sha256":"74646F88ED76D878EAAF2B28C4EBD4043BB11255999E389345DC55D2F11C19A6"}
+{
+  "name": "Release 1.7.7",
+  "baseVersion": "1.7.7",
+  "type": "server",
+  "clientVersions": [
+    "1.7.7"
+  ],
+  "md5": "129357C1C8FE45485BD4A4F0138C20FE",
+  "sha256": "74646F88ED76D878EAAF2B28C4EBD4043BB11255999E389345DC55D2F11C19A6"
+}

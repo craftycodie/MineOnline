@@ -1,1 +1,10 @@
-{"name":"Snapshot 15w49b","baseVersion":"15w49b","type":"server","clientVersions":["15w49b"],"md5":"E34698434855833C860B7614E7AD1CBA","sha256":"E948E5AA52EA52E323FBFD25091C7BFC687FF75A529E12EFE791EE2B7B6342AA"}
+{
+  "name": "Snapshot 15w49b",
+  "baseVersion": "15w49b",
+  "type": "server",
+  "clientVersions": [
+    "15w49b"
+  ],
+  "md5": "E34698434855833C860B7614E7AD1CBA",
+  "sha256": "E948E5AA52EA52E323FBFD25091C7BFC687FF75A529E12EFE791EE2B7B6342AA"
+}

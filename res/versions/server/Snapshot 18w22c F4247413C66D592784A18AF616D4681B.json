@@ -1,1 +1,10 @@
-{"name":"Snapshot 18w22c","baseVersion":"18w22c","type":"server","clientVersions":["18w22c"],"md5":"F4247413C66D592784A18AF616D4681B","sha256":"4A176E787D8635AFC5DDCE5477A8FA992C8DA07DF7284062DD1E6139511BE83E"}
+{
+  "name": "Snapshot 18w22c",
+  "baseVersion": "18w22c",
+  "type": "server",
+  "clientVersions": [
+    "18w22c"
+  ],
+  "md5": "F4247413C66D592784A18AF616D4681B",
+  "sha256": "4A176E787D8635AFC5DDCE5477A8FA992C8DA07DF7284062DD1E6139511BE83E"
+}

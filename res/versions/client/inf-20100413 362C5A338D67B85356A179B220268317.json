@@ -1,1 +1,9 @@
-{"name":"inf-20100413","md5":"362C5A338D67B85356A179B220268317","sha256":"6B9513E811A83CBF81AC57BC0C8D01A02FA3F0A88A284AFE08A5145961002679","type":"client","enableScreenshotPatch":true,"legacy":true,"baseVersion":"inf-20100413"}
+{
+  "name": "inf-20100413",
+  "md5": "362C5A338D67B85356A179B220268317",
+  "sha256": "6B9513E811A83CBF81AC57BC0C8D01A02FA3F0A88A284AFE08A5145961002679",
+  "type": "client",
+  "enableScreenshotPatch": true,
+  "legacy": true,
+  "baseVersion": "inf-20100413"
+}

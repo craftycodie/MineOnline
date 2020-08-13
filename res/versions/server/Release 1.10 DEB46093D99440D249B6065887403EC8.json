@@ -1,1 +1,10 @@
-{"name":"Release 1.10","baseVersion":"1.10","type":"server","clientVersions":["1.10"],"md5":"DEB46093D99440D249B6065887403EC8","sha256":"DD44A72E920A01DEDF57507B73642F4A9DD8C6052E1F42FF6CC0635008014201"}
+{
+  "name": "Release 1.10",
+  "baseVersion": "1.10",
+  "type": "server",
+  "clientVersions": [
+    "1.10"
+  ],
+  "md5": "DEB46093D99440D249B6065887403EC8",
+  "sha256": "DD44A72E920A01DEDF57507B73642F4A9DD8C6052E1F42FF6CC0635008014201"
+}

@@ -1,1 +1,11 @@
-{"name":"c0.0.13a_03-launcher","md5":"A9527CB5AEF198E0F53E235EBE13DC75","sha256":"40595F0C37ADB1C581D0D4D836733806FF75AF977836F815F1A5600FEF0A43BE","type":"client","enableScreenshotPatch":true,"forceFullscreenMacos":true,"enableMacosCursorPatch":true,"legacy":true,"baseVersion":"c0.0.13a_03-launcher"}
+{
+  "name": "c0.0.13a_03-launcher",
+  "md5": "A9527CB5AEF198E0F53E235EBE13DC75",
+  "sha256": "40595F0C37ADB1C581D0D4D836733806FF75AF977836F815F1A5600FEF0A43BE",
+  "type": "client",
+  "enableScreenshotPatch": true,
+  "forceFullscreenMacos": true,
+  "enableMacosCursorPatch": true,
+  "legacy": true,
+  "baseVersion": "c0.0.13a_03-launcher"
+}

@@ -1,1 +1,10 @@
-{"name":"Snapshot 13w41a","baseVersion":"13w41a","type":"server","clientVersions":["13w41a"],"md5":"F5902A3A38868B9CE0A542840AE8F789","sha256":"494126C0143FA85A1B28AC03EE36D1D404931ACAD8364EE5F5E2ACDEBB53ED73"}
+{
+  "name": "Snapshot 13w41a",
+  "baseVersion": "13w41a",
+  "type": "server",
+  "clientVersions": [
+    "13w41a"
+  ],
+  "md5": "F5902A3A38868B9CE0A542840AE8F789",
+  "sha256": "494126C0143FA85A1B28AC03EE36D1D404931ACAD8364EE5F5E2ACDEBB53ED73"
+}

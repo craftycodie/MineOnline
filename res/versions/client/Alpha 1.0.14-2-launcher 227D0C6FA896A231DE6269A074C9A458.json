@@ -1,1 +1,9 @@
-{"name":"Alpha 1.0.14-2-launcher","md5":"227D0C6FA896A231DE6269A074C9A458","sha256":"0859315D26DAB43E004454F19F51301351E826ACF3FFAED636D7D2A5F6D5A584","type":"client","enableScreenshotPatch":true,"legacy":true,"baseVersion":"a1.0.14-2-launcher"}
+{
+  "name": "Alpha 1.0.14-2-launcher",
+  "md5": "227D0C6FA896A231DE6269A074C9A458",
+  "sha256": "0859315D26DAB43E004454F19F51301351E826ACF3FFAED636D7D2A5F6D5A584",
+  "type": "client",
+  "enableScreenshotPatch": true,
+  "legacy": true,
+  "baseVersion": "a1.0.14-2-launcher"
+}

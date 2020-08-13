@@ -1,1 +1,8 @@
-{"name":"Release 1.4-pre","md5":"32A654388B54D3E4BB29C1A46E7D6A12","sha256":"3A70045649D016E8026E98ED0488B1578910B9BEF0DD48A744690501B369F43C","type":"client","legacy":true,"baseVersion":"1.4-pre"}
+{
+  "name": "Release 1.4-pre",
+  "md5": "32A654388B54D3E4BB29C1A46E7D6A12",
+  "sha256": "3A70045649D016E8026E98ED0488B1578910B9BEF0DD48A744690501B369F43C",
+  "type": "client",
+  "legacy": true,
+  "baseVersion": "1.4-pre"
+}
