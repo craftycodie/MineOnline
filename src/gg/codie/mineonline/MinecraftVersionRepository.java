@@ -359,8 +359,13 @@ public class MinecraftVersionRepository {
     public MinecraftVersion getVersion(String path) {
         try {
             String md5 = MD5Checksum.getMD5ChecksumForFile(path);
-            return getVersionByMD5(md5);
+            MinecraftVersion version = getVersionByMD5(md5);
+            if(version == null) {
+                version = MinecraftVersion.fromLauncherVersion(new File(path));
+            }
+            return version;
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }

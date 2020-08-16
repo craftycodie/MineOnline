@@ -1,23 +1,16 @@
 package gg.codie.mineonline;
 
-import gg.codie.minecraft.launcher.VersionManifest;
-import gg.codie.mineonline.api.MineOnlineAPI;
-import gg.codie.utils.ArrayUtils;
 import gg.codie.utils.JSONUtils;
 import gg.codie.utils.MD5Checksum;
 import gg.codie.utils.OSUtils;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.*;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.file.*;
 import java.util.*;
-import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-import java.util.stream.Collectors;
+
 public class MinecraftVersion {
     public final String sha256;
     public final String name;
@@ -207,38 +200,91 @@ public class MinecraftVersion {
         return false;
     }
 
-    private static MinecraftVersion fromVersionManifest(VersionManifest versionManifest) {
-        String typeName = versionManifest.type.replace("old_", "");
-        typeName = typeName.substring(0, 1).toUpperCase() + typeName.substring(1);
-        String versionNumber = versionManifest.id;
-        if(versionNumber.startsWith("a") || versionNumber.startsWith("b"))
-            versionNumber = versionNumber.substring(1);
-        else if(versionNumber.startsWith("c")) {
-            typeName = "Classic ";
-            versionNumber = versionNumber.substring(1);
-        }
-        else if(versionNumber.startsWith("rd-")) {
-            typeName = "RubyDung ";
-            versionNumber = versionNumber.substring(3);
-        }
-
-
-//        return new MinecraftVersion(
-//                null,
-//                typeName + " " + versionNumber,
-//                versionManifest.id,
-//
-//        )
-        return null;
-    }
-
-    public static MinecraftVersion fromLauncherVersion(File versionFolder) throws FileNotFoundException {
-        File jarFile = new File(versionFolder.getPath() + File.separator + versionFolder.getName() + ".jar");
-        File jsonFile = new File(versionFolder.getPath() + File.separator + versionFolder.getName() + ".jar");
+    public static MinecraftVersion fromLauncherVersion(File jarFile) throws FileNotFoundException {
+        File jsonFile = new File(jarFile.getParentFile().getPath() + File.separator + jarFile.getName().replace(".jar", ".json"));
+        System.out.println(jsonFile.getPath());
         if (!jarFile.exists() || !jsonFile.exists())
-            throw new FileNotFoundException("Could not find minecraft version " + versionFolder.getName());
+            throw new FileNotFoundException("Could not find minecraft version " + jarFile.getName());
 
-        //MinecraftVersion version = fromVersionManifest(JSONUtils.getMinecraftInstalls())
+        try (FileInputStream input = new FileInputStream(jsonFile)) {
+            // load a settings file
+            byte[] buffer = new byte[8096];
+            int bytes_read = 0;
+            StringBuffer stringBuffer = new StringBuffer();
+            while ((bytes_read = input.read(buffer, 0, 8096)) != -1) {
+                for (int i = 0; i < bytes_read; i++) {
+                    stringBuffer.append((char) buffer[i]);
+                }
+            }
+
+            JSONObject versionManifest = new JSONObject(stringBuffer.toString());
+
+            String typeName = versionManifest.getString("type").replace("old_", "");
+            typeName = typeName.substring(0, 1).toUpperCase() + typeName.substring(1);
+            String versionNumber = versionManifest.getString("id");
+            if (versionNumber.startsWith("a") || versionNumber.startsWith("b"))
+                versionNumber = versionNumber.substring(1);
+            else if (versionNumber.startsWith("c")) {
+                typeName = "Classic ";
+                versionNumber = versionNumber.substring(1);
+            } else if (versionNumber.startsWith("rd-")) {
+                typeName = "RubyDung ";
+                versionNumber = versionNumber.substring(3);
+            }
+
+            LinkedList<String> libraries = new LinkedList<>();
+            LinkedList<String> natives = new LinkedList<>();
+
+            for(Object library : versionManifest.getJSONArray("libraries")) {
+                JSONObject jsonLibrary = (JSONObject) library;
+                libraries.add(jsonLibrary.getJSONObject("downloads").getJSONObject("artifact").getString("path"));
+                if(jsonLibrary.getJSONObject("downloads").has("classifiers"))
+                    switch(OSUtils.getPlatform()) {
+                        case macosx:
+                            if (jsonLibrary.getJSONObject("downloads").getJSONObject("classifiers").has("natives-macos"))
+                                libraries.add(jsonLibrary.getJSONObject("downloads").getJSONObject("classifiers").getJSONObject("natives-macos").getString("path"));
+                            if (jsonLibrary.getJSONObject("downloads").getJSONObject("classifiers").has("natives-osx"))
+                                libraries.add(jsonLibrary.getJSONObject("downloads").getJSONObject("classifiers").getJSONObject("natives-osx").getString("path"));
+                            break;
+                        case windows:
+                            if (jsonLibrary.getJSONObject("downloads").getJSONObject("classifiers").has("natives-windows"))
+                                libraries.add(jsonLibrary.getJSONObject("downloads").getJSONObject("classifiers").getJSONObject("natives-windows").getString("path"));
+                            break;
+                        case linux:
+                            if (jsonLibrary.getJSONObject("downloads").getJSONObject("classifiers").has("natives-linux"))
+                                libraries.add(jsonLibrary.getJSONObject("downloads").getJSONObject("classifiers").getJSONObject("natives-linux").getString("path"));
+                            break;
+                        case solaris:
+                        case unknown:
+                        default:
+                            break;
+                    }
+                natives.add(jsonLibrary.getJSONObject("downloads").getJSONObject("artifact").getString("path"));
+            }
+
+            return new MinecraftVersion(
+                null,
+                typeName + " " + versionNumber,
+                versionManifest.getString("id"),
+                MD5Checksum.getMD5ChecksumForFile(jarFile.getPath()),
+                "client",
+                false,
+                false,
+                false,
+                false,
+                null,
+                new String[] { versionManifest.getString("id")},
+                false,
+                false,
+                false,
+                versionManifest.getString("assets"),
+                libraries.toArray(new String[0]),
+                natives.toArray(new String[0]),
+                false,
+                null);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
         return null;
     }
 

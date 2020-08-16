@@ -1,6 +1,5 @@
 package gg.codie.utils;
 
-import gg.codie.mineonline.gui.MinecraftInstall;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -10,7 +9,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
 
 public class JSONUtils {
     public static String[] getStringArray(JSONArray jsonArray) {
