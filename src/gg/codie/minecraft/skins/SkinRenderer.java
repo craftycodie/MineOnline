@@ -83,7 +83,7 @@ public class SkinRenderer {
         TextMaster.init(loader);
 
         GameObject playerPivot = new GameObject("player_origin", new Vector3f(), new Vector3f(0, 0, 0), new Vector3f(1, 1, 1));
-        PlayerGameObject playerGameObject = new PlayerGameObject("player", loader, StaticShader.singleton, new Vector3f(0, -16, 0), new Vector3f(), new Vector3f(1, 1, 1));
+        PlayerGameObject playerGameObject = new PlayerGameObject("player", loader, new Vector3f(0, -16, 0), new Vector3f(), new Vector3f(1, 1, 1));
         playerPivot.addChild(playerGameObject);
 
         playerScale = new GameObject("player scale", new Vector3f(0, 0, -30), new Vector3f(), new Vector3f(1, 1, 1));
@@ -92,7 +92,7 @@ public class SkinRenderer {
         playerGameObject.setPlayerAnimation(new IdlePlayerAnimation());
         Camera camera = new Camera();
 
-        String[] panoramaNames = new String[] {"sunset", "sunset", "sunset", "sunset", "sunset", "midnight", "midnight", "midnight", "sunset", "noon"};
+        String[] panoramaNames = new String[] {"sunset", "sunset", "sunset", "sunset", "sunset", "midnight", "midnight", "midnight", "sunset"};
         //String[] panoramaNames = new String[] {"noon"};
 
         RawModel model = loader.loadBoxToVAO(new Vector3f(-1, -1, -1), new Vector3f(1, 1, 1), TextureHelper.getCubeTextureCoords(new Vector2f(8192, 4096),

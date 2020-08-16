@@ -27,6 +27,7 @@ public class LauncherFiles {
     public static final String MINEONLINE_CACHE_FOLDER = MINEONLINE_FOLDER + "cache" + File.separator;
 
     public static final String CACHED_SKIN_PATH = MINEONLINE_CACHE_FOLDER + "skin.png";
+    public static final String CACHED_SKIN_METADATA_PATH = MINEONLINE_CACHE_FOLDER + "skin.json";
     public static final String CACHED_CLOAK_PATH = MINEONLINE_CACHE_FOLDER + "cloak.png";
 
     public static final String LAST_LOGIN_PATH = MINEONLINE_CACHE_FOLDER + "lastlogin";

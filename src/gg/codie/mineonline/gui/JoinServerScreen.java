@@ -48,7 +48,7 @@ public class JoinServerScreen implements IMenuScreen {
 
                     String mppass = MinecraftAPI.getMpPass(Session.session.getSessionToken(), inetAddress.getHostAddress(), split.length > 1 ? split[1] : "25565");
 
-                    MinecraftVersionInfo.launchMinecraft(Settings.settings.getString(Settings.SELECTED_JAR), split[0], split.length > 1 ? split[1] : "25565", mppass);
+                    MinecraftVersion.launchMinecraft(MinecraftVersionRepository.getSingleton().getLastSelectedJarPath(), split[0], split.length > 1 ? split[1] : "25565", mppass);
                 }
                 catch (UnknownHostException ex) {
                     ex.printStackTrace();
@@ -59,14 +59,13 @@ public class JoinServerScreen implements IMenuScreen {
             }
         });
 
-        Settings.loadSettings();
-        String jarPath = Settings.settings.has(Settings.SELECTED_JAR) ? Settings.settings.getString(Settings.SELECTED_JAR) : null;
+        String jarPath = MinecraftVersionRepository.getSingleton().getLastSelectedJarPath();
         boolean jarSelected = jarPath != null && !jarPath.isEmpty();
 
         String jarName = jarSelected ? new File(jarPath).getName() : null;
-        MinecraftVersionInfo.MinecraftVersion version = null;
+        MinecraftVersion version = null;
         if(jarPath != null) {
-            version = MinecraftVersionInfo.getVersion(jarPath);
+            version = MinecraftVersionRepository.getSingleton().getVersion(jarPath);
         }
 
         versionButton = new LargeButton(jarSelected ? (version != null ? "Version: " + version.name : jarName) : "Select Version", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 200, (DisplayManager.getDefaultHeight() / 2) + 8), new IOnClickListener() {
@@ -75,8 +74,7 @@ public class JoinServerScreen implements IMenuScreen {
                 selectVersionMenuScreen = new SelectVersionMenuScreen(null, new IOnClickListener() {
                     @Override
                     public void onClick() {
-                        Settings.settings.put(Settings.SELECTED_JAR, selectVersionMenuScreen.getSelectedPath());
-                        Settings.saveSettings();
+                        MinecraftVersionRepository.getSingleton().selectJar(selectVersionMenuScreen.getSelectedPath());
                         MenuManager.setMenuScreen(new JoinServerScreen(serverIPField.getValue()));
                     }
                 }, null);
@@ -100,7 +98,7 @@ public class JoinServerScreen implements IMenuScreen {
 
                     String mppass = MinecraftAPI.getMpPass(Session.session.getSessionToken(), inetAddress.getHostAddress(), split.length > 1 ? split[1] : "25565");
 
-                    MinecraftVersionInfo.launchMinecraft(Settings.settings.getString(Settings.SELECTED_JAR), split[0], split.length > 1 ? split[1] : "25565", mppass);
+                    MinecraftVersion.launchMinecraft(MinecraftVersionRepository.getSingleton().getLastSelectedJarPath(), split[0], split.length > 1 ? split[1] : "25565", mppass);
                 }
                 catch (UnknownHostException ex) {
                     ex.printStackTrace();
@@ -145,7 +143,7 @@ public class JoinServerScreen implements IMenuScreen {
             connectButton.setDisabled(false);
         }
 
-        String jarPath = Settings.settings.has(Settings.SELECTED_JAR) ? Settings.settings.getString(Settings.SELECTED_JAR) : null;
+        String jarPath = MinecraftVersionRepository.getSingleton().getLastSelectedJarPath();
         boolean jarSelected = jarPath != null && !jarPath.isEmpty();
         if(!jarSelected && !connectButton.getDisabled()) {
             connectButton.setDisabled(true);

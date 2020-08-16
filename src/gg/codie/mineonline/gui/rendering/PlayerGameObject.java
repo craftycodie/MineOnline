@@ -5,7 +5,6 @@ import gg.codie.mineonline.gui.rendering.animation.IPlayerAnimation;
 import gg.codie.mineonline.gui.rendering.animation.IdlePlayerAnimation;
 import gg.codie.mineonline.gui.rendering.models.RawModel;
 import gg.codie.mineonline.gui.rendering.models.TexturedModel;
-import gg.codie.mineonline.gui.rendering.shaders.StaticShader;
 import gg.codie.mineonline.gui.rendering.textures.ModelTexture;
 import gg.codie.mineonline.gui.rendering.utils.MathUtils;
 import org.lwjgl.opengl.GL11;
@@ -21,17 +20,16 @@ import java.io.InputStream;
 import java.net.URL;
 
 public class PlayerGameObject extends GameObject {
-
     public static PlayerGameObject thePlayer;
 
     private final Loader loader;
-    private final StaticShader shader;
 
     private final int SKIN_WIDTH = 64;
     private final int SKIN_HEIGHT = 32;
 
     private URL skinPath = LauncherFiles.TEMPLATE_SKIN_PATH;
     private URL cloakPath = LauncherFiles.TEMPLATE_CLOAK_PATH;
+    boolean slim;
 
     private IPlayerAnimation playerAnimation = new IdlePlayerAnimation();
 
@@ -40,14 +38,13 @@ public class PlayerGameObject extends GameObject {
         this.playerAnimation.reset(this);
     }
 
-    public PlayerGameObject(String name, Loader loader, StaticShader shader, Vector3f localPosition, Vector3f rotation, Vector3f scale)
+    public PlayerGameObject(String name, Loader loader, Vector3f localPosition, Vector3f rotation, Vector3f scale)
     {
         super(name);
 
         thePlayer = this;
 
         this.loader = loader;
-        this.shader = shader;
 
         Quaternion rotationQuaterion = new Quaternion();
         MathUtils.rotate(rotationQuaterion, rotation);
@@ -132,8 +129,8 @@ public class PlayerGameObject extends GameObject {
         ));
     }
 
-    public PlayerGameObject(String name, Loader loader, StaticShader shader) {
-        this(name, loader, shader, new Vector3f(0, 0, 0), new Vector3f(), new Vector3f(1, 1, 1));
+    public PlayerGameObject(String name, Loader loader) {
+        this(name, loader, new Vector3f(0, 0, 0), new Vector3f(), new Vector3f(1, 1, 1));
     }
 
     public void setSkin(URL path) {
@@ -146,8 +143,68 @@ public class PlayerGameObject extends GameObject {
         updateCloak = true;
     }
 
+    public void setSlim(boolean slim) {
+        this.slim = slim;
+        updateSlim = true;
+    }
+
+    public boolean getSlim() {
+        return slim;
+    }
+
+    private void loadSlim() {
+        TexturedModel newModel;
+        if(slim) {
+            newModel = getBoxModel(new Vector3f(-3, -2, -2), 3, 12, 4, TextureHelper.getRightLimbTextureCoords(new Vector2f(SKIN_WIDTH, SKIN_HEIGHT),
+                    new Vector2f(52, 20), new Vector2f(3, 12),
+                    new Vector2f(44, 20), new Vector2f(3, 12),
+                    new Vector2f(48, 20), new Vector2f(4, 12),
+                    new Vector2f(40, 20), new Vector2f(4, 12),
+                    new Vector2f(44, 16), new Vector2f(4, 4),
+                    new Vector2f(48, 16), new Vector2f(4, 4)
+            ));
+            newModel.setTexture(playerRightArm.getChildren().getFirst().getModel().getTexture());
+            playerRightArm.getChildren().getFirst().setModel(newModel);
+
+            newModel = getBoxModel(new Vector3f(0, -2, -2), 3, 12, 4, TextureHelper.getLeftLimbTextureCoords(new Vector2f(SKIN_WIDTH, SKIN_HEIGHT),
+                    new Vector2f(52, 20), new Vector2f(3, 12),
+                    new Vector2f(44, 20), new Vector2f(3, 12),
+                    new Vector2f(48, 20), new Vector2f(4, 12),
+                    new Vector2f(40, 20), new Vector2f(4, 12),
+                    new Vector2f(44, 16), new Vector2f(4, 4),
+                    new Vector2f(48, 16), new Vector2f(4, 4)
+            ));
+            newModel.setTexture(playerLeftArm.getChildren().getFirst().getModel().getTexture());
+            playerLeftArm.getChildren().getFirst().setModel(newModel);
+        } else {
+            newModel = getBoxModel(new Vector3f(-3, -2, -2), 4, 12, 4, TextureHelper.getRightLimbTextureCoords(new Vector2f(SKIN_WIDTH, SKIN_HEIGHT),
+                    new Vector2f(52, 20), new Vector2f(3, 12),
+                    new Vector2f(44, 20), new Vector2f(3, 12),
+                    new Vector2f(48, 20), new Vector2f(4, 12),
+                    new Vector2f(40, 20), new Vector2f(4, 12),
+                    new Vector2f(44, 16), new Vector2f(4, 4),
+                    new Vector2f(48, 16), new Vector2f(4, 4)
+            ));
+            newModel.setTexture(playerRightArm.getChildren().getFirst().getModel().getTexture());
+            playerRightArm.getChildren().getFirst().setModel(newModel);
+
+            newModel = getBoxModel(new Vector3f(-1, -2, -2), 4, 12, 4, TextureHelper.getLeftLimbTextureCoords(new Vector2f(SKIN_WIDTH, SKIN_HEIGHT),
+                    new Vector2f(52, 20), new Vector2f(3, 12),
+                    new Vector2f(44, 20), new Vector2f(3, 12),
+                    new Vector2f(48, 20), new Vector2f(4, 12),
+                    new Vector2f(40, 20), new Vector2f(4, 12),
+                    new Vector2f(44, 16), new Vector2f(4, 4),
+                    new Vector2f(48, 16), new Vector2f(4, 4)
+            ));
+            newModel.setTexture(playerLeftArm.getChildren().getFirst().getModel().getTexture());
+            playerLeftArm.getChildren().getFirst().setModel(newModel);
+
+        }
+    }
+
     boolean updateSkin;
     boolean updateCloak;
+    boolean updateSlim;
 
     public void update() {
         if(updateSkin) {
@@ -160,10 +217,28 @@ public class PlayerGameObject extends GameObject {
             updateCloak = false;
         }
 
+        if(updateSlim) {
+            loadSlim();
+            updateSlim = false;
+        }
+
         playerAnimation.animate(this);
     }
 
     private GameObject addBox(String name, Vector3f begin, int width, int height, int depth, Vector3f position, Vector3f pivotPosition, float[] textureCoords) {
+        TexturedModel texturedModel = getBoxModel(begin, width, height, depth, textureCoords);
+
+        GameObject box = new GameObject(name, texturedModel, position, new Vector3f(), new Vector3f(1, 1, 1));
+
+        GameObject pivot = new GameObject(name + " pivot", pivotPosition, new Vector3f(), new Vector3f(1, 1, 1));
+
+        addChild(pivot);
+        pivot.addChild(box);
+
+        return pivot;
+    }
+
+    private TexturedModel getBoxModel(Vector3f begin, int width, int height, int depth, float[] textureCoords) {
         RawModel model = loader.loadBoxToVAO(begin,
                 new Vector3f(begin.x + width, begin.y + height, begin.z + depth),
                 textureCoords);
@@ -174,14 +249,7 @@ public class PlayerGameObject extends GameObject {
 
         TexturedModel texturedModel =  new TexturedModel(model, modelTexture);
 
-        GameObject box = new GameObject(name, texturedModel, position, new Vector3f(), new Vector3f(1, 1, 1));
-
-        GameObject pivot = new GameObject(name + " pivot", pivotPosition, new Vector3f(), new Vector3f(1, 1, 1));
-
-        addChild(pivot);
-        pivot.addChild(box);
-
-        return pivot;
+        return texturedModel;
     }
 
     private GameObject addHeadwear(String name, Vector3f begin, int width, int height, int depth, float[] textureCoords) {

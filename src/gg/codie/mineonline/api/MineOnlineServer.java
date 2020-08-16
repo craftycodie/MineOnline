@@ -1,14 +1,13 @@
 package gg.codie.mineonline.api;
 
-import gg.codie.mineonline.gui.MinecraftInstall;
+import gg.codie.mineonline.Session;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.ParseException;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public class MineOnlineServer {
     public final String createdAt;
@@ -33,7 +32,7 @@ public class MineOnlineServer {
         this.status = status;
     }
 
-    public static LinkedList<MineOnlineServer> getServers(JSONArray jsonArray) {
+    public static LinkedList<MineOnlineServer> parseServers(JSONArray jsonArray) {
         Iterator<Object> iterator = jsonArray.iterator();
 
         LinkedList<MineOnlineServer> servers = new LinkedList();

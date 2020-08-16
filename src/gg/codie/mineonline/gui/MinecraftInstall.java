@@ -1,6 +1,7 @@
 package gg.codie.mineonline.gui;
 
-import gg.codie.mineonline.MinecraftVersionInfo;
+import gg.codie.mineonline.MinecraftVersion;
+import gg.codie.mineonline.MinecraftVersionRepository;
 import gg.codie.utils.MD5Checksum;
 
 import java.security.AccessController;
@@ -53,7 +54,7 @@ public class MinecraftInstall {
 
             this.jarMD5 = MD5Checksum.getMD5ChecksumForFile(jarPath);
 
-            MinecraftVersionInfo.MinecraftVersion version = MinecraftVersionInfo.getVersionByMD5(jarMD5);
+            MinecraftVersion version = MinecraftVersionRepository.getSingleton().getVersionByMD5(jarMD5);
 
             if(version != null) {
                 versionName = version.name;
@@ -74,7 +75,7 @@ public class MinecraftInstall {
         try {
             this.jarMD5 = MD5Checksum.getMD5ChecksumForFile(jarPath);
 
-            MinecraftVersionInfo.MinecraftVersion version = MinecraftVersionInfo.getVersionByMD5(jarMD5);
+            MinecraftVersion version = MinecraftVersionRepository.getSingleton().getVersionByMD5(jarMD5);
 
             if(version != null) {
                 versionName = version.name;

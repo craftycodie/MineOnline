@@ -19,6 +19,7 @@ import org.lwjgl.util.vector.Vector3f;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Set;
 
 public class ServerListMenuScreen implements IMenuScreen {
     MediumButton connectButton;
@@ -36,26 +37,24 @@ public class ServerListMenuScreen implements IMenuScreen {
                 SelectableServer selectedServer = selectableServerList.getSelected();
                 if (selectedServer != null && selectedServer.server.ip != null) {
                     try {
-                        Settings.loadSettings();
+                        MinecraftVersion serverVersion = MinecraftVersionRepository.getSingleton().getVersionByMD5(selectedServer.server.md5);
 
-                        MinecraftVersionInfo.MinecraftVersion serverVersion = MinecraftVersionInfo.getVersionByMD5(selectedServer.server.md5);
-
-                        String[] minecraftJars = Settings.settings.has(Settings.MINECRAFT_JARS) ? JSONUtils.getStringArray(Settings.settings.getJSONArray(Settings.MINECRAFT_JARS)) : new String[0];
+                        Set<String> minecraftJars = MinecraftVersionRepository.getSingleton().getInstalledJars().keySet();
 
                         if(serverVersion != null) {
                             for (String compatibleClientMd5 : serverVersion.clientVersions) {
                                 for (String path : minecraftJars) {
                                     File file = new File(path);
 
-                                    MinecraftVersionInfo.MinecraftVersion clientVersion = MinecraftVersionInfo.getVersion(path);
+                                    MinecraftVersion clientVersion = MinecraftVersionRepository.getSingleton().getInstalledJars().get(path);
 
-                                    try {
-                                        if (!MinecraftVersionInfo.isPlayableJar(file.getPath())) {
-                                            continue;
-                                        }
-                                    } catch (IOException ex) {
-                                        continue;
-                                    }
+//                                    try {
+//                                        if (!MinecraftVersion.isPlayableJar(file.getPath())) {
+//                                            continue;
+//                                        }
+//                                    } catch (IOException ex) {
+//                                        continue;
+//                                    }
 
                                     if (clientVersion != null && clientVersion.baseVersion.equals(compatibleClientMd5)) {
                                         try {
@@ -65,7 +64,7 @@ public class ServerListMenuScreen implements IMenuScreen {
                                         }
                                         String mppass = MinecraftAPI.getMpPass(Session.session.getSessionToken(), selectedServer.server.ip, "" + selectedServer.server.port);
 
-                                        MinecraftVersionInfo.launchMinecraft(path, selectedServer.server.ip, "" + selectedServer.server.port, mppass);
+                                        MinecraftVersion.launchMinecraft(path, selectedServer.server.ip, "" + selectedServer.server.port, mppass);
                                         return;
                                     }
                                 }
@@ -88,7 +87,7 @@ public class ServerListMenuScreen implements IMenuScreen {
                                 }
                                 String mppass = MinecraftAPI.getMpPass(Session.session.getSessionToken(), selectedServer.server.ip, "" + selectedServer.server.port);
                                 try {
-                                    MinecraftVersionInfo.launchMinecraft(selectVersionMenuScreen.getSelectedPath(), selectedServer.server.ip, "" + selectedServer.server.port, mppass);
+                                    MinecraftVersion.launchMinecraft(selectVersionMenuScreen.getSelectedPath(), selectedServer.server.ip, "" + selectedServer.server.port, mppass);
                                 } catch (Exception ex) {
 
                                 }

@@ -1,10 +1,9 @@
 package gg.codie.mineonline.gui.components;
 
-import gg.codie.mineonline.MinecraftVersionInfo;
-import gg.codie.mineonline.Settings;
-import gg.codie.mineonline.Session;
+import gg.codie.mineonline.MinecraftVersion;
+import gg.codie.mineonline.MinecraftVersionRepository;
 import gg.codie.mineonline.api.MineOnlineServer;
-import gg.codie.mineonline.api.MinecraftAPI;
+import gg.codie.mineonline.api.MineOnlineServerRepository;
 import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.gui.events.IOnClickListener;
 import gg.codie.mineonline.gui.font.GUIText;
@@ -14,14 +13,11 @@ import gg.codie.mineonline.gui.rendering.models.RawModel;
 import gg.codie.mineonline.gui.rendering.models.TexturedModel;
 import gg.codie.mineonline.gui.rendering.shaders.GUIShader;
 import gg.codie.mineonline.gui.rendering.textures.ModelTexture;
-import gg.codie.utils.JSONUtils;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedList;
 
@@ -35,11 +31,20 @@ public class SelectableServerList extends GUIObject {
 
     IOnClickListener doubleClickListener;
 
+    static MineOnlineServerRepository serverRepository = new MineOnlineServerRepository();
+    boolean serversChanged;
+
+    MineOnlineServerRepository.GotServersListener listener = new MineOnlineServerRepository.GotServersListener() {
+        @Override
+        public void GotServers(LinkedList<MineOnlineServer> servers) {
+            serversChanged = true;
+        }
+    };
+
     public SelectableServerList(String name, Vector3f localPosition, Vector3f rotation, Vector3f scale, IOnClickListener doubleClickListener) {
         super(name, localPosition, rotation, scale);
 
         float viewportHeight = DisplayManager.getDefaultHeight() - (69 * 2);
-//        float contentHeight = 72 * (getGUIChildren().size());
 
         this.doubleClickListener = doubleClickListener;
 
@@ -58,39 +63,40 @@ public class SelectableServerList extends GUIObject {
         TexturedModel texuredBackgroundModel =  new TexturedModel(backgroundModel, backgroundTexture);
         background = new GUIObject("background", texuredBackgroundModel, new Vector3f(), new Vector3f(), new Vector3f(1, 1, 1));
 
-        emptyText = new GUIText("Can't find any servers :(", 1.5f, TextMaster.minecraftFont, new Vector2f(200, (DisplayManager.getDefaultHeight() / 2) - 32 ), DisplayManager.getDefaultWidth() - 400, true, true);
+        emptyText = new GUIText("Loading server list...", 1.5f, TextMaster.minecraftFont, new Vector2f(200, (DisplayManager.getDefaultHeight() / 2) - 32 ), DisplayManager.getDefaultWidth() - 400, true, true);
         emptyText.setMaxLines(0);
         emptyText.setColour(0.5f, 0.5f, 0.5f);
 
         try {
-            LinkedList<MineOnlineServer> servers = MinecraftAPI.listServers(Session.session.getUuid(), Session.session.getSessionToken());
+            serverRepository.onGotServers(listener);
+            serverRepository.loadServers();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
 
-            Settings.loadSettings();
-            String[] minecraftJars = Settings.settings.has(Settings.MINECRAFT_JARS) ? JSONUtils.getStringArray(Settings.settings.getJSONArray(Settings.MINECRAFT_JARS)) : new String[0];
-            LinkedList<MinecraftVersionInfo.MinecraftVersion> installedClients = new LinkedList<>();
+    }
 
-            for (String path : minecraftJars) {
-                File file = new File(path);
+    private void refreshServerList() {
+        for(SelectableServer server : getServers()) {
+            server.cleanUp();
+        }
 
-                MinecraftVersionInfo.MinecraftVersion minecraftVersion = MinecraftVersionInfo.getVersion(path);
+        if(serverRepository.didFail()) {
+            emptyText = new GUIText("Failed to load server list :(", 1.5f, TextMaster.minecraftFont, new Vector2f(200, (DisplayManager.getDefaultHeight() / 2) - 32), DisplayManager.getDefaultWidth() - 400, true, true);
+            emptyText.setMaxLines(0);
+            emptyText.setColour(0.5f, 0.5f, 0.5f);
+        } else if(serverRepository.getServers().size() < 1) {
+            emptyText = new GUIText("There are no servers online :(", 1.5f, TextMaster.minecraftFont, new Vector2f(200, (DisplayManager.getDefaultHeight() / 2) - 32 ), DisplayManager.getDefaultWidth() - 400, true, true);
+            emptyText.setMaxLines(0);
+            emptyText.setColour(0.5f, 0.5f, 0.5f);
+        }
 
-                try {
-                    if (!MinecraftVersionInfo.isPlayableJar(file.getPath())) {
-                        continue;
-                    }
-                } catch (IOException ex) {
-                    continue;
-                }
-
-                if(minecraftVersion != null)
-                    installedClients.add(minecraftVersion);
-            }
-
-            for(MineOnlineServer server : servers) {
-                MinecraftVersionInfo.MinecraftVersion version = MinecraftVersionInfo.getVersionByMD5(server.md5);
+        if(serverRepository.getServers() != null) {
+            for (MineOnlineServer server : serverRepository.getServers()) {
+                MinecraftVersion version = MinecraftVersionRepository.getSingleton().getVersionByMD5(server.md5);
                 String info2 = "Unknown Version";
-                if(version != null) {
-                    if(version.clientVersions.length > 0) {
+                if (version != null) {
+                    if (version.clientVersions.length > 0) {
                         info2 = Arrays.toString(version.clientVersions).replace("[", "").replace("]", "");
                     } else {
                         info2 = version.name;
@@ -100,29 +106,26 @@ public class SelectableServerList extends GUIObject {
 
                     found:
                     for (String clientversion : version.clientVersions) {
-                        for(MinecraftVersionInfo.MinecraftVersion installedClient : installedClients) {
-                            if(installedClient.baseVersion.equals(clientversion)) {
+                        for (MinecraftVersion installedClient : MinecraftVersionRepository.getSingleton().getInstalledClients()) {
+                            if (installedClient.baseVersion.equals(clientversion)) {
                                 clientInstalled = true;
                                 break found;
                             }
                         }
                     }
 
-                    if(!clientInstalled) {
+                    if (!clientInstalled) {
                         info2 = info2 + " - Not Installed!";
                     }
                 }
 
-                if(server.isMineOnline)
+                if (server.isMineOnline)
                     addServer(server.name, "Players: " + server.users + "/" + server.maxUsers, info2, server);
                 else
                     addServer(server.name, "Featured Server", info2, server);
 
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
         }
-
     }
 
     public void addServer(String name, String info1, String info2, MineOnlineServer server) {
@@ -155,6 +158,11 @@ public class SelectableServerList extends GUIObject {
     float scrollbarPosition = 0;
     boolean holdingScroll = false;
     public void update() {
+        if(serversChanged) {
+            serversChanged = false;
+            refreshServerList();
+        }
+
         for(SelectableServer child : getServers()) {
             child.update();
         }
@@ -339,5 +347,7 @@ public class SelectableServerList extends GUIObject {
 
         if(emptyText != null)
             emptyText.remove();
+
+        serverRepository.offGotServers(listener);
     }
 }

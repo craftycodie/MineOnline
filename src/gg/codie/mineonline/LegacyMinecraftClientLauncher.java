@@ -43,7 +43,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
 
     Renderer renderer;
 
-    MinecraftVersionInfo.MinecraftVersion minecraftVersion;
+    MinecraftVersion minecraftVersion;
 
     public LegacyMinecraftClientLauncher(String jarPath, String serverAddress, String serverPort, String MPPass) {
         this.jarPath = jarPath;
@@ -62,7 +62,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
             System.exit(1);
         }
 
-        minecraftVersion = MinecraftVersionInfo.getVersion(jarPath);
+        minecraftVersion = MinecraftVersionRepository.getSingleton().getVersion(jarPath);
     }
 
     public static char getClasspathSeparator() {
@@ -201,7 +201,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
             }
         }
 
-        String appletClassName = MinecraftVersionInfo.getAppletClass(jarPath);
+        String appletClassName = MinecraftVersion.getAppletClass(jarPath);
 
         Frame frame = DisplayManager.getFrame();
 

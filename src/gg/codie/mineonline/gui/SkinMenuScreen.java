@@ -2,6 +2,7 @@ package gg.codie.mineonline.gui;
 
 import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.Session;
+import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.mineonline.api.MinecraftAPI;
 import gg.codie.mineonline.gui.events.IOnClickListener;
 import gg.codie.mineonline.gui.font.GUIText;
@@ -12,12 +13,9 @@ import gg.codie.mineonline.gui.rendering.animation.WalkPlayerAnimation;
 import gg.codie.mineonline.gui.components.LargeButton;
 import gg.codie.mineonline.gui.components.MediumButton;
 import gg.codie.mineonline.gui.rendering.font.TextMaster;
-import gg.codie.mineonline.gui.rendering.models.RawModel;
-import gg.codie.mineonline.gui.rendering.models.TexturedModel;
 import gg.codie.mineonline.gui.rendering.shaders.GUIShader;
-import gg.codie.mineonline.gui.rendering.textures.ModelTexture;
 import gg.codie.utils.FileUtils;
-import org.lwjgl.opengl.Display;
+import org.json.JSONObject;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
@@ -37,7 +35,7 @@ public class SkinMenuScreen implements IMenuScreen {
     MediumButton skinButton;
     MediumButton cloakButton;
     MediumButton resetCloakButton;
-    MediumButton submitButton;
+    MediumButton modelButton;
     LargeButton doneButton;
     JFileChooser fileChooser = new JFileChooser();
     GUIText label;
@@ -45,6 +43,7 @@ public class SkinMenuScreen implements IMenuScreen {
     String skinPath = "";
     String cloakPath = "";
     private boolean unsavedChanges = false;
+    private boolean slim = PlayerGameObject.thePlayer.getSlim();
 
     public SkinMenuScreen() {
         PlayerGameObject.thePlayer.translate(new Vector3f(0, 6, 0));
@@ -82,8 +81,6 @@ public class SkinMenuScreen implements IMenuScreen {
                             if(skinPath.isEmpty())
                                 return;
 
-                            unsavedChanges = true;
-
                             File skinTexture = new File(skinPath);
                             if (skinTexture.exists() && PlayerGameObject.thePlayer != null) {
                                 try {
@@ -96,13 +93,13 @@ public class SkinMenuScreen implements IMenuScreen {
                                         ByteArrayOutputStream os = new ByteArrayOutputStream();
                                         ImageIO.write(bufferedImage, "png", os);
                                         ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
-                                        MinecraftAPI.uploadSkin(Session.session.getUuid(), Session.session.getSessionToken(), is);
+                                        MineOnlineAPI.uploadSkin(Session.session.getUuid(), Session.session.getSessionToken(), is);
                                     } catch (IOException ex) {
                                         JOptionPane.showMessageDialog(null, "Failed to upload skin.");
                                         failed = true;
                                     }
-                                    if(!failed) {
-                                        unsavedChanges = false;
+                                    if(failed) {
+                                        unsavedChanges = true;
                                     }
 
                                 } catch (MalformedURLException mx) {
@@ -131,8 +128,6 @@ public class SkinMenuScreen implements IMenuScreen {
                             if(cloakPath.isEmpty())
                                 return;
 
-                            unsavedChanges = true;
-
                             File cloakTexture = new File(cloakPath);
                             if (cloakTexture.exists() && PlayerGameObject.thePlayer != null) {
                                 try {
@@ -145,13 +140,13 @@ public class SkinMenuScreen implements IMenuScreen {
                                         ByteArrayOutputStream os = new ByteArrayOutputStream();
                                         ImageIO.write(bufferedImage, "png", os);
                                         ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
-                                        MinecraftAPI.uploadCloak(Session.session.getUuid(), Session.session.getSessionToken(), is);
+                                        MineOnlineAPI.uploadCloak(Session.session.getUuid(), Session.session.getSessionToken(), is);
                                     } catch (IOException ex) {
                                         JOptionPane.showMessageDialog(null, "Failed to upload skin.");
                                         failed = true;
                                     }
-                                    if(!failed) {
-                                        unsavedChanges = false;
+                                    if(failed) {
+                                        unsavedChanges = true;
                                     }
                                 } catch (MalformedURLException mx) {
 
@@ -163,10 +158,32 @@ public class SkinMenuScreen implements IMenuScreen {
             }
         });
 
+        modelButton = new MediumButton("Model: " + (slim ? "Alex" : "Steve"), new Vector2f((DisplayManager.getDefaultWidth() / 2) + 30, (DisplayManager.getDefaultHeight() / 2) + 56), new IOnClickListener() {
+            @Override
+            public void onClick() {
+                EventQueue.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        slim = !slim;
+                        PlayerGameObject.thePlayer.setSlim(slim);
+
+                        JSONObject metadata = new JSONObject();
+                        metadata.put("slim", slim);
+
+                        try {
+                            MineOnlineAPI.setSkinMetadata(Session.session.getUuid(), Session.session.getSessionToken(), metadata);
+                        } catch (Exception ex) {
+                            unsavedChanges = true;
+                        }
+                    }
+                });
+            }
+        });
+
         resetCloakButton = new MediumButton("Remove Cloak", new Vector2f((DisplayManager.getDefaultWidth() / 2) + 30, (DisplayManager.getDefaultHeight() / 2) + 104), new IOnClickListener() {
             @Override
             public void onClick() {
-                if(MinecraftAPI.removecloak(Session.session.getSessionToken())) {
+                if(MineOnlineAPI.removecloak(Session.session.getSessionToken())) {
                     if(PlayerGameObject.thePlayer != null) {
                         PlayerGameObject.thePlayer.setCloak(LauncherFiles.TEMPLATE_CLOAK_PATH);
                         new File(LauncherFiles.CACHED_CLOAK_PATH).delete();
@@ -200,8 +217,12 @@ public class SkinMenuScreen implements IMenuScreen {
         if(!cloakPath.isEmpty() && cloakButton.getName() != "Cloak: " + Paths.get(cloakPath).getFileName().toString())
             cloakButton.setName("Skin: " + Paths.get(cloakPath).getFileName().toString());
 
+        if(modelButton.getName() != "Model: " + (slim ? "Alex" : "Steve"))
+            modelButton.setName("Model: " + (slim ? "Alex" : "Steve"));
+
         skinButton.update();
         cloakButton.update();
+        modelButton.update();
         resetCloakButton.update();
         doneButton.update();
     }
@@ -212,6 +233,7 @@ public class SkinMenuScreen implements IMenuScreen {
         renderer.prepareGUI();
         skinButton.render(renderer, GUIShader.singleton);
         cloakButton.render(renderer, GUIShader.singleton);
+        modelButton.render(renderer, GUIShader.singleton);
         resetCloakButton.render(renderer, GUIShader.singleton);
         doneButton.render(renderer, GUIShader.singleton);
         GUIShader.singleton.stop();
@@ -232,6 +254,7 @@ public class SkinMenuScreen implements IMenuScreen {
     public void cleanUp() {
         skinButton.cleanUp();
         cloakButton.cleanUp();
+        modelButton.cleanUp();
         resetCloakButton.cleanUp();
         doneButton.cleanUp();
         label.remove();
