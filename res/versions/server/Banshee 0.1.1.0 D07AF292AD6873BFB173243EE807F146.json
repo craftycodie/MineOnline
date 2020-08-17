@@ -3,5 +3,6 @@
   "md5": "D07AF292AD6873BFB173243EE807F146",
   "type": "server",
   "info": "Beta 1.7.3 mod",
-  "baseVersion": "banshee-0.1.1.0"
+  "baseVersion": "banshee-0.1.1.0",
+  "legacy": true
 }

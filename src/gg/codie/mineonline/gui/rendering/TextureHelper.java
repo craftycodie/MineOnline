@@ -3,6 +3,7 @@ package gg.codie.mineonline.gui.rendering;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector4f;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 
 import java.util.Arrays;
@@ -45,6 +46,21 @@ public class TextureHelper {
     public static BufferedImage cropImage(BufferedImage bufferedImage, int x, int y, int width, int height){
         BufferedImage croppedImage = bufferedImage.getSubimage(x, y, width, height);
         return croppedImage;
+    }
+
+    public static BufferedImage convertSkin(BufferedImage legacySkin) {
+        BufferedImage skin = new BufferedImage(64, 64, BufferedImage.TYPE_INT_ARGB);
+
+        Graphics g = skin.getGraphics();
+
+        g.drawImage(legacySkin, 0, 0, null);
+        if(legacySkin.getHeight() < 64 && legacySkin.getHeight() >= 32) {
+            g.drawImage(legacySkin.getSubimage(0, 16, 16, 16), 16, 48, null);
+            g.drawImage(legacySkin.getSubimage(40, 16, 16, 16), 32, 48, null);
+        }
+        g.dispose();
+
+        return skin;
     }
 
     public static float[] getCubeTextureCoords(Vector2f textureDimensions,

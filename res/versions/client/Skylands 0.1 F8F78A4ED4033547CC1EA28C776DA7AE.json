@@ -3,5 +3,6 @@
   "md5": "F8F78A4ED4033547CC1EA28C776DA7AE",
   "type": "client",
   "info": "Beta 1.7.3 mod",
-  "baseVersion": "b1.7.3-skylands0.1"
+  "baseVersion": "b1.7.3-skylands0.1",
+  "legacy": true
 }

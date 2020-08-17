@@ -1,6 +1,7 @@
 package gg.codie.mineonline.gui.components;
 
-import gg.codie.mineonline.MinecraftVersionInfo;
+import gg.codie.mineonline.MinecraftVersion;
+import gg.codie.mineonline.MinecraftVersionRepository;
 import gg.codie.mineonline.Settings;
 import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.gui.events.IOnClickListener;
@@ -75,31 +76,18 @@ public class SelectableVersionList extends GUIObject {
 
                             // Loop them through
                             for (File file : files) {
-                                MinecraftVersionInfo.MinecraftVersion minecraftVersion = MinecraftVersionInfo.getVersion(file.getPath());
+                                MinecraftVersion minecraftVersion = MinecraftVersionRepository.getSingleton().getVersion(file.getPath());
 
                                 try {
-                                    if (!MinecraftVersionInfo.isPlayableJar(file.getPath())) {
+                                    if (!MinecraftVersion.isPlayableJar(file.getPath())) {
                                         continue;
                                     }
                                 } catch (IOException ex) {
                                     continue;
                                 }
 
-                                String[] existingJars = Settings.settings.has(Settings.MINECRAFT_JARS) ? JSONUtils.getStringArray(Settings.settings.getJSONArray(Settings.MINECRAFT_JARS)) : new String[0];
-                                String[] newJars = new String[existingJars.length + 1];
-
-                                for (int i = 0; i < existingJars.length; i++) {
-                                    if(existingJars[i].equals(file.getPath())) {
-                                        selectVersion(file.getPath());
-                                        return;
-                                    } else {
-                                        newJars[i] = existingJars[i];
-                                    }
-                                }
-                                newJars[newJars.length - 1] = file.getPath();
-
-                                Settings.settings.put(Settings.MINECRAFT_JARS, newJars);
-                                Settings.saveSettings();
+                                MinecraftVersionRepository.getSingleton().addInstalledVersion(file.getPath());
+                                MinecraftVersionRepository.getSingleton().selectJar(file.getPath());
 
                                 if(minecraftVersion != null) {
                                     jarsToAdd.add(new String[] { minecraftVersion.name, file.getPath(), minecraftVersion.info });
@@ -158,29 +146,29 @@ public class SelectableVersionList extends GUIObject {
         emptyText.setMaxLines(0);
         emptyText.setColour(0.5f, 0.5f, 0.5f);
 
-        Settings.loadSettings();
-        String[] minecraftJars = Settings.settings.has(Settings.MINECRAFT_JARS) ? JSONUtils.getStringArray(Settings.settings.getJSONArray(Settings.MINECRAFT_JARS)) : new String[0];
-        for (String path : minecraftJars) {
+        for (String path : MinecraftVersionRepository.getSingleton().getInstalledJars().keySet()) {
             File file = new File(path);
 
-            MinecraftVersionInfo.MinecraftVersion minecraftVersion = MinecraftVersionInfo.getVersion(path);
+            MinecraftVersion minecraftVersion = MinecraftVersionRepository.getSingleton().getInstalledJars().get(path);
 
-            try {
-                if (!MinecraftVersionInfo.isPlayableJar(file.getPath())) {
-                    continue;
-                }
-            } catch (IOException ex) {
-                continue;
-            }
+//            try {
+//                if (!MinecraftVersion.isPlayableJar(file.getPath())) {
+//                    continue;
+//                }
+//            } catch (IOException ex) {
+//                continue;
+//            }
 
             if(minecraftVersion != null) {
+                if(!minecraftVersion.type.equals("client"))
+                    continue;
                 addVersion(minecraftVersion.name, file.getPath(), minecraftVersion.info);
             } else {
                 addVersion("Unknown Version", file.getPath(), null);
             }
         }
 
-        String selectedJar = Settings.settings.has(Settings.SELECTED_JAR) ? Settings.settings.getString(Settings.SELECTED_JAR) : null;
+        String selectedJar = MinecraftVersionRepository.getSingleton().getLastSelectedJarPath();
         if (selectedJar != null && !selectedJar.isEmpty()) {
             selectVersion(selectedJar);
         }

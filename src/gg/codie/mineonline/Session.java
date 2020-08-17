@@ -1,6 +1,9 @@
 package gg.codie.mineonline;
 
+import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.mineonline.gui.rendering.PlayerGameObject;
+import gg.codie.utils.JSONUtils;
+import org.json.JSONObject;
 
 import java.io.*;
 import java.net.MalformedURLException;
@@ -69,9 +72,9 @@ public class Session {
                     }
 
                     FileOutputStream fileOutputStream = new FileOutputStream(LauncherFiles.CACHED_SKIN_PATH);
-                    byte dataBuffer[] = new byte[1024];
+                    byte dataBuffer[] = new byte[2048];
                     int bytesRead;
-                    while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
+                    while ((bytesRead = in.read(dataBuffer, 0, 2048)) != -1) {
                         fileOutputStream.write(dataBuffer, 0, bytesRead);
                     }
 
@@ -92,9 +95,9 @@ public class Session {
 
                     FileOutputStream fileOutputStream = new FileOutputStream(LauncherFiles.CACHED_CLOAK_PATH);
 
-                    byte dataBuffer[] = new byte[1024];
+                    byte dataBuffer[] = new byte[2048];
                     int bytesRead;
-                    while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
+                    while ((bytesRead = in.read(dataBuffer, 0, 2048)) != -1) {
                         fileOutputStream.write(dataBuffer, 0, bytesRead);
                     }
 
@@ -104,14 +107,40 @@ public class Session {
                     // handle exception
                 }
 
+                try {
+                    JSONObject skinMetadata = MineOnlineAPI.getSkinMetadata(uuid);
+
+                    FileWriter fileWriter = new FileWriter(LauncherFiles.CACHED_SKIN_METADATA_PATH, false);
+                    fileWriter.write(skinMetadata.toString());
+                    fileWriter.close();
+                } catch (IOException io) {
+                    io.printStackTrace();
+                }
+
                 if(PlayerGameObject.thePlayer != null) {
                     try {
                         if (new File(LauncherFiles.CACHED_CLOAK_PATH).exists())
                             PlayerGameObject.thePlayer.setCloak(Paths.get(LauncherFiles.CACHED_CLOAK_PATH).toUri().toURL());
                         if (new File(LauncherFiles.CACHED_SKIN_PATH).exists())
                             PlayerGameObject.thePlayer.setSkin(Paths.get(LauncherFiles.CACHED_SKIN_PATH).toUri().toURL());
-                    } catch (MalformedURLException mx) {
+                        try (FileInputStream input = new FileInputStream(LauncherFiles.CACHED_SKIN_METADATA_PATH)) {
+                            byte[] buffer = new byte[8096];
+                            int bytes_read = 0;
+                            StringBuffer stringBuffer = new StringBuffer();
+                            while ((bytes_read = input.read(buffer, 0, 8096)) != -1) {
+                                for (int i = 0; i < bytes_read; i++) {
+                                    stringBuffer.append((char) buffer[i]);
+                                }
+                            }
 
+                            JSONObject metadata = new JSONObject(stringBuffer.toString());
+                            if(metadata.has("slim"))
+                                PlayerGameObject.thePlayer.setSlim(metadata.getBoolean("slim"));
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                        }
+                    } catch (MalformedURLException mx) {
+                        mx.printStackTrace();
                     }
                 }
             }

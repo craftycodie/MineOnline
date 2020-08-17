@@ -8,5 +8,6 @@
     "71E64B61175B371ED148B385F2D14EBF",
     "14B273AF7A4AC09377F5960F89B4BDD3"
   ],
-  "baseVersion": "b1.4-1"
+  "baseVersion": "b1.4-1",
+  "legacy": true
 }

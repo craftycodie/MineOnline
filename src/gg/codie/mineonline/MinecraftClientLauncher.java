@@ -35,7 +35,7 @@ public class MinecraftClientLauncher {
     String width;
     String height;
 
-    MinecraftVersionInfo.MinecraftVersion minecraftVersion;
+    MinecraftVersion minecraftVersion;
 
     private static Process gameProcess;
 
@@ -136,7 +136,7 @@ public class MinecraftClientLauncher {
             System.exit(1);
         }
 
-        minecraftVersion = MinecraftVersionInfo.getVersion(jarPath);
+        minecraftVersion = MinecraftVersionRepository.getSingleton().getVersion(jarPath);
     }
 
     public void startMinecraft() throws Exception {

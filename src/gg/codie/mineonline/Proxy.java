@@ -11,6 +11,10 @@ import java.util.Map;
 
 public class Proxy {
 
+    public static final String PROXY_SET_ARG = "-DproxySet=true";
+    public static final String PROXY_HOST_ARG = "-Dhttp.proxyHost=127.0.0.1";
+    public static final String PROXY_PORT_ARG = "-Dhttp.proxyPort=";
+
     private static ProxyThread proxyThread = null;
 
     public static int getProxyPort() {
@@ -36,8 +40,6 @@ public class Proxy {
     private static Process launcherProcess;
 
     public static void main(String[] args) throws IOException, URISyntaxException {
-//        System.out.println(String.format("%02x", (byte)0xE));
-
         boolean multiInstance = false;
 
         for(String arg : args) {

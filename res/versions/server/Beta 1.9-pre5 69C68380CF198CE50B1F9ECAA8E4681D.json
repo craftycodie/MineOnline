@@ -7,5 +7,6 @@
   "clientMd5s": [
     "6258C4F293B939117EFE640EDA76DCA4"
   ],
-  "baseVersion": "b1.9-pre5"
+  "baseVersion": "b1.9-pre5",
+  "legacy": true
 }

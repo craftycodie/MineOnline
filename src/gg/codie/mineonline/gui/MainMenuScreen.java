@@ -39,7 +39,7 @@ public class MainMenuScreen implements IMenuScreen {
         logo = new GUIObject("logo", texuredLogoModel, new Vector3f(), new Vector3f(), new Vector3f(1, 1, 1));
 
         Settings.loadSettings();
-        String jarPath = Settings.settings.has(Settings.SELECTED_JAR) ? Settings.settings.getString(Settings.SELECTED_JAR) : null;
+        String jarPath = MinecraftVersionRepository.getSingleton().getLastSelectedJarPath();
         boolean jarSelected = jarPath != null && !jarPath.isEmpty();
 
         playButton = new MediumButton("Play", new Vector2f((DisplayManager.getDefaultWidth() / 2) + 30, (DisplayManager.getDefaultHeight() / 2) - 40), new IOnClickListener() {
@@ -47,7 +47,7 @@ public class MainMenuScreen implements IMenuScreen {
             public void onClick() {
                 try {
                     //new MinecraftLauncher("D:\\Projects\\GitHub\\MineOnline\\jars\\b1.7.3-modded.jar", null, null, null).startMinecraft();
-                    MinecraftVersionInfo.launchMinecraft(jarPath, null, null, null);
+                    MinecraftVersion.launchMinecraft(jarPath, null, null, null);
 
                     //new MinecraftLauncher("D:\\Projects\\GitHub\\MineOnline\\jars\\c0.0.11a-launcher.jar", null, null, null).startMinecraft();
                 } catch (Exception ex) {}
@@ -62,9 +62,9 @@ public class MainMenuScreen implements IMenuScreen {
         });
 
         String jarName = jarSelected ? new File(jarPath).getName() : null;
-        MinecraftVersionInfo.MinecraftVersion version = null;
+        MinecraftVersion version = null;
         if(jarPath != null) {
-            version = MinecraftVersionInfo.getVersion(jarPath);
+            version = MinecraftVersionRepository.getSingleton().getVersion(jarPath);
         }
 
         if(!jarSelected) {
@@ -77,8 +77,7 @@ public class MainMenuScreen implements IMenuScreen {
                 selectVersionMenuScreen = new SelectVersionMenuScreen(null, new IOnClickListener() {
                     @Override
                     public void onClick() {
-                        Settings.settings.put(Settings.SELECTED_JAR, selectVersionMenuScreen.getSelectedPath());
-                        Settings.saveSettings();
+                        MinecraftVersionRepository.getSingleton().selectJar(selectVersionMenuScreen.getSelectedPath());
                         MenuManager.setMenuScreen(new MainMenuScreen());
                     }
                 }, null);

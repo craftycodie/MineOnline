@@ -19,8 +19,6 @@ public class Settings {
     public static final String SETTINGS_VERSION = "settingsVersion";
     public static final String IS_PREMIUM = "isPremium";
     public static final String JAVA_COMMAND = "javaCommand";
-    public static final String SELECTED_JAR = "selectedJar";
-    public static final String MINECRAFT_JARS = "minecraftJars";
     public static final String FULLSCREEN = "fullscreen";
     public static final String PROXY_LOGGING = "proxyLogging";
 
@@ -28,113 +26,18 @@ public class Settings {
     static {
         if(new File(LauncherFiles.MINEONLINE_PROPS_FILE).exists()) {
             loadSettings();
-
-            // Check .minecraft\versions for new jars.
-
-            String[] knownJars = settings.has(MINECRAFT_JARS) ? JSONUtils.getStringArray(settings.getJSONArray(MINECRAFT_JARS)) : new String[0];
-
-            LinkedList<String> officialLauncherVersions = getOfficialLauncherJars(null, null);
-            LinkedList<String> newJars = new LinkedList<>();
-
-            officialJarsLoop:
-            for (String path : officialLauncherVersions) {
-                for (String jar : knownJars) {
-                    if(jar.equals(path)) {
-                        continue officialJarsLoop;
-                    }
-                }
-
-                File file = new File(path);
-
-
-
-                MinecraftVersionInfo.MinecraftVersion minecraftVersion = MinecraftVersionInfo.getVersion(path);
-
-                try {
-                    if (!MinecraftVersionInfo.isPlayableJar(file.getPath())) {
-                        continue;
-                    }
-                } catch (IOException ex) {
-                    continue;
-                }
-
-                // Only pay attention to versions in versions manifest.
-                // Ignore incompatible versions.
-                if(minecraftVersion != null) {
-                    newJars.add(path);
-                } else { }
-            }
-
-            settings.put(MINECRAFT_JARS, ArrayUtils.concatenate(knownJars, newJars.toArray(new String[0])));
-
-            saveSettings();
-
         } else {
             resetSettings();
         }
-    }
-
-    private static LinkedList<String> getOfficialLauncherJars(LinkedList<String> fileNames, Path dir) {
-        if(fileNames == null)
-            fileNames = new LinkedList<>();
-
-        if(dir == null)
-            dir = Paths.get(LauncherFiles.MINECRAFT_VERSIONS_PATH);
-
-        try(DirectoryStream<Path> stream = Files.newDirectoryStream(dir)) {
-            for (Path path : stream) {
-                if(path.toFile().isDirectory()) {
-                    getOfficialLauncherJars(fileNames, path);
-                } else if(path.toAbsolutePath().toString().endsWith(".jar")) {
-                    String fileName = path.getFileName().toString();
-                    if(fileName.startsWith("a") || fileName.startsWith("b") || fileName.startsWith("c") || fileName.startsWith("rd") || fileName.startsWith("inf"))
-                        fileNames.add(path.toAbsolutePath().toString());
-                }
-            }
-        } catch(IOException e) {
-            e.printStackTrace();
-        }
-
-        return fileNames;
     }
 
     public static void resetSettings() {
         settings = new JSONObject();
         settings.put(SETTINGS_VERSION, 3);
         settings.put(IS_PREMIUM, true);
-        settings.put(MINECRAFT_JARS, new String[0]);
         settings.put(JAVA_COMMAND, "java");
-        settings.put(SELECTED_JAR, "");
         settings.put(FULLSCREEN, false);
         settings.put(PROXY_LOGGING, false);
-
-        // Check .minecraft\versions for new jars.
-
-        LinkedList<String> officialLauncherVersions = getOfficialLauncherJars(null, null);
-        LinkedList<String> newJars = new LinkedList<>();
-
-        officialJarsLoop:
-        for (String path : officialLauncherVersions) {
-            File file = new File(path);
-
-            MinecraftVersionInfo.MinecraftVersion minecraftVersion = MinecraftVersionInfo.getVersion(path);
-
-            try {
-                if (!MinecraftVersionInfo.isPlayableJar(file.getPath())) {
-                    continue;
-                }
-            } catch (IOException ex) {
-                continue;
-            }
-
-            // Only pay attention to versions in versions manifest.
-            // Ignore incompatible versions.
-            if(minecraftVersion != null) {
-                newJars.add(path);
-            } else { }
-        }
-
-        settings.put(MINECRAFT_JARS, newJars.toArray(new String[0]));
 
         saveSettings();
         loadSettings();
@@ -160,8 +63,6 @@ public class Settings {
                 String[] oldKeys = new String[] {
                         IS_PREMIUM,
                         JAVA_COMMAND,
-                        SELECTED_JAR,
-                        MINECRAFT_JARS,
                         FULLSCREEN,
                         PROXY_LOGGING
                 };

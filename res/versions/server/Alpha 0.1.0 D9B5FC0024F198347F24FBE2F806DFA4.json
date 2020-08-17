@@ -6,5 +6,6 @@
   "clientVersions": [
     "a1.0.15"
   ],
-  "baseVersion": "a1.0.15"
+  "baseVersion": "a1.0.15",
+  "legacy": true
 }

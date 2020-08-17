@@ -1,6 +1,7 @@
 package gg.codie.mineonline.gui;
 
-import gg.codie.mineonline.MinecraftVersionInfo;
+import gg.codie.mineonline.MinecraftVersion;
+import gg.codie.mineonline.MinecraftVersionRepository;
 import gg.codie.mineonline.Settings;
 import gg.codie.mineonline.gui.events.IOnClickListener;
 import gg.codie.mineonline.gui.font.GUIText;
@@ -11,7 +12,6 @@ import gg.codie.mineonline.gui.components.SelectableVersionList;
 import gg.codie.mineonline.gui.components.TinyButton;
 import gg.codie.mineonline.gui.rendering.font.TextMaster;
 import gg.codie.mineonline.gui.rendering.shaders.GUIShader;
-import gg.codie.utils.JSONUtils;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
@@ -53,10 +53,10 @@ public class SelectVersionMenuScreen implements IMenuScreen {
                         if (returnVal == JFileChooser.APPROVE_OPTION) {
                             File file = fileChooser.getSelectedFile();
 
-                            MinecraftVersionInfo.MinecraftVersion minecraftVersion = MinecraftVersionInfo.getVersion(file.getPath());
+                            MinecraftVersion minecraftVersion = MinecraftVersionRepository.getSingleton().getVersion(file.getPath());
 
                             try {
-                                if (!MinecraftVersionInfo.isPlayableJar(file.getPath())) {
+                                if (!MinecraftVersion.isPlayableJar(file.getPath())) {
                                     JOptionPane.showMessageDialog(null, "This jar file is incompatible:\nNo applet or main class found.");
                                     return;
                                 }
@@ -65,21 +65,8 @@ public class SelectVersionMenuScreen implements IMenuScreen {
                                 return;
                             }
 
-                            String[] existingJars = Settings.settings.has(Settings.MINECRAFT_JARS) ? JSONUtils.getStringArray(Settings.settings.getJSONArray(Settings.MINECRAFT_JARS)) : new String[0];
-                            String[] newJars = new String[existingJars.length + 1];
-
-                            for (int i = 0; i < existingJars.length; i++) {
-                                if (existingJars[i].equals(file.getPath())) {
-                                    selectableVersionList.selectVersion(file.getPath());
-                                    return;
-                                } else {
-                                    newJars[i] = existingJars[i];
-                                }
-                            }
-                            newJars[newJars.length - 1] = file.getPath();
-
-                            Settings.settings.put(Settings.MINECRAFT_JARS, newJars);
-                            Settings.saveSettings();
+                            MinecraftVersionRepository.getSingleton().addInstalledVersion(file.getPath());
+                            MinecraftVersionRepository.getSingleton().selectJar(file.getPath());
 
                             if (minecraftVersion != null) {
                                 versionToAdd = new String[]{minecraftVersion.name, file.getPath(), minecraftVersion.info};
@@ -102,7 +89,7 @@ public class SelectVersionMenuScreen implements IMenuScreen {
         selectableVersionList = new SelectableVersionList("version list", new Vector3f(), new Vector3f(), new Vector3f(1, 1, 1), new IOnClickListener() {
             @Override
             public void onClick() {
-                Settings.settings.put(Settings.SELECTED_JAR, selectableVersionList.getSelected());
+                MinecraftVersionRepository.getSingleton().selectJar(selectableVersionList.getSelected());
                 Settings.saveSettings();
                 MenuManager.setMenuScreen(new MainMenuScreen());
             }

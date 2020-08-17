@@ -3,5 +3,6 @@
   "md5": "0F529321EBED1CE1A3042BCE522B98D4",
   "type": "server",
   "hasHeartbeat": true,
-  "baseVersion": "c1.3"
+  "baseVersion": "c1.3",
+  "legacy": true
 }

@@ -7,5 +7,6 @@
     "7F824C3EC484D748A82A0AAE9B237A56"
   ],
   "hasHeartbeat": true,
-  "baseVersion": "c1.2"
+  "baseVersion": "c1.2",
+  "legacy": true
 }

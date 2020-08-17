@@ -2,6 +2,7 @@ package gg.codie.mineonline.gui;
 
 import gg.codie.mineonline.Globals;
 import gg.codie.mineonline.LibraryManager;
+import gg.codie.mineonline.MinecraftVersionRepository;
 import gg.codie.mineonline.Session;
 import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.mineonline.api.MinecraftAPI;
@@ -79,8 +80,28 @@ public class MenuManager {
             ex.printStackTrace();
         }
 
+        // Load this before showing the display.
+        MinecraftVersionRepository.getSingleton();
+
         LibraryManager.updateClasspath();
         LibraryManager.updateNativesPath();
+
+        LastLogin lastLogin = null;
+
+        if(!"true".equals(System.getProperty("mineonline.multiinstance")))
+            lastLogin = LastLogin.readLastLogin();
+
+        String sessionToken = null;
+        String uuid = null;
+
+        if(lastLogin != null ) {
+            try {
+                sessionToken = MinecraftAPI.login(lastLogin.username, lastLogin.password);
+                uuid = MineOnlineAPI.playeruuid(lastLogin.username, sessionToken);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
 
         DisplayManager.init();
 
@@ -93,7 +114,7 @@ public class MenuManager {
         TextMaster.init(loader);
 
         GameObject playerPivot = new GameObject("player_origin", new Vector3f(), new Vector3f(0, 30, 0), new Vector3f(1, 1, 1));
-        PlayerGameObject playerGameObject = new PlayerGameObject("player", loader, StaticShader.singleton, new Vector3f(0, -21, 0), new Vector3f(), new Vector3f(1, 1, 1));
+        PlayerGameObject playerGameObject = new PlayerGameObject("player", loader, new Vector3f(0, -21, 0), new Vector3f(), new Vector3f(1, 1, 1));
         playerPivot.addChild(playerGameObject);
 
         playerScale = new GameObject("player scale", new Vector3f(-20, 0, -65), new Vector3f(), new Vector3f(1, 1, 1));
@@ -102,7 +123,7 @@ public class MenuManager {
         playerGameObject.setPlayerAnimation(new IdlePlayerAnimation());
         Camera camera = new Camera();
 
-        String[] panoramaNames = new String[] {"sunset", "sunset", "sunset", "sunset", "sunset", "midnight", "midnight", "midnight", "sunset", "noon"};
+        String[] panoramaNames = new String[] {"sunset", "sunset", "sunset", "sunset", "sunset", "midnight", "midnight", "midnight", "sunset"};
         //String[] panoramaNames = new String[] {"noon"};
 
         RawModel model = loader.loadBoxToVAO(new Vector3f(-1, -1, -1), new Vector3f(1, 1, 1), TextureHelper.getCubeTextureCoords(new Vector2f(8192, 4096),
@@ -117,32 +138,19 @@ public class MenuManager {
         TexturedModel texturedModel =  new TexturedModel(model, modelTexture);
         GameObject backgroundImage = new GUIObject("Background", texturedModel, new Vector3f(0, 0, 0), new Vector3f(), new Vector3f(75f, 75f, 75f));
 
-        LastLogin lastLogin = null;
-
-        if(!"true".equals(System.getProperty("mineonline.multiinstance")))
-            lastLogin = LastLogin.readLastLogin();
-
-        if(lastLogin != null ) {
-            try {
-                String sessionToken = MinecraftAPI.login(lastLogin.username, lastLogin.password);
-                String uuid = MineOnlineAPI.playeruuid(lastLogin.username, sessionToken);
-                if (sessionToken != null) {
-                    new Session(lastLogin.username, sessionToken, uuid);
-                    LastLogin.writeLastLogin(lastLogin.username, lastLogin.password, uuid);
-                    setMenuScreen(new MainMenuScreen());
-                } else {
-                    setMenuScreen(new LoginMenuScreen(false));
-                }
-            } catch (IOException ex) {
-                setMenuScreen(new LoginMenuScreen(true));
-            }
-        } else {
-            setMenuScreen(new LoginMenuScreen(false));
-        }
-
 //        FontType font = new FontType(loader.loadTexture(MenuManager.class.getResource("/font/font.png")), MenuManager.class.getResourceAsStream("/font/font.fnt"));
 //        GUIText text = new GUIText("MineOnline Pre-Release", 1.5f, font, new Vector2f(0, 0), DisplayManager.getDefaultWidth(), false, true);
 //        text.setColour(0.33f, 0.33f, 0.33f);
+
+        if (sessionToken != null) {
+            new Session(lastLogin.username, sessionToken, uuid);
+            LastLogin.writeLastLogin(lastLogin.username, lastLogin.password, uuid);
+        }
+
+        if(Session.session != null && Session.session.isOnline())
+            setMenuScreen(new MainMenuScreen());
+        else
+            setMenuScreen(new LoginMenuScreen(false));
 
         int lastWidth = Display.getWidth();
         int lastHeight = Display.getHeight();

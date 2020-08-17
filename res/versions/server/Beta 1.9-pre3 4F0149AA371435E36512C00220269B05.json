@@ -8,5 +8,6 @@
     "334827DBE9183AF6D650B39321A99E21",
     "8C50B9D8D8D5A3A5BFA2E18D2FEA7728"
   ],
-  "baseVersion": "b1.9-pre3"
+  "baseVersion": "b1.9-pre3",
+  "legacy": true
 }

@@ -16,7 +16,7 @@ public class Server {
         LibraryManager.updateClasspath();
 
         String md5 = MD5Checksum.getMD5ChecksumForFile(jarFile.getPath());
-        MinecraftVersionInfo.MinecraftVersion serverVersion = MinecraftVersionInfo.getVersionByMD5(md5);
+        MinecraftVersion serverVersion = MinecraftVersionRepository.getSingleton().getVersionByMD5(md5);
 
         if(serverVersion.legacy) {
             LegacyMinecraftServerLauncher.main(args);

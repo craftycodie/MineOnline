@@ -8,5 +8,6 @@
     "DE2164DF461D028229ED2E101181BBD4",
     "92BC45CE9CE338A2F4CF78C124503E69"
   ],
-  "baseVersion": "b1.3-221731"
+  "baseVersion": "b1.3-221731",
+  "legacy": true
 }
