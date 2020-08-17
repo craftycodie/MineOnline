@@ -190,13 +190,11 @@ public class MinecraftVersionRepository {
                     MinecraftVersion existingVersion = getVersionByMD5(jarMd5, cachedVersions);
                     for (MinecraftVersion cachedVersion : cachedVersions) {
                         if (cachedVersion != null && cachedVersion.md5.equals(jarMd5)) {
-                            String infoMd5 = ((JSONObject) versionPathObject).getString("md5").toUpperCase();
+                            long infoModified = ((JSONObject) versionPathObject).getLong("modified");
                             File cachedInfo = new File(LauncherFiles.MINEONLINE_VERSIONS_FOLDER + existingVersion.type + File.separator + existingVersion.name + " " + existingVersion.md5 + ".json");
 
                             if (cachedInfo.exists()) {
-                                String cachedInfoMd5 = MD5Checksum.getMD5ChecksumForString(String.join("\n", Files.readAllLines(Paths.get(cachedInfo.getPath()))));
-
-                                if (!infoMd5.equals(cachedInfoMd5)) {
+                                if (infoModified > cachedInfo.lastModified()) {
                                     cachedInfo.delete();
                                 } else {
                                     alreadyDownloaded = true;
@@ -245,6 +243,7 @@ public class MinecraftVersionRepository {
                     File target = new File(LauncherFiles.MINEONLINE_VERSIONS_FOLDER + version.type + File.separator + version.name + " " + version.md5 + ".json");
                     target.getParentFile().mkdirs();
                     Files.copy(MinecraftVersionRepository.class.getResourceAsStream("/versions/" + version.type + "/" + version.name + " " + version.md5 + ".json"), Paths.get(target.toURI()), StandardCopyOption.REPLACE_EXISTING);
+                    target.setLastModified(MinecraftVersionRepository.class.getResource("/versions/" + version.type + "/" + version.name + " " + version.md5 + ".json").openConnection().getLastModified());
                 } catch (Exception ex) {
                     System.out.println("Failed to extract version " + version.md5);
                     ex.printStackTrace();
