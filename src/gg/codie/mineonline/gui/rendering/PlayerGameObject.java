@@ -155,7 +155,7 @@ public class PlayerGameObject extends GameObject {
                 new Vector2f(48, 32), new Vector2f(4, 4)
         ));
 
-        playerLeftArm = addBox("leftarm", new Vector3f(-1, -2, -2), 4, 12, 4, new Vector3f(-2, -10, 0), new Vector3f(-5, 24, 0), TextureHelper.getLeftLimbTextureCoords(new Vector2f(SKIN_WIDTH, SKIN_HEIGHT),
+        playerLeftArm = addBox("leftarm", new Vector3f(-1, -2, -2), 4, 12, 4, new Vector3f(-2, -10, 0), new Vector3f(-5, 24, 0), TextureHelper.getRightLimbTextureCoords(new Vector2f(SKIN_WIDTH, SKIN_HEIGHT),
                 new Vector2f(44, 52), new Vector2f(4, 12),
                 new Vector2f(36, 52), new Vector2f(4, 12),
                 new Vector2f(40, 52), new Vector2f(4, 12),
@@ -164,7 +164,7 @@ public class PlayerGameObject extends GameObject {
                 new Vector2f(40, 48), new Vector2f(4, 4)
         ));
 
-        playerLeftSleeve = addLayer(playerLeftArm, "leftSleeve", new Vector3f(-3, -8, -2), 4, 12, 4, TextureHelper.getLeftLimbTextureCoords(new Vector2f(SKIN_WIDTH, SKIN_HEIGHT),
+        playerLeftSleeve = addLayer(playerLeftArm, "leftSleeve", new Vector3f(-3, -8, -2), 4, 12, 4, TextureHelper.getRightLimbTextureCoords(new Vector2f(SKIN_WIDTH, SKIN_HEIGHT),
                 new Vector2f(60, 52), new Vector2f(4, 12),
                 new Vector2f(52, 52), new Vector2f(4, 12),
                 new Vector2f(56, 52), new Vector2f(4, 12),
@@ -174,12 +174,12 @@ public class PlayerGameObject extends GameObject {
         ));
 
         playerRightLeg = addBox("rightleg", new Vector3f(-2, 0, -2), 4 , 12, 4, new Vector3f(-2, -12, 0), new Vector3f(4, 12, 0), TextureHelper.getRightLimbTextureCoords(new Vector2f(SKIN_WIDTH, SKIN_HEIGHT),
-                new Vector2f(12, 20), new Vector2f(4, 12),
-                new Vector2f(4, 20), new Vector2f(4, 12),
-                new Vector2f(8, 20), new Vector2f(4, 12),
-                new Vector2f(0, 20), new Vector2f(4, 12),
-                new Vector2f(4, 16), new Vector2f(4, 4),
-                new Vector2f(8, 16), new Vector2f(4, 4)
+                new Vector2f(28, 52), new Vector2f(4, 12),
+                new Vector2f(20, 52), new Vector2f(4, 12),
+                new Vector2f(24, 52), new Vector2f(4, 12),
+                new Vector2f(16, 52), new Vector2f(4, 12),
+                new Vector2f(20, 48), new Vector2f(4, 4),
+                new Vector2f(24, 48), new Vector2f(4, 4)
         ));
 
         playerRightPantsLeg = addLayer(playerRightLeg, "rightpantsleg", new Vector3f(-3.9f, -8, -2), 4 , 12, 4, TextureHelper.getRightLimbTextureCoords(new Vector2f(SKIN_WIDTH, SKIN_HEIGHT),
@@ -192,12 +192,12 @@ public class PlayerGameObject extends GameObject {
         ));
 
         playerLeftLeg = addBox("leftleg", new Vector3f(-2, 0, -2), 4 , 12, 4, new Vector3f(2, -12, 0 ), new Vector3f(-4, 12, 0),  TextureHelper.getLeftLimbTextureCoords(new Vector2f(SKIN_WIDTH, SKIN_HEIGHT),
-                new Vector2f(28, 52), new Vector2f(4, 12),
-                new Vector2f(20, 52), new Vector2f(4, 12),
-                new Vector2f(24, 52), new Vector2f(4, 12),
-                new Vector2f(16, 52), new Vector2f(4, 12),
-                new Vector2f(20, 48), new Vector2f(4, 4),
-                new Vector2f(24, 48), new Vector2f(4, 4)
+                new Vector2f(12, 20), new Vector2f(4, 12),
+                new Vector2f(4, 20), new Vector2f(4, 12),
+                new Vector2f(8, 20), new Vector2f(4, 12),
+                new Vector2f(0, 20), new Vector2f(4, 12),
+                new Vector2f(4, 16), new Vector2f(4, 4),
+                new Vector2f(8, 16), new Vector2f(4, 4)
         ));
 
         playerLeftPantsLeg = addLayer(playerLeftLeg, "leftpantsleg", new Vector3f(-0.1f, -8, -2), 4 , 12, 4, TextureHelper.getRightLimbTextureCoords(new Vector2f(SKIN_WIDTH, SKIN_HEIGHT),
@@ -265,45 +265,45 @@ public class PlayerGameObject extends GameObject {
         TexturedModel newModel;
         if(slim) {
             newModel = getBoxModel(new Vector3f(-3, -2, -2), 3, 12, 4, TextureHelper.getRightLimbTextureCoords(new Vector2f(SKIN_WIDTH, SKIN_HEIGHT),
-                    new Vector2f(52, 20), new Vector2f(3, 12),
+                    new Vector2f(50, 20), new Vector2f(4, 12),
                     new Vector2f(44, 20), new Vector2f(3, 12),
-                    new Vector2f(48, 20), new Vector2f(4, 12),
+                    new Vector2f(47, 20), new Vector2f(3, 12),
                     new Vector2f(40, 20), new Vector2f(4, 12),
-                    new Vector2f(44, 16), new Vector2f(4, 4),
-                    new Vector2f(48, 16), new Vector2f(4, 4)
+                    new Vector2f(44, 16), new Vector2f(3, 4),
+                    new Vector2f(47, 16), new Vector2f(3, 4)
             ));
             newModel.setTexture(playerRightArm.getChildren().getFirst().getModel().getTexture());
             playerRightArm.getChildren().getFirst().setModel(newModel);
 
-            newModel = getBoxModel(new Vector3f(-1, -2, -2), 4, 12, 4, TextureHelper.getLeftLimbTextureCoords(new Vector2f(SKIN_WIDTH, SKIN_HEIGHT),
-                    new Vector2f(52, 36), new Vector2f(3, 12),
-                    new Vector2f(44, 36), new Vector2f(3, 12),
-                    new Vector2f(48, 36), new Vector2f(4, 12),
+            newModel = getBoxModel(new Vector3f(-1, -8, -2), 3, 12, 4, TextureHelper.getRightLimbTextureCoords(new Vector2f(SKIN_WIDTH, SKIN_HEIGHT),
                     new Vector2f(40, 36), new Vector2f(4, 12),
-                    new Vector2f(44, 32), new Vector2f(4, 4),
-                    new Vector2f(48, 32), new Vector2f(4, 4)
+                    new Vector2f(44, 36), new Vector2f(3, 12),
+                    new Vector2f(47, 36), new Vector2f(3, 12),
+                    new Vector2f(50, 36), new Vector2f(4, 12),
+                    new Vector2f(44, 32), new Vector2f(3, 4),
+                    new Vector2f(47, 32), new Vector2f(3, 4)
             ));
             newModel.setTexture(playerRightSleeve.getModel().getTexture());
             playerRightSleeve.setModel(newModel);
 
-            newModel = getBoxModel(new Vector3f(0, -2, -2), 3, 12, 4, TextureHelper.getLeftLimbTextureCoords(new Vector2f(SKIN_WIDTH, SKIN_HEIGHT),
-                    new Vector2f(44, 52), new Vector2f(3, 12),
+            newModel = getBoxModel(new Vector3f(0, -2, -2), 3, 12, 4, TextureHelper.getRightLimbTextureCoords(new Vector2f(SKIN_WIDTH, SKIN_HEIGHT),
+                    new Vector2f(42, 52), new Vector2f(4, 12),
                     new Vector2f(36, 52), new Vector2f(3, 12),
-                    new Vector2f(40, 52), new Vector2f(4, 12),
+                    new Vector2f(39, 52), new Vector2f(3, 12),
                     new Vector2f(32, 52), new Vector2f(4, 12),
-                    new Vector2f(36, 48), new Vector2f(4, 4),
-                    new Vector2f(40, 48), new Vector2f(4, 4)
+                    new Vector2f(36, 48), new Vector2f(3, 4),
+                    new Vector2f(39, 48), new Vector2f(3, 4)
             ));
             newModel.setTexture(playerLeftArm.getChildren().getFirst().getModel().getTexture());
             playerLeftArm.getChildren().getFirst().setModel(newModel);
 
-            newModel = getBoxModel(new Vector3f(-1, -2, -2), 4, 12, 4, TextureHelper.getLeftLimbTextureCoords(new Vector2f(SKIN_WIDTH, SKIN_HEIGHT),
-                    new Vector2f(60, 52), new Vector2f(3, 12),
-                    new Vector2f(52, 52), new Vector2f(3, 12),
-                    new Vector2f(56, 52), new Vector2f(4, 12),
+            newModel = getBoxModel(new Vector3f(-2, -8, -2), 3, 12, 4, TextureHelper.getRightLimbTextureCoords(new Vector2f(SKIN_WIDTH, SKIN_HEIGHT),
                     new Vector2f(48, 52), new Vector2f(4, 12),
-                    new Vector2f(52, 48), new Vector2f(4, 4),
-                    new Vector2f(56, 48), new Vector2f(4, 4)
+                    new Vector2f(52, 52), new Vector2f(3, 12),
+                    new Vector2f(55, 52), new Vector2f(3, 12),
+                    new Vector2f(58, 52), new Vector2f(4, 12),
+                    new Vector2f(52, 48), new Vector2f(3, 4),
+                    new Vector2f(54, 48), new Vector2f(3, 4)
             ));
             newModel.setTexture(playerLeftSleeve.getModel().getTexture());
             playerLeftSleeve.setModel(newModel);
@@ -319,13 +319,13 @@ public class PlayerGameObject extends GameObject {
             newModel.setTexture(playerRightArm.getChildren().getFirst().getModel().getTexture());
             playerRightArm.getChildren().getFirst().setModel(newModel);
 
-            newModel = getBoxModel(new Vector3f(-1, -2, -2), 4, 12, 4, TextureHelper.getLeftLimbTextureCoords(new Vector2f(SKIN_WIDTH, SKIN_HEIGHT),
+            newModel = getBoxModel(new Vector3f(-1, -8, -2), 4, 12, 4, TextureHelper.getLeftLimbTextureCoords(new Vector2f(SKIN_WIDTH, SKIN_HEIGHT),
                     new Vector2f(52, 36), new Vector2f(4, 12),
                     new Vector2f(44, 36), new Vector2f(4, 12),
                     new Vector2f(48, 36), new Vector2f(4, 12),
                     new Vector2f(40, 36), new Vector2f(4, 12),
                     new Vector2f(44, 32), new Vector2f(4, 4),
-                    new Vector2f(48, 32), new Vector2f(4, 4)
+                    new Vector2f(47, 32), new Vector2f(4, 4)
             ));
             newModel.setTexture(playerRightSleeve.getModel().getTexture());
             playerRightSleeve.setModel(newModel);
@@ -341,13 +341,13 @@ public class PlayerGameObject extends GameObject {
             newModel.setTexture(playerLeftArm.getChildren().getFirst().getModel().getTexture());
             playerLeftArm.getChildren().getFirst().setModel(newModel);
 
-            newModel = getBoxModel(new Vector3f(-1, -2, -2), 4, 12, 4, TextureHelper.getLeftLimbTextureCoords(new Vector2f(SKIN_WIDTH, SKIN_HEIGHT),
+            newModel = getBoxModel(new Vector3f(-3, -8, -2), 4, 12, 4, TextureHelper.getLeftLimbTextureCoords(new Vector2f(SKIN_WIDTH, SKIN_HEIGHT),
                     new Vector2f(60, 52), new Vector2f(4, 12),
                     new Vector2f(52, 52), new Vector2f(4, 12),
                     new Vector2f(56, 52), new Vector2f(4, 12),
                     new Vector2f(48, 52), new Vector2f(4, 12),
                     new Vector2f(52, 48), new Vector2f(4, 4),
-                    new Vector2f(56, 48), new Vector2f(4, 4)
+                    new Vector2f(55, 48), new Vector2f(4, 4)
             ));
             newModel.setTexture(playerLeftSleeve.getModel().getTexture());
             playerLeftSleeve.setModel(newModel);
