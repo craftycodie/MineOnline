@@ -22,6 +22,7 @@ public abstract class ServerLauncher {
     protected Properties serverProperties;
     public String serverlistAddress;
     public String serverlistPort;
+    protected final MinecraftVersion minecraftVersion;
     int users = 0;
     static String[] playerNames = new String[0];
     // If the player count was requested by MineOnline we remove that from stdout to avoid spamming logs.
@@ -29,6 +30,7 @@ public abstract class ServerLauncher {
     // to ensure each is removed.
     int playerCountRequested = 0;
 
+    protected final String classicPlayersPath;
     protected final String whitelistPath;
     protected final String whitelistPlayersJSONPath;
     protected final String bannedPath;
@@ -39,6 +41,7 @@ public abstract class ServerLauncher {
     public ServerLauncher(String jarPath) throws Exception {
         this.jarPath = jarPath;
         md5 = MD5Checksum.getMD5ChecksumForFile(jarPath);
+        minecraftVersion = MinecraftVersionRepository.getSingleton().getVersionByMD5(md5);
 
         try {
             serverProperties = gg.codie.minecraft.server.Properties.loadServerProperties(jarPath);
@@ -54,6 +57,7 @@ public abstract class ServerLauncher {
             serverlistPort = serverProperties.getProperty("serverlist-port");
         }
 
+        classicPlayersPath = jarPath.replace(Paths.get(jarPath).getFileName().toString(), "players.txt");
         whitelistPath = jarPath.replace(Paths.get(jarPath).getFileName().toString(), "whitelist.txt");
         whitelistPlayersJSONPath = jarPath.replace(Paths.get(jarPath).getFileName().toString(), "whitelist.json");
         bannedPath = jarPath.replace(Paths.get(jarPath).getFileName().toString(), "banned-players.txt");
@@ -76,11 +80,22 @@ public abstract class ServerLauncher {
                                 if(nextLine.length() > 46){
                                     users = nextLine.split(",").length;
                                 }
+
+                                playerNames = new String[0];
+                                if (users == 1) {
+                                    playerNames = new String[] {nextLine.substring(46)};
+                                } else if (users > 1) {
+                                    playerNames = nextLine.substring(46).split(", ");
+                                }
+
                             } else if(nextLine.length() > 33 && nextLine.substring(33).startsWith("There are ") && nextLine.substring(33).contains(" players online")) {
                                 try {
                                     users = Integer.parseInt(nextLine.substring(33).split(" ")[2]);
-                                    playerNames = nextLine.split(": ")[2].replace(",", "").split(" ");
-                                    System.out.println(Arrays.toString(playerNames));
+                                    playerNames = new String[0];
+                                    if(users == 1)
+                                        playerNames = new String[] { nextLine.split(": ")[2] };
+                                    else if (users > 1)
+                                        playerNames = nextLine.split(": ")[2].replace(", ", " ").split(" ");
                                 } catch (NumberFormatException ex) {
                                     // ignore.
                                 }
@@ -143,10 +158,14 @@ public abstract class ServerLauncher {
                 bannedIPs = Files.readUsersFile(bannedIpsPath);
                 bannedIPs = ArrayUtils.concatenate(bannedIPs, Files.readBannedIPsJSON(bannedIpsJSONPath));
 
+                if (minecraftVersion != null && minecraftVersion.hasHeartbeat) {
+                    playerNames = Files.readUsersFile(classicPlayersPath);
+                }
+
                 MineOnlineAPI.listServer(
                         serverlistAddress != null && !serverlistAddress.isEmpty() ? serverlistAddress : serverProperties.getProperty("server-ip", null),
                         serverlistPort != null && !serverlistPort.isEmpty() ? serverlistPort : serverProperties.getProperty("server-port", serverProperties.getProperty("port", "25565")),
-                        users,
+                        minecraftVersion != null && minecraftVersion.hasHeartbeat ? -1 : users,
                         Integer.parseInt(serverProperties.getProperty("max-players")),
                         serverProperties.getProperty("server-name", "Untitled Server"),
                         serverProperties.getProperty("online-mode", serverProperties.getProperty("verify-names", "true")).equals("true"),

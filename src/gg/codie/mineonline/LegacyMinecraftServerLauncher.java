@@ -1,12 +1,8 @@
 package gg.codie.mineonline;
 
-import gg.codie.minecraft.server.Files;
-import gg.codie.mineonline.api.MinecraftAPI;
 import gg.codie.utils.ArrayUtils;
-import gg.codie.utils.MD5Checksum;
 
 import java.io.*;
-import java.nio.file.Paths;
 import java.util.*;
 
 public class LegacyMinecraftServerLauncher extends ServerLauncher {
@@ -74,8 +70,7 @@ public class LegacyMinecraftServerLauncher extends ServerLauncher {
     }
 
 
-    public static void main(String[] args) throws Exception{
-
+    public static void main(String[] args) {
         File jarFile = new File(args[0]);
         if(!jarFile.exists()) {
             System.err.println("Couldn't find jar file " + args[0]);
@@ -86,7 +81,11 @@ public class LegacyMinecraftServerLauncher extends ServerLauncher {
             System.err.println("Too few arguments. Include a jar location and main class. \n Eg minecraft-server.jar com.mojang.minecraft.server.MinecraftServer");
         }
 
-        new LegacyMinecraftServerLauncher(args);
+        try {
+            new LegacyMinecraftServerLauncher(args);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
 }

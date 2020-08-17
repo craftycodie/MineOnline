@@ -202,9 +202,10 @@ public class MinecraftVersion {
 
     public static MinecraftVersion fromLauncherVersion(File jarFile) throws FileNotFoundException {
         File jsonFile = new File(jarFile.getParentFile().getPath() + File.separator + jarFile.getName().replace(".jar", ".json"));
-        System.out.println(jsonFile.getPath());
-        if (!jarFile.exists() || !jsonFile.exists())
-            throw new FileNotFoundException("Could not find minecraft version " + jarFile.getName());
+        if (!jarFile.exists() || !jsonFile.exists()) {
+            System.out.println("Could not find minecraft version " + jarFile.getName());
+            return null;
+        }
 
         try (FileInputStream input = new FileInputStream(jsonFile)) {
             // load a settings file
@@ -237,29 +238,29 @@ public class MinecraftVersion {
 
             for(Object library : versionManifest.getJSONArray("libraries")) {
                 JSONObject jsonLibrary = (JSONObject) library;
-                libraries.add(jsonLibrary.getJSONObject("downloads").getJSONObject("artifact").getString("path"));
+                if(jsonLibrary.getJSONObject("downloads").has("artifact"))
+                    libraries.add(jsonLibrary.getJSONObject("downloads").getJSONObject("artifact").getString("path"));
                 if(jsonLibrary.getJSONObject("downloads").has("classifiers"))
                     switch(OSUtils.getPlatform()) {
                         case macosx:
                             if (jsonLibrary.getJSONObject("downloads").getJSONObject("classifiers").has("natives-macos"))
-                                libraries.add(jsonLibrary.getJSONObject("downloads").getJSONObject("classifiers").getJSONObject("natives-macos").getString("path"));
+                                natives.add(jsonLibrary.getJSONObject("downloads").getJSONObject("classifiers").getJSONObject("natives-macos").getString("path"));
                             if (jsonLibrary.getJSONObject("downloads").getJSONObject("classifiers").has("natives-osx"))
-                                libraries.add(jsonLibrary.getJSONObject("downloads").getJSONObject("classifiers").getJSONObject("natives-osx").getString("path"));
+                                natives.add(jsonLibrary.getJSONObject("downloads").getJSONObject("classifiers").getJSONObject("natives-osx").getString("path"));
                             break;
                         case windows:
                             if (jsonLibrary.getJSONObject("downloads").getJSONObject("classifiers").has("natives-windows"))
-                                libraries.add(jsonLibrary.getJSONObject("downloads").getJSONObject("classifiers").getJSONObject("natives-windows").getString("path"));
+                                natives.add(jsonLibrary.getJSONObject("downloads").getJSONObject("classifiers").getJSONObject("natives-windows").getString("path"));
                             break;
                         case linux:
                             if (jsonLibrary.getJSONObject("downloads").getJSONObject("classifiers").has("natives-linux"))
-                                libraries.add(jsonLibrary.getJSONObject("downloads").getJSONObject("classifiers").getJSONObject("natives-linux").getString("path"));
+                                natives.add(jsonLibrary.getJSONObject("downloads").getJSONObject("classifiers").getJSONObject("natives-linux").getString("path"));
                             break;
                         case solaris:
                         case unknown:
                         default:
                             break;
                     }
-                natives.add(jsonLibrary.getJSONObject("downloads").getJSONObject("artifact").getString("path"));
             }
 
             return new MinecraftVersion(

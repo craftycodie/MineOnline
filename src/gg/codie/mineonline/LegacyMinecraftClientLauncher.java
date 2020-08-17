@@ -86,7 +86,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
             }
         }
 
-        System.out.println("Launching Jar, MD5: " + MD5Checksum.getMD5ChecksumForFile(jarPath));
+        System.out.println("Launching Legacy Jar, MD5: " + MD5Checksum.getMD5ChecksumForFile(jarPath));
 
         fullscreen = Settings.settings.has(Settings.FULLSCREEN) && Settings.settings.getBoolean(Settings.FULLSCREEN);
 

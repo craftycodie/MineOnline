@@ -72,8 +72,9 @@ public class OptionsMenuScreen implements IMenuScreen {
                 LastLogin.deleteLastLogin();
                 Session.session.logout();
                 MenuManager.setMenuScreen(new LoginMenuScreen(false));
-                new File(LauncherFiles.CACHED_CLOAK_PATH).delete();
                 new File(LauncherFiles.CACHED_SKIN_PATH).delete();
+                new File(LauncherFiles.CACHED_SKIN_METADATA_PATH).delete();
+                new File(LauncherFiles.CACHED_CLOAK_PATH).delete();
             }
         });
 
