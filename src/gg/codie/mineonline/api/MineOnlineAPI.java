@@ -224,7 +224,6 @@ public class MineOnlineAPI {
             int bytes_read = 0;
             while ((bytes_read = skinFile.read(buffer, 0, 8096)) != -1) {
                 for(int i = 0; i < bytes_read; i++) {
-                    System.out.print(buffer[i]);
                     connection.getOutputStream().write(buffer[i]);
                 }
             }
@@ -273,7 +272,6 @@ public class MineOnlineAPI {
             int bytes_read = 0;
             while ((bytes_read = cloakFile.read(buffer, 0, 8096)) != -1) {
                 for(int i = 0; i < bytes_read; i++) {
-                    System.out.print(buffer[i]);
                     connection.getOutputStream().write(buffer[i]);
                 }
             }

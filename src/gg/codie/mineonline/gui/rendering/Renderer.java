@@ -83,7 +83,7 @@ public class Renderer {
 
         TexturedModel texturedModel = gameObject.getModel();
 
-        if(texturedModel == null) {
+        if(texturedModel == null || texturedModel.getDontRender()) {
             return;
         }
 
@@ -133,7 +133,7 @@ public class Renderer {
 
         TexturedModel texturedModel = guiObject.getModel();
 
-        if(texturedModel == null) {
+        if(texturedModel == null || texturedModel.getDontRender()) {
             return;
         };
 

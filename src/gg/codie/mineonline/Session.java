@@ -72,9 +72,9 @@ public class Session {
                     }
 
                     FileOutputStream fileOutputStream = new FileOutputStream(LauncherFiles.CACHED_SKIN_PATH);
-                    byte dataBuffer[] = new byte[1024];
+                    byte dataBuffer[] = new byte[2048];
                     int bytesRead;
-                    while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
+                    while ((bytesRead = in.read(dataBuffer, 0, 2048)) != -1) {
                         fileOutputStream.write(dataBuffer, 0, bytesRead);
                     }
 
@@ -95,9 +95,9 @@ public class Session {
 
                     FileOutputStream fileOutputStream = new FileOutputStream(LauncherFiles.CACHED_CLOAK_PATH);
 
-                    byte dataBuffer[] = new byte[1024];
+                    byte dataBuffer[] = new byte[2048];
                     int bytesRead;
-                    while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
+                    while ((bytesRead = in.read(dataBuffer, 0, 2048)) != -1) {
                         fileOutputStream.write(dataBuffer, 0, bytesRead);
                     }
 

@@ -42,7 +42,9 @@ public class SkinMenuScreen implements IMenuScreen {
 
     String skinPath = "";
     String cloakPath = "";
-    private boolean unsavedChanges = false;
+    private boolean unsavedSkin = false;
+    private boolean unsavedCloak = false;
+    private boolean unsavedModel = false;
     private boolean slim = PlayerGameObject.thePlayer.getSlim();
 
     public SkinMenuScreen() {
@@ -87,9 +89,14 @@ public class SkinMenuScreen implements IMenuScreen {
                                     boolean failed = false;
                                     PlayerGameObject.thePlayer.setSkin(Paths.get(skinTexture.getPath()).toUri().toURL());
 
+                                    unsavedSkin = false;
+
                                     try {
                                         BufferedImage bufferedImage = ImageIO.read(new File(skinPath));
-                                        bufferedImage = TextureHelper.cropImage(bufferedImage, 0, 0, 64, 32);
+                                        if (bufferedImage.getHeight() >= 64)
+                                            bufferedImage = TextureHelper.cropImage(bufferedImage, 0, 0, 64, 64);
+                                        else
+                                            bufferedImage = TextureHelper.cropImage(bufferedImage, 0, 0, 64, 32);
                                         ByteArrayOutputStream os = new ByteArrayOutputStream();
                                         ImageIO.write(bufferedImage, "png", os);
                                         ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
@@ -99,7 +106,7 @@ public class SkinMenuScreen implements IMenuScreen {
                                         failed = true;
                                     }
                                     if(failed) {
-                                        unsavedChanges = true;
+                                        unsavedSkin = true;
                                     }
 
                                 } catch (MalformedURLException mx) {
@@ -134,6 +141,8 @@ public class SkinMenuScreen implements IMenuScreen {
                                     boolean failed = false;
                                     PlayerGameObject.thePlayer.setCloak(Paths.get(cloakTexture.getPath()).toUri().toURL());
 
+                                    unsavedCloak = false;
+
                                     try {
                                         BufferedImage bufferedImage = ImageIO.read(new File(cloakPath));
                                         bufferedImage = TextureHelper.cropImage(bufferedImage, 0, 0, 64, 32);
@@ -146,7 +155,7 @@ public class SkinMenuScreen implements IMenuScreen {
                                         failed = true;
                                     }
                                     if(failed) {
-                                        unsavedChanges = true;
+                                        unsavedCloak = true;
                                     }
                                 } catch (MalformedURLException mx) {
 
@@ -170,10 +179,12 @@ public class SkinMenuScreen implements IMenuScreen {
                         JSONObject metadata = new JSONObject();
                         metadata.put("slim", slim);
 
+                        unsavedModel = false;
+
                         try {
                             MineOnlineAPI.setSkinMetadata(Session.session.getUuid(), Session.session.getSessionToken(), metadata);
                         } catch (Exception ex) {
-                            unsavedChanges = true;
+                            unsavedModel = true;
                         }
                     }
                 });
@@ -195,7 +206,7 @@ public class SkinMenuScreen implements IMenuScreen {
         doneButton = new LargeButton("Done", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 200, DisplayManager.getDefaultHeight() - 20), new IOnClickListener() {
             @Override
             public void onClick() {
-                if(unsavedChanges) {
+                if(unsavedSkin || unsavedCloak || unsavedModel) {
                     Session.session.cacheSkin();
                 }
 
@@ -215,7 +226,7 @@ public class SkinMenuScreen implements IMenuScreen {
             skinButton.setName("Skin: " + Paths.get(skinPath).getFileName().toString());
 
         if(!cloakPath.isEmpty() && cloakButton.getName() != "Cloak: " + Paths.get(cloakPath).getFileName().toString())
-            cloakButton.setName("Skin: " + Paths.get(cloakPath).getFileName().toString());
+            cloakButton.setName("Cloak: " + Paths.get(cloakPath).getFileName().toString());
 
         if(modelButton.getName() != "Model: " + (slim ? "Alex" : "Steve"))
             modelButton.setName("Model: " + (slim ? "Alex" : "Steve"));

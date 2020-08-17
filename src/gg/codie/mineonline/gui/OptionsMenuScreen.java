@@ -21,6 +21,7 @@ public class OptionsMenuScreen implements IMenuScreen {
     MediumButton aboutButton;
     MediumButton logoutButton;
     MediumButton resetSettings;
+    MediumButton skinCustomizationButton;
     LargeButton doneButton;
     GUIText label;
 
@@ -56,6 +57,13 @@ public class OptionsMenuScreen implements IMenuScreen {
             @Override
             public void onClick() {
                 Settings.resetSettings();
+            }
+        });
+
+        skinCustomizationButton = new MediumButton("Skin Customization", new Vector2f((DisplayManager.getDefaultWidth() / 2) + 8, (DisplayManager.getDefaultHeight() / 2) + 56), new IOnClickListener() {
+            @Override
+            public void onClick() {
+                MenuManager.setMenuScreen(new SkinCustomizationMenuScreen());
             }
         });
 
@@ -95,6 +103,7 @@ public class OptionsMenuScreen implements IMenuScreen {
         guiScaleButton.update();
         doneButton.update();
         resetSettings.update();
+        skinCustomizationButton.update();
     }
 
     public void render(Renderer renderer) {
@@ -107,6 +116,7 @@ public class OptionsMenuScreen implements IMenuScreen {
         doneButton.render(renderer, GUIShader.singleton);
         guiScaleButton.render(renderer, GUIShader.singleton);
         resetSettings.render(renderer, GUIShader.singleton);
+        skinCustomizationButton.render(renderer, GUIShader.singleton);
         GUIShader.singleton.stop();
     }
 
@@ -121,6 +131,7 @@ public class OptionsMenuScreen implements IMenuScreen {
         doneButton.resize();
         guiScaleButton.resize();
         resetSettings.resize();
+        skinCustomizationButton.resize();
     }
 
     @Override
@@ -132,5 +143,6 @@ public class OptionsMenuScreen implements IMenuScreen {
         guiScaleButton.cleanUp();
         label.remove();
         resetSettings.cleanUp();
+        skinCustomizationButton.cleanUp();
     }
 }

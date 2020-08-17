@@ -8,8 +8,17 @@ public class TexturedModel {
         this.rawModel = rawModel;
     }
 
+    public void setDontRender(boolean dontRender) {
+        this.dontRender = dontRender;
+    }
+
+    public boolean getDontRender() {
+        return dontRender;
+    }
+
     private RawModel rawModel;
     private ModelTexture texture;
+    private boolean dontRender;
 
     public TexturedModel(RawModel model, ModelTexture texture) {
         this.rawModel = model;
