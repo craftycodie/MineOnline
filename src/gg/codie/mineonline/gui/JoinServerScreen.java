@@ -42,7 +42,9 @@ public class JoinServerScreen implements IMenuScreen {
                     } catch (Exception ex) {
                         // ignore
                     }
-                    String[] split = serverIPField.getValue().split(":");
+                    String[] split = new String[] { serverIPField.getValue() };
+                    if(serverIPField.getValue().contains(":"))
+                        split = serverIPField.getValue().split(":");
 
                     InetAddress inetAddress = InetAddress.getByName(split[0]);
 
@@ -91,8 +93,10 @@ public class JoinServerScreen implements IMenuScreen {
                     } catch (Exception ex) {
                         // ignore
                     }
-                    String[] split = serverIPField.getValue().split(":");
 
+                    String[] split = new String[] { serverIPField.getValue() };
+                    if(serverIPField.getValue().contains(":"))
+                        split = serverIPField.getValue().split(":");
 
                     InetAddress inetAddress = InetAddress.getByName(split[0]);
 

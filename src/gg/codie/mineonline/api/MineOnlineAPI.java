@@ -255,7 +255,7 @@ public class MineOnlineAPI {
         HttpURLConnection connection = null;
 
         try {
-            URL url = new URL("http://" + Globals.API_HOSTNAME + "/mineonline/player/" + uuid + "/cloak.jsp");
+            URL url = new URL("http://" + Globals.API_HOSTNAME + "/mineonline/player/" + uuid + "/cloak");
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
             connection.setDoInput(true);
