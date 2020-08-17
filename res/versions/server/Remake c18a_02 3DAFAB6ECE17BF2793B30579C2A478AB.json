@@ -3,10 +3,11 @@
   "md5": "3DAFAB6ECE17BF2793B30579C2A478AB",
   "type": "server",
   "info": "Remake",
-  "clientMd5s": [
-    "CD3AB10BE3FEB35AAE5D5C127EAED675"
+  "clientVersions": [
+    "c18a_02"
   ],
   "enableScreenshotPatch": true,
   "forceFullscreenMacos": true,
-  "baseVersion": "c18a_02"
+  "baseVersion": "c18a_02",
+  "legacy": true
 }

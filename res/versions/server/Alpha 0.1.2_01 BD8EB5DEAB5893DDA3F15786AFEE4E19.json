@@ -9,5 +9,6 @@
     "4A7468C28C037F3E48E517EBD1951F14",
     "6BBDE02C13AED5766275F4398EDE6AAE"
   ],
-  "baseVersion": "a0.1.2_01"
+  "baseVersion": "a0.1.2_01",
+  "legacy": true
 }

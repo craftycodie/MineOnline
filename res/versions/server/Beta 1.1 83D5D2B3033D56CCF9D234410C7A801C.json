@@ -8,5 +8,6 @@
     "748A4C42092BA230D95946F22FE9BB42",
     "FA89B599AB693379D5FC18AB8B5A2EA0"
   ],
-  "baseVersion": "b1.1"
+  "baseVersion": "b1.1",
+  "legacy": true
 }

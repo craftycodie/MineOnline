@@ -4,5 +4,6 @@
   "sha256": "19285D7D16AEE740F5A0584F0D80A4940F273A97F5A3EAF251FC1C6C3F2982D1",
   "type": "server",
   "clientName": "Release 1.2.5",
-  "baseVersion": "1.2.5"
+  "baseVersion": "1.2.5",
+  "legacy": true
 }

@@ -4,9 +4,10 @@
   "type": "server",
   "info": "Beta 1.7.3 mod",
   "clientName": "Beta 1.7.3",
-  "clientMd5s": [
-    "b1.7.3",
-    "b1.7.3-skylands0.1"
+  "clientVersions": [
+    "b1.7.3-skylands0.1",
+    "b1.7.3"
   ],
-  "baseVersion": "b1.7.3-skylands0.2"
+  "baseVersion": "b1.7.3-skylands0.1",
+  "legacy": true
 }
