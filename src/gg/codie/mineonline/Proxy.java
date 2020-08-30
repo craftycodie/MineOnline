@@ -42,8 +42,6 @@ public class Proxy {
     private static Process launcherProcess;
 
     public static void main(String[] args) throws IOException, URISyntaxException {
-        boolean multiInstance = false;
-
         LibraryManager.extractLibraries();
         LibraryManager.updateClasspath();
 

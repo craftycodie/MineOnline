@@ -82,7 +82,10 @@ public class Session {
 
 
                 } catch (IOException e) {
-                    // handle exception
+                    File cachedSkin = new File(LauncherFiles.CACHED_SKIN_PATH);
+                    if (cachedSkin.exists()) {
+                        cachedSkin.delete();
+                    }
                 }
 
                 try (BufferedInputStream in = new BufferedInputStream(new URL("http://" + Globals.API_HOSTNAME + "/mineonline/player/" + uuid + "/cloak").openStream())) {
@@ -105,6 +108,10 @@ public class Session {
 
                 } catch (IOException e) {
                     // handle exception
+                    File cachedCloak = new File(LauncherFiles.CACHED_CLOAK_PATH);
+                    if (cachedCloak.exists()) {
+                        cachedCloak.delete();
+                    }
                 }
 
                 try {
@@ -114,7 +121,10 @@ public class Session {
                     fileWriter.write(skinMetadata.toString());
                     fileWriter.close();
                 } catch (IOException io) {
-                    io.printStackTrace();
+                    File cachedMetadata = new File(LauncherFiles.CACHED_SKIN_METADATA_PATH);
+                    if (cachedMetadata.exists()) {
+                        cachedMetadata.delete();
+                    }
                 }
 
                 if(PlayerGameObject.thePlayer != null) {

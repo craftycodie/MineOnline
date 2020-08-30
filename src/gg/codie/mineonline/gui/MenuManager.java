@@ -86,10 +86,12 @@ public class MenuManager {
         String quicklaunch = null;
         String server = null;
 
-        // If sa user drags a jar onto the launcher, it'll be at arg 0, quicklaunch it.
-        File acceptedFile = new File(args[0]);
-        if(acceptedFile.exists() && MinecraftVersion.isPlayableJar(acceptedFile.getPath())) {
-            quicklaunch = acceptedFile.getPath();
+        // If sa user drags a jar onto the launcher, it'll be at arg 1, quicklaunch it.
+        if(args.length > 1) {
+            File acceptedFile = new File(args[1]);
+            if (acceptedFile.exists() && MinecraftVersion.isPlayableJar(acceptedFile.getPath())) {
+                quicklaunch = acceptedFile.getPath();
+            }
         }
 
         for(int i = 0; i < args.length ;i++) {
