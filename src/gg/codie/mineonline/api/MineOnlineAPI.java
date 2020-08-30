@@ -15,6 +15,36 @@ import java.text.ParseException;
 import java.util.LinkedList;
 
 public class MineOnlineAPI {
+    public static String getMpPass (String sessionId, String serverIP, String serverPort) {
+        HttpURLConnection connection = null;
+
+        try {
+            String parameters = "sessionId=" + URLEncoder.encode(sessionId, "UTF-8") + "&serverIP=" + URLEncoder.encode(serverIP, "UTF-8") + "&serverPort=" + URLEncoder.encode(serverPort, "UTF-8");
+            URL url = new URL("http://" + Globals.API_HOSTNAME + "/mineonline/mppass.jsp?" + parameters);
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setDoInput(true);
+            connection.setDoOutput(false);
+            connection.connect();
+
+            InputStream is = connection.getInputStream();
+            BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+
+            String mpPass = rd.readLine();
+
+            rd.close();
+
+            return mpPass;
+        } catch (Exception e) {
+
+            e.printStackTrace();
+            return null;
+        } finally {
+
+            if (connection != null)
+                connection.disconnect();
+        }
+    }
+
     public static String playeruuid(String username, String token) throws IOException {
         HttpURLConnection connection = null;
 

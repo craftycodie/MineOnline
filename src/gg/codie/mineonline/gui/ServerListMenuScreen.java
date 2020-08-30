@@ -2,7 +2,7 @@ package gg.codie.mineonline.gui;
 
 import gg.codie.minecraft.client.Options;
 import gg.codie.mineonline.*;
-import gg.codie.mineonline.api.MinecraftAPI;
+import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.mineonline.gui.events.IOnClickListener;
 import gg.codie.mineonline.gui.font.GUIText;
 import gg.codie.mineonline.gui.rendering.Camera;
@@ -13,12 +13,10 @@ import gg.codie.mineonline.gui.components.SelectableServer;
 import gg.codie.mineonline.gui.components.SelectableServerList;
 import gg.codie.mineonline.gui.rendering.font.TextMaster;
 import gg.codie.mineonline.gui.rendering.shaders.GUIShader;
-import gg.codie.utils.JSONUtils;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Set;
 
 public class ServerListMenuScreen implements IMenuScreen {
@@ -62,7 +60,7 @@ public class ServerListMenuScreen implements IMenuScreen {
                                         } catch (Exception ex) {
                                             // ignore
                                         }
-                                        String mppass = MinecraftAPI.getMpPass(Session.session.getSessionToken(), selectedServer.server.ip, "" + selectedServer.server.port);
+                                        String mppass = MineOnlineAPI.getMpPass(Session.session.getSessionToken(), selectedServer.server.ip, "" + selectedServer.server.port);
 
                                         MinecraftVersion.launchMinecraft(path, selectedServer.server.ip, "" + selectedServer.server.port, mppass);
                                         return;
@@ -85,7 +83,7 @@ public class ServerListMenuScreen implements IMenuScreen {
                                 } catch (Exception ex) {
                                     // ignore
                                 }
-                                String mppass = MinecraftAPI.getMpPass(Session.session.getSessionToken(), selectedServer.server.ip, "" + selectedServer.server.port);
+                                String mppass = MineOnlineAPI.getMpPass(Session.session.getSessionToken(), selectedServer.server.ip, "" + selectedServer.server.port);
                                 try {
                                     MinecraftVersion.launchMinecraft(selectVersionMenuScreen.getSelectedPath(), selectedServer.server.ip, "" + selectedServer.server.port, mppass);
                                 } catch (Exception ex) {

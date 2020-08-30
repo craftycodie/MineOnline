@@ -1,10 +1,5 @@
 package gg.codie.mineonline;
 
-import gg.codie.minecraft.server.Files;
-import gg.codie.mineonline.api.MinecraftAPI;
-import gg.codie.utils.ArrayUtils;
-import gg.codie.utils.MD5Checksum;
-
 import java.io.*;
 import java.nio.file.Paths;
 import java.util.*;

@@ -1,8 +1,9 @@
 package gg.codie.mineonline.gui;
 
+import gg.codie.minecraft.client.Options;
 import gg.codie.mineonline.*;
 import gg.codie.mineonline.api.MineOnlineAPI;
-import gg.codie.mineonline.api.MinecraftAPI;
+import gg.codie.mineonline.api.LegacyAPI;
 import gg.codie.mineonline.gui.font.GUIText;
 import gg.codie.mineonline.gui.rendering.*;
 import gg.codie.mineonline.gui.rendering.animation.*;
@@ -21,6 +22,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.util.Random;
 
 public class MenuManager {
@@ -72,7 +74,7 @@ public class MenuManager {
         formopen = true;
 
         try {
-            updateAvailable = !MinecraftAPI.getLauncherVersion().replaceAll("\\s","").equals(Globals.LAUNCHER_VERSION);
+            updateAvailable = !LegacyAPI.getLauncherVersion().replaceAll("\\s","").equals(Globals.LAUNCHER_VERSION);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -82,10 +84,23 @@ public class MenuManager {
 
         boolean multiinstance = false;
         String quicklaunch = null;
+        String server = null;
+
+        // If sa user drags a jar onto the launcher, it'll be at arg 0, quicklaunch it.
+        File acceptedFile = new File(args[0]);
+        if(acceptedFile.exists() && MinecraftVersion.isPlayableJar(acceptedFile.getPath())) {
+            quicklaunch = acceptedFile.getPath();
+        }
+
         for(int i = 0; i < args.length ;i++) {
             System.out.println(args[i]);
             if(args[i].equals("-multiinstance")) {
                 multiinstance = true;
+            }
+            if(args[i].equals("-server")) {
+                if(args.length > i + 1) {
+                    server = args[i + 1];
+                }
             }
             if(args[i].equals("-quicklaunch")) {
                 if(args.length > i + 1 && new File(args[i + 1]).exists())  {
@@ -111,7 +126,7 @@ public class MenuManager {
 
         if(lastLogin != null ) {
             try {
-                sessionToken = MinecraftAPI.login(lastLogin.username, lastLogin.password);
+                sessionToken = LegacyAPI.login(lastLogin.username, lastLogin.password);
                 uuid = MineOnlineAPI.playeruuid(lastLogin.username, sessionToken);
             } catch (IOException ex) {
                 ex.printStackTrace();
@@ -135,7 +150,29 @@ public class MenuManager {
         }
 
         if (Session.session != null && Session.session.isOnline() && quicklaunch != null) {
-            MinecraftVersion.launchMinecraft(quicklaunch, null, null, null);
+            String ip = null;
+            String port = null;
+            String mppass = null;
+
+            if(server != null) {
+                String[] ipAndPort = server.split(":");
+                if(ipAndPort.length == 2) {
+                    ip = ipAndPort[0];
+                    port = ipAndPort[1];
+                } else if(ipAndPort.length == 1) {
+                    ip = ipAndPort[0];
+                    port = "25565";
+                }
+                InetAddress inetAddress = InetAddress.getByName(ip);
+                mppass = MineOnlineAPI.getMpPass(Session.session.getSessionToken(), inetAddress.getHostAddress(), port);
+            }
+            MinecraftVersion.launchMinecraft(quicklaunch, ip, port, mppass);
+        } else if (server != null) {
+            try {
+                new Options(LauncherFiles.MINECRAFT_OPTIONS_PATH).setOption("lastServer", server.replace(":", "_"));
+            } catch (Exception ex) {
+
+            }
         }
 
         GameObject playerPivot = new GameObject("player_origin", new Vector3f(), new Vector3f(0, 30, 0), new Vector3f(1, 1, 1));

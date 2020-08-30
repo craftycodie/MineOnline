@@ -1,9 +1,6 @@
 package gg.codie.minecraft.skins;
 
-import gg.codie.mineonline.Globals;
 import gg.codie.mineonline.LibraryManager;
-import gg.codie.mineonline.Session;
-import gg.codie.mineonline.api.MinecraftAPI;
 import gg.codie.mineonline.gui.*;
 import gg.codie.mineonline.gui.rendering.*;
 import gg.codie.mineonline.gui.rendering.animation.IdlePlayerAnimation;
@@ -12,7 +9,6 @@ import gg.codie.mineonline.gui.rendering.models.RawModel;
 import gg.codie.mineonline.gui.rendering.models.TexturedModel;
 import gg.codie.mineonline.gui.rendering.shaders.StaticShader;
 import gg.codie.mineonline.gui.rendering.textures.ModelTexture;
-import gg.codie.utils.LastLogin;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Vector2f;
@@ -20,7 +16,6 @@ import org.lwjgl.util.vector.Vector3f;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.IOException;
 import java.util.Random;
 
 public class SkinRenderer {
