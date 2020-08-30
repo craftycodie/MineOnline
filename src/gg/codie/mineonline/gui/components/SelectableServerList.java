@@ -96,7 +96,9 @@ public class SelectableServerList extends GUIObject {
                 MinecraftVersion version = MinecraftVersionRepository.getSingleton().getVersionByMD5(server.md5);
                 String info2 = "Unknown Version";
                 if (version != null) {
-                    if (version.clientVersions.length > 0) {
+                    if (version.clientName != null) {
+                        info2 = version.clientName;
+                    } else if (version.clientVersions.length > 0) {
                         info2 = Arrays.toString(version.clientVersions).replace("[", "").replace("]", "");
                     } else {
                         info2 = version.name;
@@ -105,9 +107,9 @@ public class SelectableServerList extends GUIObject {
                     boolean clientInstalled = false;
 
                     found:
-                    for (String clientversion : version.clientVersions) {
+                    for (String clientVersion : version.clientVersions) {
                         for (MinecraftVersion installedClient : MinecraftVersionRepository.getSingleton().getInstalledClients()) {
-                            if (installedClient.baseVersion.equals(clientversion)) {
+                            if (installedClient.baseVersion.equals(clientVersion)) {
                                 clientInstalled = true;
                                 break found;
                             }

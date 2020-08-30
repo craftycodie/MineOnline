@@ -9,8 +9,6 @@ public class MineOnline {
         LibraryManager.updateClasspath();
         LibraryManager.updateNativesPath();
 
-        URLPatch.redefineURL();
-
         System.setProperty("http.proxyHost", "0.0.0.0");
         System.setProperty("http.proxyPort", "" + args[0]);
 

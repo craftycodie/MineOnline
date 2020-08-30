@@ -22,7 +22,6 @@ public class MineOnlineAPI {
             String parameters = "sessionId=" + URLEncoder.encode(sessionId, "UTF-8") + "&serverIP=" + URLEncoder.encode(serverIP, "UTF-8") + "&serverPort=" + URLEncoder.encode(serverPort, "UTF-8");
             URL url = new URL("http://" + Globals.API_HOSTNAME + "/mineonline/mppass.jsp?" + parameters);
             connection = (HttpURLConnection) url.openConnection();
-            connection.setDoInput(true);
             connection.setDoOutput(false);
             connection.connect();
 
@@ -45,7 +44,7 @@ public class MineOnlineAPI {
         }
     }
 
-    public static String playeruuid(String username, String token) throws IOException {
+    public static String playerUUID(String username, String token) throws IOException {
         HttpURLConnection connection = null;
 
         String parameters = "session=" + URLEncoder.encode(token, "UTF-8");

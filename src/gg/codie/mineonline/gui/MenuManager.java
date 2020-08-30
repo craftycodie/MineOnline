@@ -95,7 +95,6 @@ public class MenuManager {
         }
 
         for(int i = 0; i < args.length ;i++) {
-            System.out.println(args[i]);
             if(args[i].equals("-multiinstance")) {
                 multiinstance = true;
             }
@@ -129,7 +128,7 @@ public class MenuManager {
         if(lastLogin != null ) {
             try {
                 sessionToken = LegacyAPI.login(lastLogin.username, lastLogin.password);
-                uuid = MineOnlineAPI.playeruuid(lastLogin.username, sessionToken);
+                uuid = MineOnlineAPI.playerUUID(lastLogin.username, sessionToken);
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
@@ -169,6 +168,7 @@ public class MenuManager {
                 mppass = MineOnlineAPI.getMpPass(Session.session.getSessionToken(), inetAddress.getHostAddress(), port);
             }
             MinecraftVersion.launchMinecraft(quicklaunch, ip, port, mppass);
+            return;
         } else if (server != null) {
             try {
                 new Options(LauncherFiles.MINECRAFT_OPTIONS_PATH).setOption("lastServer", server.replace(":", "_"));

@@ -31,6 +31,7 @@ public class MinecraftVersion {
     public final String[] natives;
     public final boolean useMinecraftImpl;
     public final String minecraftImplClass;
+    public final String clientName;
 
     public MinecraftVersion(
             String sha256,
@@ -51,7 +52,8 @@ public class MinecraftVersion {
             String[] libraries,
             String[] nativesWindows,
             boolean useMinecraftImpl,
-            String minecraftImplClass
+            String minecraftImplClass,
+            String clientName
     ) {
         this.sha256 = sha256;
         this.name = name;
@@ -72,6 +74,7 @@ public class MinecraftVersion {
         this.assetIndex = assetIndex;
         this.libraries = libraries;
         this.natives = nativesWindows;
+        this.clientName = clientName;
     }
 
     public MinecraftVersion(JSONObject object) {
@@ -94,6 +97,7 @@ public class MinecraftVersion {
             natives = (object.has("natives") && object.getJSONObject("natives").has(OSUtils.getPlatform().name()) ? JSONUtils.getStringArray(object.getJSONObject("natives").getJSONArray(OSUtils.getPlatform().name())) : new String[0]);
             useMinecraftImpl = (object.has("useMinecraftImpl") && object.getBoolean("useMinecraftImpl"));
             minecraftImplClass = (object.has("minecraftImplClass") ? object.getString("minecraftImplClass") : null);
+            clientName = (object.has("clientName") ? object.getString("clientName") : object.getString("name"));
     }
 
 
@@ -200,10 +204,10 @@ public class MinecraftVersion {
         return false;
     }
 
-    public static MinecraftVersion fromLauncherVersion(File jarFile) throws FileNotFoundException {
+    public static MinecraftVersion fromLauncherVersion(File jarFile) throws Exception {
         File jsonFile = new File(jarFile.getParentFile().getPath() + File.separator + jarFile.getName().replace(".jar", ".json"));
         if (!jarFile.exists() || !jsonFile.exists()) {
-            System.out.println("Could not find minecraft version " + jarFile.getName());
+            System.out.println("Could not find minecraft version " + jarFile.getName() + " md5: " + MD5Checksum.getMD5ChecksumForFile(jarFile.getPath()));
             return null;
         }
 
@@ -282,7 +286,8 @@ public class MinecraftVersion {
                 libraries.toArray(new String[0]),
                 natives.toArray(new String[0]),
                 false,
-                null);
+                null,
+                typeName + " " + versionNumber);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
