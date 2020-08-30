@@ -3,7 +3,6 @@ package gg.codie.mineonline.gui;
 import gg.codie.mineonline.*;
 import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.mineonline.api.MinecraftAPI;
-import gg.codie.mineonline.gui.font.FontType;
 import gg.codie.mineonline.gui.font.GUIText;
 import gg.codie.mineonline.gui.rendering.*;
 import gg.codie.mineonline.gui.rendering.animation.*;
@@ -149,8 +148,8 @@ public class MenuManager {
         playerGameObject.setPlayerAnimation(new IdlePlayerAnimation());
         Camera camera = new Camera();
 
-        String[] panoramaNames = new String[] {"sunset", "sunset", "sunset", "sunset", "sunset", "midnight", "midnight", "midnight", "sunset"};
-        //String[] panoramaNames = new String[] {"noon"};
+        String[] panoramaNames = new String[] {"beta3", "beta5", "beta6", "beta7", "gargamel", "sunset", "midnight"};
+        //String[] panoramaNames = new String[] {"beta2"};
 
         RawModel model = loader.loadBoxToVAO(new Vector3f(-1, -1, -1), new Vector3f(1, 1, 1), TextureHelper.getCubeTextureCoords(new Vector2f(8192, 4096),
                 new Vector2f(4161, 0), new Vector2f(1387, 1387),
