@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.URISyntaxException;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Map;
 
@@ -42,11 +44,6 @@ public class Proxy {
     public static void main(String[] args) throws IOException, URISyntaxException {
         boolean multiInstance = false;
 
-        for(String arg : args) {
-            if (arg.equals("-multiinstance"))
-                multiInstance = true;
-        }
-
         LibraryManager.extractLibraries();
         LibraryManager.updateClasspath();
 
@@ -56,23 +53,15 @@ public class Proxy {
         launchArgs.add(Settings.settings.getString(Settings.JAVA_COMMAND));
         launchArgs.add("-javaagent:" + LauncherFiles.PATCH_AGENT_JAR);
         launchArgs.add("-Djava.util.Arrays.useLegacyMergeSort=true");
-        if (multiInstance)
-            launchArgs.add("-Dmineonline.multiinstance=true");
         launchArgs.add("-cp");
         launchArgs.add(new File(Proxy.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath());
         launchArgs.add(MineOnline.class.getCanonicalName());
         launchArgs.add("" + proxyPort);
+        launchArgs.addAll(Arrays.asList(args));
 
         // Start the proxy as a new process.
         java.util.Properties props = System.getProperties();
-        ProcessBuilder processBuilder = new ProcessBuilder(
-                Settings.settings.getString(Settings.JAVA_COMMAND),
-                "-javaagent:" + LauncherFiles.PATCH_AGENT_JAR,
-                "-Djava.util.Arrays.useLegacyMergeSort=true",
-                "-cp",
-                new File(Proxy.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath(),
-                MineOnline.class.getCanonicalName(),
-                "" + proxyPort);
+        ProcessBuilder processBuilder = new ProcessBuilder(launchArgs);
 
         Map<String, String> env = processBuilder.environment();
         for(String prop : props.stringPropertyNames()) {

@@ -14,6 +14,6 @@ public class MineOnline {
         System.setProperty("http.proxyHost", "0.0.0.0");
         System.setProperty("http.proxyPort", "" + args[0]);
 
-        MenuManager.main(null);
+        MenuManager.main(args);
     }
 }

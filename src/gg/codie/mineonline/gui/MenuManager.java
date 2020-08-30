@@ -1,9 +1,6 @@
 package gg.codie.mineonline.gui;
 
-import gg.codie.mineonline.Globals;
-import gg.codie.mineonline.LibraryManager;
-import gg.codie.mineonline.MinecraftVersionRepository;
-import gg.codie.mineonline.Session;
+import gg.codie.mineonline.*;
 import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.mineonline.api.MinecraftAPI;
 import gg.codie.mineonline.gui.font.FontType;
@@ -23,6 +20,7 @@ import org.lwjgl.util.vector.Vector3f;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.io.IOException;
 import java.util.Random;
 
@@ -83,12 +81,30 @@ public class MenuManager {
         // Load this before showing the display.
         MinecraftVersionRepository.getSingleton();
 
+        boolean multiinstance = false;
+        String quicklaunch = null;
+        for(int i = 0; i < args.length ;i++) {
+            System.out.println(args[i]);
+            if(args[i].equals("-multiinstance")) {
+                multiinstance = true;
+            }
+            if(args[i].equals("-quicklaunch")) {
+                if(args.length > i + 1 && new File(args[i + 1]).exists())  {
+                    quicklaunch = args[i + 1];
+                } else {
+                    if (MinecraftVersionRepository.getSingleton().getLastSelectedJarPath() != null) {
+                        quicklaunch = MinecraftVersionRepository.getSingleton().getLastSelectedJarPath();
+                    }
+                }
+            }
+        }
+
         LibraryManager.updateClasspath();
         LibraryManager.updateNativesPath();
 
         LastLogin lastLogin = null;
 
-        if(!"true".equals(System.getProperty("mineonline.multiinstance")))
+        if(!multiinstance)
             lastLogin = LastLogin.readLastLogin();
 
         String sessionToken = null;
@@ -109,9 +125,19 @@ public class MenuManager {
 
         DisplayManager.getFrame().addWindowListener(closeListener);
 
+
         Renderer renderer = new Renderer();
         Loader loader = new Loader();
         TextMaster.init(loader);
+
+        if (sessionToken != null) {
+            new Session(lastLogin.username, sessionToken, uuid);
+            LastLogin.writeLastLogin(lastLogin.username, lastLogin.password, uuid);
+        }
+
+        if (Session.session != null && Session.session.isOnline() && quicklaunch != null) {
+            MinecraftVersion.launchMinecraft(quicklaunch, null, null, null);
+        }
 
         GameObject playerPivot = new GameObject("player_origin", new Vector3f(), new Vector3f(0, 30, 0), new Vector3f(1, 1, 1));
         PlayerGameObject playerGameObject = new PlayerGameObject("player", loader, new Vector3f(0, -21, 0), new Vector3f(), new Vector3f(1, 1, 1));
@@ -141,11 +167,6 @@ public class MenuManager {
 //        FontType font = new FontType(loader.loadTexture(MenuManager.class.getResource("/font/font.png")), MenuManager.class.getResourceAsStream("/font/font.fnt"));
 //        GUIText text = new GUIText("MineOnline Pre-Release", 1.5f, font, new Vector2f(0, 0), DisplayManager.getDefaultWidth(), false, true);
 //        text.setColour(0.33f, 0.33f, 0.33f);
-
-        if (sessionToken != null) {
-            new Session(lastLogin.username, sessionToken, uuid);
-            LastLogin.writeLastLogin(lastLogin.username, lastLogin.password, uuid);
-        }
 
         if(Session.session != null && Session.session.isOnline())
             setMenuScreen(new MainMenuScreen());
