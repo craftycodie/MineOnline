@@ -148,7 +148,7 @@ public class MenuManager {
         playerGameObject.setPlayerAnimation(new IdlePlayerAnimation());
         Camera camera = new Camera();
 
-        String[] panoramaNames = new String[] {"beta3", "beta5", "beta6", "beta7", "gargamel", "sunset", "midnight"};
+        String[] panoramaNames = new String[] {"beta3", "beta5", "beta6", "beta7", "sunset", "midnight"};
         //String[] panoramaNames = new String[] {"beta2"};
 
         RawModel model = loader.loadBoxToVAO(new Vector3f(-1, -1, -1), new Vector3f(1, 1, 1), TextureHelper.getCubeTextureCoords(new Vector2f(8192, 4096),
@@ -161,7 +161,7 @@ public class MenuManager {
         ));
         ModelTexture modelTexture = new ModelTexture(loader.loadTexture(MenuManager.class.getResource("/img/panorama_" + panoramaNames[new Random().nextInt(panoramaNames.length)] + ".png")));
         TexturedModel texturedModel =  new TexturedModel(model, modelTexture);
-        GameObject backgroundImage = new GUIObject("Background", texturedModel, new Vector3f(0, 0, 0), new Vector3f(), new Vector3f(75f, 75f, 75f));
+        GameObject backgroundImage = new GUIObject("Background", texturedModel, new Vector3f(), new Vector3f(0, 180, 0), new Vector3f(75f, 75f, 75f));
 
 //        FontType font = new FontType(loader.loadTexture(MenuManager.class.getResource("/font/font.png")), MenuManager.class.getResourceAsStream("/font/font.fnt"));
 //        GUIText text = new GUIText("MineOnline Pre-Release", 1.5f, font, new Vector2f(0, 0), DisplayManager.getDefaultWidth(), false, true);
