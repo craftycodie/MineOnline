@@ -6,6 +6,7 @@ import gg.codie.mineonline.gui.rendering.*;
 import gg.codie.mineonline.gui.rendering.Renderer;
 import gg.codie.mineonline.lwjgl.OnCreateListener;
 import gg.codie.mineonline.lwjgl.OnUpdateListener;
+import gg.codie.mineonline.patches.LWJGLDisplayPatch;
 import gg.codie.utils.MD5Checksum;
 import gg.codie.utils.OSUtils;
 import org.lwjgl.BufferUtils;
@@ -31,9 +32,6 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
-
-    private static final boolean DEBUG = true;
-
     Applet minecraftApplet;
 
     String jarPath;
@@ -205,12 +203,12 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
 
         Frame frame = DisplayManager.getFrame();
 
-        Display.setCreateListener(new OnCreateListener() {
+        LWJGLDisplayPatch.createListener = new OnCreateListener() {
             @Override
             public void onCreateEvent() {
                 renderer = new Renderer();
             }
-        });
+        };
 
         Class appletClass;
 
@@ -409,7 +407,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
 
         MenuManager.formopen = false;
 
-        Display.setUpdateListener(new OnUpdateListener() {
+        LWJGLDisplayPatch.updateListener = new OnUpdateListener() {
             @Override
             public void onUpdateEvent() {
                 if (renderer != null) {
@@ -469,7 +467,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
                     }
                 }
             }
-        });
+        };
 
         //System.out.println("width: " + DisplayManager.getCanvas().getWidth());
 //        DisplayManager.getCanvas().setSize(DisplayManager.getFrame().getSize());

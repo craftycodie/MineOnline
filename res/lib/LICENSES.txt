@@ -17,8 +17,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 
 
-License for: lwjgl-modded.jar, lwjgl_util.jar, jinput.jar, native\
-Note: lwjgl-modded.jar has been modified by MineOnline developers for MineOnline.
+License for: lwjgl.jar, lwjgl_util.jar, jinput.jar, native\
 
 Copyright © 2012-present Lightweight Java Game Library
 All rights reserved.

@@ -12,6 +12,7 @@ import org.lwjgl.opengl.Display;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.file.Paths;
 import java.util.LinkedList;
@@ -169,7 +170,6 @@ public class MinecraftClientLauncher {
             PropertiesSignaturePatch.redefineIsSignatureValid();
             YggdrasilMinecraftSessionServicePatch.allowMineonlineSkins();
 
-
             Class clazz = Class.forName("net.minecraft.client.main.Main");
 
             if(serverAddress != null) {
@@ -224,13 +224,16 @@ public class MinecraftClientLauncher {
             System.setProperty(PROP_ACCOUNT_HOST, "http://" + Globals.API_HOSTNAME);
             System.setProperty(PROP_SESSION_HOST, "http://" + Globals.API_HOSTNAME);
 
-
             main.invoke(null, new Object[] {args.toArray(new String[0])});
 
             System.exit(0);
+        } catch (InvocationTargetException ex) {
+            ex.printStackTrace();
+            ex.getTargetException().printStackTrace();
+
+            System.exit(1);
         } catch (Throwable e) {
-            if(e.getClass() != ClassNotFoundException.class)
-                e.printStackTrace();
+            e.printStackTrace();
 
             System.exit(1);
         }

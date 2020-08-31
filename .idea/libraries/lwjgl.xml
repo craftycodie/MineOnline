@@ -3,7 +3,7 @@
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/res/lib/jinput.jar!/" />
       <root url="jar://$PROJECT_DIR$/res/lib/lwjgl_util.jar!/" />
-      <root url="jar://$PROJECT_DIR$/res/lib/lwjgl-modded.jar!/" />
+      <root url="jar://$PROJECT_DIR$/res/lib/lwjgl.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

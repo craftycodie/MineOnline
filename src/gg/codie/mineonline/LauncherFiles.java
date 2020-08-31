@@ -14,7 +14,7 @@ public class LauncherFiles {
 
     public static final String MINEONLINE_LIBRARY_FOLDER = MINEONLINE_FOLDER + "lib" + File.separator;
   
-    public static final String LWJGL_JAR = MINEONLINE_LIBRARY_FOLDER + "lwjgl-modded.jar";
+    public static final String LWJGL_JAR = MINEONLINE_LIBRARY_FOLDER + "lwjgl.jar";
     public static final String LWJGL_UTIL_JAR = MINEONLINE_LIBRARY_FOLDER + "lwjgl_util.jar";
     public static final String PATCH_AGENT_JAR = MINEONLINE_LIBRARY_FOLDER + "byte-buddy-agent.jar";
     public static final String JSON_JAR = MINEONLINE_LIBRARY_FOLDER + "json.jar";
@@ -25,6 +25,9 @@ public class LauncherFiles {
     public static final String MINEONLNE_NATIVES_FOLDER = MINEONLINE_LIBRARY_FOLDER + "native" + File.separator + OSUtils.getPlatform().toString();
 
     public static final String MINEONLINE_CACHE_FOLDER = MINEONLINE_FOLDER + "cache" + File.separator;
+
+    public static final String MINEONLINE_TEMP_FOLDER = MINEONLINE_FOLDER + "temp" + File.separator;
+    public static final String MINEONLINE_RUNTIME_NATIVES_FOLDER = MINEONLINE_TEMP_FOLDER + "natives" + File.separator;
 
     public static final String CACHED_SKIN_PATH = MINEONLINE_CACHE_FOLDER + "skin.png";
     public static final String CACHED_SKIN_METADATA_PATH = MINEONLINE_CACHE_FOLDER + "skin.json";

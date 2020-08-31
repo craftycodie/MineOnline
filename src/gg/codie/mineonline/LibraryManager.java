@@ -48,6 +48,50 @@ public class LibraryManager {
         jar.close();
     }
 
+    public static void extractRuntimeNatives(String[] nativeJars) throws IOException {
+        File runtimeNativesFolder = new File(LauncherFiles.MINEONLINE_RUNTIME_NATIVES_FOLDER);
+        if(runtimeNativesFolder.exists()) {
+            runtimeNativesFolder.delete();
+        }
+
+        runtimeNativesFolder.mkdirs();
+
+        for (String nativeJar : nativeJars) {
+            File jarFile = new File(LauncherFiles.MINECRAFT_LIBRARIES_PATH + nativeJar);
+
+            if(!jarFile.exists() || jarFile.isDirectory())
+                return;
+
+            java.util.jar.JarFile jar = new java.util.jar.JarFile(jarFile.getPath());
+            java.util.Enumeration enumEntries = jar.entries();
+            while (enumEntries.hasMoreElements()) {
+                java.util.jar.JarEntry file = (java.util.jar.JarEntry) enumEntries.nextElement();
+                if(file.getName().startsWith("META-INF")) {
+                    continue;
+                }
+
+                java.io.File f = new java.io.File(LauncherFiles.MINEONLINE_RUNTIME_NATIVES_FOLDER + java.io.File.separator + file.getName());
+
+                if(f.exists()){
+                    continue;
+                }
+
+                if (file.isDirectory()) { // if its a directory, create it
+                    f.mkdir();
+                    continue;
+                }
+                java.io.InputStream is = jar.getInputStream(file); // get the input stream
+                java.io.FileOutputStream fos = new java.io.FileOutputStream(f);
+                while (is.available() > 0) {  // write contents of 'is' to 'fos'
+                    fos.write(is.read());
+                }
+                fos.close();
+                is.close();
+            }
+            jar.close();
+        }
+    }
+
     public static void updateClasspath() throws IOException {
         try {
             Method method = URLClassLoader.class.getDeclaredMethod("addURL", new Class[]{URL.class});
@@ -68,11 +112,15 @@ public class LibraryManager {
         } catch (Throwable t) {
             t.printStackTrace();
             throw new IOException("Error, could not add URL to system classloader");
-        }//end try catch
+        }
     }
 
     public static void addJarToClasspath(URL url) {
         try {
+            File jar = new File(url.toURI());
+            if(!jar.exists()) {
+                System.out.println("Warning: Adding nonexistant jar to classpath: " + jar.getPath());
+            }
             Method method = URLClassLoader.class.getDeclaredMethod("addURL", new Class[]{URL.class});
             method.setAccessible(true);
             method.invoke(ClassLoader.getSystemClassLoader(), new Object[]{url});
@@ -84,13 +132,17 @@ public class LibraryManager {
     }
 
     public static void updateNativesPath() throws PrivilegedActionException {
-       AccessController.doPrivileged(new PrivilegedExceptionAction<String>() {
+        AccessController.doPrivileged(new PrivilegedExceptionAction<String>() {
             public String run() throws Exception {
                 return LauncherFiles.MINEONLNE_NATIVES_FOLDER;
             }
-       });
+        });
 
-        System.setProperty("java.library.path", LauncherFiles.MINEONLNE_NATIVES_FOLDER);
-        System.setProperty("org.lwjgl.librarypath", LauncherFiles.MINEONLNE_NATIVES_FOLDER);
+        updateNativesPath(LauncherFiles.MINEONLNE_NATIVES_FOLDER);
+    }
+
+    public static void updateNativesPath(String path) throws PrivilegedActionException {
+        System.setProperty("java.library.path", path);
+        System.setProperty("org.lwjgl.librarypath", path);
     }
 }
