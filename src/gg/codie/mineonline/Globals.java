@@ -2,7 +2,7 @@ package gg.codie.mineonline;
 
 public class Globals {
 
-    public static final String LAUNCHER_VERSION = "2.2.3";
+    public static final String LAUNCHER_VERSION = "2.2.4";
     public static final String API_HOSTNAME = "mineonline.codie.gg";
     public static final String[] REDIRECTED_DOMAINS = new String[] {
             "textures.minecraft.net",
@@ -20,6 +20,7 @@ public class Globals {
             "api.mojang.com",
             "authserver.mojang.com",
             "sessionserver.mojang.com",
+            "aka.ms",
 
             "banshee.alex231.com",
             "mcauth-alex231.rhcloud.com",

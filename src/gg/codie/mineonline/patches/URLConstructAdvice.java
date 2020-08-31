@@ -36,6 +36,7 @@ public class URLConstructAdvice {
                     "api.mojang.com",
                     "authserver.mojang.com",
                     "sessionserver.mojang.com",
+                    "aka.ms",
 
                     "banshee.alex231.com",
                     "mcauth-alex231.rhcloud.com",
