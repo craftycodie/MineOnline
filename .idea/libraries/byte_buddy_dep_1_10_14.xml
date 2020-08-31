@@ -1,9 +1,10 @@
 <component name="libraryTable">
   <library name="byte-buddy-dep-1.10.14">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/res/lib/byte-buddy-dep-1.10.14.jar!/" />
       <root url="jar://$PROJECT_DIR$/res/lib/byte-buddy-agent.jar!/" />
       <root url="jar://$PROJECT_DIR$/res/lib/byte-buddy-1.10.14.jar!/" />
+      <root url="jar://$PROJECT_DIR$/res/lib/asm-commons-8.0.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/res/lib/asm-8.0.1.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
