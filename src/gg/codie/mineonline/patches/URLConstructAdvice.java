@@ -31,13 +31,18 @@ public class URLConstructAdvice {
                     "mcoapi.minecraft.net",
                     "snoop.minecraft.net",
                     "www.minecraft.net",
+                    "resources.download.minecraft.net",
+                    "libraries.minecraft.net",
                     "minecraft.net",
                     "s3.amazonaws.com",
                     "api.mojang.com",
                     "authserver.mojang.com",
                     "sessionserver.mojang.com",
+                    "launchermeta.mojang.com",
+                    "mojang.com",
                     "aka.ms",
 
+                    // for mods
                     "banshee.alex231.com",
                     "mcauth-alex231.rhcloud.com",
             }) {
