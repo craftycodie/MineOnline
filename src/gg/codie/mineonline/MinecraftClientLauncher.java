@@ -124,7 +124,8 @@ public class MinecraftClientLauncher {
 
         LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.JSON_JAR).toUri().toURL());
         LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.BYTEBUDDY_JAR).toUri().toURL());
-        LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.BYTEBUDDY_DEP_JAR).toUri().toURL());
+        LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.ASM_JAR).toUri().toURL());
+        LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.ASM_COMMONS_JAR).toUri().toURL());
 
         if(serverAddress != null && serverPort == null)
             this.serverPort = "25565";
@@ -166,6 +167,9 @@ public class MinecraftClientLauncher {
 
             new Session(username, token, uuid);
 
+            LibraryManager.extractRuntimeNatives(minecraftVersion.natives);
+            LibraryManager.updateNativesPath(LauncherFiles.MINEONLINE_RUNTIME_NATIVES_FOLDER.substring(0, LauncherFiles.MINEONLINE_RUNTIME_NATIVES_FOLDER.length() - 2));
+
             URLPatch.redefineURL();
             PropertiesSignaturePatch.redefineIsSignatureValid();
             YggdrasilMinecraftSessionServicePatch.allowMineonlineSkins();
@@ -189,7 +193,7 @@ public class MinecraftClientLauncher {
             args.add(height);
 
             args.add("--gameDir");
-            args.add(LauncherFiles.getMinecraftDirectory().getPath());
+            args.add(LauncherFiles.getNewMinecraftDirectory().getPath());
 
             args.add("--assetsDir");
             args.add(LauncherFiles.MINECRAFT_ASSETS_PATH);

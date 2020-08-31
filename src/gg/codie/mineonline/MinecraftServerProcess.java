@@ -47,7 +47,8 @@ public class MinecraftServerProcess {
     public static void main(String[] args) throws Exception {
         LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.JSON_JAR).toUri().toURL());
         LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.BYTEBUDDY_JAR).toUri().toURL());
-        LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.BYTEBUDDY_DEP_JAR).toUri().toURL());
+        LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.ASM_JAR).toUri().toURL());
+        LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.ASM_COMMONS_JAR).toUri().toURL());
 
         URLPatch.redefineURL();
 

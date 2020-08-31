@@ -13,9 +13,8 @@ public class MinecraftServerLauncher extends ServerLauncher {
 
         LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.JSON_JAR).toUri().toURL());
         LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.BYTEBUDDY_JAR).toUri().toURL());
-        LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.BYTEBUDDY_DEP_JAR).toUri().toURL());
-
-        MinecraftVersion serverVersion = MinecraftVersionRepository.getSingleton().getVersionByMD5(md5);
+        LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.ASM_JAR).toUri().toURL());
+        LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.ASM_COMMONS_JAR).toUri().toURL());
 
         Process serverProcess = MinecraftServerProcess.startMinecraftServer(args);
 
