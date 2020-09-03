@@ -168,7 +168,7 @@ public class MinecraftClientLauncher {
             new Session(username, token, uuid);
 
             LibraryManager.extractRuntimeNatives(minecraftVersion.natives);
-            LibraryManager.updateNativesPath(LauncherFiles.MINEONLINE_RUNTIME_NATIVES_FOLDER.substring(0, LauncherFiles.MINEONLINE_RUNTIME_NATIVES_FOLDER.length() - 2));
+            LibraryManager.updateNativesPath(LauncherFiles.MINEONLINE_RUNTIME_NATIVES_FOLDER.substring(0, LauncherFiles.MINEONLINE_RUNTIME_NATIVES_FOLDER.length() - 1));
 
             URLPatch.redefineURL();
             PropertiesSignaturePatch.redefineIsSignatureValid();

@@ -734,7 +734,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
                 RetVal = String.valueOf(Settings.settings.getBoolean(Settings.IS_PREMIUM));
                 break;
             case "demo":
-                RetVal = String.valueOf(!Settings.settings.getBoolean(Settings.IS_PREMIUM));
+                RetVal = !Settings.settings.getBoolean(Settings.IS_PREMIUM) ? "true" : null;
                 break;
             case "server":
                 RetVal = serverAddress;
