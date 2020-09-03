@@ -14,6 +14,11 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
+import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+
 public class InputField extends GUIObject {
 
     Vector2f position;
@@ -65,7 +70,15 @@ public class InputField extends GUIObject {
         if(focused) {
             while (Keyboard.next()) {
                 if (Keyboard.getEventKeyState()) {
-                    if (Keyboard.getEventKey() == Keyboard.KEY_BACK) { //Backspace
+                    if (Keyboard.getEventKey() == Keyboard.KEY_V && (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_RCONTROL))) {
+                        try {
+                            Clipboard c = Toolkit.getDefaultToolkit().getSystemClipboard();
+                            Transferable t = c.getContents(this);
+                            value += t.getTransferData(DataFlavor.stringFlavor);
+                        } catch (Exception ex) {
+                            // Ignore.
+                        }
+                    } else if (Keyboard.getEventKey() == Keyboard.KEY_BACK) { //Backspace
                         if (value.length() > 0) {
                             value = value.substring(0, value.length() - 1);
                         }
