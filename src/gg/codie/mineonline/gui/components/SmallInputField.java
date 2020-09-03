@@ -102,10 +102,8 @@ public class SmallInputField extends GUIObject {
                         }
                     } else if (Keyboard.getEventKey() == Keyboard.KEY_RIGHT) {
                         cursorPosition++;
-                        System.out.println(cursorPosition);
                     } else if (Keyboard.getEventKey() == Keyboard.KEY_LEFT) {
                         cursorPosition--;
-                        System.out.println(cursorPosition);
                     } else if (Keyboard.getEventKey() == Keyboard.KEY_BACK) { //Backspace
                         if (value.length() > 0) {
                             value = value.substring(0, cursorPosition - 1) + value.substring(cursorPosition);

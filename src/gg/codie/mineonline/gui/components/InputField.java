@@ -32,6 +32,8 @@ public class InputField extends GUIObject {
     GUIText valueGuiText;
     GUIText cursor;
     int cursorPosition;
+    int truncateLimit = 32;
+    int inputLimit = 512;
 
     public InputField(String name, Vector2f position, String value, IOnClickListener onEnterPressed) {
         super(name,
@@ -55,13 +57,25 @@ public class InputField extends GUIObject {
 
         long diff = System.currentTimeMillis() % 600;
 
-        if(!this.valueGuiText.textString.equals(this.value)) {
+        String truncatedValue = this.value;
+        int truncateStart = cursorPosition;
+        if (truncatedValue.length() - cursorPosition <= truncateStart)
+            truncateStart = truncatedValue.length() - truncateStart;
+        if(truncateStart < 0)
+            truncateStart = 0;
+        if(truncatedValue.length() > truncateLimit) {
+            truncatedValue = this.value.substring(truncateStart);
+            if (truncatedValue.length() > truncateLimit);
+                truncatedValue = truncatedValue.substring(0, truncateLimit);
+        }
+
+        if(!this.valueGuiText.textString.equals(truncatedValue)) {
             valueGuiText.remove();
-            valueGuiText = new GUIText(this.value, 1.5f, TextMaster.minecraftFont, new Vector2f(position.x + 12, position.y - 32), 400f, false, true);
+            valueGuiText = new GUIText(truncatedValue, 1.5f, TextMaster.minecraftFont, new Vector2f(position.x + 12, position.y - 32), 400f, false, true);
         }
 
         if(focused && diff >= 300) {
-            GUIText valueUpToCursor = new GUIText(value.substring(0, cursorPosition), 1.5f, TextMaster.minecraftFont, new Vector2f(position.x + 12, position.y - 32), 400f, false, true);
+            GUIText valueUpToCursor = new GUIText(truncatedValue.substring(0, cursorPosition - truncateStart), 1.5f, TextMaster.minecraftFont, new Vector2f(position.x + 12, position.y - 32), 400f, false, true);
             if(cursor.getPosition().x != position.x + 12 + valueUpToCursor.getLineLength() || !TextMaster.hasText(cursor)) {
                 String caret = cursorPosition == value.length() ? "_" : "|";
                 cursor.remove();
@@ -103,10 +117,8 @@ public class InputField extends GUIObject {
                         }
                     } else if (Keyboard.getEventKey() == Keyboard.KEY_RIGHT) {
                         cursorPosition++;
-                        System.out.println(cursorPosition);
                     } else if (Keyboard.getEventKey() == Keyboard.KEY_LEFT) {
                         cursorPosition--;
-                        System.out.println(cursorPosition);
                     } else if (Keyboard.getEventKey() == Keyboard.KEY_BACK) { //Backspace
                         if (value.length() > 0) {
                             value = value.substring(0, cursorPosition - 1) + value.substring(cursorPosition);
@@ -124,8 +136,8 @@ public class InputField extends GUIObject {
             }
         }
 
-        if(value.length() > 32)
-            value = value.substring(0, 32);
+        if(value.length() > inputLimit)
+            value = value.substring(0, inputLimit);
 
         if(cursorPosition > value.length()) {
             cursorPosition = value.length();
