@@ -41,6 +41,10 @@ public class TextMaster {
         textBatch.add(text);
     }
 
+    public static boolean hasText(GUIText text){
+        return texts.get(text.getFont()).contains(text);
+    }
+
     public static void removeText(GUIText text){
         try {
             List<GUIText> textBatch = texts.get(text.getFont());

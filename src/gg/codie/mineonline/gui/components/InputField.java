@@ -29,7 +29,9 @@ public class InputField extends GUIObject {
 
     String value;
     IOnClickListener onEnterPressed;
-    GUIText guiText;
+    GUIText valueGuiText;
+    GUIText cursor;
+    int cursorPosition;
 
     public InputField(String name, Vector2f position, String value, IOnClickListener onEnterPressed) {
         super(name,
@@ -41,7 +43,9 @@ public class InputField extends GUIObject {
         this.value = value;
         this.onEnterPressed = onEnterPressed;
 
-        guiText = new GUIText(value, 1.5f, TextMaster.minecraftFont, new Vector2f(position.x + 12, position.y - 32), 400f, false, true);
+        valueGuiText = new GUIText(value, 1.5f, TextMaster.minecraftFont, new Vector2f(position.x + 12, position.y - 32), Float.MAX_VALUE, false, true);
+        cursor = new GUIText("_", 1.5f, TextMaster.minecraftFont, new Vector2f(position.x + 12 + valueGuiText.getLineLength(), position.y - 32), Float.MAX_VALUE, false, true);
+        cursorPosition = value.length();
     }
 
     public void render(Renderer renderer, GUIShader shader) {
@@ -51,14 +55,22 @@ public class InputField extends GUIObject {
 
         long diff = System.currentTimeMillis() % 600;
 
-        if(focused && diff >= 300 && !this.guiText.textString.equals(this.value + "_")) {
-            guiText.remove();
-            guiText = new GUIText(this.value + "_", 1.5f, TextMaster.minecraftFont, new Vector2f(position.x + 12, position.y - 32), 400f, false, true);
-        } else if (diff < 300 && !this.guiText.textString.equals(this.value)) {
-            guiText.remove();
-            guiText = new GUIText(value, 1.5f, TextMaster.minecraftFont, new Vector2f(position.x + 12, position.y - 32), 400f, false, true);
+        if(!this.valueGuiText.textString.equals(this.value)) {
+            valueGuiText.remove();
+            valueGuiText = new GUIText(this.value, 1.5f, TextMaster.minecraftFont, new Vector2f(position.x + 12, position.y - 32), 400f, false, true);
         }
 
+        if(focused && diff >= 300) {
+            GUIText valueUpToCursor = new GUIText(value.substring(0, cursorPosition), 1.5f, TextMaster.minecraftFont, new Vector2f(position.x + 12, position.y - 32), 400f, false, true);
+            if(cursor.getPosition().x != position.x + 12 + valueUpToCursor.getLineLength() || !TextMaster.hasText(cursor)) {
+                String caret = cursorPosition == value.length() ? "_" : "|";
+                cursor.remove();
+                cursor = new GUIText(caret, 1.5f, TextMaster.minecraftFont, new Vector2f(position.x + 12 + valueUpToCursor.getLineLength(), position.y - 32), 400f, false, true);
+            }
+            valueUpToCursor.remove();
+        } else {
+            cursor.remove();
+        }
     }
 
     boolean focused = true;
@@ -74,23 +86,51 @@ public class InputField extends GUIObject {
                         try {
                             Clipboard c = Toolkit.getDefaultToolkit().getSystemClipboard();
                             Transferable t = c.getContents(this);
-                            value += t.getTransferData(DataFlavor.stringFlavor);
+                            String paste = "" + t.getTransferData(DataFlavor.stringFlavor);
+                            StringBuilder stringBuilder = new StringBuilder();
+                            char[] chars = new char[paste.length()];
+                            paste.getChars(0, paste.length(), chars, 0);
+                            for (char character : chars) {
+                                if(("" + character).matches("[A-Za-z0-9\\[\\]{}'#@~./,<>?;:\\-\\\\()&^$%£\"!*&=_@~`¬¦| ]+")) {
+                                    stringBuilder.append(character);
+                                }
+                            }
+                            paste = stringBuilder.toString();
+                            value = value.substring(0, cursorPosition) + paste + value.substring(cursorPosition);
+                            cursorPosition += paste.length();
                         } catch (Exception ex) {
                             // Ignore.
                         }
+                    } else if (Keyboard.getEventKey() == Keyboard.KEY_RIGHT) {
+                        cursorPosition++;
+                        System.out.println(cursorPosition);
+                    } else if (Keyboard.getEventKey() == Keyboard.KEY_LEFT) {
+                        cursorPosition--;
+                        System.out.println(cursorPosition);
                     } else if (Keyboard.getEventKey() == Keyboard.KEY_BACK) { //Backspace
                         if (value.length() > 0) {
-                            value = value.substring(0, value.length() - 1);
+                            value = value.substring(0, cursorPosition - 1) + value.substring(cursorPosition);
+                            cursorPosition--;
                         }
                     } else if (Keyboard.getEventKey() == Keyboard.KEY_RETURN && this.onEnterPressed != null) {
                         this.onEnterPressed.onClick();
-                    } else if (!Character.toString(Keyboard.getEventCharacter()).matches("[A-Za-z0-9\\[\\]{}'#@~./,<>?;:\\-\\\\()&^$%£\"!*&=_@~`¬¦|]+")) {
+                    } else if (!Character.toString(Keyboard.getEventCharacter()).matches("[A-Za-z0-9\\[\\]{}'#@~./,<>?;:\\-\\\\()&^$%£\"!*&=_@~`¬¦| ]+")) {
                         continue;
                     } else {
-                        value += Keyboard.getEventCharacter();
+                        value = value.substring(0, cursorPosition) +  Keyboard.getEventCharacter() + value.substring(cursorPosition);
+                        cursorPosition++;
                     }
                 }
             }
+        }
+
+        if(value.length() > 32)
+            value = value.substring(0, 32);
+
+        if(cursorPosition > value.length()) {
+            cursorPosition = value.length();
+        } else if (cursorPosition < 0) {
+            cursorPosition = 0;
         }
 
         boolean mouseIsOver =
@@ -117,7 +157,8 @@ public class InputField extends GUIObject {
     }
 
     public void cleanUp() {
-        this.guiText.remove();
+        this.valueGuiText.remove();
+        this.cursor.remove();
     }
 
 }

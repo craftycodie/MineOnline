@@ -13,6 +13,7 @@ import gg.codie.mineonline.gui.rendering.models.TexturedModel;
 import gg.codie.mineonline.gui.rendering.shaders.StaticShader;
 import gg.codie.mineonline.gui.rendering.textures.ModelTexture;
 import gg.codie.utils.LastLogin;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.*;
 import org.lwjgl.util.vector.Vector2f;
@@ -139,6 +140,8 @@ public class MenuManager {
         DisplayManager.createDisplay();
 
         DisplayManager.getFrame().addWindowListener(closeListener);
+
+        Keyboard.enableRepeatEvents(true);
 
 
         Renderer renderer = new Renderer();
