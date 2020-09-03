@@ -82,10 +82,12 @@ public class SelectableServerList extends GUIObject {
         }
 
         if(serverRepository.didFail()) {
+            emptyText.remove();
             emptyText = new GUIText("Failed to load server list :(", 1.5f, TextMaster.minecraftFont, new Vector2f(200, (DisplayManager.getDefaultHeight() / 2) - 32), DisplayManager.getDefaultWidth() - 400, true, true);
             emptyText.setMaxLines(0);
             emptyText.setColour(0.5f, 0.5f, 0.5f);
         } else if(serverRepository.getServers().size() < 1) {
+            emptyText.remove();
             emptyText = new GUIText("There are no servers online :(", 1.5f, TextMaster.minecraftFont, new Vector2f(200, (DisplayManager.getDefaultHeight() / 2) - 32 ), DisplayManager.getDefaultWidth() - 400, true, true);
             emptyText.setMaxLines(0);
             emptyText.setColour(0.5f, 0.5f, 0.5f);
