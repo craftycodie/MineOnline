@@ -194,7 +194,7 @@ public class MinecraftVersionRepository {
                             File cachedInfo = new File(LauncherFiles.MINEONLINE_VERSIONS_FOLDER + existingVersion.type + File.separator + existingVersion.name + " " + existingVersion.md5 + ".json");
 
                             if (cachedInfo.exists()) {
-                                if (infoModified > cachedInfo.lastModified()) {
+                                if (infoModified > cachedInfo.lastModified() / 1000) {
                                     cachedInfo.delete();
                                 } else {
                                     alreadyDownloaded = true;
