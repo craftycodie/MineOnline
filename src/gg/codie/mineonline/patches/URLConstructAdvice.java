@@ -37,6 +37,7 @@ public class URLConstructAdvice {
                     "s3.amazonaws.com",
                     "api.mojang.com",
                     "authserver.mojang.com",
+                    "account.mojang.com",
                     "sessionserver.mojang.com",
                     "launchermeta.mojang.com",
                     "mojang.com",

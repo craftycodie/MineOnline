@@ -20,6 +20,7 @@ public class Globals {
             "minecraft.net",
             "s3.amazonaws.com",
             "api.mojang.com",
+            "account.mojang.com",
             "authserver.mojang.com",
             "sessionserver.mojang.com",
             "launchermeta.mojang.com",
