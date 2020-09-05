@@ -45,7 +45,7 @@ public class SmallPasswordInputField extends GUIObject {
         this.value = value;
         this.onEnterPressed = onEnterPressed;
 
-        valueGuiText = new GUIText(value, 1.5f, TextMaster.minecraftFont, new Vector2f(position.x + 12, position.y - 32), Float.MAX_VALUE, false, true);
+        valueGuiText = new GUIText(value.replaceAll(".", "*"), 1.5f, TextMaster.minecraftFont, new Vector2f(position.x + 12, position.y - 32), Float.MAX_VALUE, false, true);
         cursor = new GUIText("_", 1.5f, TextMaster.minecraftFont, new Vector2f(position.x + 12 + valueGuiText.getLineLength(), position.y - 32), Float.MAX_VALUE, false, true);
         cursorPosition = value.length();
     }
