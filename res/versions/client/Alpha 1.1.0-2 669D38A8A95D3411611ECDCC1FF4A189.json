@@ -1,9 +1,9 @@
 {
-  "name": "Alpha 1.1.0-2",
+  "name": "Alpha 1.1.0",
   "md5": "669D38A8A95D3411611ECDCC1FF4A189",
   "sha256": "042E8238A07D8068720D11E26323CA5C0BB67F47E5BC1A3B5AB19F5977BC492F",
   "type": "client",
   "enableScreenshotPatch": true,
   "legacy": true,
-  "baseVersion": "a1.1.0-2"
+  "baseVersion": "a1.1.0"
 }

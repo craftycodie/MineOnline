@@ -70,7 +70,7 @@ public class JoinServerScreen implements IMenuScreen {
             version = MinecraftVersionRepository.getSingleton().getVersion(jarPath);
         }
 
-        versionButton = new LargeButton(jarSelected ? (version != null ? "Version: " + version.name : jarName) : "Select Version", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 200, (DisplayManager.getDefaultHeight() / 2) + 8), new IOnClickListener() {
+        versionButton = new LargeButton(jarSelected ? (version != null ? version.name : jarName) : "Select Version", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 200, (DisplayManager.getDefaultHeight() / 2) + 8), new IOnClickListener() {
             @Override
             public void onClick() {
                 selectVersionMenuScreen = new SelectVersionMenuScreen(null, new IOnClickListener() {

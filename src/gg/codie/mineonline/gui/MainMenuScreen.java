@@ -71,7 +71,16 @@ public class MainMenuScreen implements IMenuScreen {
             playButton.setDisabled(true);
         }
 
-        versionButton = new MediumButton(jarSelected ? (version != null ? "Version: " + version.name : jarName) : "Select Version", new Vector2f((DisplayManager.getDefaultWidth() / 2) + 30, (DisplayManager.getDefaultHeight() / 2) + 56), new IOnClickListener() {
+        String versionLabel = jarName;
+        if(jarSelected && version != null) {
+            versionLabel = version.name;
+            GUIText sizeTest = new GUIText(versionLabel, 1.5f, TextMaster.minecraftFont, new Vector2f(0, 0), 300f, true, true);
+            sizeTest.setMaxLines(0);
+            if(sizeTest.getNumberOfLines() > 1)
+                versionLabel = version.baseVersion;
+            sizeTest.remove();
+        }
+        versionButton = new MediumButton(jarSelected ? versionLabel : "Select Version", new Vector2f((DisplayManager.getDefaultWidth() / 2) + 30, (DisplayManager.getDefaultHeight() / 2) + 56), new IOnClickListener() {
             @Override
             public void onClick() {
                 selectVersionMenuScreen = new SelectVersionMenuScreen(null, new IOnClickListener() {

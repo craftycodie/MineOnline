@@ -1,11 +1,11 @@
 {
-  "name": "c1.10.1 IP mod",
+  "name": "Classic 1.10.1 IP mod",
+  "info": "Modded",
   "md5": "90632803F45C15164587256A08C0ECB4",
   "type": "server",
-  "clientName": "c0.28 to c0.30",
+  "clientName": "Classic 0.30",
   "hasHeartbeat": true,
   "clientVersions": [
-    "c0.30-c-renew",
     "c0.30-c",
     "c0.30-s",
     "c0.29_02",

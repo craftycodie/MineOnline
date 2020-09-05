@@ -1,5 +1,6 @@
 {
-  "name": "c0.0.13a-launcher",
+  "name": "Classic 0.0.13a",
+  "info": "Launcher Version",
   "md5": "3617FBF5FBFD2B837EBF5CEB63584908",
   "sha256": "B3B5A88834C2351C948950C6D60C822D0D1D60F88C5ADAD4794F8AD6FE5B3A33",
   "type": "client",
@@ -7,5 +8,5 @@
   "forceFullscreenMacos": true,
   "enableMacosCursorPatch": true,
   "legacy": true,
-  "baseVersion": "c0.0.13a-launcher"
+  "baseVersion": "c0.0.13a"
 }
