@@ -1,5 +1,7 @@
 package gg.codie.mineonline;
 
+import gg.codie.mineonline.api.MineOnlineAPI;
+
 import java.io.*;
 import java.nio.file.Paths;
 import java.util.*;
@@ -47,6 +49,9 @@ public class MinecraftServerLauncher extends ServerLauncher {
 
             handleBroadcast(writer);
         }
+
+        if (serverUUID != null)
+            MineOnlineAPI.deleteServerListing(serverUUID);
 
         scanner.close();
 

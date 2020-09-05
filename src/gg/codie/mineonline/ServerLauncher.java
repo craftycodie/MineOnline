@@ -23,6 +23,7 @@ public abstract class ServerLauncher {
     protected final MinecraftVersion minecraftVersion;
     int users = 0;
     static String[] playerNames = new String[0];
+    protected String serverUUID;
     // If the player count was requested by MineOnline we remove that from stdout to avoid spamming logs.
     // Since the server might be responding slowly, we count the amount of times this has been requested,
     // to ensure each is removed.
@@ -160,7 +161,7 @@ public abstract class ServerLauncher {
                     playerNames = Files.readUsersFile(classicPlayersPath);
                 }
 
-                MineOnlineAPI.listServer(
+                serverUUID = MineOnlineAPI.listServer(
                         serverlistAddress != null && !serverlistAddress.isEmpty() ? serverlistAddress : serverProperties.getProperty("server-ip", null),
                         serverlistPort != null && !serverlistPort.isEmpty() ? serverlistPort : serverProperties.getProperty("server-port", serverProperties.getProperty("port", "25565")),
                         minecraftVersion != null && minecraftVersion.hasHeartbeat ? -1 : users,

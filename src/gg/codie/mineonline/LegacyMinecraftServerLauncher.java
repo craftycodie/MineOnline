@@ -1,5 +1,6 @@
 package gg.codie.mineonline;
 
+import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.utils.ArrayUtils;
 
 import java.io.*;
@@ -60,9 +61,11 @@ public class LegacyMinecraftServerLauncher extends ServerLauncher {
 
             handleBroadcast(writer);
         }
-//
-        scanner.close();
 
+        if (serverUUID != null)
+            MineOnlineAPI.deleteServerListing(serverUUID);
+
+        scanner.close();
         Proxy.stopProxy();
 
         serverProcess.destroyForcibly();

@@ -20,7 +20,7 @@ public class MineOnlineAPI {
 
         try {
             String parameters = "sessionId=" + URLEncoder.encode(sessionId, "UTF-8") + "&serverIP=" + URLEncoder.encode(serverIP, "UTF-8") + "&serverPort=" + URLEncoder.encode(serverPort, "UTF-8");
-            URL url = new URL("http://" + Globals.API_HOSTNAME + "/mineonline/mppass.jsp?" + parameters);
+            URL url = new URL("http://" + Globals.API_HOSTNAME + "/mineonline/servertoken?" + parameters);
             connection = (HttpURLConnection) url.openConnection();
             connection.setDoOutput(false);
             connection.connect();
@@ -127,6 +127,21 @@ public class MineOnlineAPI {
         return jsonObject;
     }
 
+    public static void deleteServerListing(String uuid) throws IOException {
+        HttpURLConnection connection;
+
+        URL url = new URL("http://" + Globals.API_HOSTNAME + "/mineonline/servers/" + uuid);
+        connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("DELETE");
+        connection.connect();
+
+        InputStream is = connection.getInputStream();
+        BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+
+        if (connection != null)
+            connection.disconnect();
+    }
+
     public static void setSkinMetadata(String uuid, String token, JSONObject metadata) throws IOException {
         HttpURLConnection connection;
 
@@ -150,7 +165,7 @@ public class MineOnlineAPI {
     }
 
     public static String getVersionInfo(String path) throws IOException {
-        HttpURLConnection connection = null;
+        HttpURLConnection connection;
 
         URL url = new URL("http://" + Globals.API_HOSTNAME + path.replace(" ", "%20"));
         connection = (HttpURLConnection) url.openConnection();
@@ -174,10 +189,10 @@ public class MineOnlineAPI {
     }
 
     public static LinkedList<MineOnlineServer> listServers(String uuid, String sessionId) throws IOException {
-        HttpURLConnection connection = null;
+        HttpURLConnection connection;
 
         String parameters = "sessionId=" + URLEncoder.encode(sessionId, "UTF-8") + "&user=" + URLEncoder.encode(uuid, "UTF-8");
-        URL url = new URL("http://" + Globals.API_HOSTNAME + "/mineonline/listservers.jsp?" + parameters);
+        URL url = new URL("http://" + Globals.API_HOSTNAME + "/mineonline/servers?" + parameters);
         connection = (HttpURLConnection) url.openConnection();
         connection.setDoInput(true);
         connection.setDoOutput(false);
@@ -202,13 +217,14 @@ public class MineOnlineAPI {
         return MineOnlineServer.parseServers(jsonArray);
     }
 
-    public static boolean removecloak(String sessionId) {
+    public static boolean removeCloak(String uuid, String sessionId) {
         HttpURLConnection connection = null;
 
         try {
             String parameters = "sessionId=" + URLEncoder.encode(sessionId, "UTF-8");
-            URL url = new URL("http://" + Globals.API_HOSTNAME + "/mineonline/removecloak.jsp?" + parameters);
+            URL url = new URL("http://" + Globals.API_HOSTNAME + "/mineonline/player/" + uuid + "/cloak?" + parameters);
             connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("DELETE");
             connection.setDoInput(true);
             connection.setDoOutput(false);
             connection.connect();
@@ -328,7 +344,7 @@ public class MineOnlineAPI {
 
     }
 
-    public static boolean listServer(
+    public static String listServer(
             String ip,
             String port,
             int users,
@@ -372,7 +388,7 @@ public class MineOnlineAPI {
 
             String json = jsonObject.toString();
 
-            URL url = new URL("http://" + Globals.API_HOSTNAME + "/mineonline/listserver.jsp");
+            URL url = new URL("http://" + Globals.API_HOSTNAME + "/mineonline/servers");
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestProperty("Content-Type", "application/json");
             connection.setRequestMethod("POST");
@@ -386,15 +402,20 @@ public class MineOnlineAPI {
             InputStream is = connection.getInputStream();
             BufferedReader rd = new BufferedReader(new InputStreamReader(is));
 
-            String res = rd.readLine();
-
+            StringBuilder response = new StringBuilder();
+            String line;
+            while ((line = rd.readLine()) != null) {
+                response.append(line);
+                response.append('\r');
+            }
             rd.close();
 
-            return res.equals("ok");
+            JSONObject resObject = new JSONObject(response.toString());
+            return resObject.has("uuid") ? resObject.getString("uuid") : null;
         } catch (Exception e) {
 
             e.printStackTrace();
-            return false;
+            return null;
         } finally {
 
             if (connection != null)

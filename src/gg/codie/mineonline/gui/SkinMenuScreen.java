@@ -193,7 +193,7 @@ public class SkinMenuScreen implements IMenuScreen {
         resetCloakButton = new MediumButton("Remove Cloak", new Vector2f((DisplayManager.getDefaultWidth() / 2) + 30, (DisplayManager.getDefaultHeight() / 2) + 104), new IOnClickListener() {
             @Override
             public void onClick() {
-                if(MineOnlineAPI.removecloak(Session.session.getSessionToken())) {
+                if(MineOnlineAPI.removeCloak(Session.session.getUuid(), Session.session.getSessionToken())) {
                     if(PlayerGameObject.thePlayer != null) {
                         PlayerGameObject.thePlayer.setCloak(LauncherFiles.TEMPLATE_CLOAK_PATH);
                         new File(LauncherFiles.CACHED_CLOAK_PATH).delete();
