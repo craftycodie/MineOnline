@@ -40,27 +40,8 @@ public class MineOnlineServer {
         while(iterator.hasNext()) {
             JSONObject object = (JSONObject)iterator.next();
 
-            EMineOnlineServerStatus status = EMineOnlineServerStatus.NONE;
-            if(object.has("status")) {
-                try {
-                    status = object.getEnum(EMineOnlineServerStatus.class, "status");
-                } catch (JSONException ex) {
-                    ex.printStackTrace();
-                }
-            }
-
             try {
-                servers.add(new MineOnlineServer(
-                        object.has("createdAt") && !object.isNull("createdAt") ? object.getString("createdAt") : null,
-                        object.has("ip") && !object.isNull("ip") ? object.getString("ip") : null,
-                        object.has("port") && !object.isNull("port") ? object.getInt("port") : 25565,
-                        object.getInt("users"),
-                        object.getInt("maxUsers"),
-                        object.getString("name"),
-                        object.getString("md5"),
-                        object.getBoolean("isMineOnline"),
-                        status
-                ));
+                servers.add(parseServer(object));
             } catch (JSONException ex) {
                 ex.printStackTrace();
                 // Continue to next element.
@@ -68,5 +49,28 @@ public class MineOnlineServer {
         }
 
         return servers;
+    }
+
+    public static MineOnlineServer parseServer(JSONObject object) throws JSONException {
+        EMineOnlineServerStatus status = EMineOnlineServerStatus.NONE;
+        if(object.has("status")) {
+            try {
+                status = object.getEnum(EMineOnlineServerStatus.class, "status");
+            } catch (JSONException ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        return new MineOnlineServer(
+                object.has("createdAt") && !object.isNull("createdAt") ? object.getString("createdAt") : null,
+                object.has("ip") && !object.isNull("ip") ? object.getString("ip") : null,
+                object.has("port") && !object.isNull("port") ? object.getInt("port") : 25565,
+                object.getInt("users"),
+                object.getInt("maxUsers"),
+                object.getString("name"),
+                object.getString("md5"),
+                object.getBoolean("isMineOnline"),
+                status
+        );
     }
 }

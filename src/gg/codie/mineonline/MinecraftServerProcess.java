@@ -24,7 +24,7 @@ public class MinecraftServerProcess {
                 "-javaagent:" + LauncherFiles.PATCH_AGENT_JAR,
                 "-Djava.util.Arrays.useLegacyMergeSort=true",
                 "-cp",
-                new File(Proxy.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath(),
+                new File(Startup.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath(),
                 MinecraftServerProcess.class.getCanonicalName(),
         };
 

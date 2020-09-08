@@ -1,8 +1,9 @@
 package gg.codie.mineonline;
 
+import gg.codie.mineonline.discord.DiscordPresence;
 import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.patches.LWJGLDisplayPatch;
-import gg.codie.mineonline.patches.URLPatch;
+import net.arikia.dev.drpc.DiscordRPC;
 
 public class MineOnline {
     public static void main(String[] args) throws Exception{

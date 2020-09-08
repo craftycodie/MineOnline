@@ -4,8 +4,10 @@ import gg.codie.minecraft.client.Options;
 import gg.codie.mineonline.*;
 import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.mineonline.api.LegacyAPI;
+import gg.codie.mineonline.api.MineOnlineServer;
 import gg.codie.mineonline.gui.font.GUIText;
 import gg.codie.mineonline.gui.rendering.*;
+import gg.codie.mineonline.gui.rendering.Renderer;
 import gg.codie.mineonline.gui.rendering.animation.*;
 import gg.codie.mineonline.gui.rendering.font.TextMaster;
 import gg.codie.mineonline.gui.rendering.models.RawModel;
@@ -19,12 +21,14 @@ import org.lwjgl.opengl.*;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
+import javax.swing.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.Random;
+import java.util.Set;
 
 public class MenuManager {
 
@@ -86,6 +90,7 @@ public class MenuManager {
         boolean multiinstance = false;
         String quicklaunch = null;
         String server = null;
+        String joinserver = null;
 
         // If sa user drags a jar onto the launcher, it'll be at arg 1, quicklaunch it.
         if(args.length > 1) {
@@ -102,6 +107,11 @@ public class MenuManager {
             if(args[i].equals("-server")) {
                 if(args.length > i + 1) {
                     server = args[i + 1];
+                }
+            }
+            if(args[i].equals("-joinserver")) {
+                if(args.length > i + 1) {
+                    joinserver = args[i + 1];
                 }
             }
             if(args[i].equals("-quicklaunch")) {
@@ -153,13 +163,50 @@ public class MenuManager {
             LastLogin.writeLastLogin(lastLogin.username, lastLogin.password, uuid);
         }
 
-        if (Session.session != null && Session.session.isOnline() && quicklaunch != null) {
+        if (Session.session != null && Session.session.isOnline() && joinserver != null) {
+            String ip;
+            String port;
+
+            try {
+                String[] split = joinserver.split(":");
+                ip = split[0];
+                port = split[1];
+                MineOnlineServer mineOnlineServer = MineOnlineAPI.getServer(ip, port);
+
+                MinecraftVersion serverVersion = MinecraftVersionRepository.getSingleton().getVersionByMD5(mineOnlineServer.md5);
+
+                Set<String> minecraftJars = MinecraftVersionRepository.getSingleton().getInstalledJars().keySet();
+
+                if (serverVersion != null) {
+                    for (String compatibleClientMd5 : serverVersion.clientVersions) {
+                        for (String path : minecraftJars) {
+                            MinecraftVersion clientVersion = MinecraftVersionRepository.getSingleton().getInstalledJars().get(path);
+
+                            if (clientVersion != null && clientVersion.baseVersion.equals(compatibleClientMd5)) {
+                                try {
+                                    new Options(LauncherFiles.MINECRAFT_OPTIONS_PATH).setOption("lastServer", mineOnlineServer.ip + "_" + mineOnlineServer.port);
+                                } catch (Exception ex) {
+                                    // ignore
+                                }
+                                String mppass = MineOnlineAPI.getMpPass(Session.session.getSessionToken(), mineOnlineServer.ip, "" + mineOnlineServer.port);
+
+                                MinecraftVersion.launchMinecraft(path, mineOnlineServer.ip, "" + mineOnlineServer.port, mppass);
+                                return;
+                            }
+                        }
+                    }
+                }
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, "Failed to join game.");
+            }
+        }
+        else if (Session.session != null && Session.session.isOnline() && quicklaunch != null) {
             String ip = null;
             String port = null;
             String mppass = null;
 
             if(server != null) {
-                String[] ipAndPort = server.split(":");
+                String[] ipAndPort = joinserver.split(":");
                 if(ipAndPort.length == 2) {
                     ip = ipAndPort[0];
                     port = ipAndPort[1];
@@ -172,7 +219,8 @@ public class MenuManager {
             }
             MinecraftVersion.launchMinecraft(quicklaunch, ip, port, mppass);
             return;
-        } else if (server != null) {
+        }
+        else if (server != null) {
             try {
                 new Options(LauncherFiles.MINECRAFT_OPTIONS_PATH).setOption("lastServer", server.replace(":", "_"));
             } catch (Exception ex) {
@@ -210,7 +258,10 @@ public class MenuManager {
 //        text.setColour(0.33f, 0.33f, 0.33f);
 
         if(Session.session != null && Session.session.isOnline())
-            setMenuScreen(new MainMenuScreen());
+            if(joinserver != null)
+                setMenuScreen(new JoinServerScreen(joinserver));
+            else
+                setMenuScreen(new MainMenuScreen());
         else
             setMenuScreen(new LoginMenuScreen(false));
 

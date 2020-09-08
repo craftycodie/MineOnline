@@ -12,9 +12,9 @@ public class LegacyMinecraftServerLauncher extends ServerLauncher {
     public LegacyMinecraftServerLauncher(String[] args) throws Exception {
         super(args[0]);
 
-        Proxy.launchProxy();
+        Startup.launchProxy();
 
-        String[] CMD_ARRAY = new String[] {Settings.settings.getString(Settings.JAVA_COMMAND), Proxy.PROXY_SET_ARG, Proxy.PROXY_HOST_ARG, Proxy.PROXY_PORT_ARG + Proxy.getProxyPort()};
+        String[] CMD_ARRAY = new String[] {Settings.settings.getString(Settings.JAVA_COMMAND), Startup.PROXY_SET_ARG, Startup.PROXY_HOST_ARG, Startup.PROXY_PORT_ARG + Startup.getProxyPort()};
 
         CMD_ARRAY = ArrayUtils.concatenate(CMD_ARRAY, Arrays.copyOfRange(args, 1, args.length));
 
@@ -33,7 +33,7 @@ public class LegacyMinecraftServerLauncher extends ServerLauncher {
         Thread closeLauncher = new Thread() {
             public void run() {
                 serverProcess.destroy();
-                Proxy.stopProxy();
+                Startup.stopProxy();
             }
         };
 
@@ -66,7 +66,7 @@ public class LegacyMinecraftServerLauncher extends ServerLauncher {
             MineOnlineAPI.deleteServerListing(serverUUID);
 
         scanner.close();
-        Proxy.stopProxy();
+        Startup.stopProxy();
 
         serverProcess.destroyForcibly();
         System.exit(0);

@@ -1,5 +1,6 @@
 package gg.codie.mineonline;
 
+import gg.codie.mineonline.discord.DiscordPresence;
 import gg.codie.utils.JSONUtils;
 import gg.codie.utils.MD5Checksum;
 import gg.codie.utils.OSUtils;
@@ -296,6 +297,8 @@ public class MinecraftVersion {
 
     public static void launchMinecraft(String jarPath, String serverIP, String serverPort, String mpPass) throws Exception {
         MinecraftVersion minecraftVersion = MinecraftVersionRepository.getSingleton().getVersion(jarPath);
+
+        DiscordPresence.play(minecraftVersion.name, serverIP, serverPort);
 
         if(minecraftVersion != null) {
             if (minecraftVersion.legacy) {
