@@ -46,9 +46,7 @@ public class JoinServerScreen implements IMenuScreen {
                     if(serverIPField.getValue().contains(":"))
                         split = serverIPField.getValue().split(":");
 
-                    InetAddress inetAddress = InetAddress.getByName(split[0]);
-
-                    String mppass = MineOnlineAPI.getMpPass(Session.session.getSessionToken(), inetAddress.getHostAddress(), split.length > 1 ? split[1] : "25565");
+                    String mppass = MineOnlineAPI.getMpPass(Session.session.getSessionToken(), split[0], split.length > 1 ? split[1] : "25565");
 
                     MinecraftVersion.launchMinecraft(MinecraftVersionRepository.getSingleton().getLastSelectedJarPath(), split[0], split.length > 1 ? split[1] : "25565", mppass);
                 }
@@ -98,9 +96,7 @@ public class JoinServerScreen implements IMenuScreen {
                     if(serverIPField.getValue().contains(":"))
                         split = serverIPField.getValue().split(":");
 
-                    InetAddress inetAddress = InetAddress.getByName(split[0]);
-
-                    String mppass = MineOnlineAPI.getMpPass(Session.session.getSessionToken(), inetAddress.getHostAddress(), split.length > 1 ? split[1] : "25565");
+                    String mppass = MineOnlineAPI.getMpPass(Session.session.getSessionToken(), split[0], split.length > 1 ? split[1] : "25565");
 
                     MinecraftVersion.launchMinecraft(MinecraftVersionRepository.getSingleton().getLastSelectedJarPath(), split[0], split.length > 1 ? split[1] : "25565", mppass);
                 }

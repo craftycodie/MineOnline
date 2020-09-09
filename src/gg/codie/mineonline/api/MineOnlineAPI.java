@@ -6,6 +6,7 @@ import org.json.JSONObject;
 
 import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.InetAddress;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.ByteBuffer;
@@ -16,6 +17,14 @@ import java.util.LinkedList;
 
 public class MineOnlineAPI {
     public static String getMpPass (String sessionId, String serverIP, String serverPort) {
+
+        try {
+            InetAddress inetAddress = InetAddress.getByName(serverIP);
+            serverIP = inetAddress.getHostAddress();
+        } catch (Exception ex) {
+            //ignore.
+        }
+
         HttpURLConnection connection = null;
 
         try {
@@ -73,6 +82,35 @@ public class MineOnlineAPI {
             connection.disconnect();
 
         return new JSONObject(response.toString()).getString("uuid");
+    }
+
+    public static String getExternalIP() {
+        HttpURLConnection connection = null;
+
+        try {
+            URL url = new URL("http://" + Globals.API_HOSTNAME + "/mineonline/getmyip");
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setUseCaches(false);
+            connection.setDoOutput(true);
+
+            InputStream is = connection.getInputStream();
+            BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+
+            StringBuilder response = new StringBuilder();
+            String line;
+            while ((line = rd.readLine()) != null) {
+                response.append(line);
+            }
+            rd.close();
+
+            if (connection != null)
+                connection.disconnect();
+
+            return new JSONObject(response.toString()).getString("ip");
+
+        } catch (Exception ex) {
+            return "";
+        }
     }
 
     public static JSONObject getVersionIndex() throws IOException {

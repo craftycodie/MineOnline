@@ -1,5 +1,6 @@
 package gg.codie.mineonline;
 
+import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.mineonline.discord.DiscordPresence;
 import gg.codie.utils.JSONUtils;
 import gg.codie.utils.MD5Checksum;
@@ -7,6 +8,7 @@ import gg.codie.utils.OSUtils;
 import org.json.JSONObject;
 
 import java.io.*;
+import java.net.InetAddress;
 import java.nio.file.*;
 import java.util.*;
 import java.util.jar.JarEntry;
@@ -298,7 +300,16 @@ public class MinecraftVersion {
     public static void launchMinecraft(String jarPath, String serverIP, String serverPort, String mpPass) throws Exception {
         MinecraftVersion minecraftVersion = MinecraftVersionRepository.getSingleton().getVersion(jarPath);
 
-        DiscordPresence.play(minecraftVersion.name, serverIP, serverPort);
+        DiscordPresence.play(minecraftVersion != null ? minecraftVersion.name : Paths.get(jarPath).getFileName().toString(), serverIP, serverPort);
+
+        InetAddress address = InetAddress.getByName(serverIP);
+        serverIP = address.getHostAddress();
+
+        String externalIP = MineOnlineAPI.getExternalIP();
+
+        if(serverIP.equals(externalIP)) {
+            serverIP = "localhost";
+        }
 
         if(minecraftVersion != null) {
             if (minecraftVersion.legacy) {

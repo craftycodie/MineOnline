@@ -6,6 +6,7 @@ import gg.codie.mineonline.api.LegacyAPI;
 import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.mineonline.api.MineOnlineServer;
 import gg.codie.utils.LastLogin;
+import gg.codie.utils.OSUtils;
 import net.arikia.dev.drpc.DiscordEventHandlers;
 import net.arikia.dev.drpc.DiscordRPC;
 import net.arikia.dev.drpc.DiscordRichPresence;
@@ -31,6 +32,10 @@ public class DiscordRPCHandler {
     private static long lastServerUpdate = System.currentTimeMillis() / 1000;
 
     private static void play(String versionName, String serverIP, String serverPort, String username) {
+        boolean isUpdate = false;
+        if(DiscordRPCHandler.versionName.equals(versionName) && DiscordRPCHandler.serverIP.equals(serverIP) && DiscordRPCHandler.serverPort.equals(serverPort))
+            isUpdate = true;
+
         DiscordRPCHandler.serverIP = serverIP;
         DiscordRPCHandler.serverPort = serverPort;
         DiscordRPCHandler.versionName = versionName;
@@ -44,7 +49,8 @@ public class DiscordRPCHandler {
         if(DiscordRPCHandler.serverIP == null) {
             DiscordRichPresence.Builder presence = new DiscordRichPresence.Builder("Playing Single-Player");
             presence.setDetails(DiscordRPCHandler.versionName);
-            presence.setStartTimestamps(System.currentTimeMillis() / 1000);
+            if(!isUpdate)
+                presence.setStartTimestamps(System.currentTimeMillis() / 1000);
             presence.setBigImage("keyart", null);
             presence.setSmallImage("block", DiscordRPCHandler.username);
             DiscordRPC.discordUpdatePresence(presence.build());
@@ -98,7 +104,7 @@ public class DiscordRPCHandler {
         .build();
         DiscordRPC.discordInitialize("718163542783819818", handlers, false);
         try {
-            DiscordRPC.discordRegister("718163542783819818", "javaw -jar " + Paths.get(LibraryManager.class.getProtectionDomain().getCodeSource().getLocation().toURI()).toString());
+            DiscordRPC.discordRegister("718163542783819818", (OSUtils.isLinux() ? "javaws -jar " : "javaw -jar ") + Paths.get(LibraryManager.class.getProtectionDomain().getCodeSource().getLocation().toURI()).toString());
         } catch (Exception ex) {
             ex.printStackTrace();
         }

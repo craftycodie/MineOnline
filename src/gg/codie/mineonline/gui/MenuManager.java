@@ -214,8 +214,7 @@ public class MenuManager {
                     ip = ipAndPort[0];
                     port = "25565";
                 }
-                InetAddress inetAddress = InetAddress.getByName(ip);
-                mppass = MineOnlineAPI.getMpPass(Session.session.getSessionToken(), inetAddress.getHostAddress(), port);
+                mppass = MineOnlineAPI.getMpPass(Session.session.getSessionToken(), ip, port);
             }
             MinecraftVersion.launchMinecraft(quicklaunch, ip, port, mppass);
             return;

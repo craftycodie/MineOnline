@@ -13,6 +13,10 @@ public class OSUtils {
         return getPlatform() == OS.macosx;
     }
 
+    public static boolean isLinux() {
+        return getPlatform() == OS.linux;
+    }
+
     public static OS getPlatform() {
         String osName = System.getProperty("os.name").toLowerCase();
         if (osName.contains("win")) return OS.windows;
