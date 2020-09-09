@@ -33,7 +33,9 @@ public class DiscordRPCHandler {
 
     private static void play(String versionName, String serverIP, String serverPort, String username) {
         boolean isUpdate = false;
-        if(DiscordRPCHandler.versionName.equals(versionName) && DiscordRPCHandler.serverIP.equals(serverIP) && DiscordRPCHandler.serverPort.equals(serverPort))
+        if(versionName.equals(DiscordRPCHandler.versionName)
+                && ((serverIP == null && DiscordRPCHandler.serverIP == null) || serverIP.equals(DiscordRPCHandler.serverIP))
+                && ((serverPort == null && DiscordRPCHandler.serverPort == null) || serverPort.equals(DiscordRPCHandler.serverPort)))
             isUpdate = true;
 
         DiscordRPCHandler.serverIP = serverIP;
@@ -119,7 +121,7 @@ public class DiscordRPCHandler {
                         List<String> lines = Files.readAllLines(Paths.get(LauncherFiles.MINEONLINE_RICH_PRESENCE_FILE));
                         play(lines.get(0), lines.get(1), lines.get(2), lines.get(3));
                     } catch (Exception ex) {
-
+                        ex.printStackTrace();
                     }
                     presenceFile.delete();
                 }

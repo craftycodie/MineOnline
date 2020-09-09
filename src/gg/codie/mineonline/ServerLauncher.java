@@ -63,6 +63,12 @@ public abstract class ServerLauncher {
         bannedIpsPath = jarPath.replace(Paths.get(jarPath).getFileName().toString(), "banned-ips.txt");
         bannedIpsJSONPath = jarPath.replace(Paths.get(jarPath).getFileName().toString(), "banned-ips.json");
         bannedPlayersJSONPath = jarPath.replace(Paths.get(jarPath).getFileName().toString(), "banned-players.json");
+
+        File classicUsers = new File(classicPlayersPath);
+        if(classicUsers.exists()) {
+            classicUsers.delete();
+            classicUsers.createNewFile();
+        }
     }
 
     protected void redirectOutput(final InputStream src, final PrintStream dest) {

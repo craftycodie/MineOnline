@@ -300,15 +300,20 @@ public class MinecraftVersion {
     public static void launchMinecraft(String jarPath, String serverIP, String serverPort, String mpPass) throws Exception {
         MinecraftVersion minecraftVersion = MinecraftVersionRepository.getSingleton().getVersion(jarPath);
 
-        DiscordPresence.play(minecraftVersion != null ? minecraftVersion.name : Paths.get(jarPath).getFileName().toString(), serverIP, serverPort);
+        if(minecraftVersion != null)
+            DiscordPresence.play(minecraftVersion.name, serverIP, serverPort);
+        else
+            DiscordPresence.play(Paths.get(jarPath).getFileName().toString(), serverIP, serverPort);
 
-        InetAddress address = InetAddress.getByName(serverIP);
-        serverIP = address.getHostAddress();
+        if (serverIP != null) {
+            InetAddress address = InetAddress.getByName(serverIP);
+            serverIP = address.getHostAddress();
 
-        String externalIP = MineOnlineAPI.getExternalIP();
+            String externalIP = MineOnlineAPI.getExternalIP();
 
-        if(serverIP.equals(externalIP)) {
-            serverIP = "localhost";
+            if (serverIP != null && serverIP.equals(externalIP)) {
+                serverIP = "localhost";
+            }
         }
 
         if(minecraftVersion != null) {
