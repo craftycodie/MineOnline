@@ -124,9 +124,9 @@ public class DiscordRPCHandler {
             }
         })
         .build();
-        DiscordRPC.discordInitialize("718163542783819818", handlers, false);
+        DiscordRPC.discordInitialize(Globals.DISCORD_APP_ID, handlers, false);
         try {
-            DiscordRPC.discordRegister("718163542783819818", (OSUtils.isLinux() ? "javaws -jar " : "javaw -jar ") + Paths.get(LibraryManager.class.getProtectionDomain().getCodeSource().getLocation().toURI()).toString());
+            DiscordRPC.discordRegister(Globals.DISCORD_APP_ID, (OSUtils.isLinux() ? "javaws -jar " : "javaw -jar ") + Paths.get(LibraryManager.class.getProtectionDomain().getCodeSource().getLocation().toURI()).toString());
         } catch (Exception ex) {
             ex.printStackTrace();
         }
