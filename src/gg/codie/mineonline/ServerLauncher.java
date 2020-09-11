@@ -77,6 +77,10 @@ public abstract class ServerLauncher {
                         if(inScanner.hasNext()) {
                             String nextLine = inScanner.nextLine();
 
+                            if(nextLine.contains("logged in with entity id") || nextLine.contains(" lost connection: ") || nextLine.contains(" logged in as ") || nextLine.contains(" disconnected")) {
+                                updatePlayerCount = true;
+                            }
+
                             if(nextLine.length() > 27 && nextLine.substring(27).startsWith("Connected players: ")) {
                                 users = 0;
                                 if(nextLine.length() > 46){
@@ -89,6 +93,10 @@ public abstract class ServerLauncher {
                                 } else if (users > 1) {
                                     playerNames = nextLine.substring(46).split(", ");
                                 }
+                                if(updatingPlayerCount) {
+                                    updatingPlayerCount = false;
+                                    updatedPlayerCount = true;
+                                }
 
                             } else if(nextLine.length() > 33 && nextLine.substring(33).startsWith("There are ") && nextLine.substring(33).contains(" players online")) {
                                 try {
@@ -100,6 +108,10 @@ public abstract class ServerLauncher {
                                         playerNames = nextLine.split(": ")[2].replace(", ", " ").split(" ");
                                 } catch (NumberFormatException ex) {
                                     // ignore.
+                                }
+                                if(updatingPlayerCount) {
+                                    updatingPlayerCount = false;
+                                    updatedPlayerCount = true;
                                 }
                             }
                             if(playerCountRequested > 0) {
@@ -117,10 +129,30 @@ public abstract class ServerLauncher {
         }).start();
     }
 
-    long lastPing = System.currentTimeMillis();
+    private long lastPing = System.currentTimeMillis();
+    private boolean updatePlayerCount;
+    private boolean updatingPlayerCount;
+    private boolean updatedPlayerCount;
 
-    protected void handleBroadcast(BufferedWriter writer) {
-        if (System.currentTimeMillis() - lastPing > 45000) {
+    void handleBroadcast(BufferedWriter writer) {
+        if(updatePlayerCount) {
+            if(minecraftVersion != null && minecraftVersion.hasHeartbeat) {
+                updatedPlayerCount = true;
+            } else {
+                playerCountRequested++;
+                try {
+                    writer.write("list");
+                    writer.newLine();
+                    writer.flush();
+                } catch (Exception ex) {
+
+                }
+                updatingPlayerCount = true;
+            }
+        }
+
+        if (System.currentTimeMillis() - lastPing > 45000 || updatedPlayerCount) {
+            updatedPlayerCount = false;
             try {
                 try {
                     serverProperties = gg.codie.minecraft.server.Properties.loadServerProperties(jarPath);
@@ -135,10 +167,12 @@ public abstract class ServerLauncher {
                 String[] bannedIPs;
                 String[] bannedUUIDs;
 
-                playerCountRequested++;
-                writer.write("list");
-                writer.newLine();
-                writer.flush();
+                if (!updatingPlayerCount) {
+                    playerCountRequested++;
+                    writer.write("list");
+                    writer.newLine();
+                    writer.flush();
+                }
 
                 boolean whitelisted = false;
                 if (serverProperties.containsKey("white-list")) {
