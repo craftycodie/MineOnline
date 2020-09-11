@@ -198,6 +198,7 @@ public abstract class ServerLauncher {
 
                 if (minecraftVersion != null && minecraftVersion.hasHeartbeat) {
                     playerNames = Files.readUsersFile(classicPlayersPath);
+                    users = playerNames.length;
                 }
 
                 serverUUID = MineOnlineAPI.listServer(
