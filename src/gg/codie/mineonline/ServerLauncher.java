@@ -137,6 +137,7 @@ public abstract class ServerLauncher {
     void handleBroadcast(BufferedWriter writer) {
         if(updatePlayerCount) {
             if(minecraftVersion != null && minecraftVersion.hasHeartbeat) {
+                updatePlayerCount = false;
                 updatedPlayerCount = true;
             } else {
                 playerCountRequested++;
@@ -147,6 +148,7 @@ public abstract class ServerLauncher {
                 } catch (Exception ex) {
 
                 }
+                updatePlayerCount = false;
                 updatingPlayerCount = true;
             }
         }
