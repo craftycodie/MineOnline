@@ -23,6 +23,7 @@ These are features MineOnline will bring to Minecraft.
 - Server List
 
 - Online World Saves
+  - You can also upload classic maps via the website.
 
 - Resource Files (Sounds)
 
