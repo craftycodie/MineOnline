@@ -1,3 +1,10 @@
+# Development Update
+As I enter my final year of University I will be taking a break from this project.
+Everything will remain online and I will do my best to ensure things keep running smoothly, but I will be unable to tackle big changes until June 2021.
+If you find this project interesting, and know your way around Java, please consider supporting helping me get throug the issues :)
+- Codie
+
+
 ![logo](mineonlinelogo.png)
 
 Launch old versions of minecraft just as you remembered them.
