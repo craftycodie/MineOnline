@@ -38,19 +38,6 @@ public class DiscordRPCHandler {
         boolean isUpdate = false;
         DiscordRPCHandler.uuid = uuid;
 
-        MineOnlinePlayerPresence playerPresence = null;
-
-        try {
-            playerPresence = MineOnlineAPI.playerPresence(DiscordRPCHandler.uuid);
-        } catch (Exception ex) {
-
-        }
-
-        if(playerPresence != null) {
-            serverIP = playerPresence.serverIP;
-            serverPort = playerPresence.serverPort;
-        }
-
         if(versionName.equals(DiscordRPCHandler.versionName)
                 && ((serverIP == null && DiscordRPCHandler.serverIP == null) || (serverIP != null && serverIP.equals(DiscordRPCHandler.serverIP)))
                 && ((serverPort == null && DiscordRPCHandler.serverPort == null) || (serverPort != null && serverPort.equals(DiscordRPCHandler.serverPort))))
@@ -65,9 +52,9 @@ public class DiscordRPCHandler {
         DiscordRPCHandler.versionName = versionName;
         DiscordRPCHandler.username = username;
 
-        if(DiscordRPCHandler.serverIP != null && (DiscordRPCHandler.serverIP.isEmpty() || DiscordRPCHandler.serverIP.equals("null")))
+        if (DiscordRPCHandler.serverIP != null && (DiscordRPCHandler.serverIP.isEmpty() || DiscordRPCHandler.serverIP.equals("null")))
             DiscordRPCHandler.serverIP = null;
-        if(DiscordRPCHandler.serverPort != null && (DiscordRPCHandler.serverPort.isEmpty() || DiscordRPCHandler.serverPort.equals("null")))
+        if (DiscordRPCHandler.serverPort != null && (DiscordRPCHandler.serverPort.isEmpty() || DiscordRPCHandler.serverPort.equals("null")))
             DiscordRPCHandler.serverPort = null;
 
         if(DiscordRPCHandler.serverIP == null) {
@@ -145,9 +132,6 @@ public class DiscordRPCHandler {
                     }
                     presenceFile.delete();
                 }
-
-                if (System.currentTimeMillis() - DiscordRPCHandler.lastServerUpdate > 20000)
-                    play(DiscordRPCHandler.versionName, DiscordRPCHandler.serverIP, DiscordRPCHandler.serverPort, DiscordRPCHandler.username, DiscordRPCHandler.uuid);
 
                 try {
                     Thread.sleep(2000);
