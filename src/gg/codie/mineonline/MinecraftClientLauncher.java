@@ -3,6 +3,7 @@ package gg.codie.mineonline;
 import gg.codie.minecraft.client.Options;
 import gg.codie.mineonline.gui.rendering.DisplayManager;
 import gg.codie.mineonline.patches.PropertiesSignaturePatch;
+import gg.codie.mineonline.patches.SocketPatch;
 import gg.codie.mineonline.patches.URLPatch;
 import gg.codie.mineonline.patches.YggdrasilMinecraftSessionServicePatch;
 import gg.codie.utils.MD5Checksum;
@@ -173,6 +174,7 @@ public class MinecraftClientLauncher {
             URLPatch.redefineURL();
             PropertiesSignaturePatch.redefineIsSignatureValid();
             YggdrasilMinecraftSessionServicePatch.allowMineonlineSkins();
+            SocketPatch.watchSockets();
 
             Class clazz = Class.forName("net.minecraft.client.main.Main");
 

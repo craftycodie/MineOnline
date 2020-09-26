@@ -7,8 +7,10 @@ import gg.codie.mineonline.gui.rendering.Renderer;
 import gg.codie.mineonline.lwjgl.OnCreateListener;
 import gg.codie.mineonline.lwjgl.OnUpdateListener;
 import gg.codie.mineonline.patches.LWJGLDisplayPatch;
+import gg.codie.mineonline.patches.SocketPatch;
 import gg.codie.utils.MD5Checksum;
 import gg.codie.utils.OSUtils;
+import gg.codie.utils.TransferableImage;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -19,6 +21,7 @@ import org.lwjgl.util.vector.Vector2f;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.applet.*;
+import java.awt.datatransfer.Clipboard;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -261,6 +264,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
                         constructor = clazz.getDeclaredConstructor(
                                 Component.class, Canvas.class, appletClass, int.class, int.class, boolean.class, Frame.class
                         );
+                        minecraftImpl = (Runnable) constructor.newInstance(null, DisplayManager.getCanvas(), null, Display.getWidth(), Display.getHeight(), fullscreen, frame);
                     } catch (Throwable e) {
 
                     }
@@ -413,24 +417,25 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
                 if (renderer != null) {
                     //renderer.renderString(new Vector2f(2, 190), "MineOnline Debug", org.newdawn.slick.Color.yellow); //x, y, string to draw, color
                     //TextMaster.render();
-                    if (minecraftVersion != null && minecraftVersion.enableScreenshotPatch) {
-                        try {
-                            float opacityMultiplier = System.currentTimeMillis() - lastScreenshotTime;
-                            if (opacityMultiplier > 5000) {
-                                opacityMultiplier -= 5000;
-                                opacityMultiplier = -(opacityMultiplier / 500);
-                                opacityMultiplier += 1;
-                            } else {
-                                opacityMultiplier = 1;
-                            }
+                    if (minecraftVersion != null) {
+                        if (minecraftVersion.enableScreenshotPatch) {
+                            try {
+                                float opacityMultiplier = System.currentTimeMillis() - lastScreenshotTime;
+                                if (opacityMultiplier > 5000) {
+                                    opacityMultiplier -= 5000;
+                                    opacityMultiplier = -(opacityMultiplier / 500);
+                                    opacityMultiplier += 1;
+                                } else {
+                                    opacityMultiplier = 1;
+                                }
 
-                            if (opacityMultiplier > 0) {
-                                renderer.renderStringIngame(new Vector2f(2, 190), 8, "Saved screenshot as " + lastScreenshotName, new org.newdawn.slick.Color(1, 1, 1, 1 * opacityMultiplier)); //x, y, string to draw, color
+                                if (opacityMultiplier > 0) {
+                                    renderer.renderStringIngame(new Vector2f(2, 190), 8, "Saved screenshot as " + lastScreenshotName, new org.newdawn.slick.Color(1, 1, 1, 1 * opacityMultiplier)); //x, y, string to draw, color
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
-                        } catch (Exception e) {
-                            e.printStackTrace();
                         }
-
 
                         if (Keyboard.getEventKey() == Keyboard.KEY_F2 && !Keyboard.isRepeatEvent() && Keyboard.getEventKeyState() && !f2wasDown) {
                             screenshot();
@@ -481,6 +486,8 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
 
 
         DisplayManager.closeDisplay();
+
+        SocketPatch.watchSockets();
 
         if (minecraftImpl != null) {
             minecraftImpl.run();
@@ -635,13 +642,6 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
     // this MUST be called from the OpenGL thread.
     public void screenshot() {
         try {
-            File screenshotsFolder = new File(LauncherFiles.MINECRAFT_SCREENSHOTS_PATH);
-            screenshotsFolder.mkdirs();
-
-            File file;
-            String s = (new StringBuilder()).append(new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss").format(new Date())).toString();
-            for(int k = 1; (file = new File(screenshotsFolder, (new StringBuilder()).append(s).append(k != 1 ? (new StringBuilder()).append("_").append(k).toString() : "").append(".png").toString())).exists(); k++) { }
-
             if(buffer == null || buffer.capacity() < Display.getWidth() * Display.getHeight())
             {
                 buffer = BufferUtils.createByteBuffer(Display.getWidth() * Display.getHeight() * 3);
@@ -681,12 +681,27 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
             BufferedImage bufferedimage = new BufferedImage(Display.getWidth(), Display.getHeight(), 1);
             bufferedimage.setRGB(0, 0, Display.getWidth(), Display.getHeight(), imageData, 0, Display.getWidth());
 
-            try {
-                ImageIO.write(bufferedimage, "png", file);
-                System.out.println("Screenshot saved to " + file.getPath());
-                lastScreenshotTime = System.currentTimeMillis();
-                lastScreenshotName = file.getName();
-            } catch (IOException e) { e.printStackTrace(); }
+            // Copy image to clipboard.
+            TransferableImage trans = new TransferableImage( bufferedimage );
+            Clipboard c = Toolkit.getDefaultToolkit().getSystemClipboard();
+            c.setContents( trans, null );
+
+            if (minecraftVersion.enableScreenshotPatch) {
+                File screenshotsFolder = new File(LauncherFiles.MINECRAFT_SCREENSHOTS_PATH);
+                screenshotsFolder.mkdirs();
+
+                File file;
+                String s = (new StringBuilder()).append(new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss").format(new Date())).toString();
+                for(int k = 1; (file = new File(screenshotsFolder, (new StringBuilder()).append(s).append(k != 1 ? (new StringBuilder()).append("_").append(k).toString() : "").append(".png").toString())).exists(); k++) { }
+
+                try {
+                    ImageIO.write(bufferedimage, "png", file);
+                    System.out.println("Screenshot saved to " + file.getPath());
+                    lastScreenshotTime = System.currentTimeMillis();
+                    lastScreenshotName = file.getName();
+                } catch (IOException e) { e.printStackTrace(); }
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }

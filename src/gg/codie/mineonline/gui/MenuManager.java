@@ -188,7 +188,10 @@ public class MenuManager {
                                 } catch (Exception ex) {
                                     // ignore
                                 }
-                                String mppass = MineOnlineAPI.getMpPass(Session.session.getSessionToken(), mineOnlineServer.ip, "" + mineOnlineServer.port);
+
+                                String mppass = null;
+                                if(serverVersion != null && serverVersion.hasHeartbeat)
+                                    mppass = MineOnlineAPI.getMpPass(Session.session.getSessionToken(), mineOnlineServer.ip, "" + mineOnlineServer.port);
 
                                 MinecraftVersion.launchMinecraft(path, mineOnlineServer.ip, "" + mineOnlineServer.port, mppass);
                                 return;

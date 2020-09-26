@@ -60,7 +60,10 @@ public class ServerListMenuScreen implements IMenuScreen {
                                         } catch (Exception ex) {
                                             // ignore
                                         }
-                                        String mppass = MineOnlineAPI.getMpPass(Session.session.getSessionToken(), selectedServer.server.ip, "" + selectedServer.server.port);
+
+                                        String mppass = null;
+                                        if(serverVersion != null && serverVersion.hasHeartbeat)
+                                            mppass = MineOnlineAPI.getMpPass(Session.session.getSessionToken(), selectedServer.server.ip, "" + selectedServer.server.port);
 
                                         MinecraftVersion.launchMinecraft(path, selectedServer.server.ip, "" + selectedServer.server.port, mppass);
                                         return;
@@ -83,7 +86,13 @@ public class ServerListMenuScreen implements IMenuScreen {
                                 } catch (Exception ex) {
                                     // ignore
                                 }
-                                String mppass = MineOnlineAPI.getMpPass(Session.session.getSessionToken(), selectedServer.server.ip, "" + selectedServer.server.port);
+
+                                MinecraftVersion serverVersion = MinecraftVersionRepository.getSingleton().getVersionByMD5(selectedServer.server.md5);
+
+                                String mppass = null;
+                                if(serverVersion != null && serverVersion.hasHeartbeat)
+                                    mppass = MineOnlineAPI.getMpPass(Session.session.getSessionToken(), selectedServer.server.ip, "" + selectedServer.server.port);
+
                                 try {
                                     MinecraftVersion.launchMinecraft(selectVersionMenuScreen.getSelectedPath(), selectedServer.server.ip, "" + selectedServer.server.port, mppass);
                                 } catch (Exception ex) {
