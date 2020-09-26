@@ -312,7 +312,7 @@ public class MinecraftVersion {
             String externalIP = MineOnlineAPI.getExternalIP();
 
             if (serverIP != null && serverIP.equals(externalIP)) {
-                serverIP = "localhost";
+                serverIP = InetAddress.getLocalHost().getHostAddress();
             }
         }
 

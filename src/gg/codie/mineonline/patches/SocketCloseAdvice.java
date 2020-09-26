@@ -18,7 +18,7 @@ public class SocketCloseAdvice {
                 constructClazz.getField("serverPort").set(null, -1);
                 System.out.println("Left Server " + thisObject.getInetAddress().getHostAddress() + ":" + thisObject.getPort());
                 Class presenceClazz = ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.discord.DiscordPresence");
-                presenceClazz.getMethod("updateServer", new Class[]{InetAddress.class, String.class}).invoke(null, null, null);
+                presenceClazz.getMethod("updateServer", new Class[]{ String.class, String.class }).invoke(null, null, null);
             }
         } catch (Exception ex) {
             ex.printStackTrace();

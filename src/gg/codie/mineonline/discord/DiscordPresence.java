@@ -1,13 +1,17 @@
 package gg.codie.mineonline.discord;
 
 import gg.codie.mineonline.*;
+import gg.codie.mineonline.api.MineOnlineAPI;
 
 import java.io.File;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousFileChannel;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.Arrays;
 
 public class DiscordPresence {
     public static String lastVersion = null;
@@ -32,6 +36,20 @@ public class DiscordPresence {
     }
 
     public static void updateServer(String serverIP, String serverPort) {
-        play(lastVersion, serverIP, serverPort);
+        try {
+            if (InetAddress.getByName(serverIP).getHostAddress().equals(InetAddress.getLocalHost().getHostAddress())) {
+                String externalIP = MineOnlineAPI.getExternalIP();
+                if(externalIP != null && !externalIP.isEmpty()) {
+                    play(lastVersion, externalIP, serverPort);
+                } else {
+                    play(lastVersion, serverIP, serverPort);
+                }
+            } else {
+                play(lastVersion, serverIP, serverPort);
+            }
+        } catch (UnknownHostException ex) {
+            // ignore
+            play(lastVersion, serverIP, serverPort);
+        }
     }
 }
