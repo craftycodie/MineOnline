@@ -8,7 +8,6 @@ import net.bytebuddy.matcher.ElementMatchers;
 
 import java.net.InetAddress;
 import java.net.Socket;
-import java.net.URL;
 
 public class SocketPatch {
     public static void watchSockets() {

@@ -134,15 +134,16 @@ public class LibraryManager {
     public static void updateNativesPath() throws PrivilegedActionException {
         AccessController.doPrivileged(new PrivilegedExceptionAction<String>() {
             public String run() throws Exception {
-                return LauncherFiles.MINEONLNE_NATIVES_FOLDER;
+                return LauncherFiles.MINEONLINE_NATIVES_FOLDER;
             }
         });
 
-        updateNativesPath(LauncherFiles.MINEONLNE_NATIVES_FOLDER);
+        updateNativesPath(LauncherFiles.MINEONLINE_NATIVES_FOLDER);
     }
 
     public static void updateNativesPath(String path) throws PrivilegedActionException {
         System.setProperty("java.library.path", path);
         System.setProperty("org.lwjgl.librarypath", path);
+        System.setProperty("net.java.games.input.librarypath", path);
     }
 }

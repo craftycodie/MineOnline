@@ -21,7 +21,8 @@ public class Settings {
     public static final String JAVA_COMMAND = "javaCommand";
     public static final String FULLSCREEN = "fullscreen";
     public static final String PROXY_LOGGING = "proxyLogging";
-
+    public static final String MINECRAFT_UPDATE_URL = "minecraftUpdateURL";
+    private static final int SETTINGS_VERSION_NUMBER = 4;
 
     static {
         if(new File(LauncherFiles.MINEONLINE_PROPS_FILE).exists()) {
@@ -33,11 +34,12 @@ public class Settings {
 
     public static void resetSettings() {
         settings = new JSONObject();
-        settings.put(SETTINGS_VERSION, 3);
+        settings.put(SETTINGS_VERSION, SETTINGS_VERSION_NUMBER);
         settings.put(IS_PREMIUM, true);
         settings.put(JAVA_COMMAND, "java");
         settings.put(FULLSCREEN, false);
         settings.put(PROXY_LOGGING, false);
+        settings.put(MINECRAFT_UPDATE_URL, "");
 
         saveSettings();
         loadSettings();
@@ -77,12 +79,16 @@ public class Settings {
                 saveSettings();
             } else {
                 switch (settings.getInt(SETTINGS_VERSION)) {
-
+                    case 3:
+                        settings.put(MINECRAFT_UPDATE_URL, "");
                 }
+                settings.put(SETTINGS_VERSION, SETTINGS_VERSION_NUMBER);
             }
 
             if (settings.has("redirectedDomains"))
                 settings.remove("redirectedDomains");
+
+            saveSettings();
         } catch (IOException ex) {
             saveSettings();
         }

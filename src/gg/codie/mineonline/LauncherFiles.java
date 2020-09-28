@@ -22,7 +22,7 @@ public class LauncherFiles {
     public static final String ASM_JAR = MINEONLINE_LIBRARY_FOLDER + "asm-8.0.1.jar";
     public static final String ASM_COMMONS_JAR = MINEONLINE_LIBRARY_FOLDER + "asm-commons-8.0.1.jar";
 
-    public static final String MINEONLNE_NATIVES_FOLDER = MINEONLINE_LIBRARY_FOLDER + "native" + File.separator + OSUtils.getPlatform().toString();
+    public static final String MINEONLINE_NATIVES_FOLDER = MINEONLINE_LIBRARY_FOLDER + "native" + File.separator + OSUtils.getPlatform().toString();
 
     public static final String MINEONLINE_CACHE_FOLDER = MINEONLINE_FOLDER + "cache" + File.separator;
 

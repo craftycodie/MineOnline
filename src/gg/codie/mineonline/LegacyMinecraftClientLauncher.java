@@ -6,8 +6,8 @@ import gg.codie.mineonline.gui.rendering.*;
 import gg.codie.mineonline.gui.rendering.Renderer;
 import gg.codie.mineonline.lwjgl.OnCreateListener;
 import gg.codie.mineonline.lwjgl.OnUpdateListener;
-import gg.codie.mineonline.patches.LWJGLDisplayPatch;
-import gg.codie.mineonline.patches.SocketPatch;
+import gg.codie.mineonline.patches.*;
+import gg.codie.mineonline.patches.minecraft.LauncherInitPatch;
 import gg.codie.utils.MD5Checksum;
 import gg.codie.utils.OSUtils;
 import gg.codie.utils.TransferableImage;
@@ -97,7 +97,6 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
         String proxyPortArgument = "-Dhttp.proxyPort=";
 
         String classpath = System.getProperty("java.class.path").replace("\"", "");
-        String natives = "-Djava.library.path=" + LauncherFiles.MINEONLNE_NATIVES_FOLDER;
 
         try {
             Class rubyDungClass;
@@ -157,32 +156,34 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
 
 
         if (minecraftVersion != null && minecraftVersion.type.equals("launcher")) {
-            String[] CMD_ARRAY = new String[] {
-                    Settings.settings.getString(Settings.JAVA_COMMAND),
-                    proxySet, proxyHost, proxyPortArgument + System.getProperty("http.proxyPort"),
-                    //"-javaagent:" + LauncherFiles.PATCH_AGENT_JAR,
-                    "-Dsun.java2d.noddraw=true",
-                    "-Dsun.java2d.d3d=false",
-                    "-Dsun.java2d.opengl=false",
-                    "-Dsun.java2d.pmoffscreen=false",
-                    CP, "\"" + jarPath + "\"",
-                    "net.minecraft.LauncherFrame"
-            };
-
-            System.out.println("Launching launcher!  " + String.join(" ", CMD_ARRAY));
-
-
-            java.util.Properties props = System.getProperties();
-            ProcessBuilder processBuilder = new ProcessBuilder(CMD_ARRAY);
-            Map<String, String> env = processBuilder.environment();
-            for(String prop : props.stringPropertyNames()) {
-                env.put(prop, props.getProperty(prop));
-            }
-            processBuilder.directory(new File(System.getProperty("user.dir")));
-
-            processBuilder.start();
             DisplayManager.closeDisplay();
-            System.exit(0);
+            if(DisplayManager.getFrame() != null)
+                DisplayManager.getFrame().dispose();
+
+            Settings.loadSettings();
+            String updateURL = Settings.settings.has(Settings.MINECRAFT_UPDATE_URL) ? Settings.settings.getString(Settings.MINECRAFT_UPDATE_URL) : null;
+
+            SystemSetPropertyPatch.banNativeChanges();
+
+            String latestVersion = null;
+
+            if(updateURL != null && !updateURL.isEmpty()) {
+                HttpURLConnection versionRequest = (HttpURLConnection) new URL("http://s3.amazonaws.com/MinecraftDownload/minecraft.jar").openConnection();
+                versionRequest.setRequestMethod("HEAD");
+                versionRequest.connect();
+                latestVersion = "" + versionRequest.getContentLength();
+            }
+
+            LauncherInitPatch.allowCustomUpdates(latestVersion);
+
+            try {
+                Class launcherClass = Class.forName("net.minecraft.LauncherFrame");
+                Method mainFunction = launcherClass.getDeclaredMethod("main", String[].class);
+                mainFunction.invoke(null, new Object[] { new String[0]} );
+            } catch (ClassNotFoundException ex) {
+                JOptionPane.showMessageDialog(null, "Failed to launch minecraft.");
+            }
+
             return;
         }
 

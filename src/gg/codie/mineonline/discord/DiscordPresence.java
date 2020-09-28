@@ -37,7 +37,8 @@ public class DiscordPresence {
 
     public static void updateServer(String serverIP, String serverPort) {
         try {
-            if (InetAddress.getByName(serverIP).getHostAddress().equals(InetAddress.getLocalHost().getHostAddress())) {
+            String hostAddress = InetAddress.getByName(serverIP).getHostAddress();
+            if (hostAddress.equals(InetAddress.getLocalHost().getHostAddress()) || hostAddress.equals(InetAddress.getLoopbackAddress().getHostAddress())) {
                 String externalIP = MineOnlineAPI.getExternalIP();
                 if(externalIP != null && !externalIP.isEmpty()) {
                     play(lastVersion, externalIP, serverPort);

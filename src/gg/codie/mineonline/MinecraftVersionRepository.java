@@ -71,7 +71,7 @@ public class MinecraftVersionRepository {
     }
 
     public LinkedList<MinecraftVersion> getInstalledClients() {
-        return installedVersions.values().stream().filter(version -> version != null).filter(version -> version.type.equals("client")).distinct().collect(Collectors.toCollection(LinkedList::new));
+        return installedVersions.values().stream().filter(version -> version != null).filter(version -> version.type.equals("client") || version.type.equals("launcher")).distinct().collect(Collectors.toCollection(LinkedList::new));
     }
 
     // This is kinda heavy, that's why it's cached. So avoid it as much as possible.
