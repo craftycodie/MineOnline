@@ -1,6 +1,8 @@
 package gg.codie.mineonline;
 
 import gg.codie.mineonline.api.MineOnlineAPI;
+import gg.codie.mineonline.client.LegacyMinecraftClientLauncher;
+import gg.codie.mineonline.client.MinecraftClientLauncher;
 import gg.codie.mineonline.discord.DiscordPresence;
 import gg.codie.utils.JSONUtils;
 import gg.codie.utils.MD5Checksum;

@@ -1,5 +1,7 @@
-package gg.codie.mineonline;
+package gg.codie.mineonline.server;
 
+import gg.codie.mineonline.LauncherFiles;
+import gg.codie.mineonline.LibraryManager;
 import gg.codie.mineonline.api.MineOnlineAPI;
 
 import java.io.*;
@@ -47,7 +49,7 @@ public class MinecraftServerLauncher extends ServerLauncher {
                 }
             }
 
-            if(serverProperties.getProperty("public", "true").equals("true")) {
+            if(serverProperties.isPublic()) {
                 handleBroadcast(writer);
             }
         }

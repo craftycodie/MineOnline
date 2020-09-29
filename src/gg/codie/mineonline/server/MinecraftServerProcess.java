@@ -1,5 +1,6 @@
-package gg.codie.mineonline;
+package gg.codie.mineonline.server;
 
+import gg.codie.mineonline.*;
 import gg.codie.mineonline.patches.URLPatch;
 import gg.codie.utils.ArrayUtils;
 
@@ -7,7 +8,6 @@ import java.io.File;
 import java.lang.reflect.Method;
 import java.nio.file.Paths;
 import java.util.Map;
-import java.util.Properties;
 
 public class MinecraftServerProcess {
 
@@ -57,8 +57,8 @@ public class MinecraftServerProcess {
             System.exit(1);
         }
 
-        Properties serverProperties = gg.codie.minecraft.server.Properties.loadServerProperties(args[0]);
-        URLPatch.redefineURL(serverProperties.getProperty("serverlist-ip", null), serverProperties.getProperty("serverlist-port", null));
+        Properties serverProperties = new Properties(args[0]);
+        URLPatch.redefineURL(serverProperties.serverIP(), "" + serverProperties.serverPort());
 
         LibraryManager.addJarToClasspath(Paths.get(args[0]).toUri().toURL());
 

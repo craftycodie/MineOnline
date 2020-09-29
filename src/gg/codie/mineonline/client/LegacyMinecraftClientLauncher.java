@@ -1,7 +1,8 @@
-package gg.codie.mineonline;
+package gg.codie.mineonline.client;
 
 import gg.codie.minecraft.client.Options;
 import gg.codie.minecraft.client.VersionFile;
+import gg.codie.mineonline.*;
 import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.gui.rendering.*;
 import gg.codie.mineonline.gui.rendering.Renderer;

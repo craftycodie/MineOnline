@@ -1,13 +1,14 @@
-package gg.codie.mineonline;
+package gg.codie.mineonline.server;
 
 import gg.codie.minecraft.server.Files;
+import gg.codie.mineonline.MinecraftVersion;
+import gg.codie.mineonline.MinecraftVersionRepository;
 import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.utils.ArrayUtils;
 import gg.codie.utils.MD5Checksum;
 
 import java.io.*;
 import java.nio.file.Paths;
-import java.util.Properties;
 import java.util.Scanner;
 
 public abstract class ServerLauncher {
@@ -40,18 +41,13 @@ public abstract class ServerLauncher {
         minecraftVersion = MinecraftVersionRepository.getSingleton().getVersionByMD5(md5);
 
         try {
-            serverProperties = gg.codie.minecraft.server.Properties.loadServerProperties(jarPath);
+            serverProperties = new Properties(jarPath);
         } catch (Exception ex) {
-            serverProperties = new Properties();
+            serverProperties = new Properties(null);
         }
 
-        if (serverProperties.containsKey("serverlist-ip")) {
-            serverlistAddress = serverProperties.getProperty("serverlist-ip");
-        }
-
-        if (serverProperties.containsKey("serverlist-port")) {
-            serverlistPort = serverProperties.getProperty("serverlist-port");
-        }
+        serverlistAddress = serverProperties.serverIP();
+        serverlistPort = "" + serverProperties.serverPort();
 
         classicPlayersPath = jarPath.replace(Paths.get(jarPath).getFileName().toString(), "players.txt");
         whitelistPath = jarPath.replace(Paths.get(jarPath).getFileName().toString(), "whitelist.txt");
@@ -157,9 +153,9 @@ public abstract class ServerLauncher {
             updatedPlayerCount = false;
             try {
                 try {
-                    serverProperties = gg.codie.minecraft.server.Properties.loadServerProperties(jarPath);
+                    serverProperties = new Properties(jarPath);
                 } catch (Exception ex) {
-                    serverProperties = new Properties();
+                    serverProperties = new Properties(null);
                 }
 
                 String[] whitelistedPlayers = new String[0];
@@ -176,10 +172,7 @@ public abstract class ServerLauncher {
                     writer.flush();
                 }
 
-                boolean whitelisted = false;
-                if (serverProperties.containsKey("white-list")) {
-                    whitelisted = serverProperties.getProperty("white-list").equals("true");
-                }
+                boolean whitelisted = serverProperties.isWhitelisted();
 
                 if(whitelisted) {
                     whitelistedPlayers = Files.readUsersFile(whitelistPath);
@@ -202,12 +195,12 @@ public abstract class ServerLauncher {
                 }
 
                 serverUUID = MineOnlineAPI.listServer(
-                        serverlistAddress != null && !serverlistAddress.isEmpty() ? serverlistAddress : serverProperties.getProperty("server-ip", null),
-                        serverlistPort != null && !serverlistPort.isEmpty() ? serverlistPort : serverProperties.getProperty("server-port", serverProperties.getProperty("port", "25565")),
+                        serverProperties.serverIP(),
+                        "" + serverProperties.serverPort(),
                         minecraftVersion != null && minecraftVersion.hasHeartbeat ? -1 : users,
-                        Integer.parseInt(serverProperties.getProperty("max-players")),
-                        serverProperties.getProperty("server-name", "Untitled Server"),
-                        serverProperties.getProperty("online-mode", serverProperties.getProperty("verify-names", "true")).equals("true"),
+                        serverProperties.maxPlayers(),
+                        serverProperties.serverName(),
+                        serverProperties.onlineMode(),
                         md5,
                         whitelisted,
                         whitelistedPlayers,
@@ -216,7 +209,7 @@ public abstract class ServerLauncher {
                         bannedPlayers,
                         bannedIPs,
                         bannedUUIDs,
-                        serverProperties.getProperty("owner", null),
+                        serverProperties.owner(),
                         playerNames
                 );
             } catch (Exception e) {

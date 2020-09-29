@@ -1,6 +1,7 @@
-package gg.codie.mineonline;
+package gg.codie.mineonline.client;
 
 import gg.codie.minecraft.client.Options;
+import gg.codie.mineonline.*;
 import gg.codie.mineonline.gui.rendering.DisplayManager;
 import gg.codie.mineonline.patches.PropertiesSignaturePatch;
 import gg.codie.mineonline.patches.SocketPatch;

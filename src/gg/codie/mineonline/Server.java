@@ -1,6 +1,6 @@
 package gg.codie.mineonline;
 
-import gg.codie.utils.MD5Checksum;
+import gg.codie.mineonline.server.MinecraftServerLauncher;
 
 import java.io.*;
 
