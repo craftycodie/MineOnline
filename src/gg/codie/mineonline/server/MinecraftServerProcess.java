@@ -6,6 +6,8 @@ import gg.codie.utils.ArrayUtils;
 
 import java.io.File;
 import java.lang.reflect.Method;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.file.Paths;
 import java.util.Map;
 
@@ -19,12 +21,18 @@ public class MinecraftServerProcess {
         // Start the proxy as a new process.
         java.util.Properties props = System.getProperties();
 
+        File jarFile = new File(args[0]);
+        if(!jarFile.exists()) {
+            System.err.println("Couldn't find jar file " + args[0]);
+            System.exit(1);
+        }
+
         String[] launchArgs = new String[] {
                 Settings.settings.getString(Settings.JAVA_COMMAND),
                 "-javaagent:" + LauncherFiles.PATCH_AGENT_JAR,
                 "-Djava.util.Arrays.useLegacyMergeSort=true",
                 "-cp",
-                new File(Startup.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath(),
+                LibraryManager.getClasspath(false, new String[] { new File(MinecraftServerProcess.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath(), args[0]}),
                 MinecraftServerProcess.class.getCanonicalName(),
         };
 
@@ -46,27 +54,22 @@ public class MinecraftServerProcess {
     }
 
     public static void main(String[] args) throws Exception {
-        LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.JSON_JAR).toUri().toURL());
-        LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.BYTEBUDDY_JAR).toUri().toURL());
-        LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.ASM_JAR).toUri().toURL());
-        LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.ASM_COMMONS_JAR).toUri().toURL());
-
         File jarFile = new File(args[0]);
         if(!jarFile.exists()) {
             System.err.println("Couldn't find jar file " + args[0]);
             System.exit(1);
         }
 
+        URLClassLoader classLoader = new URLClassLoader(new URL[] { Paths.get(args[0]).toUri().toURL() });
+
         Properties serverProperties = new Properties(args[0]);
         URLPatch.redefineURL(serverProperties.serverIP(), "" + serverProperties.serverPort());
-
-        LibraryManager.addJarToClasspath(Paths.get(args[0]).toUri().toURL());
 
         Class mainClass = null;
 
         if(args.length > 1) {
             try {
-                mainClass = Class.forName(args[1]);
+                mainClass = classLoader.loadClass(args[1]);
             } catch (ClassNotFoundException ex) {
                 System.out.println("Could not find main class " + args[1]);
                 System.exit(1);
@@ -75,20 +78,20 @@ public class MinecraftServerProcess {
 
         // Release
         try {
-            mainClass = Class.forName("net.minecraft.server.Main");
+            mainClass = classLoader.loadClass("net.minecraft.server.Main");
         } catch (ClassNotFoundException ex) { }
 
         // Alpha/Beta/Release
         if(mainClass == null) {
             try {
-                mainClass = Class.forName("net.minecraft.server.MinecraftServer");
+                mainClass = classLoader.loadClass("net.minecraft.server.MinecraftServer");
             } catch (ClassNotFoundException ex1) { }
         }
 
         // Classic
         if(mainClass == null) {
             try {
-                mainClass = Class.forName("com.mojang.minecraft.server.MinecraftServer");
+                mainClass = classLoader.loadClass("com.mojang.minecraft.server.MinecraftServer");
             } catch (ClassNotFoundException ex1) { }
         }
 

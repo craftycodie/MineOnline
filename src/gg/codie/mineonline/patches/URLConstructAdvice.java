@@ -11,7 +11,7 @@ public class URLConstructAdvice {
     public static String serverlistPort;
 
     @Advice.OnMethodEnter
-    static void intercept(@Advice.Argument(0) String url) {
+    static void intercept(@Advice.Argument(value = 0, readOnly = false) String url) {
         try {
             if (url.isEmpty() || url.startsWith("file:"))
                 return;
@@ -27,27 +27,28 @@ public class URLConstructAdvice {
                 System.out.println("Old URL: " + url);
             }
 
-            Field f = String.class.getDeclaredField("value");
-            f.setAccessible(true);
-
             if (url.contains("/heartbeat.jsp")) {
                 String serverlistAddress = (String)ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.URLConstructAdvice").getField("serverlistAddress").get(null);
                 String serverlistPort = (String)ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.URLConstructAdvice").getField("serverlistPort").get(null);
 
-                if (serverlistAddress != null && !serverlistAddress.isEmpty()) {
-                    if(url.contains("?ip=")) {
-                        String ip = url.substring(url.indexOf("ip=") + 3);
-                        f.set(url, url.replace("ip=" + ip, "ip=" + serverlistAddress).toCharArray());
+                if (serverlistPort != null && !serverlistPort.isEmpty()) {
+                    if(url.contains("?port=")) {
+                        String port = url.substring(url.indexOf("port=") + 3);
+                        url = url.replace("port=" + port, "port=" + serverlistPort);
                     } else {
-                        // Append "ip=" in case no IP was provided.
-                        f.set(url, (url + "?ip=" + serverlistAddress).toCharArray());
+                        url = url + "?port=" + serverlistPort;
                     }
                 }
-                if (serverlistPort != null && !serverlistPort.isEmpty()) {
-                    String port = url.substring(url.indexOf("port=") + 5);
-                    port = port.substring(0, port.indexOf("&"));
-                    f.set(url, url.replace("port=" + port, "port=" + serverlistPort).toCharArray());
+                if (serverlistAddress != null && !serverlistAddress.isEmpty()) {
+                    if(url.contains("&ip=")) {
+                        String ip = url.substring(url.indexOf("ip=") + 3);
+                        url = url.replace("ip=" + ip, "ip=" + serverlistAddress);
+                    } else {
+                        // Append "ip=" in case no IP was provided.
+                        url = url + "&ip=" + serverlistAddress;
+                    }
                 }
+
             }
 
             String updateUrl = (String)ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.URLConstructAdvice").getField("updateURL").get(null);
@@ -55,7 +56,7 @@ public class URLConstructAdvice {
 
 
             if (updateUrl != null && url.contains(oldUpdateUrl)) {
-                f.set(url, updateUrl.toCharArray());
+                url = updateUrl;
             } else if (url.contains("launcher.mojang.com/v1/objects/")) {
                 // Quick patch to allow launchers to pull from this endpoint.
             } else {
@@ -87,9 +88,8 @@ public class URLConstructAdvice {
                         "mcauth-alex231.rhcloud.com",
                 }) {
                     if (url.contains(replaceHost)) {
-                        f.setAccessible(true);
-                        f.set(url, url.replace(replaceHost, Globals.API_HOSTNAME).toCharArray());
-                        f.set(url, url.replace("https", "http").toCharArray());
+                        url = url.replace(replaceHost, Globals.API_HOSTNAME);
+                        url = url.replace("https", "http");
                     }
                 }
             }

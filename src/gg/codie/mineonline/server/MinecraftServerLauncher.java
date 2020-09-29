@@ -15,11 +15,6 @@ public class MinecraftServerLauncher extends ServerLauncher {
     public MinecraftServerLauncher(String[] args) throws Exception {
         super(args[0]);
 
-        LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.JSON_JAR).toUri().toURL());
-        LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.BYTEBUDDY_JAR).toUri().toURL());
-        LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.ASM_JAR).toUri().toURL());
-        LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.ASM_COMMONS_JAR).toUri().toURL());
-
         Process serverProcess = MinecraftServerProcess.startMinecraftServer(args);
 
         Thread closeLauncher = new Thread() {
@@ -35,6 +30,12 @@ public class MinecraftServerLauncher extends ServerLauncher {
         OutputStream stdin = serverProcess.getOutputStream();
 
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(stdin));
+
+        if (!serverProperties.isPublic()) {
+            System.out.println("Your server is not public and will not be shown on the server list.\n" +
+                    "You can change this by setting public to true in the server.properties file.\n" +
+                    "Players can connect via " + serverProperties.serverIP() + ":" + serverProperties.serverPort());
+        }
 
         Scanner scanner = new Scanner(System.in);
         while(serverProcess.isAlive()) {

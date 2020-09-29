@@ -62,7 +62,6 @@ public class SkinRenderer {
     public static final int DEFAULT_WIDTH = 350;
 
     public static void main(String[] args) throws Exception {
-        LibraryManager.updateClasspath();
         LibraryManager.updateNativesPath();
 
         DisplayManager.init();

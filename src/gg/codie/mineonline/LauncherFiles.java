@@ -16,11 +16,14 @@ public class LauncherFiles {
   
     public static final String LWJGL_JAR = MINEONLINE_LIBRARY_FOLDER + "lwjgl.jar";
     public static final String LWJGL_UTIL_JAR = MINEONLINE_LIBRARY_FOLDER + "lwjgl_util.jar";
+    public static final String SLICK_UTIL_JAR = MINEONLINE_LIBRARY_FOLDER + "slick-util.jar";
+    public static final String JINPUT_JAR = MINEONLINE_LIBRARY_FOLDER + "jinput.jar";
     public static final String PATCH_AGENT_JAR = MINEONLINE_LIBRARY_FOLDER + "byte-buddy-agent.jar";
     public static final String JSON_JAR = MINEONLINE_LIBRARY_FOLDER + "json.jar";
     public static final String BYTEBUDDY_JAR = MINEONLINE_LIBRARY_FOLDER + "byte-buddy-1.10.14.jar";
     public static final String ASM_JAR = MINEONLINE_LIBRARY_FOLDER + "asm-8.0.1.jar";
     public static final String ASM_COMMONS_JAR = MINEONLINE_LIBRARY_FOLDER + "asm-commons-8.0.1.jar";
+    public static final String DISCORD_RPC_JAR = MINEONLINE_LIBRARY_FOLDER + "discord-rpc.jar";
 
     public static final String MINEONLINE_NATIVES_FOLDER = MINEONLINE_LIBRARY_FOLDER + "native" + File.separator + OSUtils.getPlatform().toString();
 

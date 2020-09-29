@@ -125,7 +125,7 @@ public abstract class ServerLauncher {
         }).start();
     }
 
-    private long lastPing = System.currentTimeMillis();
+    private long lastPing;
     private boolean updatePlayerCount;
     private boolean updatingPlayerCount;
     private boolean updatedPlayerCount;

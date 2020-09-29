@@ -6,6 +6,7 @@ import gg.codie.mineonline.gui.font.GUIText;
 import gg.codie.mineonline.gui.rendering.*;
 import gg.codie.mineonline.gui.components.MediumButton;
 import gg.codie.mineonline.gui.components.TinyButton;
+import gg.codie.mineonline.gui.rendering.Renderer;
 import gg.codie.mineonline.gui.rendering.font.TextMaster;
 import gg.codie.mineonline.gui.rendering.models.RawModel;
 import gg.codie.mineonline.gui.rendering.models.TexturedModel;
@@ -16,6 +17,7 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
+import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.net.URI;
@@ -46,11 +48,11 @@ public class MainMenuScreen implements IMenuScreen {
             @Override
             public void onClick() {
                 try {
-                    //new MinecraftLauncher("D:\\Projects\\GitHub\\MineOnline\\jars\\b1.7.3-modded.jar", null, null, null).startMinecraft();
                     MinecraftVersion.launchMinecraft(jarPath, null, null, null);
-
-                    //new MinecraftLauncher("D:\\Projects\\GitHub\\MineOnline\\jars\\c0.0.11a-launcher.jar", null, null, null).startMinecraft();
-                } catch (Exception ex) {}
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null, "Failed to launch!");
+                    System.out.println(ex);
+                }
             }
         });
 
@@ -137,7 +139,7 @@ public class MainMenuScreen implements IMenuScreen {
 
             if (MouseHandler.didClick() && mouseIsOver) {
                 try {
-                    Desktop.getDesktop().browse(new URI("http://" + Globals.API_HOSTNAME + "/download.jsp"));
+                    Desktop.getDesktop().browse(new URI("http://" + Globals.API_HOSTNAME + "/download"));
                 } catch (Exception ex) {
 
                 }

@@ -135,9 +135,6 @@ public class MenuManager {
             }
         }
 
-        LibraryManager.updateClasspath();
-        LibraryManager.updateNativesPath();
-
         LastLogin lastLogin = null;
 
         if(!multiinstance)

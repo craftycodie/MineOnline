@@ -1,5 +1,7 @@
 package gg.codie.mineonline;
 
+import gg.codie.utils.OSUtils;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
@@ -92,43 +94,35 @@ public class LibraryManager {
         }
     }
 
-    public static void updateClasspath() throws IOException {
-        try {
-            Method method = URLClassLoader.class.getDeclaredMethod("addURL", new Class[]{URL.class});
-            method.setAccessible(true);
+    public static String getClasspath(boolean includeLWJGL2, String[] includeJars) {
+        StringBuilder classpath = new StringBuilder();
+        //classpath.append(System.getProperty("java.class.path").replace("\"", ""));
 
-            File libFolder = new File(LauncherFiles.MINEONLINE_LIBRARY_FOLDER);
-            File[] libraries = libFolder.listFiles(new FileFilter() {
-                @Override
-                public boolean accept(File pathname) {
-                    return pathname.getPath().endsWith(".jar");
-                }
-            });
-
-            for(File file : libraries) {
-                method.invoke(ClassLoader.getSystemClassLoader(), new Object[]{file.toURI().toURL()});
-            }
-
-        } catch (Throwable t) {
-            t.printStackTrace();
-            throw new IOException("Error, could not add URL to system classloader");
+        if (includeLWJGL2){
+            classpath.append(getClasspathSeparator() + LauncherFiles.LWJGL_UTIL_JAR);
+            classpath.append(getClasspathSeparator() + LauncherFiles.LWJGL_JAR);
+            classpath.append(getClasspathSeparator() + LauncherFiles.SLICK_UTIL_JAR);
+            classpath.append(getClasspathSeparator() + LauncherFiles.JINPUT_JAR);
         }
+
+        classpath.append(getClasspathSeparator() + LauncherFiles.JSON_JAR);
+        classpath.append(getClasspathSeparator() + LauncherFiles.BYTEBUDDY_JAR);
+        classpath.append(getClasspathSeparator() + LauncherFiles.ASM_COMMONS_JAR);
+        classpath.append(getClasspathSeparator() + LauncherFiles.ASM_JAR);
+
+        for(String jar : includeJars) {
+            classpath.append(getClasspathSeparator() + jar);
+        }
+
+        return classpath.toString();
     }
 
-    public static void addJarToClasspath(URL url) {
-        try {
-            File jar = new File(url.toURI());
-            if(!jar.exists()) {
-                System.out.println("Warning: Adding nonexistant jar to classpath: " + jar.getPath());
-            }
-            Method method = URLClassLoader.class.getDeclaredMethod("addURL", new Class[]{URL.class});
-            method.setAccessible(true);
-            method.invoke(ClassLoader.getSystemClassLoader(), new Object[]{url});
-        } catch (Exception e) {
-            System.err.println("Java Error");
-            e.printStackTrace();
-            System.exit(1);
+    public static char getClasspathSeparator() {
+        if (OSUtils.isWindows()) {
+            return ';';
         }
+
+        return ':';
     }
 
     public static void updateNativesPath() throws PrivilegedActionException {
@@ -141,7 +135,7 @@ public class LibraryManager {
         updateNativesPath(LauncherFiles.MINEONLINE_NATIVES_FOLDER);
     }
 
-    public static void updateNativesPath(String path) throws PrivilegedActionException {
+    public static void updateNativesPath(String path) {
         System.setProperty("java.library.path", path);
         System.setProperty("org.lwjgl.librarypath", path);
         System.setProperty("net.java.games.input.librarypath", path);

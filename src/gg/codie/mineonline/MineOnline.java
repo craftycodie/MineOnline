@@ -5,8 +5,6 @@ import gg.codie.mineonline.patches.LWJGLDisplayPatch;
 
 public class MineOnline {
     public static void main(String[] args) throws Exception{
-        LibraryManager.extractLibraries();
-        LibraryManager.updateClasspath();
         LibraryManager.updateNativesPath();
 
         LWJGLDisplayPatch.hijackLWJGLThreadPatch();

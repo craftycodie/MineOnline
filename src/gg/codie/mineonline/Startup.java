@@ -1,7 +1,5 @@
 package gg.codie.mineonline;
 
-import gg.codie.mineonline.discord.DiscordRPCHandler;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -9,30 +7,18 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Map;
 
-
-
 public class Startup {
-    private static Process launcherProcess;
-
-    static String discordJoin = null;
-
-    public static void joinDiscord(String serverAddress) {
-        discordJoin = serverAddress;
-    }
 
     public static void main(String[] args) throws IOException, URISyntaxException {
         LibraryManager.extractLibraries();
-        LibraryManager.updateClasspath();
-
-        DiscordRPCHandler.initialize();
 
         LinkedList<String> launchArgs = new LinkedList();
         launchArgs.add(Settings.settings.getString(Settings.JAVA_COMMAND));
         launchArgs.add("-javaagent:" + LauncherFiles.PATCH_AGENT_JAR);
         launchArgs.add("-Djava.util.Arrays.useLegacyMergeSort=true");
         launchArgs.add("-cp");
-        launchArgs.add(new File(Startup.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath());
-        launchArgs.add(MineOnline.class.getCanonicalName());
+        launchArgs.add(LibraryManager.getClasspath(false, new String[] { new File(DiscordLauncherWrapper.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath(), LauncherFiles.DISCORD_RPC_JAR }));
+        launchArgs.add(DiscordLauncherWrapper.class.getCanonicalName());
         launchArgs.addAll(Arrays.asList(args));
 
         java.util.Properties props = System.getProperties();
@@ -47,34 +33,13 @@ public class Startup {
         processBuilder.redirectErrorStream(true);
         processBuilder.redirectInput(ProcessBuilder.Redirect.INHERIT);
 
-        launcherProcess = processBuilder.start();
+        Process launcherProecess = processBuilder.start();
 
-        Thread closeLauncher = new Thread(() -> launcherProcess.destroyForcibly());
-        Runtime.getRuntime().addShutdownHook(closeLauncher);
+        while (launcherProecess.isAlive()) {
 
-        while(launcherProcess.isAlive()) {
-            if(discordJoin != null) {
-                launcherProcess.destroyForcibly();
-
-                LinkedList<String> joinArgs = (LinkedList<String>)launchArgs.clone();
-                joinArgs.add("-joinserver");
-                joinArgs.add(discordJoin);
-                ProcessBuilder joinProcessBuilder = new ProcessBuilder(joinArgs);
-                joinProcessBuilder.directory(new File(System.getProperty("user.dir")));
-                joinProcessBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
-                joinProcessBuilder.redirectErrorStream(true);
-                joinProcessBuilder.redirectInput(ProcessBuilder.Redirect.INHERIT);
-
-                launcherProcess = joinProcessBuilder.start();
-
-                Runtime.getRuntime().removeShutdownHook(closeLauncher);
-                closeLauncher = new Thread(() -> launcherProcess.destroyForcibly());
-                Runtime.getRuntime().addShutdownHook(closeLauncher);
-
-                discordJoin = null;
-            }
         }
 
-        System.exit(0);
+        System.exit(launcherProecess.exitValue());
     }
+
 }

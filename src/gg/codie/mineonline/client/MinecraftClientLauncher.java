@@ -3,10 +3,11 @@ package gg.codie.mineonline.client;
 import gg.codie.minecraft.client.Options;
 import gg.codie.mineonline.*;
 import gg.codie.mineonline.gui.rendering.DisplayManager;
-import gg.codie.mineonline.patches.PropertiesSignaturePatch;
+import gg.codie.mineonline.patches.minecraft.PropertiesSignaturePatch;
 import gg.codie.mineonline.patches.SocketPatch;
 import gg.codie.mineonline.patches.URLPatch;
-import gg.codie.mineonline.patches.YggdrasilMinecraftSessionServicePatch;
+import gg.codie.mineonline.patches.minecraft.YggdrasilMinecraftSessionServicePatch;
+import gg.codie.mineonline.server.MinecraftServerProcess;
 import gg.codie.utils.MD5Checksum;
 import gg.codie.utils.OSUtils;
 import org.lwjgl.opengl.Display;
@@ -16,6 +17,8 @@ import java.awt.*;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.Map;
@@ -42,10 +45,25 @@ public class MinecraftClientLauncher {
 
     private static Process gameProcess;
 
-    public static void startProcess(String jarPath, String serverIP, String serverPort) {
+    public static void startProcess(String jarPath, String serverIP, String serverPort, MinecraftVersion minecraftVersion) {
         try {
 
             java.util.Properties props = System.getProperties();
+
+            MinecraftVersion version = MinecraftVersionRepository.getSingleton().getVersion(jarPath);
+
+            LinkedList<String> libraries = new LinkedList<>();
+
+            for(String library : minecraftVersion.libraries) {
+                libraries.add(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_PATH + library).toString());
+            }
+
+            for(String nativeJar : minecraftVersion.natives) {
+                libraries.add(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_PATH + nativeJar).toString());
+            }
+
+            libraries.add(new File(MinecraftServerProcess.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath());
+            libraries.add(jarPath);
 
             LinkedList<String> launchArgs = new LinkedList();
             launchArgs.add(Settings.settings.getString(Settings.JAVA_COMMAND));
@@ -58,7 +76,7 @@ public class MinecraftClientLauncher {
             launchArgs.add("-Dmineonline.token=" + Session.session.getSessionToken());
             launchArgs.add("-Dmineonline.uuid=" + Session.session.getUuid());
             launchArgs.add("-cp");
-            launchArgs.add(new File(MinecraftClientLauncher.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath());
+            launchArgs.add(LibraryManager.getClasspath(false, libraries.toArray(new String[libraries.size()])));
             launchArgs.add(MinecraftClientLauncher.class.getCanonicalName());
             launchArgs.add(jarPath);
             launchArgs.add("" + Display.getWidth());
@@ -124,26 +142,15 @@ public class MinecraftClientLauncher {
         this.width = width;
         this.height = height;
 
-        LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.JSON_JAR).toUri().toURL());
-        LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.BYTEBUDDY_JAR).toUri().toURL());
-        LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.ASM_JAR).toUri().toURL());
-        LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.ASM_COMMONS_JAR).toUri().toURL());
-
         if(serverAddress != null && serverPort == null)
             this.serverPort = "25565";
-
-        try {
-            LibraryManager.addJarToClasspath(Paths.get(jarPath).toUri().toURL());
-        } catch (Exception e) {
-            System.err.println("Couldn't load jar file " + jarPath);
-            e.printStackTrace();
-            System.exit(1);
-        }
 
         minecraftVersion = MinecraftVersionRepository.getSingleton().getVersion(jarPath);
     }
 
     public void startMinecraft() throws Exception {
+        URLClassLoader classLoader = new URLClassLoader(new URL[] { Paths.get(jarPath).toUri().toURL() });
+
         if(serverAddress != null) {
             try {
                 new Options(LauncherFiles.MINECRAFT_OPTIONS_PATH).setOption("lastServer", serverAddress + "_" + serverPort);
@@ -154,30 +161,16 @@ public class MinecraftClientLauncher {
 
         System.out.println("Launching Jar, MD5: " + MD5Checksum.getMD5ChecksumForFile(jarPath));
 
-
         try {
 
             LinkedList<String> args = new LinkedList<>();
-
-            for(String library : minecraftVersion.libraries) {
-                LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_PATH + library).toUri().toURL());
-            }
-
-            for(String nativeJar : minecraftVersion.natives) {
-                LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_PATH + nativeJar).toUri().toURL());
-            }
 
             new Session(username, token, uuid);
 
             LibraryManager.extractRuntimeNatives(minecraftVersion.natives);
             LibraryManager.updateNativesPath(LauncherFiles.MINEONLINE_RUNTIME_NATIVES_FOLDER.substring(0, LauncherFiles.MINEONLINE_RUNTIME_NATIVES_FOLDER.length() - 1));
 
-            URLPatch.redefineURL();
-            PropertiesSignaturePatch.redefineIsSignatureValid();
-            YggdrasilMinecraftSessionServicePatch.allowMineonlineSkins();
-            SocketPatch.watchSockets();
-
-            Class clazz = Class.forName("net.minecraft.client.main.Main");
+            Class clazz = classLoader.loadClass("net.minecraft.client.main.Main");
 
             if(serverAddress != null) {
                 args.add("--server");
@@ -230,6 +223,11 @@ public class MinecraftClientLauncher {
             System.setProperty(PROP_AUTH_HOST, "http://" + Globals.API_HOSTNAME);
             System.setProperty(PROP_ACCOUNT_HOST, "http://" + Globals.API_HOSTNAME);
             System.setProperty(PROP_SESSION_HOST, "http://" + Globals.API_HOSTNAME);
+
+            URLPatch.redefineURL();
+            PropertiesSignaturePatch.redefineIsSignatureValid(classLoader);
+            YggdrasilMinecraftSessionServicePatch.allowMineonlineSkins(classLoader);
+            SocketPatch.watchSockets();
 
             main.invoke(null, new Object[] {args.toArray(new String[0])});
 

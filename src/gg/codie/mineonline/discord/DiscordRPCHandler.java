@@ -1,12 +1,8 @@
 package gg.codie.mineonline.discord;
 
-import gg.codie.minecraft.client.Options;
 import gg.codie.mineonline.*;
-import gg.codie.mineonline.api.LegacyAPI;
 import gg.codie.mineonline.api.MineOnlineAPI;
-import gg.codie.mineonline.api.MineOnlinePlayerPresence;
 import gg.codie.mineonline.api.MineOnlineServer;
-import gg.codie.utils.LastLogin;
 import gg.codie.utils.OSUtils;
 import net.arikia.dev.drpc.DiscordEventHandlers;
 import net.arikia.dev.drpc.DiscordRPC;
@@ -15,13 +11,11 @@ import net.arikia.dev.drpc.DiscordUser;
 import net.arikia.dev.drpc.callbacks.JoinGameCallback;
 import net.arikia.dev.drpc.callbacks.JoinRequestCallback;
 
-import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.Set;
 
 // This is handled on the startup thread, that's the only way to implement joining.
 public class DiscordRPCHandler {
@@ -101,7 +95,7 @@ public class DiscordRPCHandler {
         .setJoinGameEventHandler(new JoinGameCallback() {
             @Override
             public void apply(String s) {
-                Startup.joinDiscord(s.replace(", ", ":"));
+                DiscordLauncherWrapper.joinDiscord(s.replace(", ", ":"));
             }
         })
         .setJoinRequestEventHandler(new JoinRequestCallback() {

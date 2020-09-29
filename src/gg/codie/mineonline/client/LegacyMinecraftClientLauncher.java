@@ -58,27 +58,12 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
         if(serverAddress != null && serverPort == null)
             this.serverPort = "25565";
 
-        try {
-            LibraryManager.addJarToClasspath(Paths.get(jarPath).toUri().toURL());
-        } catch (Exception e) {
-            System.err.println("Couldn't load jar file " + jarPath);
-            e.printStackTrace();
-            System.exit(1);
-        }
-
         minecraftVersion = MinecraftVersionRepository.getSingleton().getVersion(jarPath);
-    }
-
-    public static char getClasspathSeparator() {
-        if (OSUtils.isWindows()) {
-            return ';';
-        }
-
-        return ':';
     }
 
     boolean firstUpdate = true;
     public void startMinecraft() throws Exception {
+        URLClassLoader classLoader = new URLClassLoader(new URL[] { Paths.get(jarPath).toUri().toURL() });
 
         System.gc();
 
@@ -101,9 +86,9 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
         try {
             Class rubyDungClass;
             try {
-                rubyDungClass = Class.forName("com.mojang.rubydung.RubyDung");
+                rubyDungClass = classLoader.loadClass("com.mojang.rubydung.RubyDung");
             } catch (ClassNotFoundException ex) {
-                rubyDungClass = Class.forName("com.mojang.minecraft.RubyDung");
+                rubyDungClass = classLoader.loadClass("com.mojang.minecraft.RubyDung");
             }
 
             // TODO: Launch RubyDung in frame.
@@ -129,7 +114,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
 
             String[] CMD_ARRAY = new String[] {
                     Settings.settings.getString(Settings.JAVA_COMMAND),
-                    CP, classpath + getClasspathSeparator() + LauncherFiles.LWJGL_JAR + getClasspathSeparator() + LauncherFiles.LWJGL_UTIL_JAR + getClasspathSeparator() + jarPath,
+                    CP, classpath + LibraryManager.getClasspathSeparator() + LauncherFiles.LWJGL_JAR + LibraryManager.getClasspathSeparator() + LauncherFiles.LWJGL_UTIL_JAR + LibraryManager.getClasspathSeparator() + jarPath,
                     "-Djava.library.path=" + LauncherFiles.MINECRAFT_VERSIONS_PATH + "1.6.2/natives",
                     rubyDungClass.getCanonicalName()
             };
@@ -184,12 +169,12 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
                 }
             }
 
-            LauncherInitPatch.allowCustomUpdates(latestVersion);
+            LauncherInitPatch.allowCustomUpdates(latestVersion, classLoader);
             SocketPatch.watchSockets();
             URLPatch.redefineURL(updateURLString);
 
             try {
-                Class launcherClass = Class.forName("net.minecraft.LauncherFrame");
+                Class launcherClass = classLoader.loadClass("net.minecraft.LauncherFrame");
                 Method mainFunction = launcherClass.getDeclaredMethod("main", String[].class);
                 mainFunction.invoke(null, new Object[] { new String[0]} );
             } catch (ClassNotFoundException ex) {
@@ -229,7 +214,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
         Class appletClass;
 
         try {
-            appletClass = Class.forName(appletClassName);
+            appletClass = classLoader.loadClass(appletClassName);
         } catch (Exception ex) {
             ex.printStackTrace();
             EventQueue.invokeLater(new Runnable() {
@@ -273,7 +258,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
                 if(minecraftVersion != null && minecraftVersion.minecraftImplClass != null) {
                     // If a class name was provided in the version manifest, use it.
                     try {
-                        Class clazz = Class.forName(minecraftVersion.minecraftImplClass);
+                        Class clazz = classLoader.loadClass(minecraftVersion.minecraftImplClass);
                         constructor = clazz.getDeclaredConstructor(
                                 Component.class, Canvas.class, appletClass, int.class, int.class, boolean.class, Frame.class
                         );
@@ -284,7 +269,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
                 } else {
                     // If the jar isn't obfuscated (debug) find the class by name.
                     try {
-                        Class clazz = Class.forName("net.minecraft.src.MinecraftImpl");
+                        Class clazz = classLoader.loadClass("net.minecraft.src.MinecraftImpl");
                         constructor = clazz.getDeclaredConstructor(
                                 Component.class, Canvas.class, appletClass, int.class, int.class, boolean.class, Frame.class
                         );
@@ -313,7 +298,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
                                         continue;
                                     }
 
-                                    Class clazz = Class.forName(file.getName().replace(".class", "").replace("/", "."));
+                                    Class clazz = classLoader.loadClass(file.getName().replace(".class", "").replace("/", "."));
                                     constructor = clazz.getDeclaredConstructor(
                                             Component.class, Canvas.class, appletClass, int.class, int.class, boolean.class, Frame.class
                                     );

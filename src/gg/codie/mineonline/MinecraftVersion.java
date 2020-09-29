@@ -11,6 +11,8 @@ import org.json.JSONObject;
 
 import java.io.*;
 import java.net.InetAddress;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.file.*;
 import java.util.*;
 import java.util.jar.JarEntry;
@@ -323,16 +325,16 @@ public class MinecraftVersion {
             if (minecraftVersion.legacy) {
                 new LegacyMinecraftClientLauncher(jarPath, serverIP, serverPort, mpPass).startMinecraft();
             } else {
-                MinecraftClientLauncher.startProcess(jarPath, serverIP, serverPort);
+                MinecraftClientLauncher.startProcess(jarPath, serverIP, serverPort, minecraftVersion);
             }
         } else {
             if (isLegacyJar(jarPath)) {
                 new LegacyMinecraftClientLauncher(jarPath, serverIP, serverPort, mpPass).startMinecraft();
             } else {
-                LibraryManager.addJarToClasspath(Paths.get(jarPath).toUri().toURL());
-                Class clazz = Class.forName("net.minecraft.client.main.Main");
+                URLClassLoader classLoader = new URLClassLoader(new URL[] { Paths.get(jarPath).toUri().toURL() });
+                Class clazz = classLoader.loadClass("net.minecraft.client.main.Main");
                 if (clazz != null) {
-                    MinecraftClientLauncher.startProcess(jarPath, serverIP, serverPort);
+                    MinecraftClientLauncher.startProcess(jarPath, serverIP, serverPort, minecraftVersion);
                 } else {
                     System.out.println("This jar file seems unsupported :(");
                 }
