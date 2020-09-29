@@ -292,7 +292,8 @@ public class MinecraftVersion {
                 null,
                 typeName + " " + versionNumber);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            System.err.println("Bad launcher JSON for version " + jarFile);
+            //ex.printStackTrace();
         }
         return null;
     }

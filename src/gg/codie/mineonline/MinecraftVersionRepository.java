@@ -92,6 +92,10 @@ public class MinecraftVersionRepository {
             String[] jarPaths = installedVersionJSON.has(INSTALLED_VERSIONS) ? JSONUtils.getStringArray(installedVersionJSON.getJSONArray(INSTALLED_VERSIONS)) : new String[0];
 
             for(String jarPath : jarPaths) {
+                File jar = new File(jarPath);
+                if (!jar.exists())
+                    continue;
+
                 MinecraftVersion version = getVersion(jarPath);
 
                 if(version == null) {

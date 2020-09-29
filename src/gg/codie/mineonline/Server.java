@@ -15,13 +15,6 @@ public class Server {
         LibraryManager.extractLibraries();
         LibraryManager.updateClasspath();
 
-        String md5 = MD5Checksum.getMD5ChecksumForFile(jarFile.getPath());
-        MinecraftVersion serverVersion = MinecraftVersionRepository.getSingleton().getVersionByMD5(md5);
-
-        if(serverVersion.legacy) {
-            LegacyMinecraftServerLauncher.main(args);
-        } else {
-            MinecraftServerLauncher.main(args);
-        }
+        MinecraftServerLauncher.main(args);
     }
 }

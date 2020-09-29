@@ -7,10 +7,10 @@ import java.io.File;
 import java.lang.reflect.Method;
 import java.nio.file.Paths;
 import java.util.Map;
+import java.util.Properties;
 
 public class MinecraftServerProcess {
 
-    public static final String PROP_ENV = "minecraft.api.env";
     public static final String PROP_AUTH_HOST = "minecraft.api.auth.host";
     public static final String PROP_ACCOUNT_HOST = "minecraft.api.account.host";
     public static final String PROP_SESSION_HOST = "minecraft.api.session.host";
@@ -35,6 +35,7 @@ public class MinecraftServerProcess {
             env.put(prop, props.getProperty(prop));
         }
         processBuilder.directory(new File(System.getProperty("user.dir")));
+        processBuilder.redirectErrorStream(true);
 
         Process serverProcess = processBuilder.start();
 
@@ -50,23 +51,45 @@ public class MinecraftServerProcess {
         LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.ASM_JAR).toUri().toURL());
         LibraryManager.addJarToClasspath(Paths.get(LauncherFiles.ASM_COMMONS_JAR).toUri().toURL());
 
-        URLPatch.redefineURL();
-
-
         File jarFile = new File(args[0]);
         if(!jarFile.exists()) {
             System.err.println("Couldn't find jar file " + args[0]);
             System.exit(1);
         }
 
+        Properties serverProperties = gg.codie.minecraft.server.Properties.loadServerProperties(args[0]);
+        URLPatch.redefineURL(serverProperties.getProperty("serverlist-ip", null), serverProperties.getProperty("serverlist-port", null));
+
         LibraryManager.addJarToClasspath(Paths.get(args[0]).toUri().toURL());
 
-        Class mainClass;
+        Class mainClass = null;
 
+        if(args.length > 1) {
+            try {
+                mainClass = Class.forName(args[1]);
+            } catch (ClassNotFoundException ex) {
+                System.out.println("Could not find main class " + args[1]);
+                System.exit(1);
+            }
+        }
+
+        // Release
         try {
             mainClass = Class.forName("net.minecraft.server.Main");
-        } catch (ClassNotFoundException ex) {
-            mainClass = Class.forName("net.minecraft.server.MinecraftServer");
+        } catch (ClassNotFoundException ex) { }
+
+        // Alpha/Beta/Release
+        if(mainClass == null) {
+            try {
+                mainClass = Class.forName("net.minecraft.server.MinecraftServer");
+            } catch (ClassNotFoundException ex1) { }
+        }
+
+        // Classic
+        if(mainClass == null) {
+            try {
+                mainClass = Class.forName("com.mojang.minecraft.server.MinecraftServer");
+            } catch (ClassNotFoundException ex1) { }
         }
 
         if (mainClass == null) {
@@ -79,6 +102,6 @@ public class MinecraftServerProcess {
         System.setProperty(PROP_ACCOUNT_HOST, "http://" + Globals.API_HOSTNAME);
         System.setProperty(PROP_SESSION_HOST, "http://" + Globals.API_HOSTNAME);
 
-        main.invoke(null, new Object[] { new String[] {}});
+        main.invoke(null, new Object[] { new String[] { "nogui" }});
     }
 }

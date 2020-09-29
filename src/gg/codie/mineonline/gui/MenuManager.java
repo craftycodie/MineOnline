@@ -93,8 +93,8 @@ public class MenuManager {
         String joinserver = null;
 
         // If sa user drags a jar onto the launcher, it'll be at arg 1, quicklaunch it.
-        if(args.length > 1) {
-            File acceptedFile = new File(args[1]);
+        if(args.length > 0) {
+            File acceptedFile = new File(args[0]);
             if (acceptedFile.exists() && MinecraftVersion.isPlayableJar(acceptedFile.getPath())) {
                 quicklaunch = acceptedFile.getPath();
             }
@@ -265,9 +265,10 @@ public class MenuManager {
         TexturedModel texturedModel =  new TexturedModel(model, modelTexture);
         GameObject backgroundImage = new GUIObject("Background", texturedModel, new Vector3f(), new Vector3f(0, 180, 0), new Vector3f(75f, 75f, 75f));
 
-//        FontType font = new FontType(loader.loadTexture(MenuManager.class.getResource("/font/font.png")), MenuManager.class.getResourceAsStream("/font/font.fnt"));
-//        GUIText text = new GUIText("MineOnline Pre-Release", 1.5f, font, new Vector2f(0, 0), DisplayManager.getDefaultWidth(), false, true);
-//        text.setColour(0.33f, 0.33f, 0.33f);
+        if (Globals.DEV) {
+            GUIText text = new GUIText("MineOnline Dev Build", 1.5f, TextMaster.minecraftFont, new Vector2f(0, 0), DisplayManager.getDefaultWidth(), false, true);
+            text.setColour(1f, 1f, 0f);
+        }
 
         if(Session.session != null && Session.session.isOnline())
             if(joinserver != null)

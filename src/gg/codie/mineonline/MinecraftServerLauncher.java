@@ -67,10 +67,6 @@ public class MinecraftServerLauncher extends ServerLauncher {
             System.exit(1);
         }
 
-        if(args.length < 2) {
-            System.err.println("Too few arguments. Include a jar location and main class. \n Eg minecraft-server.jar com.mojang.minecraft.server.MinecraftServer");
-        }
-
         new MinecraftServerLauncher(args);
     }
 }

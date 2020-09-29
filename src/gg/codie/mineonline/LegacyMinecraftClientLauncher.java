@@ -94,9 +94,6 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
         fullscreen = Settings.settings.has(Settings.FULLSCREEN) && Settings.settings.getBoolean(Settings.FULLSCREEN);
 
         String CP = "-cp";
-        String proxySet = "-DproxySet=true";
-        String proxyHost = "-Dhttp.proxyHost=127.0.0.1";
-        String proxyPortArgument = "-Dhttp.proxyPort=";
 
         String classpath = System.getProperty("java.class.path").replace("\"", "");
 
@@ -131,7 +128,6 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
 
             String[] CMD_ARRAY = new String[] {
                     Settings.settings.getString(Settings.JAVA_COMMAND),
-                    proxySet, proxyHost, proxyPortArgument + System.getProperty("http.proxyPort"),
                     CP, classpath + getClasspathSeparator() + LauncherFiles.LWJGL_JAR + getClasspathSeparator() + LauncherFiles.LWJGL_UTIL_JAR + getClasspathSeparator() + jarPath,
                     "-Djava.library.path=" + LauncherFiles.MINECRAFT_VERSIONS_PATH + "1.6.2/natives",
                     rubyDungClass.getCanonicalName()
@@ -187,11 +183,8 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
                 }
             }
 
-            // Disable the proxy, use the patch instead.
-            System.setProperty("http.proxyHost", "");
-            System.setProperty("http.proxyPort", "");
-
             LauncherInitPatch.allowCustomUpdates(latestVersion);
+            SocketPatch.watchSockets();
             URLPatch.redefineURL(updateURLString);
 
             try {
@@ -493,20 +486,12 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
             }
         };
 
-        //System.out.println("width: " + DisplayManager.getCanvas().getWidth());
-//        DisplayManager.getCanvas().setSize(DisplayManager.getFrame().getSize());
-//        //DisplayManager.getCanvas().setPreferredSize(DisplayManager.getFrame().getSize());
-//        appletResize(DisplayManager.getFrame().getSize().width, DisplayManager.getFrame().getSize().height);
-//        DisplayManager.getCanvas().setPreferredSize(new Dimension(Display.getWidth(), Display.getHeight()));
-//
-//        DisplayManager.getFrame().pack();
-
         DisplayManager.getFrame().setTitle("Minecraft");
-
-
         DisplayManager.closeDisplay();
 
         SocketPatch.watchSockets();
+        URLPatch.redefineURL(null);
+
 
         if (minecraftImpl != null) {
             minecraftImpl.run();

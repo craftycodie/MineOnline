@@ -20,7 +20,6 @@ public class Settings {
     public static final String IS_PREMIUM = "isPremium";
     public static final String JAVA_COMMAND = "javaCommand";
     public static final String FULLSCREEN = "fullscreen";
-    public static final String PROXY_LOGGING = "proxyLogging";
     public static final String MINECRAFT_UPDATE_URL = "minecraftUpdateURL";
     private static final int SETTINGS_VERSION_NUMBER = 4;
 
@@ -38,7 +37,6 @@ public class Settings {
         settings.put(IS_PREMIUM, true);
         settings.put(JAVA_COMMAND, "java");
         settings.put(FULLSCREEN, false);
-        settings.put(PROXY_LOGGING, false);
         settings.put(MINECRAFT_UPDATE_URL, "");
 
         saveSettings();
@@ -66,7 +64,6 @@ public class Settings {
                         IS_PREMIUM,
                         JAVA_COMMAND,
                         FULLSCREEN,
-                        PROXY_LOGGING
                 };
 
                 resetSettings();
