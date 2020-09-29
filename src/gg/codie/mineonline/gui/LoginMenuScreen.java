@@ -1,8 +1,8 @@
 package gg.codie.mineonline.gui;
 
+import com.sun.xml.internal.ws.api.message.ExceptionHasMessage;
 import gg.codie.mineonline.Globals;
 import gg.codie.mineonline.Session;
-import gg.codie.mineonline.api.LegacyAPI;
 import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.mineonline.gui.components.LargeButton;
 import gg.codie.mineonline.gui.components.SmallInputField;
@@ -16,11 +16,13 @@ import gg.codie.mineonline.gui.rendering.models.TexturedModel;
 import gg.codie.mineonline.gui.rendering.shaders.GUIShader;
 import gg.codie.mineonline.gui.rendering.textures.ModelTexture;
 import gg.codie.utils.LastLogin;
+import org.json.JSONObject;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
+import javax.naming.AuthenticationException;
 import java.awt.*;
 import java.net.URI;
 
@@ -73,8 +75,16 @@ public class LoginMenuScreen implements IMenuScreen {
             @Override
             public void onClick() {
                 try {
-                    String sessionToken = LegacyAPI.login(usernameInput.getValue(), passwordInput.getValue());
-                    String uuid = MineOnlineAPI.playerUUID(usernameInput.getValue(), sessionToken);
+                    JSONObject login = MineOnlineAPI.login(usernameInput.getValue(), passwordInput.getValue());
+
+                    if (login.has("error"))
+                        throw new Exception(login.getString("error"));
+                    if (!login.has("uuid") || !login.has("sessionId"))
+                        throw new Exception("Failed to login!");
+
+                    String sessionToken = login.getString("sessionId");
+                    String uuid = login.getString("uuid");
+
                     if (sessionToken != null) {
                         new Session(usernameInput.getValue(), sessionToken, uuid);
                         LastLogin.writeLastLogin(usernameInput.getValue(), passwordInput.getValue(), uuid);
@@ -87,6 +97,8 @@ public class LoginMenuScreen implements IMenuScreen {
                         errorText.setColour(1, 0.33f, 0.33f);
                     }
                 } catch (Exception ex) {
+                    ex.printStackTrace();
+
                     String errorMessage = ex.getMessage();
                     if (errorMessage.startsWith("Bad login")) {
                         errorMessage = "Incorrect username or password.";
@@ -94,8 +106,6 @@ public class LoginMenuScreen implements IMenuScreen {
 
                     if (errorText != null)
                         errorText.remove();
-
-                    ex.printStackTrace();
 
                     errorText = new GUIText(errorMessage, 1.5f, TextMaster.minecraftFont, new Vector2f(0, (DisplayManager.getDefaultHeight() / 2) - 80), DisplayManager.getDefaultWidth(), true, true);
                     errorText.setColour(1, 0.33f, 0.33f);

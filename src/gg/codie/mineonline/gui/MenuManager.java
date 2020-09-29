@@ -2,7 +2,6 @@ package gg.codie.mineonline.gui;
 
 import gg.codie.minecraft.client.Options;
 import gg.codie.mineonline.*;
-import gg.codie.mineonline.api.LegacyAPI;
 import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.mineonline.api.MineOnlineServer;
 import gg.codie.mineonline.gui.font.GUIText;
@@ -15,6 +14,7 @@ import gg.codie.mineonline.gui.rendering.models.TexturedModel;
 import gg.codie.mineonline.gui.rendering.shaders.StaticShader;
 import gg.codie.mineonline.gui.rendering.textures.ModelTexture;
 import gg.codie.utils.LastLogin;
+import org.json.JSONObject;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
@@ -78,7 +78,7 @@ public class MenuManager {
         formopen = true;
 
         try {
-            updateAvailable = !LegacyAPI.getLauncherVersion().replaceAll("\\s","").equals(Globals.LAUNCHER_VERSION);
+            updateAvailable = !MineOnlineAPI.getLauncherVersion().replaceAll("\\s","").equals(Globals.LAUNCHER_VERSION);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -144,8 +144,10 @@ public class MenuManager {
 
         if(lastLogin != null ) {
             try {
-                sessionToken = LegacyAPI.login(lastLogin.username, lastLogin.password);
-                uuid = MineOnlineAPI.playerUUID(lastLogin.username, sessionToken);
+                JSONObject login = MineOnlineAPI.login(lastLogin.username, lastLogin.password);
+
+                sessionToken = login.getString("sessionId");
+                uuid = login.getString("uuid");
             } catch (IOException ex) {
                 ex.printStackTrace();
             }

@@ -1,13 +1,12 @@
 package gg.codie.mineonline.api;
 
 import gg.codie.mineonline.Globals;
+import javafx.util.Pair;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.URL;
@@ -53,37 +52,6 @@ public class MineOnlineAPI {
             if (connection != null)
                 connection.disconnect();
         }
-    }
-
-    public static String playerUUID(String username, String token) throws IOException {
-        HttpURLConnection connection = null;
-
-        String parameters = "session=" + URLEncoder.encode(token, "UTF-8");
-
-        URL url = new URL("http://" + Globals.API_HOSTNAME + "/api/playeruuid/" + username + "?" + parameters);
-        connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-
-        connection.setRequestProperty("Content-Length", Integer.toString((parameters.getBytes()).length));
-        connection.setRequestProperty("Content-Language", "en-US");
-
-        connection.setUseCaches(false);
-        connection.setDoOutput(true);
-
-        InputStream is = connection.getInputStream();
-        BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-
-        StringBuilder response = new StringBuilder();
-        String line;
-        while ((line = rd.readLine()) != null) {
-            response.append(line);
-        }
-        rd.close();
-
-        if (connection != null)
-            connection.disconnect();
-
-        return new JSONObject(response.toString()).getString("uuid");
     }
 
     public static MineOnlinePlayerPresence playerPresence(String uuid) throws IOException {
@@ -513,5 +481,67 @@ public class MineOnlineAPI {
             if (connection != null)
                 connection.disconnect();
         }
+    }
+
+    public static JSONObject login(String username, String password) throws IOException {
+        HttpURLConnection connection;
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("username", username);
+        jsonObject.put("password", password);
+        String json = jsonObject.toString();
+
+        URL url = new URL("http://" + Globals.API_HOSTNAME + "/api/login");
+        connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestProperty("Content-Type", "application/json");
+        connection.setRequestMethod("POST");
+        connection.setDoInput(true);
+        connection.setDoOutput(true);
+
+        connection.getOutputStream().write(json.getBytes(StandardCharsets.UTF_8));
+        connection.getOutputStream().flush();
+        connection.getOutputStream().close();
+
+
+        InputStream is = connection.getInputStream();
+        BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+
+        StringBuilder response = new StringBuilder();
+        String line;
+        while ((line = rd.readLine()) != null) {
+            response.append(line);
+            response.append('\r');
+        }
+        rd.close();
+
+        try {
+            return new JSONObject(response.toString());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JSONObject errorObject = new JSONObject();
+            errorObject.put("error", response.toString());
+            return errorObject;
+        }
+    }
+
+    public static String getLauncherVersion() throws IOException {
+        HttpURLConnection connection = null;
+
+        URL url = new URL("http://" + Globals.API_HOSTNAME + "/launcherversion");
+        connection = (HttpURLConnection) url.openConnection();
+        connection.connect();
+
+        InputStream is = connection.getInputStream();
+        BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+
+        StringBuilder response = new StringBuilder();
+        String line;
+        while ((line = rd.readLine()) != null) {
+            response.append(line);
+            response.append('\r');
+        }
+        rd.close();
+
+        return response.toString();
     }
 }
