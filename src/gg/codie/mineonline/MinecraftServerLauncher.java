@@ -47,7 +47,9 @@ public class MinecraftServerLauncher extends ServerLauncher {
                 }
             }
 
-            handleBroadcast(writer);
+            if(serverProperties.getProperty("public", "true").equals("true")) {
+                handleBroadcast(writer);
+            }
         }
 
         if (serverUUID != null)

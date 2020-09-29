@@ -46,15 +46,15 @@ These are features MineOnline will bring to Minecraft.
 If you'd like to launch a server to authenticate using a different API, you can do so with a simple tweak to the typical launch command.
 Add `-cp <MineOnline.jar path> gg.codie.mineonline.Server <server jar path>` after "java". Eg.
 
-```java -Xmx1024M -Xms1024M -jar minecraft_server.jar nogui```
+```java -jar minecraft_server.jar```
 
 becomes
 
-```java -cp MineOnline.jar gg.codie.mineonline.Server minecraft_server.jar -Xmx1024M -Xms1024M -jar minecraft_server.jar nogui```
+```java -cp MineOnline.jar gg.codie.mineonline.Server minecraft_server.jar```
 
-If you don't want your server to appear on the list, set `dont-list: true` in `server.properties`.
+If you don't want your server to appear on the list, set `public: false` in `server.properties`.
 
-You can optionally provide a "serverlist-ip" and or "serverlist-port" in your server.properties, if you'd like a different IP/hostname/port to be listed.
+You can optionally provide a "serverlist-ip" and or "serverlist-port" in your server.properties, if you'd like a different IP/port to be listed.
 
 ## For Modders
 You can add custom version information to the launcher by creating a version info file at `.minecraft\mineonline\custom-versions\`.
