@@ -427,8 +427,10 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
             @Override
             public void onUpdateEvent() {
                 if (renderer != null) {
-                    //renderer.renderString(new Vector2f(2, 190), "MineOnline Debug", org.newdawn.slick.Color.yellow); //x, y, string to draw, color
-                    //TextMaster.render();
+                    if (Globals.DEV) {
+                        renderer.renderStringIngame(new Vector2f(2, 2), 8, "MineOnline Dev " + Globals.LAUNCHER_VERSION, org.newdawn.slick.Color.white);
+                    }
+
                     if (minecraftVersion != null) {
                         if (minecraftVersion.enableScreenshotPatch) {
                             try {
@@ -442,7 +444,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
                                 }
 
                                 if (opacityMultiplier > 0) {
-                                    renderer.renderStringIngame(new Vector2f(2, 190), 8, "Saved screenshot as " + lastScreenshotName, new org.newdawn.slick.Color(1, 1, 1, 1 * opacityMultiplier)); //x, y, string to draw, color
+                                    renderer.renderStringIngame(new Vector2f(2, 190), 8, "Saved screenshot as " + lastScreenshotName, new org.newdawn.slick.Color(1, 1, 1, 1 * opacityMultiplier));
                                 }
                             } catch (Exception e) {
                                 e.printStackTrace();

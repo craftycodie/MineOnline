@@ -266,8 +266,7 @@ public class MenuManager {
         GameObject backgroundImage = new GUIObject("Background", texturedModel, new Vector3f(), new Vector3f(0, 180, 0), new Vector3f(75f, 75f, 75f));
 
         if (Globals.DEV) {
-            GUIText text = new GUIText("MineOnline Dev Build", 1.5f, TextMaster.minecraftFont, new Vector2f(0, 0), DisplayManager.getDefaultWidth(), false, true);
-            text.setColour(1f, 1f, 0f);
+            new GUIText("MineOnline Dev " + Globals.LAUNCHER_VERSION, 1.5f, TextMaster.minecraftFont, new Vector2f(2, 2), DisplayManager.getDefaultWidth(), false, true);
         }
 
         if(Session.session != null && Session.session.isOnline())
