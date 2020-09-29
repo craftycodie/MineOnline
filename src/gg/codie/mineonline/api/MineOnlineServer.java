@@ -1,13 +1,11 @@
 package gg.codie.mineonline.api;
 
-import gg.codie.mineonline.Session;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.concurrent.CompletableFuture;
 
 public class MineOnlineServer {
     public final String createdAt;

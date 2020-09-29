@@ -9,12 +9,15 @@ import gg.codie.utils.MD5Checksum;
 import gg.codie.utils.OSUtils;
 import org.json.JSONObject;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.nio.file.*;
-import java.util.*;
+import java.nio.file.Paths;
+import java.util.Enumeration;
+import java.util.LinkedList;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 

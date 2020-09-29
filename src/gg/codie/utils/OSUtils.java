@@ -1,5 +1,7 @@
 package gg.codie.utils;
 
+import java.io.File;
+
 public class OSUtils {
     public enum OS {
         linux, solaris, windows, macosx, unknown;
@@ -26,5 +28,14 @@ public class OSUtils {
         if (osName.contains("linux")) return OS.linux;
         if (osName.contains("unix")) return OS.linux;
         return OS.unknown;
+    }
+
+    public static String getJREPath() {
+        switch(getPlatform()) {
+            case windows:
+                return System.getProperty("java.home") + File.separator + "bin" + File.separator + "java.exe";
+            default:
+                return System.getProperty("java.home") + File.separator + "bin" + File.separator + "java";
+        }
     }
 }

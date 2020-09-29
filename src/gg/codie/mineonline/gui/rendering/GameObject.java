@@ -3,7 +3,6 @@ package gg.codie.mineonline.gui.rendering;
 import gg.codie.mineonline.gui.rendering.models.TexturedModel;
 import gg.codie.mineonline.gui.rendering.utils.MathUtils;
 import org.lwjgl.util.vector.Matrix4f;
-import org.lwjgl.util.vector.Quaternion;
 import org.lwjgl.util.vector.Vector3f;
 
 import java.util.LinkedList;

@@ -1,10 +1,10 @@
 package gg.codie.mineonline.gui.rendering;
 
-import gg.codie.mineonline.LauncherFiles;
 import gg.codie.minecraft.client.Options;
+import gg.codie.mineonline.LauncherFiles;
 import org.lwjgl.LWJGLException;
-import org.lwjgl.opengl.*;
 import org.lwjgl.opengl.DisplayMode;
+import org.lwjgl.opengl.*;
 
 import java.awt.*;
 import java.awt.event.ComponentAdapter;

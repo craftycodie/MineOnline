@@ -1,12 +1,9 @@
 package gg.codie.mineonline.gui.rendering;
 
 import org.lwjgl.util.vector.Vector2f;
-import org.lwjgl.util.vector.Vector4f;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-
-import java.util.Arrays;
 
 public class TextureHelper {
 

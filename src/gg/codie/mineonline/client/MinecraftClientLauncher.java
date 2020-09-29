@@ -3,9 +3,9 @@ package gg.codie.mineonline.client;
 import gg.codie.minecraft.client.Options;
 import gg.codie.mineonline.*;
 import gg.codie.mineonline.gui.rendering.DisplayManager;
-import gg.codie.mineonline.patches.minecraft.PropertiesSignaturePatch;
 import gg.codie.mineonline.patches.SocketPatch;
 import gg.codie.mineonline.patches.URLPatch;
+import gg.codie.mineonline.patches.minecraft.PropertiesSignaturePatch;
 import gg.codie.mineonline.patches.minecraft.YggdrasilMinecraftSessionServicePatch;
 import gg.codie.mineonline.server.MinecraftServerProcess;
 import gg.codie.utils.MD5Checksum;
@@ -66,7 +66,7 @@ public class MinecraftClientLauncher {
             libraries.add(jarPath);
 
             LinkedList<String> launchArgs = new LinkedList();
-            launchArgs.add(Settings.settings.getString(Settings.JAVA_COMMAND));
+            launchArgs.add(OSUtils.getJREPath());
             launchArgs.add("-javaagent:" + LauncherFiles.PATCH_AGENT_JAR);
             launchArgs.add("-Djava.util.Arrays.useLegacyMergeSort=true");
             launchArgs.add("-Djava.net.preferIPv4Stack=true");

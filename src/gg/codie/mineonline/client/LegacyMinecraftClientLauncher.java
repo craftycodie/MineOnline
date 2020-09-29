@@ -4,11 +4,14 @@ import gg.codie.minecraft.client.Options;
 import gg.codie.minecraft.client.VersionFile;
 import gg.codie.mineonline.*;
 import gg.codie.mineonline.gui.MenuManager;
-import gg.codie.mineonline.gui.rendering.*;
+import gg.codie.mineonline.gui.rendering.DisplayManager;
 import gg.codie.mineonline.gui.rendering.Renderer;
 import gg.codie.mineonline.lwjgl.OnCreateListener;
 import gg.codie.mineonline.lwjgl.OnUpdateListener;
-import gg.codie.mineonline.patches.*;
+import gg.codie.mineonline.patches.LWJGLDisplayPatch;
+import gg.codie.mineonline.patches.SocketPatch;
+import gg.codie.mineonline.patches.SystemSetPropertyPatch;
+import gg.codie.mineonline.patches.URLPatch;
 import gg.codie.mineonline.patches.minecraft.LauncherInitPatch;
 import gg.codie.utils.FileUtils;
 import gg.codie.utils.MD5Checksum;
@@ -23,19 +26,27 @@ import org.lwjgl.util.vector.Vector2f;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import java.applet.*;
+import java.applet.Applet;
+import java.applet.AppletStub;
+import java.awt.*;
 import java.awt.datatransfer.Clipboard;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.*;
-import java.net.*;
-import java.awt.*;
-import java.awt.event.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.ByteBuffer;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.Map;
 
 public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
     Applet minecraftApplet;
@@ -113,7 +124,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
 //            mainFunction.invoke(null, (Object)params);
 
             String[] CMD_ARRAY = new String[] {
-                    Settings.settings.getString(Settings.JAVA_COMMAND),
+                    OSUtils.getJREPath(),
                     CP, classpath + LibraryManager.getClasspathSeparator() + LauncherFiles.LWJGL_JAR + LibraryManager.getClasspathSeparator() + LauncherFiles.LWJGL_UTIL_JAR + LibraryManager.getClasspathSeparator() + jarPath,
                     "-Djava.library.path=" + LauncherFiles.MINECRAFT_VERSIONS_PATH + "1.6.2/natives",
                     rubyDungClass.getCanonicalName()

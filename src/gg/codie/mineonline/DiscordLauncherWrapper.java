@@ -1,6 +1,7 @@
 package gg.codie.mineonline;
 
 import gg.codie.mineonline.discord.DiscordRPCHandler;
+import gg.codie.utils.OSUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,8 +9,6 @@ import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Map;
-
-
 
 public class DiscordLauncherWrapper {
     private static Process launcherProcess;
@@ -26,7 +25,7 @@ public class DiscordLauncherWrapper {
         DiscordRPCHandler.initialize();
 
         LinkedList<String> launchArgs = new LinkedList();
-        launchArgs.add(Settings.settings.getString(Settings.JAVA_COMMAND));
+        launchArgs.add(OSUtils.getJREPath());
         launchArgs.add("-javaagent:" + LauncherFiles.PATCH_AGENT_JAR);
         launchArgs.add("-Djava.util.Arrays.useLegacyMergeSort=true");
         launchArgs.add("-cp");

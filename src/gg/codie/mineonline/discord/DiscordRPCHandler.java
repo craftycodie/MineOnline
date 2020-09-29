@@ -1,6 +1,9 @@
 package gg.codie.mineonline.discord;
 
-import gg.codie.mineonline.*;
+import gg.codie.mineonline.DiscordLauncherWrapper;
+import gg.codie.mineonline.Globals;
+import gg.codie.mineonline.LauncherFiles;
+import gg.codie.mineonline.LibraryManager;
 import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.mineonline.api.MineOnlineServer;
 import gg.codie.utils.OSUtils;
@@ -107,7 +110,10 @@ public class DiscordRPCHandler {
         .build();
         DiscordRPC.discordInitialize(Globals.DISCORD_APP_ID, handlers, false);
         try {
-            DiscordRPC.discordRegister(Globals.DISCORD_APP_ID, (OSUtils.isLinux() ? "javaws -jar " : "javaw -jar ") + Paths.get(LibraryManager.class.getProtectionDomain().getCodeSource().getLocation().toURI()).toString());
+            String launchJava = System.getProperty("java.home") + File.separator + "bin" + File.separator + "javaw.exe -jar";
+            if (!OSUtils.isWindows())
+                launchJava.replace(".exe", "s");
+            DiscordRPC.discordRegister(Globals.DISCORD_APP_ID, launchJava + Paths.get(LibraryManager.class.getProtectionDomain().getCodeSource().getLocation().toURI()).toString());
         } catch (Exception ex) {
             ex.printStackTrace();
         }

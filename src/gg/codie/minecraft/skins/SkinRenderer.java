@@ -1,7 +1,8 @@
 package gg.codie.minecraft.skins;
 
 import gg.codie.mineonline.LibraryManager;
-import gg.codie.mineonline.gui.*;
+import gg.codie.mineonline.gui.IMenuScreen;
+import gg.codie.mineonline.gui.MouseHandler;
 import gg.codie.mineonline.gui.rendering.*;
 import gg.codie.mineonline.gui.rendering.animation.IdlePlayerAnimation;
 import gg.codie.mineonline.gui.rendering.font.TextMaster;

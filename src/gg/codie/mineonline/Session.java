@@ -2,7 +2,6 @@ package gg.codie.mineonline;
 
 import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.mineonline.gui.rendering.PlayerGameObject;
-import gg.codie.utils.JSONUtils;
 import org.json.JSONObject;
 
 import java.io.*;

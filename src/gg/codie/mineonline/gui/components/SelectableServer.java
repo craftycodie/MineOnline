@@ -2,8 +2,8 @@ package gg.codie.mineonline.gui.components;
 
 import gg.codie.mineonline.api.EMineOnlineServerStatus;
 import gg.codie.mineonline.api.MineOnlineServer;
-import gg.codie.mineonline.gui.MouseHandler;
 import gg.codie.mineonline.gui.MenuManager;
+import gg.codie.mineonline.gui.MouseHandler;
 import gg.codie.mineonline.gui.events.IOnClickListener;
 import gg.codie.mineonline.gui.font.GUIText;
 import gg.codie.mineonline.gui.rendering.*;

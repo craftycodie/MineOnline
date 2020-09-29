@@ -1,14 +1,14 @@
 package gg.codie.mineonline.gui.rendering.font;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import gg.codie.mineonline.gui.font.FontType;
 import gg.codie.mineonline.gui.font.GUIText;
 import gg.codie.mineonline.gui.font.TextMeshData;
 import gg.codie.mineonline.gui.rendering.Loader;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class TextMaster {
 

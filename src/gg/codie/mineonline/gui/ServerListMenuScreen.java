@@ -1,16 +1,19 @@
 package gg.codie.mineonline.gui;
 
 import gg.codie.minecraft.client.Options;
-import gg.codie.mineonline.*;
+import gg.codie.mineonline.LauncherFiles;
+import gg.codie.mineonline.MinecraftVersion;
+import gg.codie.mineonline.MinecraftVersionRepository;
+import gg.codie.mineonline.Session;
 import gg.codie.mineonline.api.MineOnlineAPI;
+import gg.codie.mineonline.gui.components.MediumButton;
+import gg.codie.mineonline.gui.components.SelectableServer;
+import gg.codie.mineonline.gui.components.SelectableServerList;
 import gg.codie.mineonline.gui.events.IOnClickListener;
 import gg.codie.mineonline.gui.font.GUIText;
 import gg.codie.mineonline.gui.rendering.Camera;
 import gg.codie.mineonline.gui.rendering.DisplayManager;
 import gg.codie.mineonline.gui.rendering.Renderer;
-import gg.codie.mineonline.gui.components.MediumButton;
-import gg.codie.mineonline.gui.components.SelectableServer;
-import gg.codie.mineonline.gui.components.SelectableServerList;
 import gg.codie.mineonline.gui.rendering.font.TextMaster;
 import gg.codie.mineonline.gui.rendering.shaders.GUIShader;
 import org.lwjgl.util.vector.Vector2f;

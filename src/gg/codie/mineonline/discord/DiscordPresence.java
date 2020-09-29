@@ -1,6 +1,7 @@
 package gg.codie.mineonline.discord;
 
-import gg.codie.mineonline.*;
+import gg.codie.mineonline.LauncherFiles;
+import gg.codie.mineonline.Session;
 import gg.codie.mineonline.api.MineOnlineAPI;
 
 import java.io.File;
@@ -11,7 +12,6 @@ import java.nio.channels.AsynchronousFileChannel;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.Arrays;
 
 public class DiscordPresence {
     public static String lastVersion = null;

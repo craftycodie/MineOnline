@@ -3,8 +3,6 @@ package gg.codie.mineonline.patches;
 import gg.codie.mineonline.Globals;
 import net.bytebuddy.asm.Advice;
 
-import java.lang.reflect.Field;
-
 public class URLConstructAdvice {
     public static String updateURL;
     public static String serverlistAddress;

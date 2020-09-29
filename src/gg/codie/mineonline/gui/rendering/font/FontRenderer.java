@@ -1,8 +1,5 @@
 package gg.codie.mineonline.gui.rendering.font;
 
-import java.util.List;
-import java.util.Map;
-
 import gg.codie.mineonline.gui.font.FontType;
 import gg.codie.mineonline.gui.font.GUIText;
 import gg.codie.mineonline.gui.rendering.DisplayManager;
@@ -10,6 +7,9 @@ import gg.codie.mineonline.gui.rendering.shaders.FontShader;
 import org.lwjgl.opengl.*;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
+
+import java.util.List;
+import java.util.Map;
 
 public class FontRenderer {
     public void render(Map<FontType, List<GUIText>> texts){

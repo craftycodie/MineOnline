@@ -2,35 +2,18 @@ package gg.codie.minecraft.skins;
 
 import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.LibraryManager;
-import gg.codie.mineonline.MineOnline;
-import gg.codie.mineonline.Settings;
-import gg.codie.mineonline.gui.IMenuScreen;
-import gg.codie.mineonline.gui.MouseHandler;
-import gg.codie.mineonline.gui.rendering.*;
-import gg.codie.mineonline.gui.rendering.animation.IdlePlayerAnimation;
-import gg.codie.mineonline.gui.rendering.font.TextMaster;
-import gg.codie.mineonline.gui.rendering.models.RawModel;
-import gg.codie.mineonline.gui.rendering.models.TexturedModel;
-import gg.codie.mineonline.gui.rendering.shaders.StaticShader;
-import gg.codie.mineonline.gui.rendering.textures.ModelTexture;
-import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.Display;
-import org.lwjgl.util.vector.Vector2f;
-import org.lwjgl.util.vector.Vector3f;
+import gg.codie.utils.OSUtils;
 
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.Random;
 
 public class SkinRendererLauncher {
 
     public static void main(String[] args) throws Exception {
         LinkedList<String> launchArgs = new LinkedList();
-        launchArgs.add(Settings.settings.getString(Settings.JAVA_COMMAND));
+        launchArgs.add(OSUtils.getJREPath());
         launchArgs.add("-javaagent:" + LauncherFiles.PATCH_AGENT_JAR);
         launchArgs.add("-Djava.util.Arrays.useLegacyMergeSort=true");
         launchArgs.add("-cp");

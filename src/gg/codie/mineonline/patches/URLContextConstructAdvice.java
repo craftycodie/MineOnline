@@ -1,9 +1,7 @@
 package gg.codie.mineonline.patches;
 
-import gg.codie.mineonline.Globals;
 import net.bytebuddy.asm.Advice;
 
-import java.lang.reflect.Field;
 import java.net.URL;
 
 public class URLContextConstructAdvice {

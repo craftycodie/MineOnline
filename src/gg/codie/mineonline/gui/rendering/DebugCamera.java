@@ -1,7 +1,6 @@
 package gg.codie.mineonline.gui.rendering;
 
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
 
 public class DebugCamera extends Camera {
 

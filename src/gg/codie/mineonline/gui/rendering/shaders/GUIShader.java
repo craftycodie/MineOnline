@@ -2,9 +2,7 @@ package gg.codie.mineonline.gui.rendering.shaders;
 
 import gg.codie.mineonline.gui.rendering.Camera;
 import gg.codie.mineonline.gui.rendering.utils.MathUtils;
-import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Matrix4f;
-import org.lwjgl.util.vector.Vector2f;
 
 import java.net.URL;
 

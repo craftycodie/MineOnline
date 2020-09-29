@@ -1,7 +1,6 @@
 package gg.codie.mineonline.gui.rendering.animation;
 
 import gg.codie.mineonline.gui.rendering.PlayerGameObject;
-import org.lwjgl.Sys;
 import org.lwjgl.util.vector.Vector3f;
 
 public class ClassicWalkPlayerAnimation implements IPlayerAnimation {

@@ -1,5 +1,7 @@
 package gg.codie.mineonline;
 
+import gg.codie.utils.OSUtils;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -13,7 +15,7 @@ public class Startup {
         LibraryManager.extractLibraries();
 
         LinkedList<String> launchArgs = new LinkedList();
-        launchArgs.add(Settings.settings.getString(Settings.JAVA_COMMAND));
+        launchArgs.add(OSUtils.getJREPath());
         launchArgs.add("-javaagent:" + LauncherFiles.PATCH_AGENT_JAR);
         launchArgs.add("-Djava.util.Arrays.useLegacyMergeSort=true");
         launchArgs.add("-cp");
@@ -33,13 +35,16 @@ public class Startup {
         processBuilder.redirectErrorStream(true);
         processBuilder.redirectInput(ProcessBuilder.Redirect.INHERIT);
 
-        Process launcherProecess = processBuilder.start();
+        Process launcherProcess = processBuilder.start();
 
-        while (launcherProecess.isAlive()) {
+        Thread closeLauncher = new Thread(() -> launcherProcess.destroyForcibly());
+        Runtime.getRuntime().addShutdownHook(closeLauncher);
+
+        while (launcherProcess.isAlive()) {
 
         }
 
-        System.exit(launcherProecess.exitValue());
+        System.exit(launcherProcess.exitValue());
     }
 
 }

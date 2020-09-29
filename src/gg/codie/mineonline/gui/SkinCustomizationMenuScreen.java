@@ -2,7 +2,6 @@ package gg.codie.mineonline.gui;
 
 import gg.codie.minecraft.client.Options;
 import gg.codie.mineonline.LauncherFiles;
-import gg.codie.mineonline.Settings;
 import gg.codie.mineonline.gui.components.LargeButton;
 import gg.codie.mineonline.gui.components.MediumButton;
 import gg.codie.mineonline.gui.events.IOnClickListener;

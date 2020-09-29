@@ -1,6 +1,5 @@
 package gg.codie.mineonline;
 
-import com.sun.javaws.exceptions.BadJARFileException;
 import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.utils.ArrayUtils;
 import gg.codie.utils.JSONUtils;

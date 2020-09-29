@@ -2,7 +2,7 @@ package gg.codie.mineonline;
 
 import gg.codie.mineonline.server.MinecraftServerLauncher;
 
-import java.io.*;
+import java.io.File;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Map;
@@ -18,7 +18,6 @@ public class Server {
         LibraryManager.extractLibraries();
 
         LinkedList<String> launchArgs = new LinkedList();
-        launchArgs.add(Settings.settings.getString(Settings.JAVA_COMMAND));
         launchArgs.add("-javaagent:" + LauncherFiles.PATCH_AGENT_JAR);
         launchArgs.add("-Djava.util.Arrays.useLegacyMergeSort=true");
         launchArgs.add("-cp");

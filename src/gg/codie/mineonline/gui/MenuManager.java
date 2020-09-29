@@ -2,13 +2,13 @@ package gg.codie.mineonline.gui;
 
 import gg.codie.minecraft.client.Options;
 import gg.codie.mineonline.*;
-import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.mineonline.api.LegacyAPI;
+import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.mineonline.api.MineOnlineServer;
 import gg.codie.mineonline.gui.font.GUIText;
-import gg.codie.mineonline.gui.rendering.*;
 import gg.codie.mineonline.gui.rendering.Renderer;
-import gg.codie.mineonline.gui.rendering.animation.*;
+import gg.codie.mineonline.gui.rendering.*;
+import gg.codie.mineonline.gui.rendering.animation.IdlePlayerAnimation;
 import gg.codie.mineonline.gui.rendering.font.TextMaster;
 import gg.codie.mineonline.gui.rendering.models.RawModel;
 import gg.codie.mineonline.gui.rendering.models.TexturedModel;
@@ -17,7 +17,7 @@ import gg.codie.mineonline.gui.rendering.textures.ModelTexture;
 import gg.codie.utils.LastLogin;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.*;
+import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
@@ -26,7 +26,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
-import java.net.InetAddress;
 import java.util.Random;
 import java.util.Set;
 

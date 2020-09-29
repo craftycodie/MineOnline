@@ -1,7 +1,6 @@
 package gg.codie.mineonline.gui.rendering.animation;
 
 import gg.codie.mineonline.gui.rendering.PlayerGameObject;
-import gg.codie.mineonline.gui.rendering.animation.IPlayerAnimation;
 import org.lwjgl.util.vector.Vector3f;
 
 public class EmptyPlayerAnimation implements IPlayerAnimation {

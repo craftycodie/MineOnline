@@ -3,7 +3,6 @@ package gg.codie.mineonline.gui.rendering;
 import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.gui.rendering.models.RawModel;
 import gg.codie.mineonline.gui.rendering.utils.MathUtils;
-
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.*;
 import org.lwjgl.util.vector.Vector2f;
@@ -13,7 +12,6 @@ import org.newdawn.slick.opengl.TextureLoader;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
-
 import java.net.URL;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;

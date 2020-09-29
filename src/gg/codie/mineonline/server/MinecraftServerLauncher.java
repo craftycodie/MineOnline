@@ -1,12 +1,12 @@
 package gg.codie.mineonline.server;
 
-import gg.codie.mineonline.LauncherFiles;
-import gg.codie.mineonline.LibraryManager;
 import gg.codie.mineonline.api.MineOnlineAPI;
 
-import java.io.*;
-import java.nio.file.Paths;
-import java.util.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.util.Scanner;
 
 public class MinecraftServerLauncher extends ServerLauncher {
     public static String serverlistAddress;

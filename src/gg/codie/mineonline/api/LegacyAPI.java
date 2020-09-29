@@ -1,18 +1,11 @@
 package gg.codie.mineonline.api;
 
 import gg.codie.mineonline.Globals;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.text.ParseException;
-import java.util.LinkedList;
 
 public class LegacyAPI {
     public static String login(String username, String password) throws IOException {

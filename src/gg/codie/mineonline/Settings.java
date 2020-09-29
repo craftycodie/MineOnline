@@ -1,16 +1,11 @@
 package gg.codie.mineonline;
 
-import gg.codie.utils.ArrayUtils;
-import gg.codie.utils.JSONUtils;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.*;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.LinkedList;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class Settings {
 
@@ -18,15 +13,24 @@ public class Settings {
 
     public static final String SETTINGS_VERSION = "settingsVersion";
     public static final String IS_PREMIUM = "isPremium";
-    public static final String JAVA_COMMAND = "javaCommand";
     public static final String FULLSCREEN = "fullscreen";
     public static final String MINECRAFT_UPDATE_URL = "minecraftUpdateURL";
     private static final int SETTINGS_VERSION_NUMBER = 4;
 
+    private static boolean readonly = true;
+
     static {
-        if(new File(LauncherFiles.MINEONLINE_PROPS_FILE).exists()) {
-            loadSettings();
-        } else {
+        try {
+            Class.forName("org.json.JSONObject");
+
+            readonly = false;
+
+            if (new File(LauncherFiles.MINEONLINE_PROPS_FILE).exists()) {
+                loadSettings();
+            } else {
+                resetSettings();
+            }
+        } catch (ClassNotFoundException ex) {
             resetSettings();
         }
     }
@@ -35,7 +39,6 @@ public class Settings {
         settings = new JSONObject();
         settings.put(SETTINGS_VERSION, SETTINGS_VERSION_NUMBER);
         settings.put(IS_PREMIUM, true);
-        settings.put(JAVA_COMMAND, "java");
         settings.put(FULLSCREEN, false);
         settings.put(MINECRAFT_UPDATE_URL, "");
 
@@ -62,7 +65,6 @@ public class Settings {
                 JSONObject oldSettings = settings;
                 String[] oldKeys = new String[] {
                         IS_PREMIUM,
-                        JAVA_COMMAND,
                         FULLSCREEN,
                 };
 
@@ -92,6 +94,9 @@ public class Settings {
     }
 
     public  static void saveSettings() {
+        if (readonly)
+            return;
+
         try {
             FileWriter fileWriter = new FileWriter(LauncherFiles.MINEONLINE_PROPS_FILE, false);
             fileWriter.write(settings.toString());

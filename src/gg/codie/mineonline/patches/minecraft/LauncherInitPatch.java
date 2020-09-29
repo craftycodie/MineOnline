@@ -6,10 +6,7 @@ import net.bytebuddy.dynamic.loading.ClassReloadingStrategy;
 import net.bytebuddy.implementation.Implementation;
 import net.bytebuddy.matcher.ElementMatchers;
 
-import java.net.URL;
 import java.net.URLClassLoader;
-import java.nio.file.Paths;
-import java.util.HashMap;
 
 public class LauncherInitPatch {
     public static void allowCustomUpdates(String latestVersion, URLClassLoader classLoader) {

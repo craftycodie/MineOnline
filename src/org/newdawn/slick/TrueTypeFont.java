@@ -1,20 +1,17 @@
 package org.newdawn.slick;
 
+import org.newdawn.slick.opengl.GLUtils;
+import org.newdawn.slick.opengl.Texture;
+import org.newdawn.slick.opengl.renderer.Renderer;
+import org.newdawn.slick.opengl.renderer.SGL;
+import org.newdawn.slick.util.BufferedImageUtil;
+
 import java.awt.Color;
-import java.awt.FontMetrics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.newdawn.slick.opengl.GLUtils;
-import org.newdawn.slick.opengl.Texture;
-import org.newdawn.slick.opengl.TextureImpl;
-import org.newdawn.slick.opengl.renderer.Renderer;
-import org.newdawn.slick.opengl.renderer.SGL;
-import org.newdawn.slick.util.BufferedImageUtil;
 
 /**
  * A TrueType font implementation for Slick

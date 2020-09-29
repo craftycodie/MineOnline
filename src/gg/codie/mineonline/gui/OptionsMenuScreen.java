@@ -1,13 +1,15 @@
 package gg.codie.mineonline.gui;
 
 import gg.codie.mineonline.LauncherFiles;
-import gg.codie.mineonline.Settings;
 import gg.codie.mineonline.Session;
-import gg.codie.mineonline.gui.events.IOnClickListener;
-import gg.codie.mineonline.gui.font.GUIText;
-import gg.codie.mineonline.gui.rendering.*;
+import gg.codie.mineonline.Settings;
 import gg.codie.mineonline.gui.components.LargeButton;
 import gg.codie.mineonline.gui.components.MediumButton;
+import gg.codie.mineonline.gui.events.IOnClickListener;
+import gg.codie.mineonline.gui.font.GUIText;
+import gg.codie.mineonline.gui.rendering.Camera;
+import gg.codie.mineonline.gui.rendering.DisplayManager;
+import gg.codie.mineonline.gui.rendering.Renderer;
 import gg.codie.mineonline.gui.rendering.font.TextMaster;
 import gg.codie.mineonline.gui.rendering.shaders.GUIShader;
 import gg.codie.utils.LastLogin;
