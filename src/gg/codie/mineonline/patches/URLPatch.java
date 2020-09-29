@@ -10,10 +10,20 @@ import java.net.URL;
 
 public class URLPatch {
     public static void redefineURL() {
+        redefineURL(null);
+    }
+
+    public static void redefineURL(String updateURL) {
+        URLConstructAdvice.updateURL = updateURL;
+
         new ByteBuddy()
             .with(Implementation.Context.Disabled.Factory.INSTANCE)
             .redefine(URL.class)
             .visit(Advice.to(URLConstructAdvice.class).on(ElementMatchers.isConstructor().and(ElementMatchers.takesArguments(
+                    String.class
+            ))))
+            .visit(Advice.to(URLContextConstructAdvice.class).on(ElementMatchers.isConstructor().and(ElementMatchers.takesArguments(
+                    URL.class,
                     String.class
             ))))
             .make()

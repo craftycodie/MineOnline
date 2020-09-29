@@ -41,6 +41,7 @@ public class LauncherFiles {
     public static final String MINECRAFT_RESOURCES_PATH = getOldMinecraftDirectory() + File.separator + "resources" + File.separator;
     public static final String MINECRAFT_ASSETS_PATH = getNewMinecraftDirectory() + File.separator + "assets" + File.separator;
     public static final String MINECRAFT_SCREENSHOTS_PATH = getOldMinecraftDirectory() + File.separator + "screenshots" + File.separator;
+    public static final String MINECRAFT_BINARIES_PATH = getOldMinecraftDirectory() + File.separator + "bin" + File.separator;
     public static final String MINECRAFT_OPTIONS_PATH = getOldMinecraftDirectory() + File.separator + "options.txt";
     public static final String MINECRAFT_VERSIONS_PATH = getNewMinecraftDirectory() + File.separator + "versions" + File.separator;
     public static final String MINECRAFT_LIBRARIES_PATH = getNewMinecraftDirectory() + File.separator + "libraries" + File.separator;

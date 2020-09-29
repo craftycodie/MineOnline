@@ -91,18 +91,8 @@ public class ProxyThread implements Runnable {
 
                 Settings.loadSettings();
 
-                if (requestString.contains("http://s3.amazonaws.com/MinecraftDownload/minecraft.jar")) {
-                    String updateURL = Settings.settings.has(Settings.MINECRAFT_UPDATE_URL) ? Settings.settings.getString(Settings.MINECRAFT_UPDATE_URL) : null;
-                    if(updateURL != null && !updateURL.isEmpty()) {
-                        URL url = new URL(updateURL);
-                        requestString = requestString.replace("http://s3.amazonaws.com/MinecraftDownload/minecraft.jar", updateURL);
-                        requestString = requestString.replace("s3.amazonaws.com", url.getHost());
-                        requestString = requestString.replaceAll("\\?user=([^<]*)&ticket=deprecated", "");
-                    }
-                } else {
-                    for (String redirectedDomain : redirectedDomains) {
-                        requestString = requestString.replace(redirectedDomain, Globals.API_HOSTNAME);
-                    }
+                for (String redirectedDomain : redirectedDomains) {
+                    requestString = requestString.replace(redirectedDomain, Globals.API_HOSTNAME);
                 }
 
                 if (Settings.settings.has(Settings.PROXY_LOGGING) && Settings.settings.getBoolean(Settings.PROXY_LOGGING))
@@ -112,7 +102,6 @@ public class ProxyThread implements Runnable {
                 Settings.loadSettings();
                 if (Settings.settings.has(Settings.PROXY_LOGGING) && Settings.settings.getBoolean(Settings.PROXY_LOGGING))
                     System.out.println(requestString);
-
 
                 String urlString = "";
                 try {

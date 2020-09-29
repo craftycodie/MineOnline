@@ -123,12 +123,15 @@ public class MenuManager {
                     }
                 }
 
-                MinecraftVersion version = MinecraftVersionRepository.getSingleton().getVersion(quicklaunch);
+            }
+        }
 
-                if (quicklaunch != null && version != null && version.type.equals("launcher")) {
-                    MinecraftVersion.launchMinecraft(quicklaunch, null, null, null);
-                    return;
-                }
+        if(quicklaunch != null) {
+            MinecraftVersion version = MinecraftVersionRepository.getSingleton().getVersion(quicklaunch);
+
+            if (version != null && version.type.equals("launcher")) {
+                MinecraftVersion.launchMinecraft(quicklaunch, null, null, null);
+                return;
             }
         }
 

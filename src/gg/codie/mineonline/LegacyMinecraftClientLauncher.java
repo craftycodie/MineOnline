@@ -1,6 +1,7 @@
 package gg.codie.mineonline;
 
 import gg.codie.minecraft.client.Options;
+import gg.codie.minecraft.client.VersionFile;
 import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.gui.rendering.*;
 import gg.codie.mineonline.gui.rendering.Renderer;
@@ -8,6 +9,7 @@ import gg.codie.mineonline.lwjgl.OnCreateListener;
 import gg.codie.mineonline.lwjgl.OnUpdateListener;
 import gg.codie.mineonline.patches.*;
 import gg.codie.mineonline.patches.minecraft.LauncherInitPatch;
+import gg.codie.utils.FileUtils;
 import gg.codie.utils.MD5Checksum;
 import gg.codie.utils.OSUtils;
 import gg.codie.utils.TransferableImage;
@@ -161,20 +163,36 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
                 DisplayManager.getFrame().dispose();
 
             Settings.loadSettings();
-            String updateURL = Settings.settings.has(Settings.MINECRAFT_UPDATE_URL) ? Settings.settings.getString(Settings.MINECRAFT_UPDATE_URL) : null;
+            String updateURLString = Settings.settings.has(Settings.MINECRAFT_UPDATE_URL) ? Settings.settings.getString(Settings.MINECRAFT_UPDATE_URL) : null;
 
             SystemSetPropertyPatch.banNativeChanges();
 
             String latestVersion = null;
 
-            if(updateURL != null && !updateURL.isEmpty()) {
-                HttpURLConnection versionRequest = (HttpURLConnection) new URL("http://s3.amazonaws.com/MinecraftDownload/minecraft.jar").openConnection();
-                versionRequest.setRequestMethod("HEAD");
-                versionRequest.connect();
-                latestVersion = "" + versionRequest.getContentLength();
+            if(updateURLString != null && !updateURLString.isEmpty()) {
+                URL updateURL = new URL(updateURLString);
+                File currentJar = new File(LauncherFiles.MINECRAFT_BINARIES_PATH + FileUtils.getFileName(updateURL));
+                if(!currentJar.exists())
+                    latestVersion = "" + System.currentTimeMillis();
+                else {
+                    int existingJarSize = (int)currentJar.length();
+                    HttpURLConnection versionRequest = (HttpURLConnection) new URL(updateURLString).openConnection();
+                    versionRequest.setRequestMethod("HEAD");
+                    versionRequest.connect();
+
+                    if(existingJarSize != versionRequest.getContentLength())
+                        latestVersion = "" + versionRequest.getContentLength();
+                    else
+                        latestVersion = VersionFile.read();
+                }
             }
 
+            // Disable the proxy, use the patch instead.
+            System.setProperty("http.proxyHost", "");
+            System.setProperty("http.proxyPort", "");
+
             LauncherInitPatch.allowCustomUpdates(latestVersion);
+            URLPatch.redefineURL(updateURLString);
 
             try {
                 Class launcherClass = Class.forName("net.minecraft.LauncherFrame");
