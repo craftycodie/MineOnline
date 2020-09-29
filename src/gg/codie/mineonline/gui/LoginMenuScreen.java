@@ -95,7 +95,7 @@ public class LoginMenuScreen implements IMenuScreen {
                     if (errorText != null)
                         errorText.remove();
 
-                    System.out.println(ex.getMessage());
+                    ex.printStackTrace();
 
                     errorText = new GUIText(errorMessage, 1.5f, TextMaster.minecraftFont, new Vector2f(0, (DisplayManager.getDefaultHeight() / 2) - 80), DisplayManager.getDefaultWidth(), true, true);
                     errorText.setColour(1, 0.33f, 0.33f);
