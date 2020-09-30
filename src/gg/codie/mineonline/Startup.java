@@ -1,18 +1,19 @@
 package gg.codie.mineonline;
 
 import gg.codie.mineonline.utils.JREUtils;
-import gg.codie.utils.OSUtils;
+import gg.codie.mineonline.utils.Logging;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Map;
 
 public class Startup {
-
     public static void main(String[] args) throws IOException, URISyntaxException {
+        Logging.deleteLog();
+        Logging.enableLogging();
+
         LibraryManager.extractLibraries();
 
         LinkedList<String> launchArgs = new LinkedList();

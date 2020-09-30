@@ -126,6 +126,10 @@ public class MinecraftVersionRepository {
                 if(path.toFile().isDirectory()) {
                     getOfficialLauncherJars(fileNames, path);
                 } else if(path.toAbsolutePath().toString().endsWith(".jar")) {
+                    String fileName = path.toAbsolutePath().getFileName().toString();
+                    if (fileName.equals("lwjgl.jar") || fileName.equals("lwjgl_util.jar") || fileName.equals("jinput.jar"))
+                        continue;
+
                     fileNames.add(path.toAbsolutePath().toString());
                 }
             }

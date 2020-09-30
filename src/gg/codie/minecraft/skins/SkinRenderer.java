@@ -10,6 +10,7 @@ import gg.codie.mineonline.gui.rendering.models.RawModel;
 import gg.codie.mineonline.gui.rendering.models.TexturedModel;
 import gg.codie.mineonline.gui.rendering.shaders.StaticShader;
 import gg.codie.mineonline.gui.rendering.textures.ModelTexture;
+import gg.codie.mineonline.utils.Logging;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Vector2f;
@@ -63,6 +64,8 @@ public class SkinRenderer {
     public static final int DEFAULT_WIDTH = 350;
 
     public static void main(String[] args) throws Exception {
+        Logging.enableLogging();
+
         LibraryManager.updateNativesPath();
 
         DisplayManager.init();

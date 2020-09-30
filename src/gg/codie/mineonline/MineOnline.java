@@ -3,6 +3,7 @@ package gg.codie.mineonline;
 import gg.codie.mineonline.discord.DiscordRPCHandler;
 import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.utils.JREUtils;
+import gg.codie.mineonline.utils.Logging;
 import net.arikia.dev.drpc.DiscordRPC;
 
 import java.io.File;
@@ -22,6 +23,8 @@ public class MineOnline {
     }
 
     public static void main(String[] args) throws IOException, URISyntaxException {
+        Logging.enableLogging();
+
         DiscordRPCHandler.initialize();
 
         LinkedList<String> launchArgs = new LinkedList();

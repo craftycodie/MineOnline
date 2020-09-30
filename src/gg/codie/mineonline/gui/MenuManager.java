@@ -14,6 +14,7 @@ import gg.codie.mineonline.gui.rendering.models.TexturedModel;
 import gg.codie.mineonline.gui.rendering.shaders.StaticShader;
 import gg.codie.mineonline.gui.rendering.textures.ModelTexture;
 import gg.codie.mineonline.patches.LWJGLDisplayPatch;
+import gg.codie.mineonline.utils.Logging;
 import gg.codie.utils.LastLogin;
 import org.json.JSONObject;
 import org.lwjgl.input.Keyboard;
@@ -76,6 +77,8 @@ public class MenuManager {
     }
 
     public static void main(String[] args) throws Exception {
+        Logging.enableLogging();
+
         LibraryManager.updateNativesPath();
 
         LWJGLDisplayPatch.hijackLWJGLThreadPatch();

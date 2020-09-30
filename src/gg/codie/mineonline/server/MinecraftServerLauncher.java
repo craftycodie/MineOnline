@@ -1,6 +1,7 @@
 package gg.codie.mineonline.server;
 
 import gg.codie.mineonline.api.MineOnlineAPI;
+import gg.codie.mineonline.utils.Logging;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -65,6 +66,7 @@ public class MinecraftServerLauncher extends ServerLauncher {
     }
 
     public static void main(String[] args) throws Exception{
+        Logging.enableLogging();
 
         File jarFile = new File(args[0]);
         if(!jarFile.exists()) {

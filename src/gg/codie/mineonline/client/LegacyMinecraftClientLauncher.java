@@ -737,45 +737,45 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
     }
 
     //This sets parameters that would normally be set by <param> tags within the applet block defined by <applet> and </applet> tags.
-    public String getParameter(String name){
-        String RetVal=null;
-        switch(name){
+    public String getParameter(String key){
+        String value = null;
+        switch(key){
             case "stand-alone":
-                RetVal = "true";
+                value = "true";
                 break;
             case "username":
-                RetVal = Session.session.getUsername();
+                value = Session.session.getUsername();
                 break;
             case "sessionid":
-                int n;
-                if (!Session.session.isOnline()){
+                if (!Session.session.isOnline())
                     break;
-                }
-                RetVal = Session.session.getSessionToken();
+                value = Session.session.getSessionToken();
                 break;
             case "haspaid":
-                RetVal = String.valueOf(Settings.settings.getBoolean(Settings.IS_PREMIUM));
+                value = String.valueOf(Settings.settings.getBoolean(Settings.IS_PREMIUM));
                 break;
             case "demo":
-                RetVal = !Settings.settings.getBoolean(Settings.IS_PREMIUM) ? "true" : null;
+                value = !Settings.settings.getBoolean(Settings.IS_PREMIUM) ? "true" : null;
                 break;
             case "server":
-                RetVal = serverAddress;
+                value = serverAddress;
                 break;
             case "port":
-                RetVal = serverPort;
+                value = serverPort;
                 break;
             case "mppass":
-                RetVal = MPPass;
+                value = MPPass;
                 break;
             default:
                 //don't do anything
         }
-        if (RetVal==null){
-            System.out.println(name + " =	" + "");
-        }else{
-            System.out.println(name + " =	" + RetVal);
+        if (Globals.DEV) {
+            if (value == null) {
+                System.out.println(key + " = " + "");
+            } else {
+                System.out.println(key + " = " + value);
+            }
         }
-        return RetVal;
+        return value;
     }
 }

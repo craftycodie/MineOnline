@@ -1,6 +1,7 @@
 package gg.codie.mineonline;
 
 import gg.codie.mineonline.server.MinecraftServerLauncher;
+import gg.codie.mineonline.utils.Logging;
 
 import java.io.File;
 import java.util.Arrays;
@@ -9,6 +10,9 @@ import java.util.Map;
 
 public class Server {
     public static void main(String[] args) throws Exception{
+        Logging.deleteLog();
+        Logging.enableLogging();
+
         File jarFile = new File(args[0]);
         if(!jarFile.exists()) {
             System.err.println("Couldn't find jar file " + args[0]);

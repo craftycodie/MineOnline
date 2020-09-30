@@ -9,6 +9,7 @@ import gg.codie.mineonline.patches.minecraft.PropertiesSignaturePatch;
 import gg.codie.mineonline.patches.minecraft.YggdrasilMinecraftSessionServicePatch;
 import gg.codie.mineonline.server.MinecraftServerProcess;
 import gg.codie.mineonline.utils.JREUtils;
+import gg.codie.mineonline.utils.Logging;
 import gg.codie.utils.MD5Checksum;
 import gg.codie.utils.OSUtils;
 import org.lwjgl.opengl.Display;
@@ -131,6 +132,8 @@ public class MinecraftClientLauncher {
     }
 
     public static void main(String[] args) throws Exception {
+        Logging.enableLogging();
+
         String serverAddress = args.length > 3 ? args[3] : null;
         String serverPort = args.length > 4 ? args[4] : null;
         new MinecraftClientLauncher(args[0], args[1], args[2], serverAddress, serverPort).startMinecraft();

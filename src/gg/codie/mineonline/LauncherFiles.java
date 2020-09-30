@@ -40,6 +40,7 @@ public class LauncherFiles {
     public static final String LAST_LOGIN_PATH = MINEONLINE_CACHE_FOLDER + "lastlogin";
     public static final String MINEONLINE_CUSTOM_VERSIONS_FOLDER = MINEONLINE_FOLDER + "custom-versions" + File.separator;
     public static final String MINEONLINE_VERSIONS_FOLDER = MINEONLINE_FOLDER + "versions" + File.separator;
+    public static final String MINEONLINE_LATEST_LOG = MINEONLINE_FOLDER + "latest.log";
 
     public static final String MINECRAFT_RESOURCES_PATH = getOldMinecraftDirectory() + File.separator + "resources" + File.separator;
     public static final String MINECRAFT_ASSETS_PATH = getNewMinecraftDirectory() + File.separator + "assets" + File.separator;

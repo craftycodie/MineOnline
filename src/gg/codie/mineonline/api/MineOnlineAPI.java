@@ -44,8 +44,8 @@ public class MineOnlineAPI {
 
             return mpPass;
         } catch (Exception e) {
-
-            e.printStackTrace();
+            if (e.getClass() != FileNotFoundException.class)
+                e.printStackTrace();
             return null;
         } finally {
 

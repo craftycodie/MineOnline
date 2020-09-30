@@ -3,6 +3,7 @@ package gg.codie.minecraft.skins;
 import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.LibraryManager;
 import gg.codie.mineonline.utils.JREUtils;
+import gg.codie.mineonline.utils.Logging;
 import gg.codie.utils.OSUtils;
 
 import java.io.File;
@@ -13,6 +14,9 @@ import java.util.Map;
 public class SkinRendererLauncher {
 
     public static void main(String[] args) throws Exception {
+        Logging.deleteLog();
+        Logging.enableLogging();
+
         LinkedList<String> launchArgs = new LinkedList();
         launchArgs.add(JREUtils.getJavaExecutable());
         launchArgs.add("-javaagent:" + LauncherFiles.PATCH_AGENT_JAR);

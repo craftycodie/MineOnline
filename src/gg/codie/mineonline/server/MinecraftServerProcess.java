@@ -5,6 +5,7 @@ import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.LibraryManager;
 import gg.codie.mineonline.patches.URLPatch;
 import gg.codie.mineonline.utils.JREUtils;
+import gg.codie.mineonline.utils.Logging;
 import gg.codie.utils.ArrayUtils;
 import gg.codie.utils.OSUtils;
 
@@ -58,6 +59,8 @@ public class MinecraftServerProcess {
     }
 
     public static void main(String[] args) throws Exception {
+        Logging.enableLogging();
+
         File jarFile = new File(args[0]);
         if(!jarFile.exists()) {
             System.err.println("Couldn't find jar file " + args[0]);
