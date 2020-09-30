@@ -1,6 +1,7 @@
 package gg.codie.mineonline;
 
 import gg.codie.mineonline.server.MinecraftServerLauncher;
+import gg.codie.mineonline.utils.JREUtils;
 import gg.codie.mineonline.utils.Logging;
 
 import java.io.File;
@@ -22,19 +23,13 @@ public class Server {
         LibraryManager.extractLibraries();
 
         LinkedList<String> launchArgs = new LinkedList();
+        launchArgs.add(JREUtils.getRunningJavaExecutable());
         launchArgs.add("-javaagent:" + LauncherFiles.PATCH_AGENT_JAR);
         launchArgs.add("-Djava.util.Arrays.useLegacyMergeSort=true");
-
-        if (args.length > 1)
-            launchArgs.addAll(Arrays.asList(Arrays.copyOfRange(args, 2, args.length)));
-
         launchArgs.add("-cp");
         launchArgs.add(LibraryManager.getClasspath(false, new String[] { new File(MinecraftServerLauncher.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath() }));
         launchArgs.add(MinecraftServerLauncher.class.getCanonicalName());
-        launchArgs.add(args[0]);
-
-        if (args.length > 1)
-            launchArgs.add(args[1]);
+        launchArgs.addAll(Arrays.asList(args));
 
         java.util.Properties props = System.getProperties();
         ProcessBuilder processBuilder = new ProcessBuilder(launchArgs);

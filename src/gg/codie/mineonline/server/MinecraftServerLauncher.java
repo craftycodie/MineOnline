@@ -10,9 +10,6 @@ import java.io.OutputStreamWriter;
 import java.util.Scanner;
 
 public class MinecraftServerLauncher extends ServerLauncher {
-    public static String serverlistAddress;
-    public static String serverlistPort;
-
     public MinecraftServerLauncher(String[] args) throws Exception {
         super(args[0]);
 

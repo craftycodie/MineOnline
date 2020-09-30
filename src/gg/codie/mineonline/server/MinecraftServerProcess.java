@@ -14,6 +14,8 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.Map;
 
 public class MinecraftServerProcess {
@@ -32,16 +34,24 @@ public class MinecraftServerProcess {
             System.exit(1);
         }
 
-        String[] launchArgs = new String[] {
-                JREUtils.getJavaExecutable(),
-                "-javaagent:" + LauncherFiles.PATCH_AGENT_JAR,
-                "-Djava.util.Arrays.useLegacyMergeSort=true",
-                "-cp",
-                LibraryManager.getClasspath(false, new String[] { new File(MinecraftServerProcess.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath(), args[0]}),
-                MinecraftServerProcess.class.getCanonicalName(),
-        };
+        LinkedList<String> launchArgs = new LinkedList();
+        launchArgs.add(JREUtils.getJavaExecutable());
+        launchArgs.add("-javaagent:" + LauncherFiles.PATCH_AGENT_JAR);
+        launchArgs.add("-Djava.util.Arrays.useLegacyMergeSort=true");
+        launchArgs.add("-cp");
 
-        ProcessBuilder processBuilder = new ProcessBuilder(ArrayUtils.concatenate(launchArgs, args));
+        if (args.length > 1)
+            if (!args[1].startsWith("-"))
+                if (args.length > 2)
+                    launchArgs.addAll(Arrays.asList(Arrays.copyOfRange(args, 2, args.length)));
+            else
+                launchArgs.addAll(Arrays.asList(Arrays.copyOfRange(args, 1, args.length)));
+
+        launchArgs.add(LibraryManager.getClasspath(false, new String[] { new File(MinecraftServerProcess.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath(), args[0] }));
+        launchArgs.add(MinecraftServerProcess.class.getCanonicalName());
+        launchArgs.addAll(Arrays.asList(args));
+
+        ProcessBuilder processBuilder = new ProcessBuilder(launchArgs);
 
         Map<String, String> env = processBuilder.environment();
         for(String prop : props.stringPropertyNames()) {
