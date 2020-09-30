@@ -15,6 +15,7 @@ import net.arikia.dev.drpc.callbacks.JoinGameCallback;
 import net.arikia.dev.drpc.callbacks.JoinRequestCallback;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -71,7 +72,8 @@ public class DiscordRPCHandler {
             try {
                 server = MineOnlineAPI.getServer(DiscordRPCHandler.serverIP, DiscordRPCHandler.serverPort);
             } catch (IOException ex) {
-                ex.printStackTrace();
+                if (ex.getClass() != FileNotFoundException.class)
+                    ex.printStackTrace();
             }
 
             DiscordRichPresence.Builder presence = new DiscordRichPresence.Builder(server != null ? server.name : (DiscordRPCHandler.serverIP + ":" + (!DiscordRPCHandler.serverPort.equals("25565") ? DiscordRPCHandler.serverPort : "")));
