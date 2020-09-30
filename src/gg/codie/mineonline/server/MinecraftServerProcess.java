@@ -4,6 +4,7 @@ import gg.codie.mineonline.Globals;
 import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.LibraryManager;
 import gg.codie.mineonline.patches.URLPatch;
+import gg.codie.mineonline.utils.JREUtils;
 import gg.codie.utils.ArrayUtils;
 import gg.codie.utils.OSUtils;
 
@@ -31,7 +32,7 @@ public class MinecraftServerProcess {
         }
 
         String[] launchArgs = new String[] {
-                OSUtils.getJREPath(),
+                JREUtils.getJavaExecutable(),
                 "-javaagent:" + LauncherFiles.PATCH_AGENT_JAR,
                 "-Djava.util.Arrays.useLegacyMergeSort=true",
                 "-cp",
@@ -70,13 +71,11 @@ public class MinecraftServerProcess {
 
         Class mainClass = null;
 
+        // Custom
         if(args.length > 1) {
             try {
                 mainClass = classLoader.loadClass(args[1]);
-            } catch (ClassNotFoundException ex) {
-                System.out.println("Could not find main class " + args[1]);
-                System.exit(1);
-            }
+            } catch (ClassNotFoundException ex) { }
         }
 
         // Release
@@ -104,6 +103,7 @@ public class MinecraftServerProcess {
 
         Method main = mainClass.getMethod("main", String[].class);
 
+        // Release args.
         System.setProperty(PROP_AUTH_HOST, "http://" + Globals.API_HOSTNAME);
         System.setProperty(PROP_ACCOUNT_HOST, "http://" + Globals.API_HOSTNAME);
         System.setProperty(PROP_SESSION_HOST, "http://" + Globals.API_HOSTNAME);

@@ -20,10 +20,17 @@ public class Server {
         LinkedList<String> launchArgs = new LinkedList();
         launchArgs.add("-javaagent:" + LauncherFiles.PATCH_AGENT_JAR);
         launchArgs.add("-Djava.util.Arrays.useLegacyMergeSort=true");
+
+        if (args.length > 1)
+            launchArgs.addAll(Arrays.asList(Arrays.copyOfRange(args, 2, args.length)));
+
         launchArgs.add("-cp");
         launchArgs.add(LibraryManager.getClasspath(false, new String[] { new File(MinecraftServerLauncher.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath() }));
         launchArgs.add(MinecraftServerLauncher.class.getCanonicalName());
-        launchArgs.addAll(Arrays.asList(args));
+        launchArgs.add(args[0]);
+
+        if (args.length > 1)
+            launchArgs.add(args[1]);
 
         java.util.Properties props = System.getProperties();
         ProcessBuilder processBuilder = new ProcessBuilder(launchArgs);

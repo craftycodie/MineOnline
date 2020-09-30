@@ -2,7 +2,7 @@ package gg.codie.mineonline;
 
 import gg.codie.mineonline.discord.DiscordRPCHandler;
 import gg.codie.mineonline.gui.MenuManager;
-import gg.codie.utils.OSUtils;
+import gg.codie.mineonline.utils.JREUtils;
 import net.arikia.dev.drpc.DiscordRPC;
 
 import java.io.File;
@@ -25,9 +25,10 @@ public class MineOnline {
         DiscordRPCHandler.initialize();
 
         LinkedList<String> launchArgs = new LinkedList();
-        launchArgs.add(OSUtils.getJREPath());
+        launchArgs.add(JREUtils.getJavaExecutable());
         launchArgs.add("-javaagent:" + LauncherFiles.PATCH_AGENT_JAR);
         launchArgs.add("-Djava.util.Arrays.useLegacyMergeSort=true");
+        launchArgs.addAll(Arrays.asList(Settings.settings.getString(Settings.CLIENT_LAUNCH_ARGS).split(" ")));
         launchArgs.add("-cp");
         launchArgs.add(LibraryManager.getClasspath(true, new String[] { new File(MenuManager.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath() }));
         launchArgs.add(MenuManager.class.getCanonicalName());

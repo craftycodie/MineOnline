@@ -13,6 +13,7 @@ import gg.codie.mineonline.patches.SocketPatch;
 import gg.codie.mineonline.patches.SystemSetPropertyPatch;
 import gg.codie.mineonline.patches.URLPatch;
 import gg.codie.mineonline.patches.minecraft.LauncherInitPatch;
+import gg.codie.mineonline.utils.JREUtils;
 import gg.codie.utils.FileUtils;
 import gg.codie.utils.MD5Checksum;
 import gg.codie.utils.OSUtils;
@@ -46,6 +47,7 @@ import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.Map;
 
 public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
@@ -122,19 +124,22 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
 //            });
 //
 //            mainFunction.invoke(null, (Object)params);
+            LinkedList<String> arguments = new LinkedList<>();
+            arguments.add(JREUtils.getJavaExecutable());
+            arguments.add("-Djava.library.path=" + LauncherFiles.MINEONLINE_NATIVES_FOLDER);
 
-            String[] CMD_ARRAY = new String[] {
-                    OSUtils.getJREPath(),
-                    CP, classpath + LibraryManager.getClasspathSeparator() + LauncherFiles.LWJGL_JAR + LibraryManager.getClasspathSeparator() + LauncherFiles.LWJGL_UTIL_JAR + LibraryManager.getClasspathSeparator() + jarPath,
-                    "-Djava.library.path=" + LauncherFiles.MINECRAFT_VERSIONS_PATH + "1.6.2/natives",
-                    rubyDungClass.getCanonicalName()
-            };
+            if (Settings.settings.has(Settings.CLIENT_LAUNCH_ARGS) && !Settings.settings.getString(Settings.CLIENT_LAUNCH_ARGS).isEmpty())
+                arguments.addAll(Arrays.asList(Settings.settings.getString(Settings.CLIENT_LAUNCH_ARGS).split(" ")));
 
-            System.out.println("Launching RubyDung!  " + String.join(" ", CMD_ARRAY));
+            arguments.add(CP);
+            arguments.add(classpath + LibraryManager.getClasspathSeparator() + LauncherFiles.LWJGL_JAR + LibraryManager.getClasspathSeparator() + LauncherFiles.LWJGL_UTIL_JAR + LibraryManager.getClasspathSeparator() + jarPath);
+            arguments.add(rubyDungClass.getCanonicalName());
+
+            System.out.println("Launching RubyDung!  " + String.join(" ", arguments));
 
 
             java.util.Properties props = System.getProperties();
-            ProcessBuilder processBuilder = new ProcessBuilder(CMD_ARRAY);
+            ProcessBuilder processBuilder = new ProcessBuilder(arguments);
             Map<String, String> env = processBuilder.environment();
             for(String prop : props.stringPropertyNames()) {
                 env.put(prop, props.getProperty(prop));

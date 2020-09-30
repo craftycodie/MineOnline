@@ -1,5 +1,6 @@
 package gg.codie.mineonline;
 
+import gg.codie.mineonline.utils.JREUtils;
 import gg.codie.utils.OSUtils;
 
 import java.io.File;
@@ -15,7 +16,7 @@ public class Startup {
         LibraryManager.extractLibraries();
 
         LinkedList<String> launchArgs = new LinkedList();
-        launchArgs.add(OSUtils.getJREPath());
+        launchArgs.add(JREUtils.getRunningJavaExecutable());
         launchArgs.add("-javaagent:" + LauncherFiles.PATCH_AGENT_JAR);
         launchArgs.add("-Djava.util.Arrays.useLegacyMergeSort=true");
         launchArgs.add("-cp");

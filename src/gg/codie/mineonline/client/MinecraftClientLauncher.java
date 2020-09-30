@@ -8,6 +8,7 @@ import gg.codie.mineonline.patches.URLPatch;
 import gg.codie.mineonline.patches.minecraft.PropertiesSignaturePatch;
 import gg.codie.mineonline.patches.minecraft.YggdrasilMinecraftSessionServicePatch;
 import gg.codie.mineonline.server.MinecraftServerProcess;
+import gg.codie.mineonline.utils.JREUtils;
 import gg.codie.utils.MD5Checksum;
 import gg.codie.utils.OSUtils;
 import org.lwjgl.opengl.Display;
@@ -20,6 +21,7 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Map;
 
@@ -66,7 +68,7 @@ public class MinecraftClientLauncher {
             libraries.add(jarPath);
 
             LinkedList<String> launchArgs = new LinkedList();
-            launchArgs.add(OSUtils.getJREPath());
+            launchArgs.add(JREUtils.getJavaExecutable());
             launchArgs.add("-javaagent:" + LauncherFiles.PATCH_AGENT_JAR);
             launchArgs.add("-Djava.util.Arrays.useLegacyMergeSort=true");
             launchArgs.add("-Djava.net.preferIPv4Stack=true");
@@ -75,6 +77,8 @@ public class MinecraftClientLauncher {
             launchArgs.add("-Dmineonline.username=" + Session.session.getUsername());
             launchArgs.add("-Dmineonline.token=" + Session.session.getSessionToken());
             launchArgs.add("-Dmineonline.uuid=" + Session.session.getUuid());
+            if (Settings.settings.has(Settings.CLIENT_LAUNCH_ARGS) && !Settings.settings.getString(Settings.CLIENT_LAUNCH_ARGS).isEmpty())
+                launchArgs.addAll(Arrays.asList(Settings.settings.getString(Settings.CLIENT_LAUNCH_ARGS).split(" ")));
             launchArgs.add("-cp");
             launchArgs.add(LibraryManager.getClasspath(false, libraries.toArray(new String[libraries.size()])));
             launchArgs.add(MinecraftClientLauncher.class.getCanonicalName());

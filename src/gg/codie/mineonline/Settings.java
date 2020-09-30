@@ -15,6 +15,8 @@ public class Settings {
     public static final String IS_PREMIUM = "isPremium";
     public static final String FULLSCREEN = "fullscreen";
     public static final String MINECRAFT_UPDATE_URL = "minecraftUpdateURL";
+    public static final String JAVA_HOME = "javaHome";
+    public static final String CLIENT_LAUNCH_ARGS = "clientLaunchArgs";
     private static final int SETTINGS_VERSION_NUMBER = 4;
 
     private static boolean readonly = true;
@@ -41,6 +43,8 @@ public class Settings {
         settings.put(IS_PREMIUM, true);
         settings.put(FULLSCREEN, false);
         settings.put(MINECRAFT_UPDATE_URL, "");
+        settings.put(JAVA_HOME, "");
+        settings.put(CLIENT_LAUNCH_ARGS, "");
 
         saveSettings();
         loadSettings();
@@ -80,6 +84,8 @@ public class Settings {
                 switch (settings.getInt(SETTINGS_VERSION)) {
                     case 3:
                         settings.put(MINECRAFT_UPDATE_URL, "");
+                        settings.put(JAVA_HOME, "");
+                        settings.put(CLIENT_LAUNCH_ARGS, "");
                 }
                 settings.put(SETTINGS_VERSION, SETTINGS_VERSION_NUMBER);
             }

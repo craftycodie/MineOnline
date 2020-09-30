@@ -29,13 +29,4 @@ public class OSUtils {
         if (osName.contains("unix")) return OS.linux;
         return OS.unknown;
     }
-
-    public static String getJREPath() {
-        switch(getPlatform()) {
-            case windows:
-                return System.getProperty("java.home") + File.separator + "bin" + File.separator + "java.exe";
-            default:
-                return System.getProperty("java.home") + File.separator + "bin" + File.separator + "java";
-        }
-    }
 }

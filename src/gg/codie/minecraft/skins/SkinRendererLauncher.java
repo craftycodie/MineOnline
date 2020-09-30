@@ -2,6 +2,7 @@ package gg.codie.minecraft.skins;
 
 import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.LibraryManager;
+import gg.codie.mineonline.utils.JREUtils;
 import gg.codie.utils.OSUtils;
 
 import java.io.File;
@@ -13,7 +14,7 @@ public class SkinRendererLauncher {
 
     public static void main(String[] args) throws Exception {
         LinkedList<String> launchArgs = new LinkedList();
-        launchArgs.add(OSUtils.getJREPath());
+        launchArgs.add(JREUtils.getJavaExecutable());
         launchArgs.add("-javaagent:" + LauncherFiles.PATCH_AGENT_JAR);
         launchArgs.add("-Djava.util.Arrays.useLegacyMergeSort=true");
         launchArgs.add("-cp");
