@@ -37,7 +37,7 @@ public class Startup {
 
         Process launcherProcess = processBuilder.start();
 
-        Thread closeLauncher = new Thread(() -> launcherProcess.destroyForcibly());
+        Thread closeLauncher = new Thread(() -> launcherProcess.destroy());
         Runtime.getRuntime().addShutdownHook(closeLauncher);
 
         while (launcherProcess.isAlive()) {

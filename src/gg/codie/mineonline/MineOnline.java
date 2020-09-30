@@ -3,6 +3,7 @@ package gg.codie.mineonline;
 import gg.codie.mineonline.discord.DiscordRPCHandler;
 import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.utils.OSUtils;
+import net.arikia.dev.drpc.DiscordRPC;
 
 import java.io.File;
 import java.io.IOException;
@@ -67,7 +68,10 @@ public class MineOnline {
                 launcherProcess = joinProcessBuilder.start();
 
                 Runtime.getRuntime().removeShutdownHook(closeLauncher);
-                closeLauncher = new Thread(() -> launcherProcess.destroyForcibly());
+                closeLauncher = new Thread(() -> {
+                    launcherProcess.destroyForcibly();
+                    DiscordRPC.discordShutdown();
+                });
                 Runtime.getRuntime().addShutdownHook(closeLauncher);
 
                 discordJoin = null;
