@@ -1,6 +1,6 @@
 package gg.codie.mineonline.discord;
 
-import gg.codie.mineonline.DiscordLauncherWrapper;
+import gg.codie.mineonline.MineOnline;
 import gg.codie.mineonline.Globals;
 import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.LibraryManager;
@@ -98,7 +98,7 @@ public class DiscordRPCHandler {
         .setJoinGameEventHandler(new JoinGameCallback() {
             @Override
             public void apply(String s) {
-                DiscordLauncherWrapper.joinDiscord(s.replace(", ", ":"));
+                MineOnline.joinDiscord(s.replace(", ", ":"));
             }
         })
         .setJoinRequestEventHandler(new JoinRequestCallback() {

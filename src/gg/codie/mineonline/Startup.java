@@ -19,8 +19,8 @@ public class Startup {
         launchArgs.add("-javaagent:" + LauncherFiles.PATCH_AGENT_JAR);
         launchArgs.add("-Djava.util.Arrays.useLegacyMergeSort=true");
         launchArgs.add("-cp");
-        launchArgs.add(LibraryManager.getClasspath(false, new String[] { new File(DiscordLauncherWrapper.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath(), LauncherFiles.DISCORD_RPC_JAR }));
-        launchArgs.add(DiscordLauncherWrapper.class.getCanonicalName());
+        launchArgs.add(LibraryManager.getClasspath(false, new String[] { new File(MineOnline.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath(), LauncherFiles.DISCORD_RPC_JAR }));
+        launchArgs.add(MineOnline.class.getCanonicalName());
         launchArgs.addAll(Arrays.asList(args));
 
         java.util.Properties props = System.getProperties();
