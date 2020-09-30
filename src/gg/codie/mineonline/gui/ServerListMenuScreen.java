@@ -43,19 +43,19 @@ public class ServerListMenuScreen implements IMenuScreen {
                         Set<String> minecraftJars = MinecraftVersionRepository.getSingleton().getInstalledJars().keySet();
 
                         if(serverVersion != null) {
+                            MinecraftVersion selectedVersion = MinecraftVersionRepository.getSingleton().getVersion(MinecraftVersionRepository.getSingleton().getLastSelectedJarPath());
+                            if (selectedVersion.baseVersion.equals(serverVersion.baseVersion)) {
+                                String mppass = null;
+                                if(serverVersion != null && serverVersion.hasHeartbeat)
+                                    mppass = MineOnlineAPI.getMpPass(Session.session.getSessionToken(), selectedServer.server.ip, "" + selectedServer.server.port);
+
+                                MinecraftVersion.launchMinecraft(MinecraftVersionRepository.getSingleton().getLastSelectedJarPath(), selectedServer.server.ip, "" + selectedServer.server.port, mppass);
+                            }
+
+
                             for (String compatibleClientMd5 : serverVersion.clientVersions) {
                                 for (String path : minecraftJars) {
-                                    File file = new File(path);
-
                                     MinecraftVersion clientVersion = MinecraftVersionRepository.getSingleton().getInstalledJars().get(path);
-
-//                                    try {
-//                                        if (!MinecraftVersion.isPlayableJar(file.getPath())) {
-//                                            continue;
-//                                        }
-//                                    } catch (IOException ex) {
-//                                        continue;
-//                                    }
 
                                     if (clientVersion != null && clientVersion.baseVersion.equals(compatibleClientMd5)) {
                                         try {

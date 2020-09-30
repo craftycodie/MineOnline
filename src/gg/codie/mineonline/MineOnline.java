@@ -22,8 +22,6 @@ public class MineOnline {
     }
 
     public static void main(String[] args) throws IOException, URISyntaxException {
-//        LibraryManager.updateClasspath();
-
         DiscordRPCHandler.initialize();
 
         LinkedList<String> launchArgs = new LinkedList();
