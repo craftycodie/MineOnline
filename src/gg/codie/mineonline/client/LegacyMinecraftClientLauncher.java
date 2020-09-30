@@ -14,10 +14,7 @@ import gg.codie.mineonline.patches.SystemSetPropertyPatch;
 import gg.codie.mineonline.patches.URLPatch;
 import gg.codie.mineonline.patches.minecraft.LauncherInitPatch;
 import gg.codie.mineonline.utils.JREUtils;
-import gg.codie.utils.FileUtils;
-import gg.codie.utils.MD5Checksum;
-import gg.codie.utils.OSUtils;
-import gg.codie.utils.TransferableImage;
+import gg.codie.utils.*;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -62,7 +59,9 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
 
     MinecraftVersion minecraftVersion;
 
-    public LegacyMinecraftClientLauncher(String jarPath, String serverAddress, String serverPort, String MPPass) {
+    URLClassLoader classLoader;
+
+    public LegacyMinecraftClientLauncher(String jarPath, String serverAddress, String serverPort, String MPPass) throws Exception {
         this.jarPath = jarPath;
         this.serverAddress = serverAddress;
         this.serverPort = serverPort;
@@ -72,11 +71,12 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
             this.serverPort = "25565";
 
         minecraftVersion = MinecraftVersionRepository.getSingleton().getVersion(jarPath);
+
+        this.classLoader = new URLClassLoader(new URL[] { Paths.get(jarPath).toUri().toURL() });
     }
 
     boolean firstUpdate = true;
     public void startMinecraft() throws Exception {
-        URLClassLoader classLoader = new URLClassLoader(new URL[] { Paths.get(jarPath).toUri().toURL() });
 
         System.gc();
 
@@ -565,14 +565,10 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
             //panel.setSize(new Dimension(width, height));
             //minecraftApplet.setSize(new Dimension(width, height));
 
-            try {
-                minecraftField = minecraftApplet.getClass().getDeclaredField("minecraft");
-            } catch (NoSuchFieldException ne) {
-                for(Field field : minecraftApplet.getClass().getDeclaredFields()) {
-                    if(field.getType().getPackage() == minecraftApplet.getClass().getPackage()) {
-                        minecraftField = field;
-                        continue;
-                    }
+            for(Field field : minecraftApplet.getClass().getDeclaredFields()) {
+                if(field.getType().getPackage().getName().equals("com.mojang.minecraft")) {
+                    minecraftField = field;
+                    continue;
                 }
             }
 
@@ -581,10 +577,13 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
             Field widthField = null;
             Field heightField = null;
 
+            Field guiWidthField = null;
+            Field guiHeightField = null;
+
             // Since Minecraft is obfuscated we can't just get the width and height fields by name.
             // Hopefully, they're always the first two ints. Seems likely.
             for(Field field : minecraftClass.getDeclaredFields()) {
-                if(int.class.equals(field.getType()) || Integer.class.equals(field.getType()) && Modifier.isPublic(field.getModifiers())) {
+                if ((int.class.equals(field.getType()) || Integer.class.equals(field.getType())) && Modifier.isPublic(field.getModifiers())) {
                     if (widthField == null) {
                         widthField = field;
                     } else if (heightField == null) {
@@ -599,20 +598,75 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
             heightField.setAccessible(true);
 
             Object minecraft = minecraftField.get(minecraftApplet);
+
+            Field guiField = null;
+
+            if (minecraftVersion.guiClass != null) {
+                try {
+                    Class guiClass = classLoader.loadClass(minecraftVersion.guiClass);
+                    for (Field field : guiClass.getDeclaredFields()) {
+                        if ((int.class.equals(field.getType()) || Integer.class.equals(field.getType())) && Modifier.isPrivate(field.getModifiers())) {
+                            if (guiWidthField == null) {
+                                guiWidthField = field;
+                            } else if (guiHeightField == null) {
+                                guiHeightField = field;
+                                break;
+                            }
+                        }
+                    }
+
+                    guiWidthField.setAccessible(true);
+                    guiHeightField.setAccessible(true);
+
+                    for (Field field : minecraftClass.getDeclaredFields()) {
+                        if (field.getType().getCanonicalName().equals(minecraftVersion.guiClass)) {
+                            guiField = field;
+                            guiField.setAccessible(true);
+                            break;
+                        }
+                    }
+                } catch (ClassNotFoundException ex) {
+                    System.err.println("Couldn't find GUI class " + minecraftVersion.guiClass);
+                }
+            }
+
+            Object gui = guiField != null ? guiField.get(minecraft) : null;
+
+            System.out.println(minecraft);
+            System.out.println(widthField);
+            System.out.println(heightField);
+
+            System.out.println(gui);
+            System.out.println(guiWidthField);
+            System.out.println(guiHeightField);
+
             widthField.setInt(minecraft, width);
+            heightField.setInt(minecraft, height);
 
             if (fullscreen){
                 heightField.setInt(minecraft, Display.getDisplayMode().getHeight());
                 widthField.setInt(minecraft, Display.getDisplayMode().getWidth());
+
+                if(gui != null && guiHeightField != null && guiWidthField != null) {
+                    int h = Display.getDisplayMode().getHeight();
+                    guiHeightField.setInt(gui, h * 240 / h);
+                    guiWidthField.setInt(gui, Display.getDisplayMode().getWidth() * 240 / h);
+                }
             }
             else {
                 heightField.setInt(minecraft, height - DisplayManager.getFrame().getInsets().top - DisplayManager.getFrame().getInsets().bottom);
                 widthField.setInt(minecraft, width);
+
+                if(gui != null && guiHeightField != null && guiWidthField != null) {
+                    int h = (height - DisplayManager.getFrame().getInsets().top - DisplayManager.getFrame().getInsets().bottom);
+                    guiHeightField.setInt(gui, h * 240 / h);
+                    guiWidthField.setInt(gui, width * 240 / h);
+                }
             }
 
             //screenshotLabel.setBounds(30, (AppletH - 16) - 30, 204, 20);
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
     }
 

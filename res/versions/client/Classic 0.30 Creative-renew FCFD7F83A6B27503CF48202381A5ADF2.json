@@ -9,5 +9,6 @@
   "enableFullscreenPatch": true,
   "enableMacosCursorPatch": true,
   "legacy": true,
-  "baseVersion": "c0.30-c"
+  "baseVersion": "c0.30-c",
+  "guiClass": "com.mojang.minecraft.e.m",
 }

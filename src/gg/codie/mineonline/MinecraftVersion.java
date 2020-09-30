@@ -42,6 +42,7 @@ public class MinecraftVersion {
     public final boolean useMinecraftImpl;
     public final String minecraftImplClass;
     public final String clientName;
+    public final String guiClass;
 
     public MinecraftVersion(
             String sha256,
@@ -63,7 +64,8 @@ public class MinecraftVersion {
             String[] nativesWindows,
             boolean useMinecraftImpl,
             String minecraftImplClass,
-            String clientName
+            String clientName,
+            String guiClass
     ) {
         this.sha256 = sha256;
         this.name = name;
@@ -85,29 +87,31 @@ public class MinecraftVersion {
         this.libraries = libraries;
         this.natives = nativesWindows;
         this.clientName = clientName;
+        this.guiClass = guiClass;
     }
 
     public MinecraftVersion(JSONObject object) {
-            sha256 = (object.has("sha256") ? object.getString("sha256") : null);
-            name = object.getString("name");
-            baseVersion = object.getString("baseVersion");
-            md5 = object.getString("md5");
-            type = object.getString("type");
-            baseURLHasNoPort = (object.has("baseURLHasNoPort") && object.getBoolean("baseURLHasNoPort"));
-            enableScreenshotPatch = (object.has("enableScreenshotPatch") && object.getBoolean("enableScreenshotPatch"));
-            hasHeartbeat = (object.has("hasHeartbeat") && object.getBoolean("hasHeartbeat"));
-            enableFullscreenPatch = (object.has("enableFullscreenPatch") && object.getBoolean("enableFullscreenPatch"));
-            info = (object.has("info") ? object.getString("info") : null);
-            clientVersions = (object.has("clientVersions") ? JSONUtils.getStringArray(object.getJSONArray("clientVersions")) : new String[] { object.getString("baseVersion")});
-            forceFullscreenMacos = (object.has("forceFullscreenMacos") && object.getBoolean("forceFullscreenMacos"));
-            enableMacosCursorPatch = (object.has("enableMacosCursorPatch") && object.getBoolean("enableMacosCursorPatch"));
-            legacy = (object.has("legacy") && object.getBoolean("legacy"));
-            assetIndex = (object.has("assetIndex") ? object.getString("assetIndex") : object.has("baseVersion") ? object.getString("baseVersion") : null);
-            libraries = (object.has("libraries") ? JSONUtils.getStringArray(object.getJSONArray("libraries")) : new String[0]);
-            natives = (object.has("natives") && object.getJSONObject("natives").has(OSUtils.getPlatform().name()) ? JSONUtils.getStringArray(object.getJSONObject("natives").getJSONArray(OSUtils.getPlatform().name())) : new String[0]);
-            useMinecraftImpl = (object.has("useMinecraftImpl") && object.getBoolean("useMinecraftImpl"));
-            minecraftImplClass = (object.has("minecraftImplClass") ? object.getString("minecraftImplClass") : null);
-            clientName = (object.has("clientName") ? object.getString("clientName") : object.getString("name"));
+        sha256 = (object.has("sha256") ? object.getString("sha256") : null);
+        name = object.getString("name");
+        baseVersion = object.getString("baseVersion");
+        md5 = object.getString("md5");
+        type = object.getString("type");
+        baseURLHasNoPort = (object.has("baseURLHasNoPort") && object.getBoolean("baseURLHasNoPort"));
+        enableScreenshotPatch = (object.has("enableScreenshotPatch") && object.getBoolean("enableScreenshotPatch"));
+        hasHeartbeat = (object.has("hasHeartbeat") && object.getBoolean("hasHeartbeat"));
+        enableFullscreenPatch = (object.has("enableFullscreenPatch") && object.getBoolean("enableFullscreenPatch"));
+        info = (object.has("info") ? object.getString("info") : null);
+        clientVersions = (object.has("clientVersions") ? JSONUtils.getStringArray(object.getJSONArray("clientVersions")) : new String[] { object.getString("baseVersion")});
+        forceFullscreenMacos = (object.has("forceFullscreenMacos") && object.getBoolean("forceFullscreenMacos"));
+        enableMacosCursorPatch = (object.has("enableMacosCursorPatch") && object.getBoolean("enableMacosCursorPatch"));
+        legacy = (object.has("legacy") && object.getBoolean("legacy"));
+        assetIndex = (object.has("assetIndex") ? object.getString("assetIndex") : object.has("baseVersion") ? object.getString("baseVersion") : null);
+        libraries = (object.has("libraries") ? JSONUtils.getStringArray(object.getJSONArray("libraries")) : new String[0]);
+        natives = (object.has("natives") && object.getJSONObject("natives").has(OSUtils.getPlatform().name()) ? JSONUtils.getStringArray(object.getJSONObject("natives").getJSONArray(OSUtils.getPlatform().name())) : new String[0]);
+        useMinecraftImpl = (object.has("useMinecraftImpl") && object.getBoolean("useMinecraftImpl"));
+        minecraftImplClass = (object.has("minecraftImplClass") ? object.getString("minecraftImplClass") : null);
+        clientName = (object.has("clientName") ? object.getString("clientName") : object.getString("name"));
+        guiClass = (object.has("guiClass") ? object.getString("guiClass") : null);
     }
 
 
@@ -297,7 +301,9 @@ public class MinecraftVersion {
                 natives.toArray(new String[0]),
                 false,
                 null,
-                typeName + " " + versionNumber);
+                typeName + " " + versionNumber,
+                null
+            );
         } catch (Exception ex) {
             System.err.println("Bad launcher JSON for version " + jarFile);
             //ex.printStackTrace();
