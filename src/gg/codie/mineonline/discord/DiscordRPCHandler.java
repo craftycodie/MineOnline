@@ -135,6 +135,9 @@ public class DiscordRPCHandler {
                     presenceFile.delete();
                 }
 
+                if (DiscordRPCHandler.serverIP != null &&  System.currentTimeMillis() - DiscordRPCHandler.lastServerUpdate > 60000)
+                    play(DiscordRPCHandler.versionName, DiscordRPCHandler.serverIP, DiscordRPCHandler.serverPort, DiscordRPCHandler.username, DiscordRPCHandler.uuid);
+
                 try {
                     Thread.sleep(2000);
                 } catch (InterruptedException ignored) {}

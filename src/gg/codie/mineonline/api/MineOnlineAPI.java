@@ -420,7 +420,7 @@ public class MineOnlineAPI {
             String[] bannedIPs,
             String[] bannedUUIDs,
             String owner,
-            String[] playerNamess
+            String[] playerNames
     ) {
         HttpURLConnection connection = null;
 
@@ -444,7 +444,7 @@ public class MineOnlineAPI {
             jsonObject.put("bannedUUIDs", bannedUUIDs);
             if(owner != null)
                 jsonObject.put("owner", owner);
-            jsonObject.put("players", playerNamess);
+            jsonObject.put("players", playerNames);
 
             String json = jsonObject.toString();
 
