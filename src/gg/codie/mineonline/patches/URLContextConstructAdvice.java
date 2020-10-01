@@ -13,6 +13,9 @@ public class URLContextConstructAdvice {
                 context = new URL(updateURL.substring(0, updateURL.lastIndexOf("/") + 1));
                 spec = updateURL.substring(updateURL.lastIndexOf("/") + 1);
             }
+            if (context != null && context.toString().endsWith("/MinecraftResources/") || context.toString().endsWith("/resources")) {
+                System.out.println("Downloading resource " + spec);
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
