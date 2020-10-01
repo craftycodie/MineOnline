@@ -630,9 +630,6 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
 
             Object gui = guiField != null ? guiField.get(minecraft) : null;
 
-            widthField.setInt(minecraft, width);
-            heightField.setInt(minecraft, height);
-
             if (fullscreen){
                 heightField.setInt(minecraft, Display.getDisplayMode().getHeight());
                 widthField.setInt(minecraft, Display.getDisplayMode().getWidth());
