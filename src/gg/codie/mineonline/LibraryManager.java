@@ -31,8 +31,11 @@ public class LibraryManager {
 
             java.io.File f = new java.io.File(LauncherFiles.MINEONLINE_FOLDER + java.io.File.separator + file.getName());
 
-            if(f.exists()){
-                continue;
+            if (f.exists()){
+                if (f.length() == file.getSize())
+                    continue;
+                else
+                    f.delete();
             }
 
             if (file.isDirectory()) { // if its a directory, create it
