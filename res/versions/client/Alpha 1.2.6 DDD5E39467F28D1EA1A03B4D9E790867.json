@@ -4,5 +4,6 @@
   "sha256": "63276BF2617068FFBAF2A1992D1F06F9339C96C21991EAFC9583D5F3E7074B9C",
   "type": "client",
   "legacy": true,
-  "baseVersion": "a1.2.6"
+  "baseVersion": "a1.2.6",
+  "useMinecraftImpl": true
 }
