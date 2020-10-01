@@ -219,6 +219,8 @@ public class SelectableVersionList extends GUIObject {
         while(jarsToAdd.size() > 0) {
             String[] jarToAdd = jarsToAdd.pop();
             addVersion(jarToAdd[0], jarToAdd[1], jarToAdd[2]);
+            if (jarsToAdd.size() == 0)
+                selectVersion(jarToAdd[1]);
         }
 
         float viewportHeight = Display.getHeight() - DisplayManager.scaledHeight(138) - (DisplayManager.getYBuffer() * 2);

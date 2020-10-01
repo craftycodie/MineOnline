@@ -330,6 +330,8 @@ public class MinecraftVersion {
             }
         }
 
+        System.out.println("Launching jar " + jarPath + " MD5 " + MD5Checksum.getMD5ChecksumForFile(jarPath));
+
         if(minecraftVersion != null) {
             if (minecraftVersion.legacy) {
                 new LegacyMinecraftClientLauncher(jarPath, serverIP, serverPort, mpPass).startMinecraft();

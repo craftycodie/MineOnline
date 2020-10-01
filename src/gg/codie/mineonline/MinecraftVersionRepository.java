@@ -50,9 +50,13 @@ public class MinecraftVersionRepository {
             }
         }
 
+        boolean knownJar = installedVersions.containsKey(jarPath);
+
         installedVersions.put(jarPath, version);
-        String[] jarPaths = installedVersionJSON.has(INSTALLED_VERSIONS) ? JSONUtils.getStringArray(installedVersionJSON.getJSONArray(INSTALLED_VERSIONS)) : new String[0];
-        installedVersionJSON.put(INSTALLED_VERSIONS, ArrayUtils.concatenate(jarPaths, new String[] { jarPath }));
+        if(!knownJar) {
+            String[] jarPaths = installedVersionJSON.has(INSTALLED_VERSIONS) ? JSONUtils.getStringArray(installedVersionJSON.getJSONArray(INSTALLED_VERSIONS)) : new String[0];
+            installedVersionJSON.put(INSTALLED_VERSIONS, ArrayUtils.concatenate(jarPaths, new String[]{jarPath}));
+        }
         saveInstalledVersions();
     }
 

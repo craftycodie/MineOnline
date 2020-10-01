@@ -28,9 +28,6 @@ public class SelectVersionMenuScreen implements IMenuScreen {
     TinyButton backButton;
     GUIText label;
 
-    IOnClickListener backListener;
-    IOnClickListener doneListener;
-
     SelectableVersionList selectableVersionList;
 
     JFileChooser fileChooser = new JFileChooser();

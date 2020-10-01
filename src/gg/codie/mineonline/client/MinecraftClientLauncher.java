@@ -166,8 +166,6 @@ public class MinecraftClientLauncher {
             }
         }
 
-        System.out.println("Launching Jar, MD5: " + MD5Checksum.getMD5ChecksumForFile(jarPath));
-
         try {
 
             LinkedList<String> args = new LinkedList<>();

@@ -88,8 +88,6 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
             }
         }
 
-        System.out.println("Launching Legacy Jar, MD5: " + MD5Checksum.getMD5ChecksumForFile(jarPath));
-
         fullscreen = Settings.settings.has(Settings.FULLSCREEN) && Settings.settings.getBoolean(Settings.FULLSCREEN);
 
         String CP = "-cp";
@@ -566,7 +564,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
             //minecraftApplet.setSize(new Dimension(width, height));
 
             for(Field field : minecraftApplet.getClass().getDeclaredFields()) {
-                if(field.getType().getPackage().getName().equals("com.mojang.minecraft")) {
+                if(field.getType().getPackage().getName().equals("com.mojang.minecraft") || field.getType().getPackage().getName().equals("net.minecraft.client")) {
                     minecraftField = field;
                     continue;
                 }
@@ -583,7 +581,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
             // Since Minecraft is obfuscated we can't just get the width and height fields by name.
             // Hopefully, they're always the first two ints. Seems likely.
             for(Field field : minecraftClass.getDeclaredFields()) {
-                if ((int.class.equals(field.getType()) || Integer.class.equals(field.getType())) && Modifier.isPublic(field.getModifiers())) {
+                if ((int.class.equals(field.getType()) || Integer.class.equals(field.getType()))) {
                     if (widthField == null) {
                         widthField = field;
                     } else if (heightField == null) {
@@ -632,14 +630,6 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
 
             Object gui = guiField != null ? guiField.get(minecraft) : null;
 
-            System.out.println(minecraft);
-            System.out.println(widthField);
-            System.out.println(heightField);
-
-            System.out.println(gui);
-            System.out.println(guiWidthField);
-            System.out.println(guiHeightField);
-
             widthField.setInt(minecraft, width);
             heightField.setInt(minecraft, height);
 
@@ -666,7 +656,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
 
             //screenshotLabel.setBounds(30, (AppletH - 16) - 30, 204, 20);
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
     }
 
