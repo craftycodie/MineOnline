@@ -105,6 +105,13 @@ public class MinecraftClientLauncher {
 
             DisplayManager.getFrame().setVisible(false);
 
+            try {
+                new Options(LauncherFiles.MINECRAFT_OPTIONS_PATH).setOption("guiScale", "" + Settings.settings.optInt("guiScale", 0));
+            } catch (Exception ex) {
+                System.err.println("Couldn't save guiScale to options.txt");
+                // ignore
+            }
+
             gameProcess = processBuilder.start();
 
             Thread closeLauncher = new Thread(() -> gameProcess.destroyForcibly());

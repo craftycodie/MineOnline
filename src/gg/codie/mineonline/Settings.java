@@ -112,7 +112,7 @@ public class Settings {
 
         try {
             FileWriter fileWriter = new FileWriter(LauncherFiles.MINEONLINE_PROPS_FILE, false);
-            fileWriter.write(settings.toString());
+            fileWriter.write(settings.toString(2));
             fileWriter.close();
 
             FileInputStream input = new FileInputStream(LauncherFiles.MINEONLINE_PROPS_FILE);

@@ -499,6 +499,12 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
         }
         InetSocketAddressPatch.allowCustomServers(serverAddress, serverPort);
 
+        try {
+            new Options(LauncherFiles.MINECRAFT_OPTIONS_PATH).setOption("guiScale", "" + Settings.settings.optInt("guiScale", 0));
+        } catch (Exception ex) {
+            System.err.println("Couldn't save guiScale to options.txt");
+            // ignore
+        }
 
         if (minecraftImpl != null) {
             minecraftImpl.run();
