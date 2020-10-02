@@ -9,7 +9,6 @@ import gg.codie.mineonline.gui.rendering.Renderer;
 import gg.codie.mineonline.lwjgl.OnCreateListener;
 import gg.codie.mineonline.lwjgl.OnUpdateListener;
 import gg.codie.mineonline.patches.*;
-import gg.codie.mineonline.patches.minecraft.FOVPatch;
 import gg.codie.mineonline.utils.JREUtils;
 import gg.codie.utils.*;
 import org.lwjgl.BufferUtils;
@@ -484,7 +483,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
 
         SocketPatch.watchSockets();
         URLPatch.redefineURL(null);
-        FOVPatch.useCustomFOV(minecraftVersion.fovMethod, classLoader);
+        LWJGLPerspectivePatch.useCustomFOV();
         InetSocketAddressPatch.allowCustomServers(serverAddress, serverPort);
 
 

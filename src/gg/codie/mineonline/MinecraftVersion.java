@@ -43,7 +43,6 @@ public class MinecraftVersion {
     public final String minecraftImplClass;
     public final String clientName;
     public final String guiClass;
-    public final String fovMethod;
 
     public MinecraftVersion(
             String sha256,
@@ -66,8 +65,7 @@ public class MinecraftVersion {
             boolean useMinecraftImpl,
             String minecraftImplClass,
             String clientName,
-            String guiClass,
-            String fovMethod
+            String guiClass
     ) {
         this.sha256 = sha256;
         this.name = name;
@@ -90,7 +88,6 @@ public class MinecraftVersion {
         this.natives = nativesWindows;
         this.clientName = clientName;
         this.guiClass = guiClass;
-        this.fovMethod = fovMethod;
     }
 
     public MinecraftVersion(JSONObject object) {
@@ -115,7 +112,6 @@ public class MinecraftVersion {
         minecraftImplClass = (object.has("minecraftImplClass") ? object.getString("minecraftImplClass") : null);
         clientName = (object.has("clientName") ? object.getString("clientName") : object.getString("name"));
         guiClass = (object.has("guiClass") ? object.getString("guiClass") : null);
-        fovMethod = (object.has("fovMethod") ? object.getString("fovMethod") : null);
     }
 
 
@@ -306,7 +302,6 @@ public class MinecraftVersion {
                 false,
                 null,
                 typeName + " " + versionNumber,
-                null,
                 null
             );
         } catch (Exception ex) {
