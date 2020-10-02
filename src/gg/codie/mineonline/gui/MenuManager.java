@@ -16,6 +16,7 @@ import gg.codie.mineonline.gui.rendering.textures.ModelTexture;
 import gg.codie.mineonline.patches.LWJGLDisplayPatch;
 import gg.codie.mineonline.utils.Logging;
 import gg.codie.utils.LastLogin;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -158,6 +159,8 @@ public class MenuManager {
                 uuid = login.getString("uuid");
             } catch (IOException ex) {
                 ex.printStackTrace();
+            } catch (JSONException ex) {
+                // ignore
             }
         }
 
