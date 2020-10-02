@@ -21,22 +21,26 @@ The program can also run regular desktop versions of the game, and even old laun
 ## Features
 These are features MineOnline will bring to Minecraft.
 
-- Launcher Authentication and Updates
-
-- Server Authentication (online-mode)
-
 - Skins and Cloaks
+
+- Resource Files (Sounds)
 
 - Server List
 
 - Online World Saves
   - You can also upload classic maps via the website.
+  
+- Screenshots (F2)
 
-- Resource Files (Sounds)
+- FOV Option
+
+- GUI scaling for versions before Beta 1.5 (when it was officially added)
+
+- Launcher Authentication and Updates
+
+- Server Authentication (online-mode)
 
 - Resizable & Fullscreenable Applets
-
-- Screenshots (F2)
 
 - Minecraft Realms (for all release versions)
 
