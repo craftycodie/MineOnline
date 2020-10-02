@@ -12,6 +12,7 @@ import gg.codie.mineonline.patches.LWJGLDisplayPatch;
 import gg.codie.mineonline.patches.SocketPatch;
 import gg.codie.mineonline.patches.SystemSetPropertyPatch;
 import gg.codie.mineonline.patches.URLPatch;
+import gg.codie.mineonline.patches.minecraft.FOVPatch;
 import gg.codie.mineonline.utils.JREUtils;
 import gg.codie.utils.*;
 import org.lwjgl.BufferUtils;
@@ -421,7 +422,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
             public void onUpdateEvent() {
                 if (renderer != null) {
                     if (Globals.DEV) {
-                        renderer.renderStringIngame(new Vector2f(2, 2), 8, "MineOnline Dev " + Globals.LAUNCHER_VERSION, org.newdawn.slick.Color.white);
+                        //renderer.renderStringIngame(new Vector2f(1, 1), 8, "MineOnline Dev " + Globals.LAUNCHER_VERSION, org.newdawn.slick.Color.white);
                     }
 
                     if (minecraftVersion != null) {
@@ -486,6 +487,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
 
         SocketPatch.watchSockets();
         URLPatch.redefineURL(null);
+        FOVPatch.useCustomFOV(minecraftVersion.fovMethod, classLoader);
 
 
         if (minecraftImpl != null) {

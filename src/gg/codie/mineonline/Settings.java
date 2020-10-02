@@ -17,7 +17,8 @@ public class Settings {
     public static final String MINECRAFT_UPDATE_URL = "minecraftUpdateURL";
     public static final String JAVA_HOME = "javaHome";
     public static final String CLIENT_LAUNCH_ARGS = "clientLaunchArgs";
-    private static final int SETTINGS_VERSION_NUMBER = 4;
+    public static final String FOV = "fov";
+    private static final int SETTINGS_VERSION_NUMBER = 5;
 
     private static boolean readonly = true;
 
@@ -45,6 +46,7 @@ public class Settings {
         settings.put(MINECRAFT_UPDATE_URL, "");
         settings.put(JAVA_HOME, "");
         settings.put(CLIENT_LAUNCH_ARGS, "");
+        settings.put(FOV, 70);
 
         saveSettings();
         loadSettings();
@@ -86,6 +88,8 @@ public class Settings {
                         settings.put(MINECRAFT_UPDATE_URL, "");
                         settings.put(JAVA_HOME, "");
                         settings.put(CLIENT_LAUNCH_ARGS, "");
+                    case 4:
+                        settings.put(FOV, 70);
                 }
                 settings.put(SETTINGS_VERSION, SETTINGS_VERSION_NUMBER);
             }
