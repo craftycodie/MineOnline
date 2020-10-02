@@ -5,6 +5,5 @@
   "type": "client",
   "legacy": true,
   "baseVersion": "a1.2.6",
-  "useMinecraftImpl": true,
   "scaledResolutionClass": "kl"
 }

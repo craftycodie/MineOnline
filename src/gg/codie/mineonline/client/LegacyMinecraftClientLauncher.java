@@ -571,13 +571,14 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
         try {
             Field minecraftField = null;
 
-            //panel.setSize(new Dimension(width, height));
-            //minecraftApplet.setSize(new Dimension(width, height));
-
-            for(Field field : minecraftApplet.getClass().getDeclaredFields()) {
-                if(field.getType().getPackage().getName().equals("com.mojang.minecraft") || field.getType().getPackage().getName().equals("net.minecraft.client")) {
-                    minecraftField = field;
-                    continue;
+            try {
+                minecraftField = minecraftApplet.getClass().getDeclaredField("minecraft");
+            } catch (NoSuchFieldException ne) {
+                for(Field field : minecraftApplet.getClass().getDeclaredFields()) {
+                    if(field.getType().getPackage() == minecraftApplet.getClass().getPackage()) {
+                        minecraftField = field;
+                        break;
+                    }
                 }
             }
 
@@ -634,7 +635,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
                             break;
                         }
                     }
-                } catch (ClassNotFoundException ex) {
+                } catch (Exception ex) {
                     System.err.println("Couldn't find GUI class " + minecraftVersion.guiClass);
                 }
             }
@@ -664,7 +665,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
 
             //screenshotLabel.setBounds(30, (AppletH - 16) - 30, 204, 20);
         } catch (Exception e) {
-            //e.printStackTrace();
+            e.printStackTrace();
         }
     }
 
