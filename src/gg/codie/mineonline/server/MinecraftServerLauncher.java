@@ -59,7 +59,7 @@ public class MinecraftServerLauncher extends ServerLauncher {
         scanner.close();
 
         serverProcess.destroyForcibly();
-        System.exit(0);
+        System.exit(serverProcess.exitValue());
     }
 
     public static void main(String[] args) throws Exception{

@@ -110,6 +110,13 @@ public class MinecraftServerProcess {
             } catch (ClassNotFoundException ex1) { }
         }
 
+        // Classic 0.0.15a remake
+        if(mainClass == null) {
+            try {
+                mainClass = classLoader.loadClass("p000com.mojang.minecraft.server.MinecraftServer");
+            } catch (ClassNotFoundException ex1) { }
+        }
+
         if (mainClass == null) {
             System.out.println("Main class not found!");
         }

@@ -120,6 +120,7 @@ public abstract class ServerLauncher {
                         }
                     }
                 } catch (IOException e) { // just exit
+                    e.printStackTrace();
                 }
             }
         }).start();

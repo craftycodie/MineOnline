@@ -50,6 +50,8 @@ public class LauncherFiles {
     public static final String MINECRAFT_VERSIONS_PATH = getNewMinecraftDirectory() + File.separator + "versions" + File.separator;
     public static final String MINECRAFT_LIBRARIES_PATH = getNewMinecraftDirectory() + File.separator + "libraries" + File.separator;
 
+    public static final String MINECRAFT_VERSION_FILE = MINECRAFT_BINARIES_PATH + "version";
+
     public static final URL TEMPLATE_SKIN_PATH = LauncherFiles.class.getResource("/img/skin.png");
     public static final URL TEMPLATE_CLOAK_PATH = LauncherFiles.class.getResource("/img/cloak.png");
     public static final URL MISSING_TEXTURE = LauncherFiles.class.getResource("/img/missing.png");

@@ -12,7 +12,6 @@ import gg.codie.mineonline.patches.LWJGLDisplayPatch;
 import gg.codie.mineonline.patches.SocketPatch;
 import gg.codie.mineonline.patches.SystemSetPropertyPatch;
 import gg.codie.mineonline.patches.URLPatch;
-import gg.codie.mineonline.patches.minecraft.LauncherInitPatch;
 import gg.codie.mineonline.utils.JREUtils;
 import gg.codie.utils.*;
 import org.lwjgl.BufferUtils;
@@ -163,27 +162,21 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
 
             SystemSetPropertyPatch.banNativeChanges();
 
-            String latestVersion = null;
-
             if(updateURLString != null && !updateURLString.isEmpty()) {
                 URL updateURL = new URL(updateURLString);
                 File currentJar = new File(LauncherFiles.MINECRAFT_BINARIES_PATH + FileUtils.getFileName(updateURL));
-                if(!currentJar.exists())
-                    latestVersion = "" + System.currentTimeMillis();
-                else {
+                if(currentJar.exists()) {
                     int existingJarSize = (int)currentJar.length();
                     HttpURLConnection versionRequest = (HttpURLConnection) new URL(updateURLString).openConnection();
                     versionRequest.setRequestMethod("HEAD");
                     versionRequest.connect();
 
-                    if(existingJarSize != versionRequest.getContentLength())
-                        latestVersion = "" + versionRequest.getContentLength();
-                    else
-                        latestVersion = VersionFile.read();
+                    if(existingJarSize != versionRequest.getContentLength()) {
+                        VersionFile.delete();
+                    }
                 }
             }
 
-            LauncherInitPatch.allowCustomUpdates(latestVersion, classLoader);
             SocketPatch.watchSockets();
             URLPatch.redefineURL(updateURLString);
 
