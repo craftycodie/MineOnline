@@ -11,7 +11,7 @@ public class URLConstructAdvice {
     @Advice.OnMethodEnter
     static void intercept(@Advice.Argument(value = 0, readOnly = false) String url) {
         try {
-            if (url.isEmpty() || url.startsWith("file:"))
+            if (url == null || url.isEmpty() || url.startsWith("file:"))
                 return;
 
             // Dont mess with document base urls. These need to stay the same.

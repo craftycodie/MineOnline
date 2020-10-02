@@ -7,6 +7,9 @@ import java.net.URL;
 public class URLContextConstructAdvice {
     @Advice.OnMethodEnter
     static void intercept(@Advice.Argument(value = 0, readOnly = false) URL context, @Advice.Argument(value = 1, readOnly = false) String spec) {
+        if (context == null)
+            return;
+
         try {
             String updateURL = (String)ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.URLConstructAdvice").getField("updateURL").get(null);
             if (updateURL != null && spec.matches("minecraft.jar\\?user=([^<]*)&ticket=deprecated")) {
