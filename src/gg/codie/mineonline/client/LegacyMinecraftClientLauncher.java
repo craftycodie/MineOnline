@@ -8,10 +8,7 @@ import gg.codie.mineonline.gui.rendering.DisplayManager;
 import gg.codie.mineonline.gui.rendering.Renderer;
 import gg.codie.mineonline.lwjgl.OnCreateListener;
 import gg.codie.mineonline.lwjgl.OnUpdateListener;
-import gg.codie.mineonline.patches.LWJGLDisplayPatch;
-import gg.codie.mineonline.patches.SocketPatch;
-import gg.codie.mineonline.patches.SystemSetPropertyPatch;
-import gg.codie.mineonline.patches.URLPatch;
+import gg.codie.mineonline.patches.*;
 import gg.codie.mineonline.patches.minecraft.FOVPatch;
 import gg.codie.mineonline.utils.JREUtils;
 import gg.codie.utils.*;
@@ -488,6 +485,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
         SocketPatch.watchSockets();
         URLPatch.redefineURL(null);
         FOVPatch.useCustomFOV(minecraftVersion.fovMethod, classLoader);
+        InetSocketAddressPatch.allowCustomServers(serverAddress, serverPort);
 
 
         if (minecraftImpl != null) {
