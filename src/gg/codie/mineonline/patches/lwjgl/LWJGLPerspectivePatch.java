@@ -1,4 +1,4 @@
-package gg.codie.mineonline.patches;
+package gg.codie.mineonline.patches.lwjgl;
 
 import gg.codie.mineonline.Settings;
 import net.bytebuddy.ByteBuddy;

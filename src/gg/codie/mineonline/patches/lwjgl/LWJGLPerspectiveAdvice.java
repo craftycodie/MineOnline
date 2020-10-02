@@ -1,4 +1,4 @@
-package gg.codie.mineonline.patches;
+package gg.codie.mineonline.patches.lwjgl;
 
 import net.bytebuddy.asm.Advice;
 
@@ -8,7 +8,7 @@ public class LWJGLPerspectiveAdvice {
     @Advice.OnMethodEnter
     static void intercept(@Advice.Argument(value = 0, readOnly = false) float fov) {
         try {
-            float customFOV = (float)ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.LWJGLPerspectiveAdvice").getField("customFOV").get(null);
+            float customFOV = (float)ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.lwjgl.LWJGLPerspectiveAdvice").getField("customFOV").get(null);
             float fovDiff = fov - 70;
             fov = customFOV + fovDiff;
         } catch (Exception ex) {

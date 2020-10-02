@@ -1,4 +1,4 @@
-package gg.codie.mineonline.patches;
+package gg.codie.mineonline.patches.lwjgl;
 
 import gg.codie.mineonline.lwjgl.OnCreateListener;
 import gg.codie.mineonline.lwjgl.OnUpdateListener;

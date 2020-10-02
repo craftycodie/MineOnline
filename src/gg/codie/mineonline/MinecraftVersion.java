@@ -43,6 +43,7 @@ public class MinecraftVersion {
     public final String minecraftImplClass;
     public final String clientName;
     public final String guiClass;
+    public final String scaledResolutionClass;
 
     public MinecraftVersion(
             String sha256,
@@ -65,7 +66,8 @@ public class MinecraftVersion {
             boolean useMinecraftImpl,
             String minecraftImplClass,
             String clientName,
-            String guiClass
+            String guiClass,
+            String scaledResolutionClass
     ) {
         this.sha256 = sha256;
         this.name = name;
@@ -88,6 +90,7 @@ public class MinecraftVersion {
         this.natives = nativesWindows;
         this.clientName = clientName;
         this.guiClass = guiClass;
+        this.scaledResolutionClass = scaledResolutionClass;
     }
 
     public MinecraftVersion(JSONObject object) {
@@ -112,6 +115,7 @@ public class MinecraftVersion {
         minecraftImplClass = (object.has("minecraftImplClass") ? object.getString("minecraftImplClass") : null);
         clientName = (object.has("clientName") ? object.getString("clientName") : object.getString("name"));
         guiClass = (object.has("guiClass") ? object.getString("guiClass") : null);
+        scaledResolutionClass = (object.has("scaledResolutionClass") ? object.getString("scaledResolutionClass") : null);
     }
 
 
@@ -302,6 +306,7 @@ public class MinecraftVersion {
                 false,
                 null,
                 typeName + " " + versionNumber,
+                null,
                 null
             );
         } catch (Exception ex) {

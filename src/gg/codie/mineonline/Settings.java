@@ -18,6 +18,7 @@ public class Settings {
     public static final String JAVA_HOME = "javaHome";
     public static final String CLIENT_LAUNCH_ARGS = "clientLaunchArgs";
     public static final String FOV = "fov";
+    public static final String GUI_SCALE = "guiScale";
     private static final int SETTINGS_VERSION_NUMBER = 5;
 
     private static boolean readonly = true;
@@ -47,6 +48,7 @@ public class Settings {
         settings.put(JAVA_HOME, "");
         settings.put(CLIENT_LAUNCH_ARGS, "");
         settings.put(FOV, 70);
+        settings.put(GUI_SCALE, 0);
 
         saveSettings();
         loadSettings();
@@ -90,6 +92,7 @@ public class Settings {
                         settings.put(CLIENT_LAUNCH_ARGS, "");
                     case 4:
                         settings.put(FOV, 70);
+                        settings.put(GUI_SCALE, 0);
                 }
                 settings.put(SETTINGS_VERSION, SETTINGS_VERSION_NUMBER);
             }

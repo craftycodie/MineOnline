@@ -8,9 +8,18 @@ import gg.codie.mineonline.gui.rendering.DisplayManager;
 import gg.codie.mineonline.gui.rendering.Renderer;
 import gg.codie.mineonline.lwjgl.OnCreateListener;
 import gg.codie.mineonline.lwjgl.OnUpdateListener;
-import gg.codie.mineonline.patches.*;
+import gg.codie.mineonline.patches.InetSocketAddressPatch;
+import gg.codie.mineonline.patches.SocketPatch;
+import gg.codie.mineonline.patches.SystemSetPropertyPatch;
+import gg.codie.mineonline.patches.URLPatch;
+import gg.codie.mineonline.patches.lwjgl.LWJGLDisplayPatch;
+import gg.codie.mineonline.patches.lwjgl.LWJGLOrthoPatch;
+import gg.codie.mineonline.patches.lwjgl.LWJGLPerspectivePatch;
+import gg.codie.mineonline.patches.minecraft.ScaledResolutionConstructorPatch;
 import gg.codie.mineonline.utils.JREUtils;
-import gg.codie.utils.*;
+import gg.codie.utils.FileUtils;
+import gg.codie.utils.OSUtils;
+import gg.codie.utils.TransferableImage;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -484,6 +493,10 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
         SocketPatch.watchSockets();
         URLPatch.redefineURL(null);
         LWJGLPerspectivePatch.useCustomFOV();
+        if (minecraftVersion != null && minecraftVersion.scaledResolutionClass != null) {
+            ScaledResolutionConstructorPatch.useGUIScale(minecraftVersion.scaledResolutionClass, classLoader);
+            LWJGLOrthoPatch.useGuiScale();
+        }
         InetSocketAddressPatch.allowCustomServers(serverAddress, serverPort);
 
 

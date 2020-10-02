@@ -2,6 +2,7 @@ package gg.codie.mineonline.gui.rendering;
 
 import gg.codie.minecraft.client.Options;
 import gg.codie.mineonline.LauncherFiles;
+import gg.codie.mineonline.Settings;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.*;
@@ -18,8 +19,8 @@ public class DisplayManager {
     static {
         if (new File(LauncherFiles.MINECRAFT_OPTIONS_PATH).exists()) {
             try {
-                Options minecraftOptions = new Options(LauncherFiles.MINECRAFT_OPTIONS_PATH);
-                guiScale = Integer.parseInt(minecraftOptions.getOption("guiScale"));
+                Settings.loadSettings();
+                guiScale = Settings.settings.optInt(Settings.GUI_SCALE, 0);
             } catch (Exception ex) {
                 guiScale = 0;
             }
@@ -94,8 +95,8 @@ public class DisplayManager {
                 Files.createFile(Paths.get(LauncherFiles.MINECRAFT_OPTIONS_PATH));
             }
 
-            Options minecraftOptions = new Options(LauncherFiles.MINECRAFT_OPTIONS_PATH);
-            minecraftOptions.setOption("guiScale", guiScale + "");
+            Settings.settings.put(Settings.GUI_SCALE, guiScale);
+            Settings.saveSettings();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
