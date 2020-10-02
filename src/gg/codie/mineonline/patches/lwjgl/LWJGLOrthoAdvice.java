@@ -38,15 +38,7 @@ public class LWJGLOrthoAdvice {
             noGuiScaleRight = (double)scaledWidth / (double)scaleFactor;
             noGuiScaleBottom = (double)scaledHeight / (double)scaleFactor;
 
-            System.out.println("right " + right);
-            System.out.println("bottom " + bottom);
-
-            System.out.println("guiScaleRight " + guiScaleRight);
-            System.out.println("guiScaleBottom " + guiScaleBottom);
-
-            System.out.println("noGuiScaleRight " + noGuiScaleRight);
-            System.out.println("noGuiScaleBottom " + noGuiScaleBottom);
-
+            // This may be needed some day.
 //            if ((int)right == (int)noGuiScaleRight && (int)bottom == (int)noGuiScaleBottom) {
                 right = guiScaleRight;
                 bottom = guiScaleBottom;

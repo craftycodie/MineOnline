@@ -48,7 +48,7 @@ public class Settings {
         settings.put(JAVA_HOME, "");
         settings.put(CLIENT_LAUNCH_ARGS, "");
         settings.put(FOV, 70);
-        settings.put(GUI_SCALE, 0);
+        settings.put(GUI_SCALE, 3);
 
         saveSettings();
         loadSettings();
@@ -92,7 +92,7 @@ public class Settings {
                         settings.put(CLIENT_LAUNCH_ARGS, "");
                     case 4:
                         settings.put(FOV, 70);
-                        settings.put(GUI_SCALE, 0);
+                        settings.put(GUI_SCALE, 3);
                 }
                 settings.put(SETTINGS_VERSION, SETTINGS_VERSION_NUMBER);
             }

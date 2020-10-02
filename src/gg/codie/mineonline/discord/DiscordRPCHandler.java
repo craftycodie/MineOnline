@@ -91,7 +91,7 @@ public class DiscordRPCHandler {
 
     public static void initialize(){
         DiscordEventHandlers handlers = new DiscordEventHandlers.Builder().setReadyEventHandler((user) -> {
-            System.out.println("Discord logged in " + user.username + "#" + user.discriminator + "!");
+            //System.out.println("Discord logged in " + user.username + "#" + user.discriminator + "!");
             DiscordRichPresence.Builder presence = new DiscordRichPresence.Builder("In the launcher.");
             presence.setDetails("");
             presence.setBigImage("block", null);
