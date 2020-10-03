@@ -265,7 +265,7 @@ public class MinecraftVersionRepository {
             }
         }
         // Fetch latest versions from the API
-        ProgressDialog.setSubMessage("Downloading latest versions information...");
+        ProgressDialog.setSubMessage("Downloading latest version information...");
         ProgressDialog.setProgress(44);
         fetchVersions();
         // Load cached versions
