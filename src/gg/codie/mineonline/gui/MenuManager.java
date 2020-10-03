@@ -60,13 +60,15 @@ public class MenuManager {
 
     static WindowAdapter closeListener = new WindowAdapter(){
         public void windowClosing(WindowEvent e){
-            DisplayManager.getFrame().dispose();
+            if (DisplayManager.getFrame() != null)
+                DisplayManager.getFrame().dispose();
             System.exit(0);
         }
 
         @Override
         public void windowOpened(WindowEvent e) {
-            DisplayManager.getFrame().getOwner().setBackground(java.awt.Color.black);
+            if (DisplayManager.getFrame() != null)
+                DisplayManager.getFrame().getOwner().setBackground(java.awt.Color.black);
         }
     };
 
@@ -80,9 +82,14 @@ public class MenuManager {
     public static void main(String[] args) throws Exception {
         Logging.enableLogging();
 
-        LibraryManager.updateNativesPath();
+        ProgressDialog.showProgress("Loading MineOnline", closeListener);
+        ProgressDialog.setMessage("Loading LWJGL");
 
+        LibraryManager.updateNativesPath();
         LWJGLDisplayPatch.hijackLWJGLThreadPatch();
+
+        ProgressDialog.setMessage("Checking for updates");
+        ProgressDialog.setProgress(20);
 
         formopen = true;
 
@@ -91,6 +98,9 @@ public class MenuManager {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+
+        ProgressDialog.setMessage("Loading Minecraft versions");
+        ProgressDialog.setProgress(40);
 
         // Load this before showing the display.
         MinecraftVersionRepository.getSingleton();
@@ -143,6 +153,9 @@ public class MenuManager {
             }
         }
 
+        ProgressDialog.setMessage("Logging in");
+        ProgressDialog.setProgress(60);
+
         LastLogin lastLogin = null;
 
         if(!multiinstance)
@@ -164,14 +177,19 @@ public class MenuManager {
             }
         }
 
+        ProgressDialog.setMessage("Preparing MineOnline");
+        ProgressDialog.setProgress(80);
+
         DisplayManager.init();
+
+        ProgressDialog.setMessage("Loading done.");
+        ProgressDialog.setProgress(100);
 
         DisplayManager.createDisplay();
 
         DisplayManager.getFrame().addWindowListener(closeListener);
 
         Keyboard.enableRepeatEvents(true);
-
 
         Renderer renderer = new Renderer();
         Loader loader = new Loader();

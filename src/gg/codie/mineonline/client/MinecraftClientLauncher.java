@@ -106,10 +106,11 @@ public class MinecraftClientLauncher {
             DisplayManager.getFrame().setVisible(false);
 
             try {
-                new Options(LauncherFiles.MINECRAFT_OPTIONS_PATH).setOption("guiScale", "" + Settings.settings.optInt("guiScale", 0));
+                Options options = new Options(LauncherFiles.MINECRAFT_OPTIONS_PATH);
+                options.setOption("guiScale", "" + Settings.settings.optInt(Settings.GUI_SCALE, 0));
+                options.setOption("fov", "" + Settings.settings.optInt(Settings.FOV, 70));
             } catch (Exception ex) {
                 System.err.println("Couldn't save guiScale to options.txt");
-                // ignore
             }
 
             gameProcess = processBuilder.start();

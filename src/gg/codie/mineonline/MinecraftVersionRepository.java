@@ -1,6 +1,7 @@
 package gg.codie.mineonline;
 
 import gg.codie.mineonline.api.MineOnlineAPI;
+import gg.codie.mineonline.gui.ProgressDialog;
 import gg.codie.utils.ArrayUtils;
 import gg.codie.utils.JSONUtils;
 import gg.codie.utils.MD5Checksum;
@@ -246,6 +247,8 @@ public class MinecraftVersionRepository {
 
     private void loadVersions() {
         // If there's a resource version that's not in the cache, extract it.
+        ProgressDialog.setSubMessage("Extracting version information...");
+        ProgressDialog.setProgress(40);
         MinecraftVersion[] cachedVersions = getVersions(LauncherFiles.MINEONLINE_VERSIONS_FOLDER);
         for (MinecraftVersion version : getResourceVersions()) {
             if(getVersionByMD5(version.md5, cachedVersions) == null) {
@@ -262,15 +265,24 @@ public class MinecraftVersionRepository {
             }
         }
         // Fetch latest versions from the API
+        ProgressDialog.setSubMessage("Downloading latest versions information...");
+        ProgressDialog.setProgress(44);
         fetchVersions();
         // Load cached versions
+        ProgressDialog.setSubMessage("Reading version information...");
+        ProgressDialog.setProgress(48);
         versions = getVersions(LauncherFiles.MINEONLINE_VERSIONS_FOLDER);
         // Load custom versions
+        ProgressDialog.setSubMessage("Reading custom version information......");
+        ProgressDialog.setProgress(52);
         customVersions = getVersions(LauncherFiles.MINEONLINE_CUSTOM_VERSIONS_FOLDER);
         // Load installed versions
+        ProgressDialog.setSubMessage("Loading installed versions...");
+        ProgressDialog.setProgress(56);
         loadInstalledVersions();
         // Load official launcher installed versions
         loadOfficialLauncherVersions();
+        ProgressDialog.setSubMessage(null);
     }
 
     public MinecraftVersion getVersionByMD5(String md5) {

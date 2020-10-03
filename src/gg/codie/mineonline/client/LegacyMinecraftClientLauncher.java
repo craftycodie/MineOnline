@@ -500,10 +500,11 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
         InetSocketAddressPatch.allowCustomServers(serverAddress, serverPort);
 
         try {
-            new Options(LauncherFiles.MINECRAFT_OPTIONS_PATH).setOption("guiScale", "" + Settings.settings.optInt("guiScale", 0));
+            Options options = new Options(LauncherFiles.MINECRAFT_OPTIONS_PATH);
+            options.setOption("guiScale", "" + Settings.settings.optInt(Settings.GUI_SCALE, 0));
+            options.setOption("fov", "" + Settings.settings.optInt(Settings.FOV, 70));
         } catch (Exception ex) {
-            System.err.println("Couldn't save guiScale to options.txt");
-            // ignore
+            System.err.println("Couldn't update options.txt");
         }
 
         if (minecraftImpl != null) {
