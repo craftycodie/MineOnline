@@ -490,19 +490,27 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
         DisplayManager.getFrame().setTitle("Minecraft");
         DisplayManager.closeDisplay();
 
+        // Patches
         SocketPatch.watchSockets();
         URLPatch.redefineURL(null);
-        LWJGLPerspectivePatch.useCustomFOV();
-        if (minecraftVersion != null && minecraftVersion.scaledResolutionClass != null) {
-            ScaledResolutionConstructorPatch.useGUIScale(minecraftVersion.scaledResolutionClass, classLoader);
-            LWJGLOrthoPatch.useGuiScale();
+
+        if (minecraftVersion != null && minecraftVersion.useFOVPatch)
+            LWJGLPerspectivePatch.useCustomFOV();
+
+        if (Settings.settings.optInt(Settings.GUI_SCALE, 0) != 0 && minecraftVersion != null) {
+            if (minecraftVersion.scaledResolutionClass != null) {
+                ScaledResolutionConstructorPatch.useGUIScale(minecraftVersion.scaledResolutionClass, classLoader);
+                LWJGLOrthoPatch.useGuiScale();
+            } else if (minecraftVersion.guiClass != null) {
+                LWJGLOrthoPatch.useGuiScale();
+            }
         }
+        // Allows c0.0.15a to connect to servers.
         InetSocketAddressPatch.allowCustomServers(serverAddress, serverPort);
 
         try {
             Options options = new Options(LauncherFiles.MINECRAFT_OPTIONS_PATH);
             options.setOption("guiScale", "" + Settings.settings.optInt(Settings.GUI_SCALE, 0));
-            options.setOption("fov", "" + Settings.settings.optInt(Settings.FOV, 70));
         } catch (Exception ex) {
             System.err.println("Couldn't update options.txt");
         }
@@ -657,11 +665,9 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
                 heightField.setInt(minecraft, height - DisplayManager.getFrame().getInsets().top - DisplayManager.getFrame().getInsets().bottom);
                 widthField.setInt(minecraft, width);
 
-                if(gui != null && guiHeightField != null && guiWidthField != null) {
-                    int h = (height - DisplayManager.getFrame().getInsets().top - DisplayManager.getFrame().getInsets().bottom);
-                    guiHeightField.setInt(gui, h * 240 / h);
-                    guiWidthField.setInt(gui, width * 240 / h);
-                }
+            if(gui != null && guiHeightField != null && guiWidthField != null) {
+                guiHeightField.setInt(gui, (int)guiScaleBottom);
+                guiWidthField.setInt(gui, (int)guiScaleRight);
             }
 
             //screenshotLabel.setBounds(30, (AppletH - 16) - 30, 204, 20);

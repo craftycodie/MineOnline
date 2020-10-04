@@ -6,5 +6,6 @@
   "enableScreenshotPatch": true,
   "baseURLHasNoPort": true,
   "legacy": true,
-  "baseVersion": "inf-20100227-1533"
+  "baseVersion": "inf-20100227-1533",
+  "useFOVPatch": true
 }

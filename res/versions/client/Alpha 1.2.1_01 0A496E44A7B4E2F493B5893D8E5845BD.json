@@ -4,5 +4,6 @@
   "sha256": "7EAB51320F26CF68FF9B06FCF34B64EE60AA7AA0EE5C0421E8FB0A265E811C18",
   "type": "client",
   "legacy": true,
-  "baseVersion": "a1.2.1_01"
+  "baseVersion": "a1.2.1_01",
+  "useFOVPatch": true
 }

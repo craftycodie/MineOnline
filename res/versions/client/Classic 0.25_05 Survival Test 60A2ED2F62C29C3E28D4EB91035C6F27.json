@@ -7,5 +7,6 @@
   "forceFullscreenMacos": true,
   "enableMacosCursorPatch": true,
   "legacy": true,
-  "baseVersion": "c0.25_05_st"
+  "baseVersion": "c0.25_05_st",
+  "useFOVPatch": true
 }

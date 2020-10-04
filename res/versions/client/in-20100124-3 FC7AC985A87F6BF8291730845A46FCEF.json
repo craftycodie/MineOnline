@@ -7,5 +7,6 @@
   "forceFullscreenMacos": true,
   "enableFullscreenPatch": true,
   "legacy": true,
-  "baseVersion": "in-20100124-3"
+  "baseVersion": "in-20100124-3",
+  "useFOVPatch": true
 }

@@ -3,5 +3,6 @@
   "md5": "DF651F4025BADC527D91A05AFA93BD21",
   "type": "client",
   "info": "Beta 1.7.3 mod",
-  "baseVersion": "banshee-0.1.1.4"
+  "baseVersion": "banshee-0.1.1.4",
+  "useFOVPatch": true
 }

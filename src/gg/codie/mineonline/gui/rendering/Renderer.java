@@ -124,10 +124,6 @@ public class Renderer {
     }
 
     public void renderGUI(GUIObject guiObject, StaticShader shader) {
-        for(GUIObject child : guiObject.getGUIChildren()) {
-            renderGUI(child, shader);
-        }
-
         shader.start();
 
         TexturedModel texturedModel = guiObject.getModel();
@@ -170,6 +166,10 @@ public class Renderer {
         GL30.glBindVertexArray(0);
 
         shader.stop();
+
+        for(GUIObject child : guiObject.getGUIChildren()) {
+            renderGUI(child, shader);
+        }
     }
 
     public void renderStringIngame(Vector2f position, float size, String text, org.newdawn.slick.Color color) {

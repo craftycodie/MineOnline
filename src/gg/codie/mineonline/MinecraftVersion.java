@@ -44,6 +44,7 @@ public class MinecraftVersion {
     public final String clientName;
     public final String guiClass;
     public final String scaledResolutionClass;
+    public final boolean useFOVPatch;
 
     public MinecraftVersion(
             String sha256,
@@ -67,7 +68,8 @@ public class MinecraftVersion {
             String minecraftImplClass,
             String clientName,
             String guiClass,
-            String scaledResolutionClass
+            String scaledResolutionClass,
+            boolean useFOVPatch
     ) {
         this.sha256 = sha256;
         this.name = name;
@@ -91,6 +93,7 @@ public class MinecraftVersion {
         this.clientName = clientName;
         this.guiClass = guiClass;
         this.scaledResolutionClass = scaledResolutionClass;
+        this.useFOVPatch = useFOVPatch;
     }
 
     public MinecraftVersion(JSONObject object) {
@@ -116,6 +119,7 @@ public class MinecraftVersion {
         clientName = (object.has("clientName") ? object.getString("clientName") : object.getString("name"));
         guiClass = (object.has("guiClass") ? object.getString("guiClass") : null);
         scaledResolutionClass = (object.has("scaledResolutionClass") ? object.getString("scaledResolutionClass") : null);
+        useFOVPatch = (object.has("useFOVPatch") && object.getBoolean("useFOVPatch"));
     }
 
 
@@ -307,7 +311,8 @@ public class MinecraftVersion {
                 null,
                 typeName + " " + versionNumber,
                 null,
-                null
+                null,
+                false
             );
         } catch (Exception ex) {
             System.err.println("Bad launcher JSON for version " + jarFile);

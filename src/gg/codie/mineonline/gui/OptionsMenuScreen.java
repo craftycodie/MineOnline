@@ -5,6 +5,7 @@ import gg.codie.mineonline.Session;
 import gg.codie.mineonline.Settings;
 import gg.codie.mineonline.gui.components.LargeButton;
 import gg.codie.mineonline.gui.components.MediumButton;
+import gg.codie.mineonline.gui.components.ValueSlider;
 import gg.codie.mineonline.gui.events.IOnClickListener;
 import gg.codie.mineonline.gui.font.GUIText;
 import gg.codie.mineonline.gui.rendering.Camera;
@@ -22,6 +23,7 @@ public class OptionsMenuScreen implements IMenuScreen {
     MediumButton guiScaleButton;
     MediumButton aboutButton;
     MediumButton logoutButton;
+    ValueSlider fovSlider;
     MediumButton skinCustomizationButton;
     LargeButton doneButton;
     GUIText label;
@@ -29,6 +31,8 @@ public class OptionsMenuScreen implements IMenuScreen {
     private static final String[] guiScales = new String[] { "Auto", "Small", "Normal", "Large" };
 
     public OptionsMenuScreen() {
+        Settings.loadSettings();
+
         fullscreenButton = new MediumButton("Fullscreen: " + (Settings.settings.getBoolean(Settings.FULLSCREEN) ? "ON" : "OFF"), new Vector2f((DisplayManager.getDefaultWidth() / 2) - 308, (DisplayManager.getDefaultHeight() / 2) - 40), new IOnClickListener() {
             @Override
             public void onClick() {
@@ -54,7 +58,16 @@ public class OptionsMenuScreen implements IMenuScreen {
             }
         });
 
-        skinCustomizationButton = new MediumButton("Skin Customization", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 308, (DisplayManager.getDefaultHeight() / 2) + 56), new IOnClickListener() {
+        fovSlider = new ValueSlider("FOV: " + getFOVLabel(), new Vector2f((DisplayManager.getDefaultWidth() / 2) - 308, (DisplayManager.getDefaultHeight() / 2) + 56), new IOnClickListener() {
+            @Override
+            public void onClick() {
+                Settings.settings.put(Settings.FOV, fovSlider.getValue());
+                Settings.saveSettings();
+                fovSlider.setName("FOV: " + getFOVLabel());
+            }
+        }, Settings.settings.optInt(Settings.FOV, 70), 30, 110);
+
+        skinCustomizationButton = new MediumButton("Skin Customization", new Vector2f((DisplayManager.getDefaultWidth() / 2) + 8, (DisplayManager.getDefaultHeight() / 2) + 56), new IOnClickListener() {
             @Override
             public void onClick() {
                 MenuManager.setMenuScreen(new SkinCustomizationMenuScreen());
@@ -90,12 +103,26 @@ public class OptionsMenuScreen implements IMenuScreen {
         label = new GUIText("Options", 1.5f, TextMaster.minecraftFont, new Vector2f(0, 40), DisplayManager.getDefaultWidth(), true, true);
     }
 
+    public String getFOVLabel() {
+        int fov = Settings.settings.optInt(Settings.FOV, 70);
+
+        switch(fov) {
+            case 70:
+                return "Normal";
+            case 110:
+                return "Quake Pro";
+            default:
+                return "" + fov;
+        }
+    }
+
     public void update() {
         fullscreenButton.update();
         aboutButton.update();
         logoutButton.update();
         guiScaleButton.update();
         doneButton.update();
+        fovSlider.update();
         skinCustomizationButton.update();
     }
 
@@ -108,6 +135,7 @@ public class OptionsMenuScreen implements IMenuScreen {
         logoutButton.render(renderer, GUIShader.singleton);
         doneButton.render(renderer, GUIShader.singleton);
         guiScaleButton.render(renderer, GUIShader.singleton);
+        fovSlider.render(renderer, GUIShader.singleton);
         skinCustomizationButton.render(renderer, GUIShader.singleton);
         GUIShader.singleton.stop();
     }
@@ -122,6 +150,7 @@ public class OptionsMenuScreen implements IMenuScreen {
         logoutButton.resize();
         doneButton.resize();
         guiScaleButton.resize();
+        fovSlider.resize();
         skinCustomizationButton.resize();
     }
 
@@ -132,6 +161,7 @@ public class OptionsMenuScreen implements IMenuScreen {
         logoutButton.cleanUp();
         doneButton.cleanUp();
         guiScaleButton.cleanUp();
+        fovSlider.cleanUp();
         skinCustomizationButton.cleanUp();
         label.remove();
     }

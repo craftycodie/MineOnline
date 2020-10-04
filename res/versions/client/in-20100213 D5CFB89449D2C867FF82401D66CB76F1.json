@@ -7,5 +7,6 @@
   "baseURLHasNoPort": true,
   "forceFullscreenMacos": true,
   "legacy": true,
-  "baseVersion": "in-20100213"
+  "baseVersion": "in-20100213",
+  "useFOVPatch": true
 }

@@ -8,5 +8,6 @@
   "enableMacosCursorPatch": true,
   "legacy": true,
   "baseVersion": "c0.0.21a",
-  "guiClass": "com.mojang.minecraft.b.a"
+  "guiClass": "com.mojang.minecraft.b.a",
+  "useFOVPatch": true
 }

@@ -4,5 +4,6 @@
   "sha256": "B203D6D62F5B97671D262D88C7BF8891B8501B401FE9ABABC9E4EE2D960CD0A8",
   "type": "client",
   "legacy": true,
-  "baseVersion": "b1.6.5"
+  "baseVersion": "b1.6.5",
+  "useFOVPatch": true
 }

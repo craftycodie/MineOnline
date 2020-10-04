@@ -5,5 +5,6 @@
   "type": "client",
   "enableScreenshotPatch": true,
   "legacy": true,
-  "baseVersion": "inf-20100415"
+  "baseVersion": "inf-20100415",
+  "useFOVPatch": true
 }

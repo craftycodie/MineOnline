@@ -10,5 +10,6 @@
   "enableMacosCursorPatch": true,
   "legacy": true,
   "baseVersion": "c0.30-c",
-  "guiClass": "com.mojang.minecraft.e.m"
+  "guiClass": "com.mojang.minecraft.e.m",
+  "useFOVPatch": true
 }

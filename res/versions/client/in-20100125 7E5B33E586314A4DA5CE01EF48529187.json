@@ -6,5 +6,6 @@
   "enableScreenshotPatch": true,
   "enableFullscreenPatch": true,
   "legacy": true,
-  "baseVersion": "in-20100125"
+  "baseVersion": "in-20100125",
+  "useFOVPatch": true
 }

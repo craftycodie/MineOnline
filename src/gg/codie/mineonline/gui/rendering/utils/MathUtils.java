@@ -8,6 +8,10 @@ import org.lwjgl.util.vector.Vector3f;
 
 public class MathUtils {
 
+    public static float clamp(float val, float min, float max) {
+        return Math.max(min, Math.min(max, val));
+    }
+
     public static Matrix4f createTransformationMatrix(Vector3f translation, Vector3f rotation, Vector3f scale) {
         Matrix4f matrix = new Matrix4f();
         matrix.setIdentity();

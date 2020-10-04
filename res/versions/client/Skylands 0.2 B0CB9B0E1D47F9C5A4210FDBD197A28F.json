@@ -4,5 +4,6 @@
   "type": "client",
   "info": "Beta 1.7.3 mod",
   "baseVersion": "b1.7.3-skylands0.2",
-  "legacy": true
+  "legacy": true,
+  "useFOVPatch": true
 }
