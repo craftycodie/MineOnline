@@ -9,6 +9,9 @@ import gg.codie.utils.MD5Checksum;
 
 import java.io.*;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.Scanner;
 
 public abstract class ServerLauncher {
@@ -46,6 +49,9 @@ public abstract class ServerLauncher {
             serverProperties = new Properties(null);
         }
 
+        if (minecraftVersion != null)
+            System.out.println("Launching Server " + minecraftVersion.name);
+
         serverlistAddress = serverProperties.serverIP();
         serverlistPort = "" + serverProperties.serverPort();
 
@@ -73,43 +79,58 @@ public abstract class ServerLauncher {
                         if(inScanner.hasNext()) {
                             String nextLine = inScanner.nextLine();
 
-                            if(nextLine.contains("logged in with entity id") || nextLine.contains(" lost connection: ") || nextLine.contains(" logged in as ") || nextLine.contains(" disconnected")) {
-                                updatePlayerCount = true;
-                            }
-
-                            if(nextLine.length() > 27 && nextLine.substring(27).startsWith("Connected players: ")) {
-                                users = 0;
-                                if(nextLine.length() > 46){
-                                    users = nextLine.split(",").length;
+                            if (minecraftVersion != null && minecraftVersion.hasHeartbeat) {
+                                if (nextLine.length() > 15) {
+                                    if (nextLine.contains(" logged in as ")) {
+                                        playerNames = Arrays.copyOf(playerNames, playerNames.length + 1);
+                                        playerNames[playerNames.length - 1] = nextLine.substring(nextLine.indexOf(" logged in as ") + " logged in as".length() + 1);
+                                    } else if (nextLine.endsWith("disconnected")) {
+                                        LinkedList<String> linkedList = new LinkedList<>();
+                                        Collections.addAll(linkedList, playerNames);
+                                        linkedList.remove(nextLine.substring(15, nextLine.indexOf("(") - 1));
+                                        playerNames = linkedList.toArray(new String[linkedList.size()]);
+                                    }
+                                }
+                            } else {
+                                if (nextLine.contains("logged in with entity id") || nextLine.contains(" lost connection: ") || nextLine.contains(" logged in as ") || nextLine.contains(" disconnected")) {
+                                    updatePlayerCount = true;
                                 }
 
-                                playerNames = new String[0];
-                                if (users == 1) {
-                                    playerNames = new String[] {nextLine.substring(46)};
-                                } else if (users > 1) {
-                                    playerNames = nextLine.substring(46).split(", ");
-                                }
-                                if(updatingPlayerCount) {
-                                    updatingPlayerCount = false;
-                                    updatedPlayerCount = true;
-                                }
+                                if (nextLine.length() > 27 && nextLine.substring(27).startsWith("Connected players: ")) {
+                                    users = 0;
+                                    if (nextLine.length() > 46) {
+                                        users = nextLine.split(",").length;
+                                    }
 
-                            } else if(nextLine.length() > 33 && nextLine.substring(33).startsWith("There are ") && nextLine.substring(33).contains(" players online")) {
-                                try {
-                                    users = Integer.parseInt(nextLine.substring(33).split(" ")[2]);
                                     playerNames = new String[0];
-                                    if(users == 1)
-                                        playerNames = new String[] { nextLine.split(": ")[2] };
-                                    else if (users > 1)
-                                        playerNames = nextLine.split(": ")[2].replace(", ", " ").split(" ");
-                                } catch (NumberFormatException ex) {
-                                    // ignore.
-                                }
-                                if(updatingPlayerCount) {
-                                    updatingPlayerCount = false;
-                                    updatedPlayerCount = true;
+                                    if (users == 1) {
+                                        playerNames = new String[]{nextLine.substring(46)};
+                                    } else if (users > 1) {
+                                        playerNames = nextLine.substring(46).split(", ");
+                                    }
+                                    if (updatingPlayerCount) {
+                                        updatingPlayerCount = false;
+                                        updatedPlayerCount = true;
+                                    }
+
+                                } else if (nextLine.length() > 33 && nextLine.substring(33).startsWith("There are ") && nextLine.substring(33).contains(" players online")) {
+                                    try {
+                                        users = Integer.parseInt(nextLine.substring(33).split(" ")[2]);
+                                        playerNames = new String[0];
+                                        if (users == 1)
+                                            playerNames = new String[]{nextLine.split(": ")[2]};
+                                        else if (users > 1)
+                                            playerNames = nextLine.split(": ")[2].replace(", ", " ").split(" ");
+                                    } catch (NumberFormatException ex) {
+                                        // ignore.
+                                    }
+                                    if (updatingPlayerCount) {
+                                        updatingPlayerCount = false;
+                                        updatedPlayerCount = true;
+                                    }
                                 }
                             }
+
                             if(playerCountRequested > 0) {
                                 playerCountRequested--;
                             }
@@ -190,15 +211,10 @@ public abstract class ServerLauncher {
                 bannedIPs = Files.readUsersFile(bannedIpsPath);
                 bannedIPs = ArrayUtils.concatenate(bannedIPs, Files.readBannedIPsJSON(bannedIpsJSONPath));
 
-                if (minecraftVersion != null && minecraftVersion.hasHeartbeat) {
-                    playerNames = Files.readUsersFile(classicPlayersPath);
-                    users = playerNames.length;
-                }
-
                 serverUUID = MineOnlineAPI.listServer(
                         serverProperties.serverIP(),
                         "" + serverProperties.serverPort(),
-                        minecraftVersion != null && minecraftVersion.hasHeartbeat ? -1 : users,
+                        playerNames.length,
                         serverProperties.maxPlayers(),
                         serverProperties.serverName(),
                         serverProperties.onlineMode(),
