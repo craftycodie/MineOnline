@@ -107,7 +107,6 @@ public class MenuManager {
 
         boolean multiinstance = false;
         String quicklaunch = null;
-        String server = null;
         String joinserver = null;
 
         // If sa user drags a jar onto the launcher, it'll be at arg 1, quicklaunch it.
@@ -122,12 +121,7 @@ public class MenuManager {
             if(args[i].equals("-multiinstance")) {
                 multiinstance = true;
             }
-            if(args[i].equals("-server")) {
-                if(args.length > i + 1) {
-                    server = args[i + 1];
-                }
-            }
-            if(args[i].equals("-joinserver")) {
+            if(args[i].equals("-joinserver") || args[i].equals("-server")) {
                 if(args.length > i + 1) {
                     joinserver = args[i + 1];
                 }
@@ -245,7 +239,7 @@ public class MenuManager {
             String port = null;
             String mppass = null;
 
-            if(server != null) {
+            if(joinserver != null) {
                 String[] ipAndPort = joinserver.split(":");
                 if(ipAndPort.length == 2) {
                     ip = ipAndPort[0];
@@ -259,9 +253,9 @@ public class MenuManager {
             MinecraftVersion.launchMinecraft(quicklaunch, ip, port, mppass);
             return;
         }
-        else if (server != null) {
+        else if (joinserver != null) {
             try {
-                new Options(LauncherFiles.MINECRAFT_OPTIONS_PATH).setOption("lastServer", server.replace(":", "_"));
+                new Options(LauncherFiles.MINECRAFT_OPTIONS_PATH).setOption("lastServer", joinserver.replace(":", "_"));
             } catch (Exception ex) {
 
             }
