@@ -1,7 +1,11 @@
 package gg.codie.mineonline;
 
+import gg.codie.mineonline.gui.ProgressDialog;
+import gg.codie.mineonline.gui.rendering.utils.MathUtils;
 import gg.codie.utils.OSUtils;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
@@ -16,6 +20,16 @@ import java.security.PrivilegedExceptionAction;
 public class LibraryManager {
 
     public static void extractLibraries() throws IOException, URISyntaxException {
+        if (!new File(LauncherFiles.MINEONLINE_LIBRARY_FOLDER).exists())
+            ProgressDialog.showProgress("Installing MineOnline", new WindowAdapter() {
+                @Override
+                public void windowClosed(WindowEvent e) {
+                    System.exit(0);
+                }
+            });
+
+        ProgressDialog.setMessage("Extracting libraries...");
+
         File jarFile = new File(LibraryManager.class.getProtectionDomain().getCodeSource().getLocation().toURI());
 
         if(!jarFile.exists() || jarFile.isDirectory())
@@ -28,6 +42,8 @@ public class LibraryManager {
             if(!file.getName().startsWith("lib")) {
                 continue;
             }
+
+            ProgressDialog.setSubMessage(file.getName());
 
             java.io.File f = new java.io.File(LauncherFiles.MINEONLINE_FOLDER + java.io.File.separator + file.getName());
 
@@ -44,13 +60,19 @@ public class LibraryManager {
             }
             java.io.InputStream is = jar.getInputStream(file); // get the input stream
             java.io.FileOutputStream fos = new java.io.FileOutputStream(f);
+
+
+            ProgressDialog.setProgress(0);
             while (is.available() > 0) {  // write contents of 'is' to 'fos'
+                ProgressDialog.setProgress((int)MathUtils.clamp((100 - ((float)is.available() / file.getSize()) * 100), 0, 99));
                 fos.write(is.read());
             }
             fos.close();
             is.close();
         }
         jar.close();
+
+        ProgressDialog.setProgress(100);
     }
 
     public static void extractRuntimeNatives(String[] nativeJars) throws IOException {
