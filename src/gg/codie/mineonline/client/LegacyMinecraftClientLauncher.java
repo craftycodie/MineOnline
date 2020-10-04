@@ -664,10 +664,12 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
             else {
                 heightField.setInt(minecraft, height - DisplayManager.getFrame().getInsets().top - DisplayManager.getFrame().getInsets().bottom);
                 widthField.setInt(minecraft, width);
+            }
 
             if(gui != null && guiHeightField != null && guiWidthField != null) {
-                guiHeightField.setInt(gui, (int)guiScaleBottom);
-                guiWidthField.setInt(gui, (int)guiScaleRight);
+                int h = (height - DisplayManager.getFrame().getInsets().top - DisplayManager.getFrame().getInsets().bottom);
+                guiHeightField.setInt(gui, h * 240 / h);
+                guiWidthField.setInt(gui, width * 240 / h);
             }
 
             //screenshotLabel.setBounds(30, (AppletH - 16) - 30, 204, 20);
@@ -675,6 +677,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
             e.printStackTrace();
         }
     }
+
 
     boolean fullscreen;
 
