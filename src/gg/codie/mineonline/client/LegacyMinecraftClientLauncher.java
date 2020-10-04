@@ -8,10 +8,7 @@ import gg.codie.mineonline.gui.rendering.DisplayManager;
 import gg.codie.mineonline.gui.rendering.Renderer;
 import gg.codie.mineonline.lwjgl.OnCreateListener;
 import gg.codie.mineonline.lwjgl.OnUpdateListener;
-import gg.codie.mineonline.patches.InetSocketAddressPatch;
-import gg.codie.mineonline.patches.SocketPatch;
-import gg.codie.mineonline.patches.SystemSetPropertyPatch;
-import gg.codie.mineonline.patches.URLPatch;
+import gg.codie.mineonline.patches.*;
 import gg.codie.mineonline.patches.lwjgl.LWJGLDisplayPatch;
 import gg.codie.mineonline.patches.lwjgl.LWJGLOrthoPatch;
 import gg.codie.mineonline.patches.lwjgl.LWJGLPerspectivePatch;
@@ -507,6 +504,9 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
         }
         // Allows c0.0.15a to connect to servers.
         InetSocketAddressPatch.allowCustomServers(serverAddress, serverPort);
+        // Allows c0.0.15a to have a username sent to servers.
+        if (minecraftVersion != null && minecraftVersion.baseVersion.equals("c0.0.15a"))
+            ByteBufferPatch.enableC0015aUsernames(Session.session.getUsername());
 
         try {
             Options options = new Options(LauncherFiles.MINECRAFT_OPTIONS_PATH);
