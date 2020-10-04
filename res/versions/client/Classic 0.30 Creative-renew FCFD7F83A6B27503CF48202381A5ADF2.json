@@ -11,5 +11,6 @@
   "legacy": true,
   "baseVersion": "c0.30-c",
   "guiClass": "com.mojang.minecraft.e.m",
+  "guiScreenClass": "com.mojang.minecraft.e.o",
   "useFOVPatch": true
 }

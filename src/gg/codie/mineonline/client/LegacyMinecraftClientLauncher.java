@@ -12,6 +12,7 @@ import gg.codie.mineonline.patches.*;
 import gg.codie.mineonline.patches.lwjgl.LWJGLDisplayPatch;
 import gg.codie.mineonline.patches.lwjgl.LWJGLOrthoPatch;
 import gg.codie.mineonline.patches.lwjgl.LWJGLPerspectivePatch;
+import gg.codie.mineonline.patches.minecraft.GuiScreenPatch;
 import gg.codie.mineonline.patches.minecraft.ScaledResolutionConstructorPatch;
 import gg.codie.mineonline.utils.JREUtils;
 import gg.codie.utils.FileUtils;
@@ -498,7 +499,8 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
             if (minecraftVersion.scaledResolutionClass != null) {
                 ScaledResolutionConstructorPatch.useGUIScale(minecraftVersion.scaledResolutionClass, classLoader);
                 LWJGLOrthoPatch.useGuiScale();
-            } else if (minecraftVersion.guiClass != null) {
+            } else if (minecraftVersion.guiClass != null && minecraftVersion.guiScreenClass != null) {
+                GuiScreenPatch.useGUIScale(minecraftVersion.guiScreenClass, classLoader);
                 LWJGLOrthoPatch.useGuiScale();
             }
         }
@@ -664,12 +666,39 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
             else {
                 heightField.setInt(minecraft, height - DisplayManager.getFrame().getInsets().top - DisplayManager.getFrame().getInsets().bottom);
                 widthField.setInt(minecraft, width);
+
+                if(gui != null && guiHeightField != null && guiWidthField != null) {
+                    int h = (height - DisplayManager.getFrame().getInsets().top - DisplayManager.getFrame().getInsets().bottom);
+                    guiHeightField.setInt(gui, h * 240 / h);
+                    guiWidthField.setInt(gui, width * 240 / h);
+                }
             }
 
-            if(gui != null && guiHeightField != null && guiWidthField != null) {
-                int h = (height - DisplayManager.getFrame().getInsets().top - DisplayManager.getFrame().getInsets().bottom);
+            int guiScale = Settings.settings.optInt(Settings.GUI_SCALE, 0);
+
+            if (gui != null && guiHeightField != null && guiWidthField != null && guiScale != 0 && minecraftVersion != null && minecraftVersion.guiScreenClass != null) {
+                int scaledWidth;
+                int scaledHeight;
+                int scaleFactor;
+
+                scaledWidth = Display.getWidth();
+                scaledHeight = Display.getHeight();
+                scaleFactor = 1;
+                int k = guiScale;
+                if(k == 0)
+                {
+                    k = 1000;
+                }
+                for(; scaleFactor < k && scaledWidth / (scaleFactor + 1) >= 320 && scaledHeight / (scaleFactor + 1) >= 240; scaleFactor++) { }
+                scaledWidth = (int)Math.ceil((double)scaledWidth / (double)scaleFactor);
+                scaledHeight = (int)Math.ceil((double)scaledHeight / (double)scaleFactor);
+
+                int h = scaledHeight;
                 guiHeightField.setInt(gui, h * 240 / h);
-                guiWidthField.setInt(gui, width * 240 / h);
+                guiWidthField.setInt(gui, scaledWidth * 240 / h);
+
+                guiHeightField.setInt(gui, scaledHeight);
+                guiWidthField.setInt(gui, scaledWidth);
             }
 
             //screenshotLabel.setBounds(30, (AppletH - 16) - 30, 204, 20);

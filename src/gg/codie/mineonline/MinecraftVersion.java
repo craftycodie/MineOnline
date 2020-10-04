@@ -43,6 +43,7 @@ public class MinecraftVersion {
     public final String minecraftImplClass;
     public final String clientName;
     public final String guiClass;
+    public final String guiScreenClass;
     public final String scaledResolutionClass;
     public final boolean useFOVPatch;
 
@@ -68,6 +69,7 @@ public class MinecraftVersion {
             String minecraftImplClass,
             String clientName,
             String guiClass,
+            String guiScreenClass,
             String scaledResolutionClass,
             boolean useFOVPatch
     ) {
@@ -92,6 +94,7 @@ public class MinecraftVersion {
         this.natives = nativesWindows;
         this.clientName = clientName;
         this.guiClass = guiClass;
+        this.guiScreenClass = guiScreenClass;
         this.scaledResolutionClass = scaledResolutionClass;
         this.useFOVPatch = useFOVPatch;
     }
@@ -118,6 +121,7 @@ public class MinecraftVersion {
         minecraftImplClass = (object.has("minecraftImplClass") ? object.getString("minecraftImplClass") : null);
         clientName = (object.has("clientName") ? object.getString("clientName") : object.getString("name"));
         guiClass = (object.has("guiClass") ? object.getString("guiClass") : null);
+        guiScreenClass = (object.has("guiScreenClass") ? object.getString("guiScreenClass") : null);
         scaledResolutionClass = (object.has("scaledResolutionClass") ? object.getString("scaledResolutionClass") : null);
         useFOVPatch = (object.has("useFOVPatch") && object.getBoolean("useFOVPatch"));
     }
@@ -310,6 +314,7 @@ public class MinecraftVersion {
                 false,
                 null,
                 typeName + " " + versionNumber,
+                null,
                 null,
                 null,
                 false
