@@ -6,5 +6,6 @@
   "enableScreenshotPatch": true,
   "legacy": true,
   "baseVersion": "inf-20100618",
-  "useFOVPatch": true
+  "useFOVPatch": true,
+  "scaledResolutionClass": "net.minecraft.client.c.g"
 }
