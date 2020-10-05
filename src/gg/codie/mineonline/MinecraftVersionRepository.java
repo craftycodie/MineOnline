@@ -220,6 +220,7 @@ public class MinecraftVersionRepository {
                         continue;
 
 
+                    ProgressDialog.setSubMessage("Downloading new version info for " + ((JSONObject) versionPathObject).getString("name"));
                     System.out.println("Downloaded new version info " + ((JSONObject) versionPathObject).getString("name"));
 
                     String downloadVersionText = MineOnlineAPI.getVersionInfo(((JSONObject) versionPathObject).getString("url"));
