@@ -744,44 +744,51 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
     // this MUST be called from the OpenGL thread.
     public void screenshot() {
         try {
-            if(buffer == null || buffer.capacity() < Display.getWidth() * Display.getHeight())
-            {
-                buffer = BufferUtils.createByteBuffer(Display.getWidth() * Display.getHeight() * 3);
+            int width = Display.getWidth();
+            int height = Display.getHeight();
+
+            if (fullscreen) {
+                width = Display.getDisplayMode().getWidth();
+                height = Display.getDisplayMode().getHeight();
+            } else if (minecraftApplet != null) {
+                width = minecraftApplet.getWidth();
+                height = minecraftApplet.getHeight();
             }
-            if(imageData == null || imageData.length < Display.getWidth() * Display.getHeight() * 3)
+
+            if(buffer == null || buffer.capacity() < width * height)
             {
-                pixelData = new byte[Display.getWidth() * Display.getHeight() * 3];
-                imageData = new int[Display.getWidth() * Display.getHeight()];
+                buffer = BufferUtils.createByteBuffer(width * height * 3);
+            }
+            if(imageData == null || imageData.length < width * height * 3)
+            {
+                pixelData = new byte[width * height * 3];
+                imageData = new int[width * height];
             }
             GL11.glPixelStorei(3333 /*GL_PACK_ALIGNMENT*/, 1);
             GL11.glPixelStorei(3317 /*GL_UNPACK_ALIGNMENT*/, 1);
             buffer.clear();
-            if(fullscreen)
-                GL11.glReadPixels(0, 0, Display.getDisplayMode().getWidth(), Display.getDisplayMode().getHeight(), 6407 /*GL_RGB*/, 5121 /*GL_UNSIGNED_BYTE*/, buffer);
-            else if (minecraftApplet != null)
-                GL11.glReadPixels(0, 0, minecraftApplet.getWidth(), minecraftApplet.getHeight(), 6407 /*GL_RGB*/, 5121 /*GL_UNSIGNED_BYTE*/, buffer);
-            else
-                GL11.glReadPixels(0, 0, Display.getWidth(), Display.getHeight(), 6407 /*GL_RGB*/, 5121 /*GL_UNSIGNED_BYTE*/, buffer);
+            GL11.glReadPixels(0, 0, width, height, 6407 /*GL_RGB*/, 5121 /*GL_UNSIGNED_BYTE*/, buffer);
+
 
             buffer.clear();
 
             buffer.get(pixelData);
-            for(int l = 0; l < Display.getWidth(); l++)
+            for(int l = 0; l < width; l++)
             {
-                for(int i1 = 0; i1 < Display.getHeight(); i1++)
+                for(int i1 = 0; i1 < height; i1++)
                 {
-                    int j1 = l + (Display.getHeight() - i1 - 1) * Display.getWidth();
+                    int j1 = l + (height - i1 - 1) * width;
                     int k1 = pixelData[j1 * 3 + 0] & 0xff;
                     int l1 = pixelData[j1 * 3 + 1] & 0xff;
                     int i2 = pixelData[j1 * 3 + 2] & 0xff;
                     int j2 = 0xff000000 | k1 << 16 | l1 << 8 | i2;
-                    imageData[l + i1 * Display.getWidth()] = j2;
+                    imageData[l + i1 * width] = j2;
                 }
 
             }
 
-            BufferedImage bufferedimage = new BufferedImage(Display.getWidth(), Display.getHeight(), 1);
-            bufferedimage.setRGB(0, 0, Display.getWidth(), Display.getHeight(), imageData, 0, Display.getWidth());
+            BufferedImage bufferedimage = new BufferedImage(width, height, 1);
+            bufferedimage.setRGB(0, 0, width, height, imageData, 0, width);
 
             // Copy image to clipboard.
             TransferableImage trans = new TransferableImage( bufferedimage );
