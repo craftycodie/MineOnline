@@ -622,7 +622,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
 
             Field guiField = null;
 
-            if (minecraftVersion.guiClass != null) {
+            if (minecraftVersion != null && minecraftVersion.guiClass != null) {
                 try {
                     Class guiClass = classLoader.loadClass(minecraftVersion.guiClass);
                     for (Field field : guiClass.getDeclaredFields()) {
