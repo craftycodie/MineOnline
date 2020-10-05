@@ -8,5 +8,6 @@
   "forceFullscreenMacos": true,
   "legacy": true,
   "baseVersion": "in-20100131-3",
-  "useFOVPatch": true
+  "useFOVPatch": true,
+  "scaledResolutionClass": "net.minecraft.client.b.h"
 }
