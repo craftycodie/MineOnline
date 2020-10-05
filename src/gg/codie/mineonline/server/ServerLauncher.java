@@ -84,11 +84,13 @@ public abstract class ServerLauncher {
                                     if (nextLine.contains(" logged in as ")) {
                                         playerNames = Arrays.copyOf(playerNames, playerNames.length + 1);
                                         playerNames[playerNames.length - 1] = nextLine.substring(nextLine.indexOf(" logged in as ") + " logged in as".length() + 1);
+                                        updatedPlayerCount = true;
                                     } else if (nextLine.endsWith("disconnected")) {
                                         LinkedList<String> linkedList = new LinkedList<>();
                                         Collections.addAll(linkedList, playerNames);
                                         linkedList.remove(nextLine.substring(15, nextLine.indexOf("(") - 1));
                                         playerNames = linkedList.toArray(new String[linkedList.size()]);
+                                        updatedPlayerCount = true;
                                     }
                                 }
                             } else {
