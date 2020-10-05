@@ -8,5 +8,6 @@
   "enableMacosCursorPatch": true,
   "legacy": true,
   "baseVersion": "c0.28_01",
-  "useFOVPatch": true
+  "useFOVPatch": true,
+  "useTexturepackPatch": true
 }

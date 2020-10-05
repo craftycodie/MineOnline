@@ -43,6 +43,7 @@ public class LauncherFiles {
     public static final String MINEONLINE_LATEST_LOG = MINEONLINE_FOLDER + "latest.log";
 
     public static final String MINECRAFT_RESOURCES_PATH = getOldMinecraftDirectory() + File.separator + "resources" + File.separator;
+    public static final String MINECRAFT_TEXTURE_PACKS_PATH = getOldMinecraftDirectory() + File.separator + "texturepacks" + File.separator;
     public static final String MINECRAFT_ASSETS_PATH = getNewMinecraftDirectory() + File.separator + "assets" + File.separator;
     public static final String MINECRAFT_SCREENSHOTS_PATH = getOldMinecraftDirectory() + File.separator + "screenshots" + File.separator;
     public static final String MINECRAFT_BINARIES_PATH = getOldMinecraftDirectory() + File.separator + "bin" + File.separator;

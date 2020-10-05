@@ -80,16 +80,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
 
     boolean firstUpdate = true;
     public void startMinecraft() throws Exception {
-
         System.gc();
-
-        if(serverAddress != null) {
-            try {
-                new Options(LauncherFiles.MINECRAFT_OPTIONS_PATH).setOption("lastServer", serverAddress + "_" + serverPort);
-            } catch (Exception ex) {
-
-            }
-        }
 
         fullscreen = Settings.settings.has(Settings.FULLSCREEN) && Settings.settings.getBoolean(Settings.FULLSCREEN);
 
@@ -513,10 +504,17 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
         // Allows c0.0.15a to have a username sent to servers.
         if (minecraftVersion != null && minecraftVersion.baseVersion.equals("c0.0.15a"))
             ByteBufferPatch.enableC0015aUsernames(Session.session.getUsername());
+        // Allow texture packs in versions before Alpha 1.2.2
+        if (minecraftVersion != null && minecraftVersion.useTexturepackPatch) {
+            ClassPatch.useTexturePacks(Settings.settings.optString(Settings.TEXTURE_PACK, ""));
+        }
 
         try {
             Options options = new Options(LauncherFiles.MINECRAFT_OPTIONS_PATH);
             options.setOption("guiScale", "" + Settings.settings.optInt(Settings.GUI_SCALE, 0));
+            options.setOption("skin", Settings.settings.optString(Settings.TEXTURE_PACK, ""));
+            if (serverAddress != null)
+                options.setOption("lastServer", serverAddress + "_" + serverPort);
         } catch (Exception ex) {
             System.err.println("Couldn't update options.txt");
         }

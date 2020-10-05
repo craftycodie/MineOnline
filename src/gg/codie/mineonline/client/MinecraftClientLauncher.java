@@ -108,6 +108,9 @@ public class MinecraftClientLauncher {
             try {
                 Options options = new Options(LauncherFiles.MINECRAFT_OPTIONS_PATH);
                 options.setOption("guiScale", "" + Settings.settings.optInt(Settings.GUI_SCALE, 0));
+                options.setOption("skin", Settings.settings.optString(Settings.TEXTURE_PACK, ""));
+                if (serverIP != null)
+                    options.setOption("lastServer", serverIP + "_" + serverPort);
             } catch (Exception ex) {
                 System.err.println("Couldn't save guiScale to options.txt");
             }
@@ -165,16 +168,7 @@ public class MinecraftClientLauncher {
     public void startMinecraft() throws Exception {
         URLClassLoader classLoader = new URLClassLoader(new URL[] { Paths.get(jarPath).toUri().toURL() });
 
-        if(serverAddress != null) {
-            try {
-                new Options(LauncherFiles.MINECRAFT_OPTIONS_PATH).setOption("lastServer", serverAddress + "_" + serverPort);
-            } catch (Exception ex) {
-
-            }
-        }
-
         try {
-
             LinkedList<String> args = new LinkedList<>();
 
             new Session(username, token, uuid);

@@ -6,5 +6,6 @@
   "enableScreenshotPatch": true,
   "legacy": true,
   "baseVersion": "inf-20100611",
-  "useFOVPatch": true
+  "useFOVPatch": true,
+  "useTexturepackPatch": true
 }

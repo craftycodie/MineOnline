@@ -8,5 +8,6 @@
   "forceFullscreenMacos": true,
   "legacy": true,
   "baseVersion": "in-20100212-1",
-  "useFOVPatch": true
+  "useFOVPatch": true,
+  "useTexturepackPatch": true
 }

@@ -6,5 +6,6 @@
   "enableScreenshotPatch": true,
   "legacy": true,
   "baseVersion": "a1.0.17_04",
-  "useFOVPatch": true
+  "useFOVPatch": true,
+  "useTexturepackPatch": true
 }

@@ -7,5 +7,6 @@
   "enableFullscreenPatch": true,
   "legacy": true,
   "baseVersion": "in-20100104-2",
-  "useFOVPatch": true
+  "useFOVPatch": true,
+  "useTexturepackPatch": true
 }

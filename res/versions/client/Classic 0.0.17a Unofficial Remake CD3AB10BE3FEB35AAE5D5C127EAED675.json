@@ -4,5 +4,6 @@
   "type": "client",
   "info": "Unofficial Remake v0.0.1a-2_obf",
   "baseVersion": "c0.0.17a",
-  "useFOVPatch": true
+  "useFOVPatch": true,
+  "useTexturepackPatch": true
 }

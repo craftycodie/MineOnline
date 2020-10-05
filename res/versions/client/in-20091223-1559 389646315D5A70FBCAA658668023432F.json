@@ -8,5 +8,6 @@
   "enableFullscreenPatch": true,
   "legacy": true,
   "baseVersion": "in-20091223-1559",
-  "useFOVPatch": true
+  "useFOVPatch": true,
+  "useTexturepackPatch": true
 }

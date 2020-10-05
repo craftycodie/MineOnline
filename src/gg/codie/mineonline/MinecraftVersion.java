@@ -46,6 +46,7 @@ public class MinecraftVersion {
     public final String guiScreenClass;
     public final String scaledResolutionClass;
     public final boolean useFOVPatch;
+    public final boolean useTexturepackPatch;
 
     public MinecraftVersion(
             String sha256,
@@ -71,7 +72,8 @@ public class MinecraftVersion {
             String guiClass,
             String guiScreenClass,
             String scaledResolutionClass,
-            boolean useFOVPatch
+            boolean useFOVPatch,
+            boolean useTexturepackPatch
     ) {
         this.sha256 = sha256;
         this.name = name;
@@ -97,6 +99,7 @@ public class MinecraftVersion {
         this.guiScreenClass = guiScreenClass;
         this.scaledResolutionClass = scaledResolutionClass;
         this.useFOVPatch = useFOVPatch;
+        this.useTexturepackPatch = useTexturepackPatch;
     }
 
     public MinecraftVersion(JSONObject object) {
@@ -124,6 +127,7 @@ public class MinecraftVersion {
         guiScreenClass = (object.has("guiScreenClass") ? object.getString("guiScreenClass") : null);
         scaledResolutionClass = (object.has("scaledResolutionClass") ? object.getString("scaledResolutionClass") : null);
         useFOVPatch = (object.has("useFOVPatch") && object.getBoolean("useFOVPatch"));
+        useTexturepackPatch = (object.has("useTexturepackPatch") && object.getBoolean("useTexturepackPatch"));
     }
 
 
@@ -317,6 +321,7 @@ public class MinecraftVersion {
                 null,
                 null,
                 null,
+                false,
                 false
             );
         } catch (Exception ex) {

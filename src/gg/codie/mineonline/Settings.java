@@ -19,7 +19,8 @@ public class Settings {
     public static final String CLIENT_LAUNCH_ARGS = "clientLaunchArgs";
     public static final String FOV = "fov";
     public static final String GUI_SCALE = "guiScale";
-    private static final int SETTINGS_VERSION_NUMBER = 5;
+    public static final String TEXTURE_PACK = "texturePack";
+    private static final int SETTINGS_VERSION_NUMBER = 6;
 
     private static boolean readonly = true;
 
@@ -49,6 +50,7 @@ public class Settings {
         settings.put(CLIENT_LAUNCH_ARGS, "");
         settings.put(FOV, 70);
         settings.put(GUI_SCALE, 3);
+        settings.put(TEXTURE_PACK, "");
 
         saveSettings();
         loadSettings();
@@ -93,6 +95,8 @@ public class Settings {
                     case 4:
                         settings.put(FOV, 70);
                         settings.put(GUI_SCALE, 3);
+                    case 5:
+                        settings.put(TEXTURE_PACK, "");
                 }
                 settings.put(SETTINGS_VERSION, SETTINGS_VERSION_NUMBER);
             }

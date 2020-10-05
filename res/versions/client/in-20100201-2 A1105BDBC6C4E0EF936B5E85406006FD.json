@@ -9,5 +9,6 @@
   "legacy": true,
   "baseVersion": "in-20100201-2",
   "scaledResolutionClass": "net.minecraft.client.b.h",
-  "useFOVPatch": true
+  "useFOVPatch": true,
+  "useTexturepackPatch": true
 }
