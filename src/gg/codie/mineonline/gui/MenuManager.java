@@ -271,7 +271,7 @@ public class MenuManager {
         playerGameObject.setPlayerAnimation(new IdlePlayerAnimation());
         Camera camera = new Camera();
 
-        String[] panoramaNames = new String[] {"beta3", "beta5", "beta6", "beta7", "sunset", "midnight", "pack"};
+        String[] panoramaNames = new String[] {"beta5", "beta6", "sunset", "midnight"};
         //String[] panoramaNames = new String[] {"beta2"};
 
         RawModel model = loader.loadBoxToVAO(new Vector3f(-1, -1, -1), new Vector3f(1, 1, 1), TextureHelper.getCubeTextureCoords(new Vector2f(8192, 4096),
