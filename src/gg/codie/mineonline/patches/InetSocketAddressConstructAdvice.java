@@ -15,8 +15,12 @@ public class InetSocketAddressConstructAdvice {
                 ip = (String) ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.InetSocketAddressConstructAdvice").getField("serverIP").get(null);
                 port = (int) ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.InetSocketAddressConstructAdvice").getField("serverPort").get(null);
 
-                Class presenceClazz = ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.discord.DiscordPresence");
-                presenceClazz.getMethod("updateServer", new Class[] { String.class, String.class }).invoke(null, InetAddress.getByName(ip).getHostAddress(), "" + port);
+                if (ip == null || ip.isEmpty())
+                    ip = "100::ffff:ffff:ffff:ffff";
+                else {
+                    Class presenceClazz = ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.discord.DiscordPresence");
+                    presenceClazz.getMethod("updateServer", new Class[]{String.class, String.class}).invoke(null, InetAddress.getByName(ip).getHostAddress(), "" + port);
+                }
             } catch (Exception ex) {
                 System.err.println("Unable to join server.");
                 ex.printStackTrace();

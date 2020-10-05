@@ -10,8 +10,8 @@ import java.net.InetSocketAddress;
 
 public class InetSocketAddressPatch {
     public static void allowCustomServers(String serverAddress, String serverPort) {
-        if (serverAddress == null)
-            return;
+//        if (serverAddress == null)
+//            return;
         if (serverPort == null)
             serverPort = "25565";
 
