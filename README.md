@@ -36,6 +36,8 @@ These are features MineOnline will bring to Minecraft.
 
 - FOV Option
 
+- Texture packs for versions before Alpha 1.2.2 (when it was officially added)
+
 - GUI scaling for versions before Beta 1.5 (when it was officially added)
 
 - Launcher Authentication and Updates
