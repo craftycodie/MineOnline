@@ -27,6 +27,7 @@ public class MainMenuScreen implements IMenuScreen {
     MediumButton playButton;
     MediumButton joinServerButton;
     MediumButton versionButton;
+    MediumButton texturePacksButton;
     TinyButton optionsButton;
     TinyButton skinButton;
 
@@ -96,14 +97,21 @@ public class MainMenuScreen implements IMenuScreen {
             }
         });
 
-        optionsButton = new TinyButton("Options...", new Vector2f((DisplayManager.getDefaultWidth() / 2) + 30, (DisplayManager.getDefaultHeight() / 2) + 112), new IOnClickListener() {
+        texturePacksButton = new MediumButton("Texture Packs", new Vector2f((DisplayManager.getDefaultWidth() / 2) + 30, (DisplayManager.getDefaultHeight() / 2) + 104), new IOnClickListener() {
+            @Override
+            public void onClick() {
+                MenuManager.setMenuScreen(new TexturePacksMenuScreen());
+            }
+        });
+
+        optionsButton = new TinyButton("Options...", new Vector2f((DisplayManager.getDefaultWidth() / 2) + 30, (DisplayManager.getDefaultHeight() / 2) + 160), new IOnClickListener() {
             @Override
             public void onClick() {
                 MenuManager.setMenuScreen(new OptionsMenuScreen());
             }
         });
 
-        skinButton = new TinyButton("Change Skin", new Vector2f((DisplayManager.getDefaultWidth() / 2) + 188, (DisplayManager.getDefaultHeight() / 2) + 112), new IOnClickListener() {
+        skinButton = new TinyButton("Change Skin", new Vector2f((DisplayManager.getDefaultWidth() / 2) + 188, (DisplayManager.getDefaultHeight() / 2) + 160), new IOnClickListener() {
             @Override
             public void onClick() {
                 MenuManager.setMenuScreen(new SkinMenuScreen());
@@ -124,6 +132,7 @@ public class MainMenuScreen implements IMenuScreen {
         playButton.update();
         joinServerButton.update();
         versionButton.update();
+        texturePacksButton.update();
         optionsButton.update();
         skinButton.update();
 
@@ -155,6 +164,7 @@ public class MainMenuScreen implements IMenuScreen {
         playButton.render(renderer, GUIShader.singleton);
         joinServerButton.render(renderer, GUIShader.singleton);
         versionButton.render(renderer, GUIShader.singleton);
+        texturePacksButton.render(renderer, GUIShader.singleton);
         optionsButton.render(renderer, GUIShader.singleton);
         skinButton.render(renderer, GUIShader.singleton);
         GUIShader.singleton.stop();
@@ -168,6 +178,7 @@ public class MainMenuScreen implements IMenuScreen {
         playButton.resize();
         joinServerButton.resize();
         versionButton.resize();
+        texturePacksButton.resize();
         optionsButton.resize();
         skinButton.resize();
         logo.model.setRawModel(Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth((DisplayManager.getDefaultWidth() / 2) -200) + DisplayManager.getXBuffer(), Display.getHeight() - DisplayManager.scaledHeight(69)), new Vector2f(DisplayManager.scaledWidth(400), DisplayManager.scaledHeight(49)), TextureHelper.getYFlippedPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(0, 40), new Vector2f(400, 49))));
@@ -178,6 +189,7 @@ public class MainMenuScreen implements IMenuScreen {
         playButton.cleanUp();
         joinServerButton.cleanUp();
         versionButton.cleanUp();
+        texturePacksButton.cleanUp();
         skinButton.cleanUp();
         optionsButton.cleanUp();
         if(updateAvailableText != null)

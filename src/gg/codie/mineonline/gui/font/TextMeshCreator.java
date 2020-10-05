@@ -31,7 +31,14 @@ public class TextMeshCreator {
         Word currentWord = new Word(text.getFontSize());
         for (char c : chars) {
             int ascii = (int) c;
-            if (ascii == SPACE_ASCII) {
+            // new line
+            if (ascii == 10 || ascii == 13) {
+                currentLine.attemptToAddWord(currentWord);
+                lines.add(currentLine);
+                currentLine = new Line(metaData.getSpaceWidth(), text.getFontSize(), text.getMaxLineSize());
+                currentWord = new Word(text.getFontSize());
+                continue;
+            } else if (ascii == SPACE_ASCII) {
                 boolean added = currentLine.attemptToAddWord(currentWord);
                 if (!added) {
                     lines.add(currentLine);
