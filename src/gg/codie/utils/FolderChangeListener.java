@@ -3,23 +3,21 @@ package gg.codie.utils;
 import java.io.IOException;
 import java.nio.file.*;
 
-import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
+import static java.nio.file.StandardWatchEventKinds.*;
 
-public class FileChangeListener implements Runnable {
+public class FolderChangeListener implements Runnable {
 
-    public interface FileChangeEvent {
-        void onFileChange(String filePath);
+    public interface FolderChangeEvent {
+        void onFolderChange();
     }
 
-    public final String fileName;
     public final String fullFilePath;
-    public final FileChangeEvent callback;
+    public final FolderChangeEvent callback;
 
     boolean stopFlag;
 
-    public FileChangeListener(final String filePath, final FileChangeEvent callback) {
+    public FolderChangeListener(final String filePath, final FolderChangeEvent callback) {
         this.fullFilePath = filePath;
-        this.fileName = Paths.get(filePath).getFileName().toString();
         this.callback = callback;
     }
 
@@ -40,7 +38,7 @@ public class FileChangeListener implements Runnable {
         final WatchService watchService = FileSystems.getDefault()
                 .newWatchService();
         Path path = Paths.get(dirPath);
-        path.register(watchService, ENTRY_MODIFY);
+        path.register(watchService, ENTRY_MODIFY, ENTRY_CREATE, ENTRY_DELETE);
 
         Runtime.getRuntime().addShutdownHook(new Thread() {
             public void run() {
@@ -56,11 +54,9 @@ public class FileChangeListener implements Runnable {
         while (!stopFlag) {
             try {
                 key = watchService.take();
-                for (WatchEvent<?> event : key.pollEvents()) {
-                    if (event.context().toString().equals(fileName)) {
-                        callback.onFileChange(fullFilePath);
-                    }
-                }
+                System.out.println("hi");
+                if (key.pollEvents().size() > 0)
+                    callback.onFolderChange();
                 boolean reset = key.reset();
                 if (!reset) {
                     System.out.println("Could not reset the watch key.");

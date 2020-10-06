@@ -51,8 +51,8 @@ public class MainMenuScreen implements IMenuScreen {
                 try {
                     MinecraftVersion.launchMinecraft(jarPath, null, null, null);
                 } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(null, "Failed to launch!");
                     System.out.println(ex);
+                    JOptionPane.showMessageDialog(null, "Failed to launch!");
                 }
             }
         });

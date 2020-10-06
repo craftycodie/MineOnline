@@ -58,6 +58,11 @@ public class GameObject {
         child.parent = this;
     }
 
+    public void removeChild(GameObject child) {
+        children.remove(child);
+        child.parent = null;
+    }
+
 
 //    public void increasePosition(float dx, float dy, float dz) {
 //        this.localPosition.x += dx;

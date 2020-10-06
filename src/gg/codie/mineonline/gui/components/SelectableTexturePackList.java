@@ -1,5 +1,6 @@
 package gg.codie.mineonline.gui.components;
 
+import gg.codie.mineonline.Globals;
 import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.Settings;
 import gg.codie.mineonline.gui.MenuManager;
@@ -9,6 +10,7 @@ import gg.codie.mineonline.gui.rendering.models.RawModel;
 import gg.codie.mineonline.gui.rendering.models.TexturedModel;
 import gg.codie.mineonline.gui.rendering.shaders.GUIShader;
 import gg.codie.mineonline.gui.rendering.textures.ModelTexture;
+import gg.codie.utils.FolderChangeListener;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Vector2f;
@@ -30,6 +32,9 @@ public class SelectableTexturePackList extends GUIObject {
     GUIObject background;
 
     IOnClickListener doubleClickListener;
+    FolderChangeListener texturePacksChangedListener;
+
+    boolean folderChanged;
 
     public SelectableTexturePackList(String name, Vector3f localPosition, Vector3f rotation, Vector3f scale, IOnClickListener doubleClickListener) {
         super(name, localPosition, rotation, scale);
@@ -53,51 +58,17 @@ public class SelectableTexturePackList extends GUIObject {
         TexturedModel texuredBackgroundModel =  new TexturedModel(backgroundModel, backgroundTexture);
         background = new GUIObject("background", texuredBackgroundModel, new Vector3f(), new Vector3f(), new Vector3f(1, 1, 1));
 
-        addTexturePack("", "The default look of Minecraft", Loader.singleton.loadTexture(MenuManager.class.getResource("/img/pack.png")));
+        resetList();
 
-        File texturePacksFolder = new File(LauncherFiles.MINECRAFT_TEXTURE_PACKS_PATH);
-
-        if (texturePacksFolder.exists()) {
-            for (File texturePack : texturePacksFolder.listFiles()) {
-                if (!texturePack.isDirectory() && !texturePack.getName().endsWith(".zip"))
-                    continue;
-
-                String info = "";
-                int packIcon = -1;
-
-                try {
-                    if (texturePack.getName().endsWith(".zip")) {
-                        ZipFile texturePackZip = new ZipFile(texturePack.getPath());
-                        ZipEntry infoFile = texturePackZip.getEntry("pack.txt");
-                        if (infoFile != null) {
-                            info = new BufferedReader(new InputStreamReader(texturePackZip.getInputStream(infoFile)))
-                                    .lines().collect(Collectors.joining("\n"));
-                        }
-                        ZipEntry packPng = texturePackZip.getEntry("pack.png");
-                        if (packPng != null) {
-                            packIcon = Loader.singleton.loadTexture(texturePackZip.getInputStream(packPng));
-                        }
-                    } else if (texturePack.isDirectory()) {
-                        File infoFile = new File(texturePack, "pack.txt");
-                        if (infoFile.exists()) {
-                            info = new BufferedReader(new FileReader(infoFile))
-                                    .lines().collect(Collectors.joining("\n"));
-                        }
-                        File packPng = new File(texturePack, "pack.png");
-                        if (packPng.exists()) {
-                            packIcon = Loader.singleton.loadTexture(packPng.getPath());
-                        }
-                    }
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-
-                addTexturePack(texturePack.getName(), info, packIcon);
+        texturePacksChangedListener = new FolderChangeListener(LauncherFiles.MINECRAFT_TEXTURE_PACKS_PATH, new FolderChangeListener.FolderChangeEvent() {
+            @Override
+            public void onFolderChange() {
+                // Let the render thread handle updating the list.
+                folderChanged = true;
             }
-        }
+        });
 
-        Settings.loadSettings();
-        selectTexturePack(Settings.settings.optString(Settings.TEXTURE_PACK, ""));
+        new Thread(texturePacksChangedListener).start();
     }
 
     public void addTexturePack(String name, String info, int packIcon) {
@@ -125,6 +96,77 @@ public class SelectableTexturePackList extends GUIObject {
         }
     }
 
+    public void resetList() {
+        for (SelectableTexturePack texturePack : texturePacks) {
+            removeChild(texturePack);
+            texturePack.cleanUp();
+        }
+        texturePacks.clear();
+
+        addTexturePack("", "The default look of Minecraft", Loader.singleton.loadTexture(MenuManager.class.getResource("/img/pack.png")));
+
+        File texturePacksFolder = new File(LauncherFiles.MINECRAFT_TEXTURE_PACKS_PATH);
+
+        if (texturePacksFolder.exists()) {
+            for (File texturePack : texturePacksFolder.listFiles()) {
+                if (!texturePack.isDirectory() && !texturePack.getName().endsWith(".zip"))
+                    continue;
+
+                String info = "";
+                int packIcon = -1;
+
+                try {
+                    if (texturePack.getName().endsWith(".zip")) {
+                        ZipFile texturePackZip = new ZipFile(texturePack.getPath());
+                        ZipEntry infoFile = texturePackZip.getEntry("pack.txt");
+                        if (infoFile != null) {
+                            info = new BufferedReader(new InputStreamReader(texturePackZip.getInputStream(infoFile)))
+                                    .lines().collect(Collectors.joining("\n"));
+                        }
+                    } else if (texturePack.isDirectory()) {
+                        File infoFile = new File(texturePack, "pack.txt");
+                        if (infoFile.exists()) {
+                            info = new BufferedReader(new FileReader(infoFile))
+                                    .lines().collect(Collectors.joining("\n"));
+                        }
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+
+                try {
+                    if (texturePack.getName().endsWith(".zip")) {
+                        ZipFile texturePackZip = new ZipFile(texturePack.getPath());
+                        ZipEntry packPng = texturePackZip.getEntry("pack.png");
+                        if (packPng != null) {
+                            packIcon = Loader.singleton.loadTexture(texturePackZip.getInputStream(packPng));
+                        }
+                    } else if (texturePack.isDirectory()) {
+                        File packPng = new File(texturePack, "pack.png");
+                        if (packPng.exists()) {
+                            packIcon = Loader.singleton.loadTexture(packPng.getPath());
+                        }
+                    }
+                } catch (Exception ex) {
+                    System.err.println("Failed to load pack png for texture pack " + texturePack);
+                    if (Globals.DEV)
+                        ex.printStackTrace();
+                }
+
+                addTexturePack(texturePack.getName(), info, packIcon);
+            }
+        } else {
+            try {
+                texturePacksFolder.createNewFile();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        Settings.loadSettings();
+        selectTexturePack(Settings.settings.optString(Settings.TEXTURE_PACK, ""));
+    }
+
     private LinkedList<SelectableTexturePack> texturePacks = new LinkedList<>();
 
     public LinkedList<SelectableTexturePack> getTexturePacks() {
@@ -135,6 +177,11 @@ public class SelectableTexturePackList extends GUIObject {
     float scrollbarPosition = 0;
     boolean holdingScroll = false;
     public void update() {
+        if (folderChanged) {
+            resetList();
+            folderChanged = false;
+        }
+
         for(SelectableTexturePack child : getTexturePacks()) {
             child.update();
         }
@@ -308,8 +355,10 @@ public class SelectableTexturePackList extends GUIObject {
     }
 
     public void cleanUp() {
-        for(SelectableTexturePack version : getTexturePacks()) {
-            version.cleanUp();
+        for(SelectableTexturePack texturePack : getTexturePacks()) {
+            texturePack.cleanUp();
         }
+
+        texturePacksChangedListener.stop();
     }
 }
