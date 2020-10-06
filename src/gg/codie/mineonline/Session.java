@@ -2,6 +2,7 @@ package gg.codie.mineonline;
 
 import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.mineonline.gui.rendering.PlayerGameObject;
+import gg.codie.utils.LastLogin;
 import org.json.JSONObject;
 
 import java.io.*;
@@ -55,6 +56,7 @@ public class Session {
         session = null;
         PlayerGameObject.thePlayer.setCloak(LauncherFiles.TEMPLATE_CLOAK_PATH);
         PlayerGameObject.thePlayer.setSkin(LauncherFiles.TEMPLATE_SKIN_PATH);
+        LastLogin.deleteLastLogin();
     }
 
     public void cacheSkin () {

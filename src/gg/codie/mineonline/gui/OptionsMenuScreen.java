@@ -84,7 +84,6 @@ public class OptionsMenuScreen implements IMenuScreen {
         logoutButton = new MediumButton("Logout", new Vector2f((DisplayManager.getDefaultWidth() / 2) + 8, (DisplayManager.getDefaultHeight() / 2) + 8), new IOnClickListener() {
             @Override
             public void onClick() {
-                LastLogin.deleteLastLogin();
                 Session.session.logout();
                 MenuManager.setMenuScreen(new LoginMenuScreen(false));
                 new File(LauncherFiles.CACHED_SKIN_PATH).delete();

@@ -37,7 +37,7 @@ public class DiscordRPCHandler {
     private static void play(String versionName, String serverIP, String serverPort, String username, String uuid, String sessionToken) {
         boolean isUpdate = false;
 
-        if (DiscordRPCHandler.uuid == null && sessionToken != null) {
+        if (DiscordRPCHandler.uuid == null && sessionToken != null && !sessionToken.isEmpty()) {
             try {
                 MineOnlineAPI.sendDiscordUserID(uuid, sessionToken, discordUserID);
             } catch (Exception ex) {
