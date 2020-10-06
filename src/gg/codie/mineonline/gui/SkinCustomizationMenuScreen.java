@@ -74,8 +74,8 @@ public class SkinCustomizationMenuScreen implements IMenuScreen {
                 //Ignore.
             }
 
-        } catch (FileNotFoundException ex) {
-
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
 
         hatButton = new MediumButton("Hat: " + (hat ? "ON" : "OFF"), new Vector2f((DisplayManager.getDefaultWidth() / 2) - 308, (DisplayManager.getDefaultHeight() / 2) - 40), new IOnClickListener() {

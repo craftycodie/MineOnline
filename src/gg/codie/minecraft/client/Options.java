@@ -6,9 +6,9 @@ import java.util.LinkedList;
 public class Options {
     String path;
 
-    public Options(String path) throws FileNotFoundException {
+    public Options(String path) throws IOException {
         if(!new File(path).exists()) {
-            throw new FileNotFoundException();
+            new File(path).createNewFile();
         }
         this.path = path;
     }

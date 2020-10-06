@@ -87,8 +87,8 @@ public class PlayerGameObject extends GameObject {
                 //Ignore.
             }
 
-        } catch (FileNotFoundException ex) {
-
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
 
         thePlayer = this;

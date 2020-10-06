@@ -54,29 +54,6 @@ public class MineOnlineAPI {
         }
     }
 
-    public static MineOnlinePlayerPresence playerPresence(String uuid) throws IOException {
-        HttpURLConnection connection;
-
-        URL url = new URL("http://" + Globals.API_HOSTNAME + "/api/player/" + uuid + "/presence");
-        connection = (HttpURLConnection) url.openConnection();
-        connection.setUseCaches(false);
-
-        InputStream is = connection.getInputStream();
-        BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-
-        StringBuilder response = new StringBuilder();
-        String line;
-        while ((line = rd.readLine()) != null) {
-            response.append(line);
-        }
-        rd.close();
-
-        if (connection != null)
-            connection.disconnect();
-
-        return new MineOnlinePlayerPresence(new JSONObject(response.toString()));
-    }
-
     public static String getExternalIP() {
         HttpURLConnection connection = null;
 
