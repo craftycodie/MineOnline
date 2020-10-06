@@ -2,6 +2,7 @@
 As I enter my final year of University I will be taking a break from this project.
 Everything will remain online and I will do my best to ensure things keep running smoothly, but I will be unable to tackle big changes until June 2021.
 If you find this project interesting, and know your way around Java, please consider supporting helping me get through the issues :)
+See the "For Developers" section below.
 - Codie
 
 
@@ -91,10 +92,12 @@ For 1.6 and above, libraries should be provided. Examples can be found [here](ht
 If you would like a version to be added to the main list, contact me (Codie).
 
 ## For Developers
+If you would like to help out, a good place to start is the ZenHub workspace, all of the issues are managed in [ZenHub](https://app.zenhub.com/workspaces/mineonline-5ec5d0ef84b144f89c5bc5c7). The best place to reach me is in my [discord server](https://discord.gg/xuyT7Xm).
+
 As per the license you are welcome to use the launcher code under non-commercial conditions.
 
 Note that the graphics code is VERY rough. I've never used LWJGL before, I've also never written game engine code on that level.
-I might tidy things up in future, if I get time.
+I might tidy things up in future, if I get time. (See [#126](https://github.com/codieradical/MineOnline/issues/126))
 
 The GUI and menu code shall not be used for 'clone' projects (for instance, copying my API and pointing the launcher to it).
 
