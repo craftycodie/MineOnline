@@ -54,7 +54,6 @@ public class FolderChangeListener implements Runnable {
         while (!stopFlag) {
             try {
                 key = watchService.take();
-                System.out.println("hi");
                 if (key.pollEvents().size() > 0)
                     callback.onFolderChange();
                 boolean reset = key.reset();
