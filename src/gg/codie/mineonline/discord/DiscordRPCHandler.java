@@ -29,11 +29,22 @@ public class DiscordRPCHandler {
     private static String username;
     private static String uuid;
 
+    private static String discordUserID;
+
     private static long lastServerUpdate = System.currentTimeMillis();
     private static long startTimestamp = System.currentTimeMillis() / 1000;
 
-    private static void play(String versionName, String serverIP, String serverPort, String username, String uuid) {
+    private static void play(String versionName, String serverIP, String serverPort, String username, String uuid, String sessionToken) {
         boolean isUpdate = false;
+
+        if (DiscordRPCHandler.uuid == null && sessionToken != null) {
+            try {
+                MineOnlineAPI.sendDiscordUserID(uuid, sessionToken, discordUserID);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+
         DiscordRPCHandler.uuid = uuid;
 
         if(versionName.equals(DiscordRPCHandler.versionName)
@@ -92,6 +103,7 @@ public class DiscordRPCHandler {
     public static void initialize(){
         DiscordEventHandlers handlers = new DiscordEventHandlers.Builder().setReadyEventHandler((user) -> {
             //System.out.println("Discord logged in " + user.username + "#" + user.discriminator + "!");
+            discordUserID = user.userId;
             DiscordRichPresence.Builder presence = new DiscordRichPresence.Builder("In the launcher.");
             presence.setDetails("Version " + Globals.LAUNCHER_VERSION + (Globals.DEV ? " Dev" : ""));
             presence.setBigImage("block", null);
@@ -128,7 +140,7 @@ public class DiscordRPCHandler {
                 if(presenceFile.exists()) {
                     try {
                         List<String> lines = Files.readAllLines(Paths.get(LauncherFiles.MINEONLINE_RICH_PRESENCE_FILE));
-                        play(lines.get(0), lines.get(1), lines.get(2), lines.get(3), lines.get(4));
+                        play(lines.get(0), lines.get(1), lines.get(2), lines.get(3), lines.get(4), lines.size() > 4 ? lines.get(5) : null);
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }
@@ -136,7 +148,7 @@ public class DiscordRPCHandler {
                 }
 
                 if (DiscordRPCHandler.serverIP != null &&  System.currentTimeMillis() - DiscordRPCHandler.lastServerUpdate > 60000)
-                    play(DiscordRPCHandler.versionName, DiscordRPCHandler.serverIP, DiscordRPCHandler.serverPort, DiscordRPCHandler.username, DiscordRPCHandler.uuid);
+                    play(DiscordRPCHandler.versionName, DiscordRPCHandler.serverIP, DiscordRPCHandler.serverPort, DiscordRPCHandler.username, DiscordRPCHandler.uuid, null);
 
                 try {
                     Thread.sleep(2000);

@@ -193,10 +193,10 @@ public class MineOnlineAPI {
         return response.toString();
     }
 
-    public static LinkedList<MineOnlineServer> listServers(String uuid, String sessionId) throws IOException {
+    public static LinkedList<MineOnlineServer> listServers(String sessionId) throws IOException {
         HttpURLConnection connection;
 
-        String parameters = "sessionId=" + URLEncoder.encode(sessionId, "UTF-8") + "&user=" + URLEncoder.encode(uuid, "UTF-8");
+        String parameters = "sessionId=" + URLEncoder.encode(sessionId, "UTF-8");
         URL url = new URL("http://" + Globals.API_HOSTNAME + "/api/servers?" + parameters);
         connection = (HttpURLConnection) url.openConnection();
         connection.setDoInput(true);
@@ -502,7 +502,7 @@ public class MineOnlineAPI {
         HttpURLConnection connection;
 
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("sessionID", sessionID);
+        jsonObject.put("sessionId", sessionID);
         jsonObject.put("discordUserID", discordUserID);
         String json = jsonObject.toString();
 
@@ -510,12 +510,13 @@ public class MineOnlineAPI {
         connection = (HttpURLConnection) url.openConnection();
         connection.setRequestProperty("Content-Type", "application/json");
         connection.setRequestMethod("POST");
-        connection.setDoInput(true);
         connection.setDoOutput(true);
 
         connection.getOutputStream().write(json.getBytes(StandardCharsets.UTF_8));
         connection.getOutputStream().flush();
-        connection.getOutputStream().close();
+        connection.disconnect();
+
+        connection.getResponseCode();
     }
 
     public static String getLauncherVersion() throws IOException {

@@ -29,9 +29,32 @@ public class DiscordPresence {
                     StandardOpenOption.READ, StandardOpenOption.WRITE,
                     StandardOpenOption.WRITE, StandardOpenOption.SYNC);
 
-            fc.write(ByteBuffer.wrap((versionName + "\n" + serverIP + "\n" + serverPort + "\n" + Session.session.getUsername() + "\n" + Session.session.getUuid()).getBytes(StandardCharsets.UTF_8)), 0);
+            fc.write(ByteBuffer.wrap((versionName + "\n" + serverIP + "\n" + serverPort + "\n" + Session.session.getUsername() + "\n" + Session.session.getUuid() + "\n" + Session.session.getSessionToken()).getBytes(StandardCharsets.UTF_8)), 0);
         } catch (Exception ex) {
             ex.printStackTrace();
+        }
+    }
+
+    public static void updateServer(String serverIP, String serverPort) {
+        if(serverIP != null) {
+            try {
+                String hostAddress = InetAddress.getByName(serverIP).getHostAddress();
+                if (hostAddress.equals(InetAddress.getLocalHost().getHostAddress()) || hostAddress.equals(InetAddress.getLoopbackAddress().getHostAddress())) {
+                    String externalIP = MineOnlineAPI.getExternalIP();
+                    if (externalIP != null && !externalIP.isEmpty()) {
+                        play(lastVersion, externalIP, serverPort);
+                    } else {
+                        play(lastVersion, serverIP, serverPort);
+                    }
+                } else {
+                    play(lastVersion, serverIP, serverPort);
+                }
+            } catch (UnknownHostException ex) {
+                // ignore
+                play(lastVersion, serverIP, serverPort);
+            }
+        } else {
+            play(lastVersion, serverIP, serverPort);
         }
     }
 }

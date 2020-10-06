@@ -25,7 +25,6 @@ public class MinecraftServerProcess {
     public static final String PROP_SESSION_HOST = "minecraft.api.session.host";
 
     public static Process startMinecraftServer(String[] args) throws Exception {
-        // Start the proxy as a new process.
         java.util.Properties props = System.getProperties();
 
         File jarFile = new File(args[0]);
