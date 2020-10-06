@@ -143,9 +143,6 @@ public class MineOnlineAPI {
         connection.setRequestMethod("DELETE");
         connection.connect();
 
-        InputStream is = connection.getInputStream();
-        BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-
         if (connection != null)
             connection.disconnect();
     }
@@ -499,6 +496,26 @@ public class MineOnlineAPI {
             errorObject.put("error", response.toString());
             return errorObject;
         }
+    }
+
+    public static void sendDiscordUserID(String userUUID, String sessionID, String discordUserID) throws Exception {
+        HttpURLConnection connection;
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("sessionID", sessionID);
+        jsonObject.put("discordUserID", discordUserID);
+        String json = jsonObject.toString();
+
+        URL url = new URL("http://" + Globals.API_HOSTNAME + "/api/player/" + userUUID + "/discordUserID");
+        connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestProperty("Content-Type", "application/json");
+        connection.setRequestMethod("POST");
+        connection.setDoInput(true);
+        connection.setDoOutput(true);
+
+        connection.getOutputStream().write(json.getBytes(StandardCharsets.UTF_8));
+        connection.getOutputStream().flush();
+        connection.getOutputStream().close();
     }
 
     public static String getLauncherVersion() throws IOException {

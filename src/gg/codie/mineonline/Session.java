@@ -2,6 +2,7 @@ package gg.codie.mineonline;
 
 import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.mineonline.gui.rendering.PlayerGameObject;
+import net.arikia.dev.drpc.DiscordEventHandlers;
 import org.json.JSONObject;
 
 import java.io.*;
@@ -49,6 +50,15 @@ public class Session {
         this.sessionToken = sessionToken;
         this.uuid = uuid;
         cacheSkin();
+
+        new DiscordEventHandlers.Builder().setReadyEventHandler((user) -> {
+            try {
+                MineOnlineAPI.sendDiscordUserID(uuid, sessionToken, user.userId);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        })
+        .build();
     }
 
     public void logout() {
