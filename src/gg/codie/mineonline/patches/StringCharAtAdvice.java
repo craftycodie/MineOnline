@@ -12,7 +12,6 @@ public class StringCharAtAdvice {
         try {
             // Version strings always start with Minecraft or 0.
             if (thisObj.startsWith("Minecraft") || thisObj.startsWith("0.")) {
-                System.out.println(thisObj);
                 String versionString = (String) ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.StringCharAtAdvice").getField("versionString").get(null);
                 // Comparing them as strings doens't play well with the patch.
                 if (Arrays.equals(thisObj.getBytes(), versionString.getBytes())) {
