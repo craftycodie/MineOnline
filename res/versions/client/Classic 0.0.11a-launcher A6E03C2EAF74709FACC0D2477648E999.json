@@ -11,5 +11,6 @@
   "legacy": true,
   "baseVersion": "c0.0.11a",
   "useFOVPatch": true,
-  "useTexturepackPatch": true
+  "useTexturepackPatch": true,
+  "ingameVersionString": "0.0.11a"
 }

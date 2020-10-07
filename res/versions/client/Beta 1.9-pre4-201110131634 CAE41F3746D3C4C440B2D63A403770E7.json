@@ -5,5 +5,6 @@
   "type": "client",
   "appletOnly": true,
   "legacy": true,
-  "baseVersion": "b1.9-pre4-201110131634"
+  "baseVersion": "b1.9-pre4",
+  "ingameVersionString": "Minecraft Beta 1.9 Prerelease 4"
 }

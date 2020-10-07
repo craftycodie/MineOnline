@@ -7,5 +7,6 @@
   "legacy": true,
   "baseVersion": "a1.0.2_02",
   "useFOVPatch": true,
-  "useTexturepackPatch": true
+  "useTexturepackPatch": true,
+  "ingameVersionString": "Minecraft Alpha v1.0.2_02"
 }

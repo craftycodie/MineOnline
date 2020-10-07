@@ -4,6 +4,7 @@
   "sha256": "17C0463E56800AA257DE3E76011D7F3DB015B44FE2F3E846275FCEE7F6129571",
   "type": "client",
   "legacy": true,
-  "baseVersion": "a1.2.3_01-2",
-  "useFOVPatch": true
+  "baseVersion": "a1.2.3_01",
+  "useFOVPatch": true,
+  "ingameVersionString": "Minecraft Alpha v1.2.3_01"
 }

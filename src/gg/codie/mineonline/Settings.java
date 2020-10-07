@@ -20,7 +20,8 @@ public class Settings {
     public static final String FOV = "fov";
     public static final String GUI_SCALE = "guiScale";
     public static final String TEXTURE_PACK = "texturePack";
-    private static final int SETTINGS_VERSION_NUMBER = 6;
+    public static final String HIDE_VERSION_STRING = "hideVersionString";
+    private static final int SETTINGS_VERSION_NUMBER = 7;
 
     private static boolean readonly = true;
 
@@ -51,6 +52,7 @@ public class Settings {
         settings.put(FOV, 70);
         settings.put(GUI_SCALE, 3);
         settings.put(TEXTURE_PACK, "");
+        settings.put(HIDE_VERSION_STRING, false);
 
         saveSettings();
         loadSettings();
@@ -97,6 +99,8 @@ public class Settings {
                         settings.put(GUI_SCALE, 3);
                     case 5:
                         settings.put(TEXTURE_PACK, "");
+                    case 6:
+                        settings.put(HIDE_VERSION_STRING, false);
                 }
                 settings.put(SETTINGS_VERSION, SETTINGS_VERSION_NUMBER);
             }

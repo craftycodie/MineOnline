@@ -9,5 +9,6 @@
   "legacy": true,
   "baseVersion": "in-20100212-2",
   "useFOVPatch": true,
-  "useTexturepackPatch": true
+  "useTexturepackPatch": true,
+  "ingameVersionString": "Minecraft Indev"
 }

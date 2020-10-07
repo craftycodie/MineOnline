@@ -9,5 +9,6 @@
   "legacy": true,
   "baseVersion": "c0.24_st_03",
   "useFOVPatch": true,
-  "useTexturepackPatch": true
+  "useTexturepackPatch": true,
+  "ingameVersionString": "0.24_SURVIVAL_TEST_03"
 }

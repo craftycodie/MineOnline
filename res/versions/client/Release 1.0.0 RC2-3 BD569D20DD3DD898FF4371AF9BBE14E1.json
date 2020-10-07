@@ -4,5 +4,6 @@
   "sha256": "89E7779BA109C4E5E2DAE0F10F013FA4A9A931F4B1F003F3021F8C682C0B54F9",
   "type": "client",
   "legacy": true,
-  "baseVersion": "1.0.0 RC2-3"
+  "baseVersion": "1.0.0 RC2",
+  "ingameVersionString": "Minecraft RC2"
 }

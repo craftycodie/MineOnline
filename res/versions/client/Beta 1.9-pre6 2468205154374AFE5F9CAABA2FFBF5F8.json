@@ -4,5 +4,6 @@
   "sha256": "C6027049918B1F351AFC6AC0DE961C96DE54FECBBBD7AC5573045B27089C2021",
   "type": "client",
   "legacy": true,
-  "baseVersion": "b1.9-pre6"
+  "baseVersion": "b1.9-pre6",
+  "ingameVersionString": "Minecraft Beta 1.9 Prerelease 6"
 }

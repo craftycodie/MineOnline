@@ -514,6 +514,9 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
         if (minecraftVersion != null && minecraftVersion.useTexturepackPatch) {
             ClassPatch.useTexturePacks(Settings.settings.optString(Settings.TEXTURE_PACK, ""));
         }
+        // Hide version strings from the HUD
+        if (minecraftVersion != null && minecraftVersion.ingameVersionString != null && Settings.settings.optBoolean(Settings.HIDE_VERSION_STRING, false))
+            StringPatch.hideVersionStrings(minecraftVersion.ingameVersionString);
 
         try {
             Options options = new Options(LauncherFiles.MINECRAFT_OPTIONS_PATH);

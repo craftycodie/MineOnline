@@ -10,5 +10,6 @@
   "legacy": true,
   "baseVersion": "in-20100129-2",
   "useFOVPatch": true,
-  "useTexturepackPatch": true
+  "useTexturepackPatch": true,
+  "ingameVersionString": "0.31"
 }

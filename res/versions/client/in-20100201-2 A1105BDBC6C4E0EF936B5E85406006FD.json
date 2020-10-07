@@ -10,5 +10,6 @@
   "baseVersion": "in-20100201-2",
   "scaledResolutionClass": "net.minecraft.client.b.h",
   "useFOVPatch": true,
-  "useTexturepackPatch": true
+  "useTexturepackPatch": true,
+  "ingameVersionString": "0.31"
 }

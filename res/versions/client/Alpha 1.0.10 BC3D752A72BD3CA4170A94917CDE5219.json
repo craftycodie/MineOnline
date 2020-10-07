@@ -1,11 +1,11 @@
 {
-  "name": "Alpha 1.0.1_01",
-  "md5": "4EE4573BF828898C00CAD435C66880F1",
-  "sha256": "D4A3346CD02E8ABB317AD6F251AC3199B35ED902D619BD20CC49FD26E6E08C26",
+  "name": "Alpha 1.0.10",
+  "md5": "BC3D752A72BD3CA4170A94917CDE5219",
   "type": "client",
   "enableScreenshotPatch": true,
   "legacy": true,
-  "baseVersion": "a1.0.1_01",
+  "baseVersion": "a1.0.10",
   "useFOVPatch": true,
-  "useTexturepackPatch": true
+  "useTexturepackPatch": true,
+  "ingameVersionString": "Minecraft Alpha v1.0.10"
 }

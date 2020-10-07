@@ -9,5 +9,6 @@
   "legacy": true,
   "baseVersion": "c0.28_01",
   "useFOVPatch": true,
-  "useTexturepackPatch": true
+  "useTexturepackPatch": true,
+  "ingameVersionString": "0.28_01"
 }

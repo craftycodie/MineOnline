@@ -1,11 +1,12 @@
 {
-    "name": "Infdev Definitive 20200928-2",
-    "info": "inf-20100618 Mod",
-    "md5": "D4A28543290E0192290EAE3C51DDB49E",
-    "type": "client",
-    "legacy": true,
-    "baseVersion": "inf-20200928-2",
-    "scaledResolutionClass": "net.minecraft.client.d.r",
-    "useFOVPatch": true,
-  "useTexturepackPatch": true
+  "name": "Infdev Definitive 20200928-2",
+  "info": "inf-20100618 Mod",
+  "md5": "D4A28543290E0192290EAE3C51DDB49E",
+  "type": "client",
+  "legacy": true,
+  "baseVersion": "inf-20200928-2",
+  "scaledResolutionClass": "net.minecraft.client.d.r",
+  "useFOVPatch": true,
+  "useTexturepackPatch": true,
+  "ingameVersionString": "Minecraft Infdev"
 }

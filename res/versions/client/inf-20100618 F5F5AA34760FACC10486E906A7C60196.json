@@ -8,5 +8,6 @@
   "baseVersion": "inf-20100618",
   "useFOVPatch": true,
   "scaledResolutionClass": "net.minecraft.client.c.g",
-  "useTexturepackPatch": true
+  "useTexturepackPatch": true,
+  "ingameVersionString": "Minecraft Infdev"
 }

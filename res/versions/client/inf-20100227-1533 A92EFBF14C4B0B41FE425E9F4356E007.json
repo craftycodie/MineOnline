@@ -8,5 +8,6 @@
   "legacy": true,
   "baseVersion": "inf-20100227-1533",
   "useFOVPatch": true,
-  "useTexturepackPatch": true
+  "useTexturepackPatch": true,
+  "ingameVersionString": "Minecraft Infdev"
 }
