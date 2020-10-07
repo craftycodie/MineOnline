@@ -1,11 +1,11 @@
 package gg.codie.mineonline.gui.rendering;
 
-import gg.codie.minecraft.client.Options;
 import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.Settings;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.*;
+import org.lwjgl.util.glu.GLU;
 
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
@@ -184,6 +184,18 @@ public class DisplayManager {
 //        frame.setDefaultLookAndFeelDecorated(true)
     }
 
+    public static void checkGLError(String location)
+    {
+        int i = GL11.glGetError();
+        if(i != 0)
+        {
+            String errorString = GLU.gluErrorString(i);
+            System.out.println("########## GL ERROR ##########");
+            System.out.println((new StringBuilder()).append("@ ").append(location).toString());
+            System.out.println((new StringBuilder()).append(i).append(": ").append(errorString).toString());
+        }
+    }
+
     public static void createDisplay() {
         createDisplay(DEFAULT_WIDTH, DEFAULT_HEIGHT);
     }
@@ -210,12 +222,15 @@ public class DisplayManager {
         GL11.glViewport(0, 0, width, height);
 
         frame.setVisible(true);
+
+        checkGLError("display create");
     }
 
     public static void updateDisplay() {
         Display.sync(FPS);
         Display.update();
 
+        checkGLError("display update");
     }
 
     public static void closeDisplay() {

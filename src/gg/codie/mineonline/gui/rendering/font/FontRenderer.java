@@ -15,7 +15,7 @@ public class FontRenderer {
     public void render(Map<FontType, List<GUIText>> texts){
         prepare();
         for(FontType font : texts.keySet()){
-            GL11.glEnable(GL11.GL_TEXTURE_2D);
+            //GL11.glEnable(GL11.GL_TEXTURE_2D);
             GL13.glActiveTexture(GL13.GL_TEXTURE0);
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, font.getTextureAtlas());
             GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);

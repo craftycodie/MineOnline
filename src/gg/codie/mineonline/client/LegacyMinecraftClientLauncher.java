@@ -209,7 +209,9 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
         LWJGLDisplayPatch.createListener = new OnCreateListener() {
             @Override
             public void onCreateEvent() {
+                DisplayManager.checkGLError("minecraft create hook start");
                 renderer = new Renderer();
+                DisplayManager.checkGLError("minecraft create hook end");
             }
         };
 
@@ -414,6 +416,8 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
         LWJGLDisplayPatch.updateListener = new OnUpdateListener() {
             @Override
             public void onUpdateEvent() {
+                DisplayManager.checkGLError("minecraft update hook start");
+
                 if (renderer != null) {
                     if (Globals.DEV) {
                         //renderer.renderStringIngame(new Vector2f(1, 1), 8, "MineOnline Dev " + Globals.LAUNCHER_VERSION, org.newdawn.slick.Color.white);
@@ -477,6 +481,8 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
                         ex.printStackTrace();
                     }
                 }
+
+                DisplayManager.checkGLError("minecraft update hook end");
             }
         };
 

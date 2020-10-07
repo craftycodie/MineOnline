@@ -94,7 +94,7 @@ public class Renderer {
         Matrix4f transformationMatrix = gameObject.getTransformationMatrix();
         shader.loadTransformationMatrix(transformationMatrix);
 
-        GL11.glEnable(GL11.GL_TEXTURE_2D);
+//        GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL13.glActiveTexture(GL13.GL_TEXTURE0);
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, texturedModel.getTexture().getTextureID());
 
@@ -106,7 +106,7 @@ public class Renderer {
         GL11.glEnable(GL13.GL_MULTISAMPLE);
         //GL11.glEnable(GL11.GL_BLEND);
         GL11.glEnable(GL13.GL_SAMPLE_ALPHA_TO_COVERAGE);
-        GL11.glEnable(GL11.GL_ALPHA_TEST);
+        //GL11.glEnable(GL11.GL_ALPHA_TEST);
         GL11.glBlendFunc ( GL11.GL_SRC_ALPHA, GL11.GL_ONE );
         //GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
@@ -151,7 +151,7 @@ public class Renderer {
         GL11.glEnable(GL13.GL_MULTISAMPLE);
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glEnable(GL13.GL_SAMPLE_ALPHA_TO_COVERAGE);
-        GL11.glEnable(GL11.GL_ALPHA_TEST);
+        //GL11.glEnable(GL11.GL_ALPHA_TEST);
         GL11.glBlendFunc ( GL11.GL_SRC_ALPHA, GL11.GL_ONE );
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
