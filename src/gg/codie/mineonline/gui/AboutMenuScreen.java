@@ -52,7 +52,7 @@ public class AboutMenuScreen implements IMenuScreen {
         doneButton = new LargeButton("Done", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 200, DisplayManager.getDefaultHeight() - 20), new IOnClickListener() {
             @Override
             public void onClick() {
-                MenuManager.setMenuScreen(new MainMenuScreen());
+                MenuManager.setMenuScreen(new OptionsMenuScreen());
             }
         });
 

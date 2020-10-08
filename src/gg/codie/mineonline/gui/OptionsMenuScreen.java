@@ -20,11 +20,12 @@ import java.io.File;
 
 public class OptionsMenuScreen implements IMenuScreen {
     MediumButton fullscreenButton;
+    MediumButton versionStringsButton;
     MediumButton guiScaleButton;
-    MediumButton aboutButton;
     MediumButton logoutButton;
     ValueSlider fovSlider;
     MediumButton skinCustomizationButton;
+    MediumButton aboutButton;
     LargeButton doneButton;
     GUIText label;
 
@@ -74,7 +75,18 @@ public class OptionsMenuScreen implements IMenuScreen {
             }
         });
 
-        aboutButton = new MediumButton("About", new Vector2f((DisplayManager.getDefaultWidth() / 2) + 8, (DisplayManager.getDefaultHeight() / 2) - 40), new IOnClickListener() {
+        versionStringsButton = new MediumButton("Hide Version Number: " + (Settings.settings.getBoolean(Settings.HIDE_VERSION_STRING) ? "YES" : "NO"), new Vector2f((DisplayManager.getDefaultWidth() / 2) + 8, (DisplayManager.getDefaultHeight() / 2) - 40), new IOnClickListener() {
+            @Override
+            public void onClick() {
+                boolean hideVersionStrings = !Settings.settings.getBoolean(Settings.HIDE_VERSION_STRING);
+                Settings.settings.put(Settings.HIDE_VERSION_STRING, hideVersionStrings);
+                Settings.saveSettings();
+                versionStringsButton.setName("Hide Version Number: " + (Settings.settings.getBoolean(Settings.HIDE_VERSION_STRING) ? "YES" : "NO"));
+            }
+        });
+
+
+        aboutButton = new MediumButton("About", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 150, (DisplayManager.getDefaultHeight() / 2) + 104), new IOnClickListener() {
             @Override
             public void onClick() {
                 MenuManager.setMenuScreen(new AboutMenuScreen());
@@ -117,11 +129,12 @@ public class OptionsMenuScreen implements IMenuScreen {
 
     public void update() {
         fullscreenButton.update();
-        aboutButton.update();
+        versionStringsButton.update();
         logoutButton.update();
         guiScaleButton.update();
         doneButton.update();
         fovSlider.update();
+        aboutButton.update();
         skinCustomizationButton.update();
     }
 
@@ -130,12 +143,13 @@ public class OptionsMenuScreen implements IMenuScreen {
         GUIShader.singleton.loadViewMatrix(Camera.singleton);
         renderer.prepareGUI();
         fullscreenButton.render(renderer, GUIShader.singleton);
-        aboutButton.render(renderer, GUIShader.singleton);
+        versionStringsButton.render(renderer, GUIShader.singleton);
         logoutButton.render(renderer, GUIShader.singleton);
-        doneButton.render(renderer, GUIShader.singleton);
         guiScaleButton.render(renderer, GUIShader.singleton);
         fovSlider.render(renderer, GUIShader.singleton);
         skinCustomizationButton.render(renderer, GUIShader.singleton);
+        aboutButton.render(renderer, GUIShader.singleton);
+        doneButton.render(renderer, GUIShader.singleton);
         GUIShader.singleton.stop();
     }
 
@@ -145,23 +159,25 @@ public class OptionsMenuScreen implements IMenuScreen {
 
     public void resize() {
         fullscreenButton.resize();
-        aboutButton.resize();
+        versionStringsButton.resize();
         logoutButton.resize();
         doneButton.resize();
         guiScaleButton.resize();
         fovSlider.resize();
+        aboutButton.resize();
         skinCustomizationButton.resize();
     }
 
     @Override
     public void cleanUp() {
         fullscreenButton.cleanUp();
-        aboutButton.cleanUp();
+        versionStringsButton.cleanUp();
         logoutButton.cleanUp();
-        doneButton.cleanUp();
         guiScaleButton.cleanUp();
         fovSlider.cleanUp();
         skinCustomizationButton.cleanUp();
+        aboutButton.cleanUp();
+        doneButton.cleanUp();
         label.remove();
     }
 }
