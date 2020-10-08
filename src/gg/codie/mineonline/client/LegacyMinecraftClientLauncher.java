@@ -157,8 +157,6 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
     public static void main(String[] args) throws Exception {
         Logging.enableLogging();
 
-        System.out.println(Arrays.toString(args));
-
         if (args[4].equals(" ") || args[5].equals(" "))
             new Session(args[3]);
         else
@@ -408,19 +406,14 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
         if (minecraftVersion != null && minecraftVersion.baseVersion.equals("c0.0.15a"))
             ByteBufferPatch.enableC0015aUsernames(Session.session.getUsername());
         // Allow texture packs in versions before Alpha 1.2.2
-        if (minecraftVersion != null && minecraftVersion.useTexturepackPatch) {
+        if (minecraftVersion != null && minecraftVersion.useTexturepackPatch)
             ClassPatch.useTexturePacks(Settings.settings.optString(Settings.TEXTURE_PACK, ""));
-        }
         // Hide version strings from the HUD
         if (minecraftVersion != null && minecraftVersion.ingameVersionString != null && Settings.settings.optBoolean(Settings.HIDE_VERSION_STRING, false))
             StringPatch.hideVersionStrings(minecraftVersion.ingameVersionString);
 
         minecraftApplet.init();
         minecraftApplet.start();
-
-        while (minecraftApplet.isActive()) {
-
-        }
     }
 
     boolean f2wasDown = false;
