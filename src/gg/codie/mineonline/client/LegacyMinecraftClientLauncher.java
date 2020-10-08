@@ -423,11 +423,11 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
                         //renderer.renderStringIngame(new Vector2f(1, 1), 8, "MineOnline Dev " + Globals.LAUNCHER_VERSION, org.newdawn.slick.Color.white);
                     }
 
-                    // Make sure classic is behaving
-                    if (minecraftVersion.guiClass != null)
-                        appletResize(DisplayManager.getFrame().getWidth(), DisplayManager.getFrame().getHeight());
-
                     if (minecraftVersion != null) {
+                        // Make sure classic is behaving
+                        if (minecraftVersion.guiClass != null)
+                            appletResize(DisplayManager.getFrame().getWidth(), DisplayManager.getFrame().getHeight());
+
                         if (minecraftVersion.enableScreenshotPatch) {
                             try {
                                 float opacityMultiplier = System.currentTimeMillis() - lastScreenshotTime;
