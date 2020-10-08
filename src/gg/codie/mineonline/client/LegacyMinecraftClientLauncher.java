@@ -2,6 +2,7 @@ package gg.codie.mineonline.client;
 
 import gg.codie.minecraft.client.Options;
 import gg.codie.mineonline.*;
+import gg.codie.mineonline.discord.DiscordPresence;
 import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.gui.rendering.DisplayManager;
 import gg.codie.mineonline.gui.rendering.Renderer;
@@ -41,6 +42,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.nio.ByteBuffer;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -186,9 +188,13 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
     boolean firstUpdate = true;
     public void startMinecraft() throws Exception {
         LibraryManager.updateNativesPath();
-        System.gc();
 
         LWJGLDisplayPatch.hijackLWJGLThreadPatch();
+
+        if(minecraftVersion != null)
+            DiscordPresence.play(minecraftVersion.name, serverAddress, serverPort);
+        else
+            DiscordPresence.play(Paths.get(jarPath).getFileName().toString(), serverAddress, serverPort);
 
         DisplayManager.init();
         DisplayManager.getCanvas().setPreferredSize(new Dimension(startWidth, startHeight));

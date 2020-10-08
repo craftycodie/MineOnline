@@ -47,12 +47,12 @@ public class DiscordRPCHandler {
 
         DiscordRPCHandler.uuid = uuid;
 
-        if(versionName.equals(DiscordRPCHandler.versionName)
+        if (versionName.equals(DiscordRPCHandler.versionName)
                 && ((serverIP == null && DiscordRPCHandler.serverIP == null) || (serverIP != null && serverIP.equals(DiscordRPCHandler.serverIP)))
                 && ((serverPort == null && DiscordRPCHandler.serverPort == null) || (serverPort != null && serverPort.equals(DiscordRPCHandler.serverPort))))
             isUpdate = true;
 
-        if(!isUpdate) {
+        if (!isUpdate) {
             startTimestamp = System.currentTimeMillis() / 1000;
         }
 
