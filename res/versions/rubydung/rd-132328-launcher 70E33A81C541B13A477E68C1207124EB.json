@@ -2,7 +2,7 @@
   "name": "rd-132328-launcher",
   "md5": "70E33A81C541B13A477E68C1207124EB",
   "sha256": "0627A893265FD697FFF165626E000A2640C6A6ECE6B64B75C3AB0194F960ED8B",
-  "type": "client",
+  "type": "rubydung",
   "enableScreenshotPatch": true,
   "legacy": true,
   "baseVersion": "rd-132328-launcher",

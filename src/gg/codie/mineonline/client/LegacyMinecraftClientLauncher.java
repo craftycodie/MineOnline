@@ -1,7 +1,6 @@
 package gg.codie.mineonline.client;
 
 import gg.codie.minecraft.client.Options;
-import gg.codie.minecraft.client.VersionFile;
 import gg.codie.mineonline.*;
 import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.gui.rendering.DisplayManager;
@@ -15,7 +14,7 @@ import gg.codie.mineonline.patches.lwjgl.LWJGLPerspectivePatch;
 import gg.codie.mineonline.patches.minecraft.GuiScreenPatch;
 import gg.codie.mineonline.patches.minecraft.ScaledResolutionConstructorPatch;
 import gg.codie.mineonline.utils.JREUtils;
-import gg.codie.utils.FileUtils;
+import gg.codie.mineonline.utils.Logging;
 import gg.codie.utils.OSUtils;
 import gg.codie.utils.TransferableImage;
 import org.lwjgl.BufferUtils;
@@ -38,12 +37,10 @@ import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.*;
-import java.net.HttpURLConnection;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.nio.ByteBuffer;
-import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -62,129 +59,156 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
 
     MinecraftVersion minecraftVersion;
 
-    URLClassLoader classLoader;
+    int startWidth;
+    int startHeight;
 
-    public LegacyMinecraftClientLauncher(String jarPath, String serverAddress, String serverPort, String MPPass) throws Exception {
+
+    private static Process gameProcess;
+
+    public static void startProcess(String jarPath, String serverIP, String serverPort, String mpPass) {
+        // Launch normal jars.
+        try {
+            java.util.Properties props = System.getProperties();
+
+            LinkedList<String> launchArgs = new LinkedList();
+            launchArgs.add(JREUtils.getJavaExecutable());
+            launchArgs.add("-javaagent:" + LauncherFiles.PATCH_AGENT_JAR);
+            launchArgs.add("-Djava.util.Arrays.useLegacyMergeSort=true");
+            launchArgs.add("-Djava.net.preferIPv4Stack=true");
+            if(OSUtils.isMac())
+                launchArgs.add("-XstartOnFirstThread");
+            launchArgs.add("-Dmineonline.username=" + Session.session.getUsername());
+            launchArgs.add("-Dmineonline.token=" + Session.session.getSessionToken());
+            launchArgs.add("-Dmineonline.uuid=" + Session.session.getUuid());
+            if (Settings.settings.has(Settings.CLIENT_LAUNCH_ARGS) && !Settings.settings.getString(Settings.CLIENT_LAUNCH_ARGS).isEmpty())
+                launchArgs.addAll(Arrays.asList(Settings.settings.getString(Settings.CLIENT_LAUNCH_ARGS).split(" ")));
+            launchArgs.add("-cp");
+            launchArgs.add(LibraryManager.getClasspath(true, new String[] {
+                    new File(MineOnline.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath(),
+                    jarPath
+            }));
+            launchArgs.add(LegacyMinecraftClientLauncher.class.getCanonicalName());
+            launchArgs.add(jarPath);
+            launchArgs.add("" + DisplayManager.getFrame().getWidth());
+            launchArgs.add("" + DisplayManager.getFrame().getHeight());
+            launchArgs.add(Session.session.getUsername());
+            launchArgs.add(Session.session.getSessionToken() != null ? Session.session.getSessionToken() : " ");
+            launchArgs.add(Session.session.getUuid() != null ? Session.session.getUuid() : " ");
+            if (serverIP != null) {
+                launchArgs.add(serverIP);
+                if (serverPort != null)
+                    launchArgs.add(serverPort);
+                else launchArgs.add("25565");
+
+                if (mpPass != null)
+                    launchArgs.add(mpPass);
+            }
+
+            ProcessBuilder processBuilder = new ProcessBuilder(launchArgs.toArray(new String[0]));
+
+            Map<String, String> env = processBuilder.environment();
+            for (String prop : props.stringPropertyNames()) {
+                env.put(prop, props.getProperty(prop));
+            }
+            processBuilder.directory(new File(System.getProperty("user.dir")));
+            processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
+            processBuilder.redirectErrorStream(true);
+            processBuilder.redirectInput(ProcessBuilder.Redirect.INHERIT);
+
+            DisplayManager.getFrame().setVisible(false);
+
+            try {
+                Options options = new Options(LauncherFiles.MINECRAFT_OPTIONS_PATH);
+                options.setOption("guiScale", "" + Settings.settings.optInt(Settings.GUI_SCALE, 0));
+                options.setOption("skin", Settings.settings.optString(Settings.TEXTURE_PACK, ""));
+                if (serverIP != null)
+                    options.setOption("lastServer", serverIP + "_" + serverPort);
+            } catch (Exception ex) {
+                System.err.println("Couldn't save guiScale to options.txt");
+            }
+
+            gameProcess = processBuilder.start();
+
+            Thread closeLauncher = new Thread(() -> gameProcess.destroyForcibly());
+            Runtime.getRuntime().addShutdownHook(closeLauncher);
+
+            while (gameProcess.isAlive()) {
+
+            }
+
+            if(gameProcess.exitValue() == 1) {
+                EventQueue.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        JOptionPane.showMessageDialog(null, "Failed to launch Minecraft.\nPlease make sure all libraries are present.");
+                    }
+                });
+                DisplayManager.getFrame().setVisible(true);
+
+            } else {
+                Runtime.getRuntime().halt(0);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    // [ jarPath, width, height, username, session, uuid, ip, port, mppass,  ]
+    public static void main(String[] args) throws Exception {
+        Logging.enableLogging();
+
+        System.out.println(Arrays.toString(args));
+
+        if (args[4].equals(" ") || args[5].equals(" "))
+            new Session(args[3]);
+        else
+            new Session(args[3], args[4], args[5]);
+
+        String serverAddress = args.length > 6 ? args[6] : null;
+        String serverPort = args.length > 7 ? args[7] : null;
+        String mpPass = args.length > 8 ? args[8] : null;
+        new LegacyMinecraftClientLauncher(args[0], Integer.parseInt(args[1]), Integer.parseInt(args[2]), serverAddress, serverPort, mpPass).startMinecraft();
+    }
+
+
+    public LegacyMinecraftClientLauncher(String jarPath, int width, int height, String serverAddress, String serverPort, String MPPass) throws Exception {
         this.jarPath = jarPath;
         this.serverAddress = serverAddress;
         this.serverPort = serverPort;
         this.MPPass = MPPass;
+        this.startWidth = widthBeforeFullscreen = width;
+        this.startHeight = heightBeforeFullscreen = height;
 
         if(serverAddress != null && serverPort == null)
             this.serverPort = "25565";
 
-        minecraftVersion = MinecraftVersionRepository.getSingleton().getVersion(jarPath);
-
-        this.classLoader = new URLClassLoader(new URL[] { Paths.get(jarPath).toUri().toURL() });
+        minecraftVersion = MinecraftVersionRepository.getSingleton(true).getVersion(jarPath);
     }
 
     boolean firstUpdate = true;
     public void startMinecraft() throws Exception {
+        LibraryManager.updateNativesPath();
         System.gc();
 
+        LWJGLDisplayPatch.hijackLWJGLThreadPatch();
+
+        DisplayManager.init();
+        DisplayManager.getCanvas().setPreferredSize(new Dimension(startWidth, startHeight));
+        DisplayManager.getFrame().setPreferredSize(new Dimension(startWidth, startHeight));
+        DisplayManager.getCanvas().setSize(startWidth, startHeight);
+        DisplayManager.getFrame().pack();
+        DisplayManager.getFrame().setVisible(true);
+
+        DisplayManager.getFrame().addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                DisplayManager.getFrame().setVisible(false);
+                super.windowClosed(e);
+            }
+        });
+
+
         fullscreen = Settings.settings.has(Settings.FULLSCREEN) && Settings.settings.getBoolean(Settings.FULLSCREEN);
-
-        String CP = "-cp";
-
-        String classpath = System.getProperty("java.class.path").replace("\"", "");
-
-        try {
-            Class rubyDungClass;
-            try {
-                rubyDungClass = classLoader.loadClass("com.mojang.rubydung.RubyDung");
-            } catch (ClassNotFoundException ex) {
-                rubyDungClass = classLoader.loadClass("com.mojang.minecraft.RubyDung");
-            }
-
-            // TODO: Launch RubyDung in frame.
-//            Method mainFunction = rubyDungClass.getDeclaredMethod("main", String[].class);
-//            String[] params = null;
-//
-//            DisplayManager.closeDisplay();
-//
-//            Display.setCreateListener(new OnCreateListener() {
-//                @Override
-//                public void onCreateEvent() {
-//                    renderer = new Renderer();
-//                    try {
-//                        Display.setParent(DisplayManager.getCanvas());
-//                        Display.setDisplayMode(new DisplayMode(DisplayManager.getFrame().getWidth(), DisplayManager.getFrame().getHeight()));
-//                    } catch (Exception ex) {
-//
-//                    }
-//                }
-//            });
-//
-//            mainFunction.invoke(null, (Object)params);
-            LinkedList<String> arguments = new LinkedList<>();
-            arguments.add(JREUtils.getJavaExecutable());
-            arguments.add("-Djava.library.path=" + LauncherFiles.MINEONLINE_NATIVES_FOLDER);
-
-            if (Settings.settings.has(Settings.CLIENT_LAUNCH_ARGS) && !Settings.settings.getString(Settings.CLIENT_LAUNCH_ARGS).isEmpty())
-                arguments.addAll(Arrays.asList(Settings.settings.getString(Settings.CLIENT_LAUNCH_ARGS).split(" ")));
-
-            arguments.add(CP);
-            arguments.add(classpath + LibraryManager.getClasspathSeparator() + LauncherFiles.LWJGL_JAR + LibraryManager.getClasspathSeparator() + LauncherFiles.LWJGL_UTIL_JAR + LibraryManager.getClasspathSeparator() + jarPath);
-            arguments.add(rubyDungClass.getCanonicalName());
-
-            System.out.println("Launching RubyDung!  " + String.join(" ", arguments));
-
-
-            java.util.Properties props = System.getProperties();
-            ProcessBuilder processBuilder = new ProcessBuilder(arguments);
-            Map<String, String> env = processBuilder.environment();
-            for(String prop : props.stringPropertyNames()) {
-                env.put(prop, props.getProperty(prop));
-            }
-            processBuilder.directory(new File(System.getProperty("user.dir")));
-
-            processBuilder.start();
-            DisplayManager.closeDisplay();
-            System.exit(0);
-            return;
-        } catch (Exception ex) {
-           // ex.printStackTrace();
-        }
-
-
-        if (minecraftVersion != null && minecraftVersion.type.equals("launcher")) {
-            DisplayManager.closeDisplay();
-            if(DisplayManager.getFrame() != null)
-                DisplayManager.getFrame().dispose();
-
-            Settings.loadSettings();
-            String updateURLString = Settings.settings.has(Settings.MINECRAFT_UPDATE_URL) ? Settings.settings.getString(Settings.MINECRAFT_UPDATE_URL) : null;
-
-            SystemSetPropertyPatch.banNativeChanges();
-
-            if(updateURLString != null && !updateURLString.isEmpty()) {
-                URL updateURL = new URL(updateURLString);
-                File currentJar = new File(LauncherFiles.MINECRAFT_BINARIES_PATH + FileUtils.getFileName(updateURL));
-                if(currentJar.exists()) {
-                    int existingJarSize = (int)currentJar.length();
-                    HttpURLConnection versionRequest = (HttpURLConnection) new URL(updateURLString).openConnection();
-                    versionRequest.setRequestMethod("HEAD");
-                    versionRequest.connect();
-
-                    if(existingJarSize != versionRequest.getContentLength()) {
-                        VersionFile.delete();
-                    }
-                }
-            }
-
-            SocketPatch.watchSockets();
-            URLPatch.redefineURL(updateURLString);
-
-            try {
-                Class launcherClass = classLoader.loadClass("net.minecraft.LauncherFrame");
-                Method mainFunction = launcherClass.getDeclaredMethod("main", String[].class);
-                mainFunction.invoke(null, new Object[] { new String[0]} );
-            } catch (ClassNotFoundException ex) {
-                JOptionPane.showMessageDialog(null, "Failed to launch minecraft.");
-            }
-
-            return;
-        }
 
         if (OSUtils.isMac() && minecraftVersion.forceFullscreenMacos) {
             Display.setDisplayMode(Display.getDesktopDisplayMode());
@@ -218,7 +242,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
         Class appletClass;
 
         try {
-            appletClass = classLoader.loadClass(appletClassName);
+            appletClass = Class.forName(appletClassName);
         } catch (Exception ex) {
             ex.printStackTrace();
             EventQueue.invokeLater(new Runnable() {
@@ -230,160 +254,24 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
             return;
         }
 
-        Field minecraftField = null;
-
         try {
-            minecraftField = appletClass.getDeclaredField("minecraft");
-        } catch (NoSuchFieldException ne) {
-            for (Field field : appletClass.getDeclaredFields()) {
-                if (field.getType().getPackage() == appletClass.getPackage()) {
-                    minecraftField = field;
-                    continue;
-                }
-            }
+            minecraftApplet = (Applet) appletClass.newInstance();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return;
         }
 
-        Class minecraftClass = null;
+        //Here we set the applet's stub to a custom stub, rather than letting it use the default.
+        //And also we now set the width and height of the applet on the screen.
+        minecraftApplet.setStub(this);
+        minecraftApplet.setPreferredSize(new Dimension(Display.getWidth(), Display.getHeight()));
 
-        if (minecraftField != null)
-            minecraftClass = minecraftField.getType();
+        //This puts the applet into a window so that it can be shown on the screen.
+        frame.add(minecraftApplet);
+        frame.pack();
 
-        Runnable minecraftImpl = null;
+        DisplayManager.getCanvas().setVisible(false);
 
-        if (minecraftClass != null && !(minecraftVersion != null && !minecraftVersion.useMinecraftImpl)) {
-            try {
-                File jarFile = new File(jarPath);
-
-                if (!jarFile.exists() || jarFile.isDirectory())
-                    return;
-
-                Constructor constructor = null;
-
-                if(minecraftVersion != null && minecraftVersion.minecraftImplClass != null) {
-                    // If a class name was provided in the version manifest, use it.
-                    try {
-                        Class clazz = classLoader.loadClass(minecraftVersion.minecraftImplClass);
-                        constructor = clazz.getDeclaredConstructor(
-                                Component.class, Canvas.class, appletClass, int.class, int.class, boolean.class, Frame.class
-                        );
-                        minecraftImpl = (Runnable) constructor.newInstance(null, DisplayManager.getCanvas(), null, Display.getWidth(), Display.getHeight(), fullscreen, frame);
-                    } catch (Throwable e) {
-
-                    }
-                } else {
-                    // If the jar isn't obfuscated (debug) find the class by name.
-                    try {
-                        Class clazz = classLoader.loadClass("net.minecraft.src.MinecraftImpl");
-                        constructor = clazz.getDeclaredConstructor(
-                                Component.class, Canvas.class, appletClass, int.class, int.class, boolean.class, Frame.class
-                        );
-                    } catch (Throwable e) {
-
-                    }
-
-                    if (constructor == null) {
-                        java.util.jar.JarFile jar = new java.util.jar.JarFile(jarFile.getPath());
-                        java.util.Enumeration enumEntries = jar.entries();
-                        while (enumEntries.hasMoreElements()) {
-                            java.util.jar.JarEntry file = (java.util.jar.JarEntry) enumEntries.nextElement();
-                            String fileName = file.getName();
-                            if (file.isDirectory() || !fileName.endsWith(".class")) {
-                                continue;
-                            }
-
-                            if (fileName.contains("/"))
-                                fileName = fileName.substring(fileName.lastIndexOf("/") + 1);
-
-                            if (constructor == null) {
-                                // Ideally, we'd check if the class extends Minecraft
-                                // But due to obfuscation we have to settle for this.
-                                try {
-                                    if (fileName.equals("Minecraft.class")) {
-                                        continue;
-                                    }
-
-                                    Class clazz = classLoader.loadClass(file.getName().replace(".class", "").replace("/", "."));
-                                    constructor = clazz.getDeclaredConstructor(
-                                            Component.class, Canvas.class, appletClass, int.class, int.class, boolean.class, Frame.class
-                                    );
-                                } catch (Throwable e) {
-                                }
-                            }
-
-                            if (constructor != null) {
-                                System.out.println("found MinecraftImpl: " + file.getName());
-
-                                try {
-                                    minecraftImpl = (Runnable) constructor.newInstance(null, DisplayManager.getCanvas(), null, Display.getWidth(), Display.getHeight(), fullscreen, frame);
-                                } catch(InvocationTargetException e) {
-                                    constructor = null;
-                                    minecraftImpl = null;
-                                }
-                            }
-
-                            // If we're manually creating MinecraftImpl there's a couple of other things to do:
-                            if (minecraftImpl != null) {
-                                // Setup the minecraft session.
-                                for (Field field : minecraftClass.getDeclaredFields()) {
-                                    try {
-                                        constructor = field.getType().getConstructor(
-                                                String.class, String.class
-                                        );
-                                        if (constructor == null) {
-                                            continue;
-                                        }
-                                        field.set(minecraftImpl, constructor.newInstance(Session.session.getUsername(), Session.session.getSessionToken()));
-                                        break;
-                                    } catch (Exception e) {
-                                        continue;
-                                    }
-                                }
-                                // Join a server (if provided)
-                                if (serverAddress != null && serverPort != null) {
-                                    for (Method method : minecraftClass.getMethods()) {
-                                        try {
-                                            if (Arrays.equals(method.getParameterTypes(), (new Object[]{String.class, int.class}))) {
-                                                method.invoke(minecraftImpl, serverAddress, Integer.parseInt(serverPort));
-                                                break;
-                                            }
-                                        } catch (Exception e) {
-                                            continue;
-                                        }
-                                    }
-                                }
-                                break;
-                            }
-
-                        }
-
-                        jar.close();
-                    }
-                }
-            } catch(Exception e){
-                e.printStackTrace();
-            }
-        }
-
-
-        if (minecraftImpl == null) {
-            try {
-                minecraftApplet = (Applet) appletClass.newInstance();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                return;
-            }
-
-            //Here we set the applet's stub to a custom stub, rather than letting it use the default.
-            //And also we now set the width and height of the applet on the screen.
-            minecraftApplet.setStub(this);
-            minecraftApplet.setPreferredSize(new Dimension(Display.getWidth(), Display.getHeight()));
-
-            //This puts the applet into a window so that it can be shown on the screen.
-            frame.add(minecraftApplet);
-            frame.pack();
-
-            DisplayManager.getCanvas().setVisible(false);
-        }
 
         frame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
@@ -487,7 +375,16 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
         };
 
         DisplayManager.getFrame().setTitle("Minecraft");
-        DisplayManager.closeDisplay();
+
+        try {
+            Options options = new Options(LauncherFiles.MINECRAFT_OPTIONS_PATH);
+            options.setOption("guiScale", "" + Settings.settings.optInt(Settings.GUI_SCALE, 0));
+            options.setOption("skin", Settings.settings.optString(Settings.TEXTURE_PACK, ""));
+            if (serverAddress != null)
+                options.setOption("lastServer", serverAddress + "_" + serverPort);
+        } catch (Exception ex) {
+            System.err.println("Couldn't update options.txt");
+        }
 
         // Patches
         SocketPatch.watchSockets();
@@ -498,10 +395,10 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
 
         if (Settings.settings.optInt(Settings.GUI_SCALE, 0) != 0 && minecraftVersion != null) {
             if (minecraftVersion.scaledResolutionClass != null) {
-                ScaledResolutionConstructorPatch.useGUIScale(minecraftVersion.scaledResolutionClass, classLoader);
+                ScaledResolutionConstructorPatch.useGUIScale(minecraftVersion.scaledResolutionClass);
                 LWJGLOrthoPatch.useGuiScale();
             } else if (minecraftVersion.guiClass != null && minecraftVersion.guiScreenClass != null) {
-                GuiScreenPatch.useGUIScale(minecraftVersion.guiScreenClass, classLoader);
+                GuiScreenPatch.useGUIScale(minecraftVersion.guiScreenClass);
                 LWJGLOrthoPatch.useGuiScale();
             }
         }
@@ -518,21 +415,11 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
         if (minecraftVersion != null && minecraftVersion.ingameVersionString != null && Settings.settings.optBoolean(Settings.HIDE_VERSION_STRING, false))
             StringPatch.hideVersionStrings(minecraftVersion.ingameVersionString);
 
-        try {
-            Options options = new Options(LauncherFiles.MINECRAFT_OPTIONS_PATH);
-            options.setOption("guiScale", "" + Settings.settings.optInt(Settings.GUI_SCALE, 0));
-            options.setOption("skin", Settings.settings.optString(Settings.TEXTURE_PACK, ""));
-            if (serverAddress != null)
-                options.setOption("lastServer", serverAddress + "_" + serverPort);
-        } catch (Exception ex) {
-            System.err.println("Couldn't update options.txt");
-        }
+        minecraftApplet.init();
+        minecraftApplet.start();
 
-        if (minecraftImpl != null) {
-            minecraftImpl.run();
-        } else {
-            minecraftApplet.init();
-            minecraftApplet.start();
+        while (minecraftApplet.isActive()) {
+
         }
     }
 
@@ -547,7 +434,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
         try {
             DisplayManager.closeDisplay();
         } catch (IllegalStateException e) {
-            e.printStackTrace();
+
         }
         DisplayManager.getFrame().dispose();
         System.exit(0);
@@ -635,7 +522,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
 
             if (minecraftVersion != null && minecraftVersion.guiClass != null) {
                 try {
-                    Class guiClass = classLoader.loadClass(minecraftVersion.guiClass);
+                    Class guiClass = Class.forName(minecraftVersion.guiClass);
                     for (Field field : guiClass.getDeclaredFields()) {
                         if ((int.class.equals(field.getType()) || Integer.class.equals(field.getType())) && Modifier.isPrivate(field.getModifiers())) {
                             if (guiWidthField == null) {
@@ -721,8 +608,8 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
 
     boolean fullscreen;
 
-    int widthBeforeFullscreen = Display.getWidth();
-    int heightBeforeFullscreen = Display.getHeight();
+    int widthBeforeFullscreen;
+    int heightBeforeFullscreen;
 
     void setFullscreen(boolean newFullscreen) {
         if(!fullscreen && newFullscreen) {

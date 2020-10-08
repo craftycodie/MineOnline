@@ -53,8 +53,6 @@ public class MinecraftClientLauncher {
 
             java.util.Properties props = System.getProperties();
 
-            MinecraftVersion version = MinecraftVersionRepository.getSingleton().getVersion(jarPath);
-
             LinkedList<String> libraries = new LinkedList<>();
 
             for(String library : minecraftVersion.libraries) {
@@ -65,7 +63,7 @@ public class MinecraftClientLauncher {
                 libraries.add(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_PATH + nativeJar).toString());
             }
 
-            libraries.add(new File(MinecraftServerProcess.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath());
+            libraries.add(new File(MinecraftClientLauncher.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath());
             libraries.add(jarPath);
 
             LinkedList<String> launchArgs = new LinkedList();

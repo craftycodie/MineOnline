@@ -2,7 +2,9 @@ package gg.codie.mineonline;
 
 import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.mineonline.client.LegacyMinecraftClientLauncher;
+import gg.codie.mineonline.client.LegacyMinecraftLauncherLauncher;
 import gg.codie.mineonline.client.MinecraftClientLauncher;
+import gg.codie.mineonline.client.RubyDungLauncher;
 import gg.codie.mineonline.discord.DiscordPresence;
 import gg.codie.utils.JSONUtils;
 import gg.codie.utils.MD5Checksum;
@@ -39,8 +41,6 @@ public class MinecraftVersion {
     public final String assetIndex;
     public final String[] libraries;
     public final String[] natives;
-    public final boolean useMinecraftImpl;
-    public final String minecraftImplClass;
     public final String clientName;
     public final String guiClass;
     public final String guiScreenClass;
@@ -67,8 +67,6 @@ public class MinecraftVersion {
             String assetIndex,
             String[] libraries,
             String[] nativesWindows,
-            boolean useMinecraftImpl,
-            String minecraftImplClass,
             String clientName,
             String guiClass,
             String guiScreenClass,
@@ -90,8 +88,6 @@ public class MinecraftVersion {
         this.forceFullscreenMacos = forceFullscreenMacos;
         this.clientVersions = clientVersions;
         this.enableMacosCursorPatch = enableMacosCursorPatch;
-        this.useMinecraftImpl = useMinecraftImpl;
-        this.minecraftImplClass = minecraftImplClass;
         this.legacy = legacy;
         this.assetIndex = assetIndex;
         this.libraries = libraries;
@@ -123,8 +119,6 @@ public class MinecraftVersion {
         assetIndex = (object.has("assetIndex") ? object.getString("assetIndex") : object.has("baseVersion") ? object.getString("baseVersion") : null);
         libraries = (object.has("libraries") ? JSONUtils.getStringArray(object.getJSONArray("libraries")) : new String[0]);
         natives = (object.has("natives") && object.getJSONObject("natives").has(OSUtils.getPlatform().name()) ? JSONUtils.getStringArray(object.getJSONObject("natives").getJSONArray(OSUtils.getPlatform().name())) : new String[0]);
-        useMinecraftImpl = (object.has("useMinecraftImpl") && object.getBoolean("useMinecraftImpl"));
-        minecraftImplClass = (object.has("minecraftImplClass") ? object.getString("minecraftImplClass") : null);
         clientName = (object.has("clientName") ? object.getString("clientName") : object.getString("name"));
         guiClass = (object.has("guiClass") ? object.getString("guiClass") : null);
         guiScreenClass = (object.has("guiScreenClass") ? object.getString("guiScreenClass") : null);
@@ -319,8 +313,6 @@ public class MinecraftVersion {
                 versionManifest.getString("assets"),
                 libraries.toArray(new String[0]),
                 natives.toArray(new String[0]),
-                false,
-                null,
                 typeName + " " + versionNumber,
                 null,
                 null,
@@ -358,14 +350,24 @@ public class MinecraftVersion {
         System.out.println("Launching jar " + jarPath + " MD5 " + MD5Checksum.getMD5ChecksumForFile(jarPath));
 
         if(minecraftVersion != null) {
+            if (minecraftVersion.type.equals("rubydung")) {
+                new RubyDungLauncher(jarPath);
+                return;
+            }
+
+            if (minecraftVersion.type.equals("launcher")) {
+                new LegacyMinecraftLauncherLauncher(jarPath);
+                return;
+            }
+
             if (minecraftVersion.legacy) {
-                new LegacyMinecraftClientLauncher(jarPath, serverIP, serverPort, mpPass).startMinecraft();
+                LegacyMinecraftClientLauncher.startProcess(jarPath, serverIP, serverPort, mpPass);
             } else {
                 MinecraftClientLauncher.startProcess(jarPath, serverIP, serverPort, minecraftVersion);
             }
         } else {
             if (isLegacyJar(jarPath)) {
-                new LegacyMinecraftClientLauncher(jarPath, serverIP, serverPort, mpPass).startMinecraft();
+                LegacyMinecraftClientLauncher.startProcess(jarPath, serverIP, serverPort, mpPass);
             } else {
                 URLClassLoader classLoader = new URLClassLoader(new URL[] { Paths.get(jarPath).toUri().toURL() });
                 Class clazz = classLoader.loadClass("net.minecraft.client.main.Main");

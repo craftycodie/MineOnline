@@ -86,7 +86,6 @@ public class MenuManager {
         ProgressDialog.setMessage("Loading LWJGL");
 
         LibraryManager.updateNativesPath();
-        LWJGLDisplayPatch.hijackLWJGLThreadPatch();
 
         ProgressDialog.setMessage("Checking for updates");
         ProgressDialog.setProgress(20);

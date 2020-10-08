@@ -25,15 +25,19 @@ public class MinecraftVersionRepository {
     private static final String INSTALLED_VERSIONS = "installedJars";
     private static final String SELECTED_VERSION = "lastSelected";
 
-    public MinecraftVersionRepository() {
-        loadVersions();
+    public MinecraftVersionRepository(boolean onlyKnownVersionInfo) {
+        loadVersions(onlyKnownVersionInfo);
     }
 
     private static MinecraftVersionRepository singleton;
 
     public static MinecraftVersionRepository getSingleton() {
+        return getSingleton(false);
+    }
+
+    public static MinecraftVersionRepository getSingleton(boolean onlyKnownVersionInfo) {
         if(singleton == null) {
-            singleton = new MinecraftVersionRepository();
+            singleton = new MinecraftVersionRepository(onlyKnownVersionInfo);
         }
         return singleton;
     }
@@ -246,44 +250,49 @@ public class MinecraftVersionRepository {
         }
     }
 
-    private void loadVersions() {
-        // If there's a resource version that's not in the cache, extract it.
-        ProgressDialog.setSubMessage("Extracting version information...");
-        ProgressDialog.setProgress(40);
-        MinecraftVersion[] cachedVersions = getVersions(LauncherFiles.MINEONLINE_VERSIONS_FOLDER);
-        for (MinecraftVersion version : getResourceVersions()) {
-            if(getVersionByMD5(version.md5, cachedVersions) == null) {
-                try {
-                    System.out.println("Extracting version " + version.name + " " + version.md5);
-                    File target = new File(LauncherFiles.MINEONLINE_VERSIONS_FOLDER + version.type + File.separator + version.name + " " + version.md5 + ".json");
-                    target.getParentFile().mkdirs();
-                    Files.copy(MinecraftVersionRepository.class.getResourceAsStream("/versions/" + version.type + "/" + version.name + " " + version.md5 + ".json"), Paths.get(target.toURI()), StandardCopyOption.REPLACE_EXISTING);
-                    target.setLastModified(MinecraftVersionRepository.class.getResource("/versions/" + version.type + "/" + version.name + " " + version.md5 + ".json").openConnection().getLastModified());
-                } catch (Exception ex) {
-                    System.out.println("Failed to extract version " + version.md5);
-                    ex.printStackTrace();
+    private void loadVersions(boolean onlyKnownVersionInfo) {
+        if(onlyKnownVersionInfo) {
+            versions = getVersions(LauncherFiles.MINEONLINE_VERSIONS_FOLDER);
+            customVersions = getVersions(LauncherFiles.MINEONLINE_CUSTOM_VERSIONS_FOLDER);
+        } else {
+            // If there's a resource version that's not in the cache, extract it.
+            ProgressDialog.setSubMessage("Extracting version information...");
+            ProgressDialog.setProgress(40);
+            MinecraftVersion[] cachedVersions = getVersions(LauncherFiles.MINEONLINE_VERSIONS_FOLDER);
+            for (MinecraftVersion version : getResourceVersions()) {
+                if (getVersionByMD5(version.md5, cachedVersions) == null) {
+                    try {
+                        System.out.println("Extracting version " + version.name + " " + version.md5);
+                        File target = new File(LauncherFiles.MINEONLINE_VERSIONS_FOLDER + version.type + File.separator + version.name + " " + version.md5 + ".json");
+                        target.getParentFile().mkdirs();
+                        Files.copy(MinecraftVersionRepository.class.getResourceAsStream("/versions/" + version.type + "/" + version.name + " " + version.md5 + ".json"), Paths.get(target.toURI()), StandardCopyOption.REPLACE_EXISTING);
+                        target.setLastModified(MinecraftVersionRepository.class.getResource("/versions/" + version.type + "/" + version.name + " " + version.md5 + ".json").openConnection().getLastModified());
+                    } catch (Exception ex) {
+                        System.out.println("Failed to extract version " + version.md5);
+                        ex.printStackTrace();
+                    }
                 }
             }
+            // Fetch latest versions from the API
+            ProgressDialog.setSubMessage("Downloading latest version information...");
+            ProgressDialog.setProgress(44);
+            fetchVersions();
+            // Load cached versions
+            ProgressDialog.setSubMessage("Reading version information...");
+            ProgressDialog.setProgress(48);
+            versions = getVersions(LauncherFiles.MINEONLINE_VERSIONS_FOLDER);
+            // Load custom versions
+            ProgressDialog.setSubMessage("Reading custom version information......");
+            ProgressDialog.setProgress(52);
+            customVersions = getVersions(LauncherFiles.MINEONLINE_CUSTOM_VERSIONS_FOLDER);
+            // Load installed versions
+            ProgressDialog.setSubMessage("Loading installed versions...");
+            ProgressDialog.setProgress(56);
+            loadInstalledVersions();
+            // Load official launcher installed versions
+            loadOfficialLauncherVersions();
+            ProgressDialog.setSubMessage(null);
         }
-        // Fetch latest versions from the API
-        ProgressDialog.setSubMessage("Downloading latest version information...");
-        ProgressDialog.setProgress(44);
-        fetchVersions();
-        // Load cached versions
-        ProgressDialog.setSubMessage("Reading version information...");
-        ProgressDialog.setProgress(48);
-        versions = getVersions(LauncherFiles.MINEONLINE_VERSIONS_FOLDER);
-        // Load custom versions
-        ProgressDialog.setSubMessage("Reading custom version information......");
-        ProgressDialog.setProgress(52);
-        customVersions = getVersions(LauncherFiles.MINEONLINE_CUSTOM_VERSIONS_FOLDER);
-        // Load installed versions
-        ProgressDialog.setSubMessage("Loading installed versions...");
-        ProgressDialog.setProgress(56);
-        loadInstalledVersions();
-        // Load official launcher installed versions
-        loadOfficialLauncherVersions();
-        ProgressDialog.setSubMessage(null);
     }
 
     public MinecraftVersion getVersionByMD5(String md5) {
