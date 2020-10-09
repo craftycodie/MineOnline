@@ -159,7 +159,8 @@ public class RubyDungLauncher {
                 public void onCreateEvent() {
                     DisplayManager.checkGLError("minecraft create hook start");
                     renderer = new Renderer();
-                    Display.setResizable(true);
+                    // The game doesn't scale so until that's fixed, there's no point in doing this.
+                    // Display.setResizable(true);
                     DisplayManager.checkGLError("minecraft create hook end");
                 }
             };
@@ -169,9 +170,10 @@ public class RubyDungLauncher {
                 public void onUpdateEvent() {
                     DisplayManager.checkGLError("minecraft update hook start");
 
-                    if (Keyboard.getEventKey() == Keyboard.KEY_TAB) {
-                        Mouse.setGrabbed(false);
-                    }
+                    // DEBUG: Frees the cursor when pressing tab.
+//                    if (Keyboard.getEventKey() == Keyboard.KEY_TAB) {
+//                        Mouse.setGrabbed(false);
+//                    }
 
                     if (renderer != null) {
                         if (Globals.DEV) {
