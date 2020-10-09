@@ -7,10 +7,8 @@ import gg.codie.mineonline.patches.SocketPatch;
 import gg.codie.mineonline.patches.URLPatch;
 import gg.codie.mineonline.patches.minecraft.PropertiesSignaturePatch;
 import gg.codie.mineonline.patches.minecraft.YggdrasilMinecraftSessionServicePatch;
-import gg.codie.mineonline.server.MinecraftServerProcess;
 import gg.codie.mineonline.utils.JREUtils;
 import gg.codie.mineonline.utils.Logging;
-import gg.codie.utils.MD5Checksum;
 import gg.codie.utils.OSUtils;
 import org.lwjgl.opengl.Display;
 
@@ -28,8 +26,6 @@ import java.util.Map;
 
 public class MinecraftClientLauncher {
 
-    private static final boolean DEBUG = true;
-
     public static final String PROP_ENV = "minecraft.api.env";
     public static final String PROP_AUTH_HOST = "minecraft.api.auth.host";
     public static final String PROP_ACCOUNT_HOST = "minecraft.api.account.host";
@@ -38,9 +34,6 @@ public class MinecraftClientLauncher {
     String jarPath;
     String serverAddress;
     String serverPort;
-    String username;
-    String token;
-    String uuid;
     String width;
     String height;
 
@@ -151,16 +144,15 @@ public class MinecraftClientLauncher {
         this.jarPath = jarPath;
         this.serverAddress = serverAddress;
         this.serverPort = serverPort;
-        this.username = System.getProperty("mineonline.username");
-        this.token = System.getProperty("mineonline.token");
-        this.uuid = System.getProperty("mineonline.uuid");
         this.width = width;
         this.height = height;
+
+        new Session(System.getProperty("mineonline.username"), System.getProperty("mineonline.token"), System.getProperty("mineonline.uuid"));
 
         if(serverAddress != null && serverPort == null)
             this.serverPort = "25565";
 
-        minecraftVersion = MinecraftVersionRepository.getSingleton().getVersion(jarPath);
+        minecraftVersion = MinecraftVersionRepository.getSingleton(true).getVersion(jarPath);
     }
 
     public void startMinecraft() throws Exception {
@@ -168,8 +160,6 @@ public class MinecraftClientLauncher {
 
         try {
             LinkedList<String> args = new LinkedList<>();
-
-            new Session(username, token, uuid);
 
             LibraryManager.extractRuntimeNatives(minecraftVersion.natives);
             LibraryManager.updateNativesPath(LauncherFiles.MINEONLINE_RUNTIME_NATIVES_FOLDER.substring(0, LauncherFiles.MINEONLINE_RUNTIME_NATIVES_FOLDER.length() - 1));
@@ -205,16 +195,16 @@ public class MinecraftClientLauncher {
             args.add(minecraftVersion.baseVersion);
 
             args.add("--uuid");
-            args.add(uuid);
+            args.add(Session.session.getUuid());
 
             args.add("--username");
-            args.add(username);
+            args.add(Session.session.getUsername());
 
             args.add("--session");
-            args.add(token);
+            args.add(Session.session.getSessionToken());
 
             args.add("--accessToken");
-            args.add(token);
+            args.add(Session.session.getSessionToken());
 
             if (Settings.settings.has(Settings.FULLSCREEN) && Settings.settings.getBoolean(Settings.FULLSCREEN))
                 args.add("--fullscreen");

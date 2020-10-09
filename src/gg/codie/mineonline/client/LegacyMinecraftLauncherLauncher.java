@@ -6,6 +6,7 @@ import gg.codie.mineonline.MinecraftVersion;
 import gg.codie.mineonline.MinecraftVersionRepository;
 import gg.codie.mineonline.Settings;
 import gg.codie.mineonline.gui.rendering.DisplayManager;
+import gg.codie.mineonline.patches.ClassPatch;
 import gg.codie.mineonline.patches.SocketPatch;
 import gg.codie.mineonline.patches.SystemSetPropertyPatch;
 import gg.codie.mineonline.patches.URLPatch;
@@ -52,6 +53,9 @@ public class LegacyMinecraftLauncherLauncher {
 
             SocketPatch.watchSockets();
             URLPatch.redefineURL(updateURLString);
+            // Allow texture packs in versions before Alpha 1.2.2
+            if (minecraftVersion != null && minecraftVersion.useTexturepackPatch)
+                ClassPatch.useTexturePacks(Settings.settings.optString(Settings.TEXTURE_PACK, ""));
 
             try {
                 Class launcherClass = urlClassLoader.loadClass("net.minecraft.LauncherFrame");

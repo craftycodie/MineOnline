@@ -353,7 +353,7 @@ public class MinecraftVersion {
 
         if(minecraftVersion != null) {
             if (minecraftVersion.type.equals("rubydung")) {
-                new RubyDungLauncher(jarPath);
+                RubyDungLauncher.startProcess(jarPath);
                 return;
             }
 

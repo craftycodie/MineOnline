@@ -93,9 +93,6 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
             launchArgs.add(jarPath);
             launchArgs.add("" + DisplayManager.getFrame().getWidth());
             launchArgs.add("" + DisplayManager.getFrame().getHeight());
-            launchArgs.add(Session.session.getUsername());
-            launchArgs.add(Session.session.getSessionToken() != null ? Session.session.getSessionToken() : " ");
-            launchArgs.add(Session.session.getUuid() != null ? Session.session.getUuid() : " ");
             if (serverIP != null) {
                 launchArgs.add(serverIP);
                 if (serverPort != null)
@@ -155,29 +152,26 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
         }
     }
 
-    // [ jarPath, width, height, username, session, uuid, ip, port, mppass,  ]
+    // [ jarPath, width, height, ip, port, mppass,  ]
     public static void main(String[] args) throws Exception {
         Logging.enableLogging();
 
-        if (args[4].equals(" ") || args[5].equals(" "))
-            new Session(args[3]);
-        else
-            new Session(args[3], args[4], args[5]);
-
-        String serverAddress = args.length > 6 ? args[6] : null;
-        String serverPort = args.length > 7 ? args[7] : null;
-        String mpPass = args.length > 8 ? args[8] : null;
+        String serverAddress = args.length > 3 ? args[4] : null;
+        String serverPort = args.length > 4 ? args[4] : null;
+        String mpPass = args.length > 5 ? args[6] : null;
         new LegacyMinecraftClientLauncher(args[0], Integer.parseInt(args[1]), Integer.parseInt(args[2]), serverAddress, serverPort, mpPass).startMinecraft();
     }
 
 
-    public LegacyMinecraftClientLauncher(String jarPath, int width, int height, String serverAddress, String serverPort, String MPPass) throws Exception {
+    public LegacyMinecraftClientLauncher(String jarPath, int width, int height, String serverAddress, String serverPort, String MPPass) {
         this.jarPath = jarPath;
         this.serverAddress = serverAddress;
         this.serverPort = serverPort;
         this.MPPass = MPPass;
         this.startWidth = widthBeforeFullscreen = width;
         this.startHeight = heightBeforeFullscreen = height;
+
+        new Session(System.getProperty("mineonline.username"), System.getProperty("mineonline.token"), System.getProperty("mineonline.uuid"));
 
         if(serverAddress != null && serverPort == null)
             this.serverPort = "25565";
