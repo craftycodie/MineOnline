@@ -132,6 +132,9 @@ public class MinecraftServerProcess {
         System.setProperty(PROP_ACCOUNT_HOST, "http://" + Globals.API_HOSTNAME);
         System.setProperty(PROP_SESSION_HOST, "http://" + Globals.API_HOSTNAME);
 
+        // Fixes the player list on Bukkit.
+        System.setProperty("jline.terminal", "jline.UnsupportedTerminal");
+
         main.invoke(null, new Object[] { new String[] { "nogui" }});
     }
 }

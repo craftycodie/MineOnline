@@ -87,7 +87,6 @@ public abstract class ServerLauncher {
                     while(true) {
                         if(inScanner.hasNext()) {
                             String nextLine = inScanner.nextLine();
-
                             if (minecraftVersion != null && minecraftVersion.hasHeartbeat) {
                                 if (nextLine.length() > 15) {
                                     if (nextLine.contains(" logged in as ")) {
@@ -124,7 +123,26 @@ public abstract class ServerLauncher {
                                         updatedPlayerCount = true;
                                     }
 
-                                } else if (nextLine.length() > 33 && nextLine.substring(33).startsWith("There are ") && nextLine.substring(33).contains(" players online")) {
+                                }
+                                // Craftbukkit
+                                else if (nextLine.length() > 16 && nextLine.substring(16).startsWith("Connected players: ")) {
+                                    users = 0;
+                                    if (nextLine.length() > 35) {
+                                        users = nextLine.split(",").length;
+                                    }
+
+                                    playerNames = new String[0];
+                                    if (users == 1) {
+                                        playerNames = new String[]{nextLine.substring(35)};
+                                    } else if (users > 1) {
+                                        playerNames = nextLine.substring(35).split(", ");
+                                    }
+                                    if (updatingPlayerCount) {
+                                        updatingPlayerCount = false;
+                                        updatedPlayerCount = true;
+                                    }
+                                }
+                                else if (nextLine.length() > 33 && nextLine.substring(33).startsWith("There are ") && nextLine.substring(33).contains(" players online")) {
                                     try {
                                         users = Integer.parseInt(nextLine.substring(33).split(" ")[2]);
                                         playerNames = new String[0];
@@ -171,6 +189,7 @@ public abstract class ServerLauncher {
             } else {
                 playerCountRequested++;
                 try {
+                    writer.newLine();
                     writer.write("list");
                     writer.newLine();
                     writer.flush();
@@ -200,6 +219,7 @@ public abstract class ServerLauncher {
 
                 if (!updatingPlayerCount) {
                     playerCountRequested++;
+                    writer.newLine();
                     writer.write("list");
                     writer.newLine();
                     writer.flush();
