@@ -37,7 +37,6 @@ public class MinecraftServerProcess {
         launchArgs.add(JREUtils.getJavaExecutable());
         launchArgs.add("-javaagent:" + LauncherFiles.PATCH_AGENT_JAR);
         launchArgs.add("-Djava.util.Arrays.useLegacyMergeSort=true");
-        launchArgs.add("-cp");
 
         if (args.length > 1)
             if (!args[1].startsWith("-"))
@@ -45,6 +44,7 @@ public class MinecraftServerProcess {
             else
                 launchArgs.addAll(Arrays.asList(Arrays.copyOfRange(args, 1, args.length)));
 
+        launchArgs.add("-cp");
         launchArgs.add(LibraryManager.getClasspath(false, new String[] { new File(MinecraftServerProcess.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath(), args[0] }));
         launchArgs.add(MinecraftServerProcess.class.getCanonicalName());
         launchArgs.addAll(Arrays.asList(args));
