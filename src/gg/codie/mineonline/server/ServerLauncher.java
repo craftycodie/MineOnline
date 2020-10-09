@@ -17,7 +17,7 @@ import java.util.Scanner;
 public abstract class ServerLauncher {
 
     public final String jarPath;
-    public final String md5;
+    private String md5;
     protected Properties serverProperties;
     public String serverlistAddress;
     public String serverlistPort;
@@ -48,6 +48,9 @@ public abstract class ServerLauncher {
         } catch (Exception ex) {
             serverProperties = new Properties(null);
         }
+
+        if (serverProperties.versionMD5() != null)
+            md5 = serverProperties.versionMD5();
 
         if (minecraftVersion != null)
             System.out.println("Launching Server " + minecraftVersion.name);

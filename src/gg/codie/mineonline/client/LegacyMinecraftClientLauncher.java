@@ -156,9 +156,9 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
     public static void main(String[] args) throws Exception {
         Logging.enableLogging();
 
-        String serverAddress = args.length > 3 ? args[4] : null;
+        String serverAddress = args.length > 3 ? args[3] : null;
         String serverPort = args.length > 4 ? args[4] : null;
-        String mpPass = args.length > 5 ? args[6] : null;
+        String mpPass = args.length > 5 ? args[5] : null;
         new LegacyMinecraftClientLauncher(args[0], Integer.parseInt(args[1]), Integer.parseInt(args[2]), serverAddress, serverPort, mpPass).startMinecraft();
     }
 

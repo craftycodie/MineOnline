@@ -30,4 +30,8 @@ public class Properties extends gg.codie.minecraft.server.Properties {
     public String owner() {
         return properties.getProperty(OWNER, null);
     }
+
+    public String versionMD5() {
+        return properties.getProperty("version-md5", null);
+    }
 }
