@@ -21,7 +21,7 @@ public abstract class ServerLauncher {
     protected Properties serverProperties;
     public String serverlistAddress;
     public String serverlistPort;
-    protected final MinecraftVersion minecraftVersion;
+    protected MinecraftVersion minecraftVersion;
     int users = 0;
     static String[] playerNames = new String[0];
     protected String serverUUID;
@@ -41,7 +41,7 @@ public abstract class ServerLauncher {
     public ServerLauncher(String jarPath) throws Exception {
         this.jarPath = jarPath;
         md5 = MD5Checksum.getMD5ChecksumForFile(jarPath);
-        minecraftVersion = MinecraftVersionRepository.getSingleton().getVersionByMD5(md5);
+        minecraftVersion = MinecraftVersionRepository.getSingleton(true).getVersionByMD5(md5);
 
         try {
             serverProperties = new Properties(jarPath);
@@ -49,11 +49,17 @@ public abstract class ServerLauncher {
             serverProperties = new Properties(null);
         }
 
-        if (serverProperties.versionMD5() != null)
+        if (serverProperties.versionMD5() != null) {
             md5 = serverProperties.versionMD5();
+            if (minecraftVersion == null) {
+                minecraftVersion = MinecraftVersionRepository.getSingleton().getVersionByMD5(md5);
+            }
+        }
 
         if (minecraftVersion != null)
             System.out.println("Launching Server " + minecraftVersion.name);
+        else
+            System.out.println("Launching Server " + this.jarPath);
 
         serverlistAddress = serverProperties.serverIP();
         serverlistPort = "" + serverProperties.serverPort();

@@ -6,6 +6,7 @@ public class Properties extends gg.codie.minecraft.server.Properties {
     protected static final String SERVERLIST_IP = "serverlist-ip";
     protected static final String SERVERLIST_PORT = "serverlist-port";
     protected static final String OWNER = "owner";
+    protected static final String VERSION_MD5 = "version-md5";
 
     public Properties(String jarPath) throws IOException {
         super(jarPath);
@@ -32,6 +33,6 @@ public class Properties extends gg.codie.minecraft.server.Properties {
     }
 
     public String versionMD5() {
-        return properties.getProperty("version-md5", null);
+        return properties.getProperty(VERSION_MD5, null);
     }
 }

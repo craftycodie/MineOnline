@@ -41,8 +41,7 @@ public class MinecraftServerProcess {
 
         if (args.length > 1)
             if (!args[1].startsWith("-"))
-                if (args.length > 2)
-                    launchArgs.addAll(Arrays.asList(Arrays.copyOfRange(args, 2, args.length)));
+                launchArgs.addAll(Arrays.asList(Arrays.copyOfRange(args, 2, args.length)));
             else
                 launchArgs.addAll(Arrays.asList(Arrays.copyOfRange(args, 1, args.length)));
 
@@ -90,6 +89,12 @@ public class MinecraftServerProcess {
             } catch (ClassNotFoundException ex) { }
         }
 
+        // Bukkit
+
+        try {
+            mainClass = classLoader.loadClass("org.bukkit.craftbukkit.Main");
+        } catch (ClassNotFoundException ex) { }
+
         // Release
         try {
             mainClass = classLoader.loadClass("net.minecraft.server.Main");
@@ -117,7 +122,7 @@ public class MinecraftServerProcess {
         }
 
         if (mainClass == null) {
-            System.out.println("Main class not found!");
+            System.err.println("Main class not found!");
         }
 
         Method main = mainClass.getMethod("main", String[].class);
