@@ -128,18 +128,24 @@ public abstract class ServerLauncher {
                                 else if (nextLine.length() > 16 && nextLine.substring(16).startsWith("Connected players: ")) {
                                     users = 0;
                                     if (nextLine.length() > 35) {
-                                        users = nextLine.split(",").length;
+                                        users = nextLine.substring(35).replaceAll(
+                                                "\u001B\\[[;\\d]*[ -/]*[@-~]", "").split(",").length;
                                     }
 
                                     playerNames = new String[0];
                                     if (users == 1) {
-                                        playerNames = new String[]{nextLine.substring(35)};
+                                        playerNames = new String[]{nextLine.replaceAll("\u001B\\[[;\\d]*[ -/]*[@-~]", "").substring(35)};
                                     } else if (users > 1) {
-                                        playerNames = nextLine.substring(35).split(", ");
+                                        playerNames = nextLine.substring(35).replaceAll("\u001B\\[[;\\d]*[ -/]*[@-~]", "").split(", ");
                                     }
                                     if (updatingPlayerCount) {
                                         updatingPlayerCount = false;
                                         updatedPlayerCount = true;
+                                    }
+
+                                    if (Arrays.equals(playerNames, new String[] { "" })) {
+                                        users = 0;
+                                        playerNames = new String[0];
                                     }
                                 }
                                 else if (nextLine.length() > 33 && nextLine.substring(33).startsWith("There are ") && nextLine.substring(33).contains(" players online")) {
