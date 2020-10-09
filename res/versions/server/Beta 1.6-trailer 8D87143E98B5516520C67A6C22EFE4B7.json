@@ -4,7 +4,6 @@
   "sha256": "8F2B80B1DC081F8161AE18DE048D05A1361A5D5D9233F3046AA28D808AF33249",
   "type": "server",
   "clientName": "Beta 1.6-trailer",
-  "clientMd5s": [],
   "baseVersion": "b1.6-trailer",
   "legacy": true
 }
