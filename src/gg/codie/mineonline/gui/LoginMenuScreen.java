@@ -158,7 +158,7 @@ public class LoginMenuScreen implements IMenuScreen {
 
         if(MouseHandler.didClick() && mouseIsOver) {
             try {
-                Desktop.getDesktop().browse(new URI("http://" + Globals.API_HOSTNAME + "/register"));
+                Desktop.getDesktop().browse(new URI(Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/register"));
             } catch (Exception ex) {
 
             }

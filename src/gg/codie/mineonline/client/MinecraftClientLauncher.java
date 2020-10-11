@@ -214,9 +214,9 @@ public class MinecraftClientLauncher {
 
             Method main = clazz.getMethod("main", String[].class);
 
-            System.setProperty(PROP_AUTH_HOST, "http://" + Globals.API_HOSTNAME);
-            System.setProperty(PROP_ACCOUNT_HOST, "http://" + Globals.API_HOSTNAME);
-            System.setProperty(PROP_SESSION_HOST, "http://" + Globals.API_HOSTNAME);
+            System.setProperty(PROP_AUTH_HOST, Globals.API_PROTOCOL + Globals.API_HOSTNAME);
+            System.setProperty(PROP_ACCOUNT_HOST, Globals.API_PROTOCOL + Globals.API_HOSTNAME);
+            System.setProperty(PROP_SESSION_HOST, Globals.API_PROTOCOL + Globals.API_HOSTNAME);
 
             URLPatch.redefineURL();
             PropertiesSignaturePatch.redefineIsSignatureValid(classLoader);

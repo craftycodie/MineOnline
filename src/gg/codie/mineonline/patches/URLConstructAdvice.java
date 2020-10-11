@@ -88,7 +88,8 @@ public class URLConstructAdvice {
                 }) {
                     if (url.contains(replaceHost)) {
                         url = url.replace(replaceHost, Globals.API_HOSTNAME);
-                        url = url.replace("https", "http");
+                        url = url.replace("https://", Globals.API_PROTOCOL);
+                        url = url.replace("http://", Globals.API_PROTOCOL);
                     }
                 }
             }

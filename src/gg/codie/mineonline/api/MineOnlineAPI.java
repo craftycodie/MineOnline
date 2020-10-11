@@ -30,7 +30,7 @@ public class MineOnlineAPI {
 
         try {
             String parameters = "sessionId=" + URLEncoder.encode(sessionId, "UTF-8") + "&serverIP=" + URLEncoder.encode(serverIP, "UTF-8") + "&serverPort=" + URLEncoder.encode(serverPort, "UTF-8");
-            URL url = new URL("http://" + Globals.API_HOSTNAME + "/api/servertoken?" + parameters);
+            URL url = new URL(Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/servertoken?" + parameters);
             connection = (HttpURLConnection) url.openConnection();
             connection.setDoOutput(false);
             connection.connect();
@@ -58,7 +58,7 @@ public class MineOnlineAPI {
         HttpURLConnection connection = null;
 
         try {
-            URL url = new URL("http://" + Globals.API_HOSTNAME + "/api/getmyip");
+            URL url = new URL(Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/getmyip");
             connection = (HttpURLConnection) url.openConnection();
             connection.setUseCaches(false);
             connection.setDoOutput(true);
@@ -86,7 +86,7 @@ public class MineOnlineAPI {
     public static JSONObject getVersionIndex() throws IOException {
         HttpURLConnection connection = null;
 
-        URL url = new URL("http://" + Globals.API_HOSTNAME + "/api/versions");
+        URL url = new URL(Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/versions");
         connection = (HttpURLConnection) url.openConnection();
         connection.connect();
 
@@ -112,7 +112,7 @@ public class MineOnlineAPI {
     public static JSONObject getSkinMetadata(String uuid) throws IOException {
         HttpURLConnection connection;
 
-        URL url = new URL("http://" + Globals.API_HOSTNAME + "/api/player/" + uuid + "/skin/metadata");
+        URL url = new URL(Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/player/" + uuid + "/skin/metadata");
         connection = (HttpURLConnection) url.openConnection();
         connection.connect();
 
@@ -138,7 +138,7 @@ public class MineOnlineAPI {
     public static void deleteServerListing(String uuid) throws IOException {
         HttpURLConnection connection;
 
-        URL url = new URL("http://" + Globals.API_HOSTNAME + "/api/servers/" + uuid);
+        URL url = new URL(Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/servers/" + uuid);
         connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("DELETE");
         connection.connect();
@@ -152,7 +152,7 @@ public class MineOnlineAPI {
 
         String json = metadata.toString();
 
-        URL url = new URL("http://" + Globals.API_HOSTNAME + "/api/player/" + uuid + "/skin/metadata?session=" + URLEncoder.encode(token, "UTF-8"));
+        URL url = new URL(Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/player/" + uuid + "/skin/metadata?session=" + URLEncoder.encode(token, "UTF-8"));
         connection = (HttpURLConnection) url.openConnection();
         connection.setRequestProperty("Content-Type", "application/json");
         connection.setRequestMethod("POST");
@@ -172,7 +172,7 @@ public class MineOnlineAPI {
     public static String getVersionInfo(String path) throws IOException {
         HttpURLConnection connection;
 
-        URL url = new URL("http://" + Globals.API_HOSTNAME + path.replace(" ", "%20"));
+        URL url = new URL(Globals.API_PROTOCOL + Globals.API_HOSTNAME + path.replace(" ", "%20"));
         connection = (HttpURLConnection) url.openConnection();
         connection.connect();
 
@@ -197,7 +197,7 @@ public class MineOnlineAPI {
         HttpURLConnection connection;
 
         String parameters = "sessionId=" + URLEncoder.encode(sessionId, "UTF-8");
-        URL url = new URL("http://" + Globals.API_HOSTNAME + "/api/servers?" + parameters);
+        URL url = new URL(Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/servers?" + parameters);
         connection = (HttpURLConnection) url.openConnection();
         connection.setDoInput(true);
         connection.setDoOutput(false);
@@ -226,7 +226,7 @@ public class MineOnlineAPI {
         HttpURLConnection connection;
 
         String parameters = "serverIP=" + URLEncoder.encode(serverIP, "UTF-8") + "&serverPort=" + URLEncoder.encode(serverPort, "UTF-8");
-        URL url = new URL("http://" + Globals.API_HOSTNAME + "/api/getserver?" + parameters);
+        URL url = new URL(Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/getserver?" + parameters);
         connection = (HttpURLConnection) url.openConnection();
         connection.setDoInput(true);
         connection.setDoOutput(false);
@@ -256,7 +256,7 @@ public class MineOnlineAPI {
 
         try {
             String parameters = "sessionId=" + URLEncoder.encode(sessionId, "UTF-8");
-            URL url = new URL("http://" + Globals.API_HOSTNAME + "/api/player/" + uuid + "/cloak?" + parameters);
+            URL url = new URL(Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/player/" + uuid + "/cloak?" + parameters);
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("DELETE");
             connection.setDoInput(true);
@@ -286,7 +286,7 @@ public class MineOnlineAPI {
         HttpURLConnection connection = null;
 
         try {
-            URL url = new URL("http://" + Globals.API_HOSTNAME + "/api/player/" + uuid + "/skin");
+            URL url = new URL(Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/player/" + uuid + "/skin");
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
             connection.setDoInput(true);
@@ -334,7 +334,7 @@ public class MineOnlineAPI {
         HttpURLConnection connection = null;
 
         try {
-            URL url = new URL("http://" + Globals.API_HOSTNAME + "/api/player/" + uuid + "/cloak");
+            URL url = new URL(Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/player/" + uuid + "/cloak");
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
             connection.setDoInput(true);
@@ -422,7 +422,7 @@ public class MineOnlineAPI {
 
             String json = jsonObject.toString();
 
-            URL url = new URL("http://" + Globals.API_HOSTNAME + "/api/servers");
+            URL url = new URL(Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/servers");
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestProperty("Content-Type", "application/json");
             connection.setRequestMethod("POST");
@@ -465,7 +465,7 @@ public class MineOnlineAPI {
         jsonObject.put("password", password);
         String json = jsonObject.toString();
 
-        URL url = new URL("http://" + Globals.API_HOSTNAME + "/api/login");
+        URL url = new URL(Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/login");
         connection = (HttpURLConnection) url.openConnection();
         connection.setRequestProperty("Content-Type", "application/json");
         connection.setRequestMethod("POST");
@@ -506,7 +506,7 @@ public class MineOnlineAPI {
         jsonObject.put("discordUserID", discordUserID);
         String json = jsonObject.toString();
 
-        URL url = new URL("http://" + Globals.API_HOSTNAME + "/api/player/" + userUUID + "/discordUserID");
+        URL url = new URL(Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/player/" + userUUID + "/discordUserID");
         connection = (HttpURLConnection) url.openConnection();
         connection.setRequestProperty("Content-Type", "application/json");
         connection.setRequestMethod("POST");
@@ -520,9 +520,9 @@ public class MineOnlineAPI {
     }
 
     public static String getLauncherVersion() throws IOException {
-        HttpURLConnection connection = null;
+        HttpURLConnection connection;
 
-        URL url = new URL("http://" + Globals.API_HOSTNAME + "/launcherversion");
+        URL url = new URL(Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/launcherversion");
         connection = (HttpURLConnection) url.openConnection();
         connection.connect();
 

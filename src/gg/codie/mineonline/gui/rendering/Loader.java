@@ -104,7 +104,7 @@ public class Loader {
     }
 
     public int loadTexture(URL url) {
-        Texture texture = null;
+        Texture texture;
         try {
             texture = TextureLoader.getTexture("PNG", url.openStream());
         } catch (Exception e) {
@@ -117,7 +117,7 @@ public class Loader {
     }
 
     public int loadTexture(String path) {
-        Texture texture = null;
+        Texture texture;
         try {
             if(path.startsWith("http")) {
                 texture = TextureLoader.getTexture("PNG", new URL(path).openStream());
@@ -134,7 +134,7 @@ public class Loader {
     }
 
     public int loadTexture(InputStream stream) {
-        Texture texture = null;
+        Texture texture;
         try {
             texture = TextureLoader.getTexture("PNG", stream);
         } catch (Exception e) {

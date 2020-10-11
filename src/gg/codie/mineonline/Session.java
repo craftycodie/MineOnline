@@ -64,7 +64,7 @@ public class Session {
             public void run() {
                 Settings.loadSettings();
 
-                try (BufferedInputStream in = new BufferedInputStream(new URL("http://" + Globals.API_HOSTNAME + "/api/player/" + uuid + "/skin").openStream())) {
+                try (BufferedInputStream in = new BufferedInputStream(new URL(Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/player/" + uuid + "/skin").openStream())) {
 
                     // Delete the currently cached skin.
                     File cachedSkin = new File(LauncherFiles.CACHED_SKIN_PATH);
@@ -89,7 +89,7 @@ public class Session {
                     }
                 }
 
-                try (BufferedInputStream in = new BufferedInputStream(new URL("http://" + Globals.API_HOSTNAME + "/api/player/" + uuid + "/cloak").openStream())) {
+                try (BufferedInputStream in = new BufferedInputStream(new URL(Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/player/" + uuid + "/cloak").openStream())) {
 
                     // Delete the currently cached skin.
                     File cachedCloak = new File(LauncherFiles.CACHED_CLOAK_PATH);
