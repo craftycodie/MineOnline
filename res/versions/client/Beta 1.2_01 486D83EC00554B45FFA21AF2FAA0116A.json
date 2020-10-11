@@ -6,5 +6,6 @@
   "legacy": true,
   "baseVersion": "b1.2_01",
   "useFOVPatch": true,
+  "scaledResolutionClass": "lw",
   "ingameVersionString": "Minecraft Beta 1.2_01"
 }
