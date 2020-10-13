@@ -8,6 +8,7 @@ import net.bytebuddy.matcher.ElementMatchers;
 
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.SocketAddress;
 
 public class SocketPatch {
     public static void watchSockets() {
@@ -18,6 +19,10 @@ public class SocketPatch {
                         InetAddress.class,
                         int.class
                 ))))
+//                .visit(Advice.to(SocketConnectAdvice.class).on(ElementMatchers.named("connect").and(ElementMatchers.takesArguments(
+//                        SocketAddress.class,
+//                        int.class
+//                ))))
                 .visit(Advice.to(SocketCloseAdvice.class).on(ElementMatchers.named("close")))
                 .make()
                 .load(Socket.class.getClassLoader(), ClassReloadingStrategy.fromInstalledAgent());

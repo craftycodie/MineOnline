@@ -54,6 +54,43 @@ public class MineOnlineAPI {
         }
     }
 
+    public static String getMojangMpPass (String sessionId, String serverIP, String serverPort, String uuid) {
+
+        try {
+            InetAddress inetAddress = InetAddress.getByName(serverIP);
+            serverIP = inetAddress.getHostAddress();
+        } catch (Exception ex) {
+            //ignore.
+        }
+
+        HttpURLConnection connection = null;
+
+        try {
+            String parameters = "sessionId=" + URLEncoder.encode(sessionId, "UTF-8") + "&serverIP=" + URLEncoder.encode(serverIP, "UTF-8") + "&serverPort=" + URLEncoder.encode(serverPort, "UTF-8") + "&uuid=" + URLEncoder.encode(uuid, "UTF-8");
+            URL url = new URL(Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/mojang/servertoken?" + parameters);
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setDoOutput(false);
+            connection.connect();
+
+            InputStream is = connection.getInputStream();
+            BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+
+            String mpPass = rd.readLine();
+
+            rd.close();
+
+            return mpPass;
+        } catch (Exception e) {
+            if (e.getClass() != FileNotFoundException.class)
+                e.printStackTrace();
+            return null;
+        } finally {
+
+            if (connection != null)
+                connection.disconnect();
+        }
+    }
+
     public static String getExternalIP() {
         HttpURLConnection connection = null;
 

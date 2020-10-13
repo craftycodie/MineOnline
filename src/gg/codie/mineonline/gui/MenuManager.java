@@ -230,8 +230,11 @@ public class MenuManager {
                                 }
 
                                 String mppass = null;
-                                if(serverVersion != null && serverVersion.hasHeartbeat)
-                                    mppass = MineOnlineAPI.getMpPass(Session.session.getSessionToken(), mineOnlineServer.ip, "" + mineOnlineServer.port);
+                                if(serverVersion != null && serverVersion.hasHeartbeat) {
+                                    mppass = Globals.USE_MOJANG_API
+                                            ? MineOnlineAPI.getMojangMpPass(Session.session.getSessionToken(), mineOnlineServer.ip, "" + mineOnlineServer.port, Session.session.getUuid())
+                                            : MineOnlineAPI.getMpPass(Session.session.getSessionToken(), mineOnlineServer.ip, "" + mineOnlineServer.port);
+                                }
 
                                 MinecraftVersion.launchMinecraft(path, mineOnlineServer.ip, "" + mineOnlineServer.port, mppass);
                                 return;
@@ -257,7 +260,9 @@ public class MenuManager {
                     ip = ipAndPort[0];
                     port = "25565";
                 }
-                mppass = MineOnlineAPI.getMpPass(Session.session.getSessionToken(), ip, port);
+                mppass = Globals.USE_MOJANG_API
+                        ? MineOnlineAPI.getMojangMpPass(Session.session.getSessionToken(), ip, port, Session.session.getUuid())
+                        : MineOnlineAPI.getMpPass(Session.session.getSessionToken(), ip, port);
             }
             MinecraftVersion.launchMinecraft(quicklaunch, ip, port, mppass);
             return;

@@ -1,10 +1,7 @@
 package gg.codie.mineonline.gui;
 
 import gg.codie.minecraft.client.Options;
-import gg.codie.mineonline.LauncherFiles;
-import gg.codie.mineonline.MinecraftVersion;
-import gg.codie.mineonline.MinecraftVersionRepository;
-import gg.codie.mineonline.Session;
+import gg.codie.mineonline.*;
 import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.mineonline.gui.components.MediumButton;
 import gg.codie.mineonline.gui.components.SelectableServer;
@@ -47,7 +44,9 @@ public class ServerListMenuScreen implements IMenuScreen {
                             if (selectedVersion != null && selectedVersion.baseVersion.equals(serverVersion.baseVersion)) {
                                 String mppass = null;
                                 if(serverVersion != null && serverVersion.hasHeartbeat)
-                                    mppass = MineOnlineAPI.getMpPass(Session.session.getSessionToken(), selectedServer.server.ip, "" + selectedServer.server.port);
+                                    mppass = Globals.USE_MOJANG_API
+                                            ? MineOnlineAPI.getMojangMpPass(Session.session.getSessionToken(), selectedServer.server.ip, "" + selectedServer.server.port, Session.session.getUuid())
+                                            : MineOnlineAPI.getMpPass(Session.session.getSessionToken(), selectedServer.server.ip, "" + selectedServer.server.port);
 
                                 MinecraftVersion.launchMinecraft(MinecraftVersionRepository.getSingleton().getLastSelectedJarPath(), selectedServer.server.ip, "" + selectedServer.server.port, mppass);
                             }
@@ -64,9 +63,13 @@ public class ServerListMenuScreen implements IMenuScreen {
                                             // ignore
                                         }
 
+
+
                                         String mppass = null;
                                         if(serverVersion != null && serverVersion.hasHeartbeat)
-                                            mppass = MineOnlineAPI.getMpPass(Session.session.getSessionToken(), selectedServer.server.ip, "" + selectedServer.server.port);
+                                            mppass = Globals.USE_MOJANG_API
+                                                    ? MineOnlineAPI.getMojangMpPass(Session.session.getSessionToken(), selectedServer.server.ip, "" + selectedServer.server.port, Session.session.getUuid())
+                                                    : MineOnlineAPI.getMpPass(Session.session.getSessionToken(), selectedServer.server.ip, "" + selectedServer.server.port);
 
                                         MinecraftVersion.launchMinecraft(path, selectedServer.server.ip, "" + selectedServer.server.port, mppass);
                                         return;
@@ -94,8 +97,9 @@ public class ServerListMenuScreen implements IMenuScreen {
 
                                 String mppass = null;
                                 if(serverVersion != null && serverVersion.hasHeartbeat)
-                                    mppass = MineOnlineAPI.getMpPass(Session.session.getSessionToken(), selectedServer.server.ip, "" + selectedServer.server.port);
-
+                                    mppass = Globals.USE_MOJANG_API
+                                            ? MineOnlineAPI.getMojangMpPass(Session.session.getSessionToken(), selectedServer.server.ip, "" + selectedServer.server.port, Session.session.getUuid())
+                                            : MineOnlineAPI.getMpPass(Session.session.getSessionToken(), selectedServer.server.ip, "" + selectedServer.server.port);
                                 try {
                                     MinecraftVersion.launchMinecraft(selectVersionMenuScreen.getSelectedPath(), selectedServer.server.ip, "" + selectedServer.server.port, mppass);
                                 } catch (Exception ex) {
