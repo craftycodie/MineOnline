@@ -5,8 +5,9 @@ import gg.codie.mineonline.Globals;
 import gg.codie.mineonline.Session;
 import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.mineonline.gui.components.LargeButton;
+import gg.codie.mineonline.gui.components.PasswordInputField;
 import gg.codie.mineonline.gui.components.SmallInputField;
-import gg.codie.mineonline.gui.components.SmallPasswordInputField;
+import gg.codie.mineonline.gui.components.InputField;
 import gg.codie.mineonline.gui.events.IOnClickListener;
 import gg.codie.mineonline.gui.font.GUIText;
 import gg.codie.mineonline.gui.rendering.*;
@@ -27,8 +28,8 @@ import java.net.URI;
 
 public class LoginMenuScreen implements IMenuScreen {
     GUIObject logo;
-    SmallInputField usernameInput;
-    SmallPasswordInputField passwordInput;
+    InputField usernameInput;
+    PasswordInputField passwordInput;
     LargeButton loginButton;
     LargeButton playOfflineButton;
     GUIText errorText;
@@ -36,8 +37,6 @@ public class LoginMenuScreen implements IMenuScreen {
     GUIText usernameLabel;
     GUIText passwordLabel;
     boolean offline;
-
-    static SelectVersionMenuScreen selectVersionMenuScreen = null;
 
     public LoginMenuScreen(boolean _offline) {
         this.offline = _offline;
@@ -49,8 +48,8 @@ public class LoginMenuScreen implements IMenuScreen {
             username = lastLogin.username;
             password = lastLogin.password;
         }
-        usernameInput = new SmallInputField("Username Input", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 204, (DisplayManager.getDefaultHeight() / 2) + 34), username, null);
-        passwordInput = new SmallPasswordInputField("Password Input", new Vector2f((DisplayManager.getDefaultWidth() / 2) + 4, (DisplayManager.getDefaultHeight() / 2) + 34 ), password, null);
+        usernameInput = new InputField("Username Input", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 204, (DisplayManager.getDefaultHeight() / 2) + 2), username, null);
+        passwordInput = new PasswordInputField("Password Input", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 204, (DisplayManager.getDefaultHeight() / 2) + 74 ), password, null);
 
         RawModel logoModel = Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth((DisplayManager.getDefaultWidth() / 2) -200) + DisplayManager.getXBuffer(), Display.getHeight() - DisplayManager.scaledHeight(69)), new Vector2f(DisplayManager.scaledWidth(400), DisplayManager.scaledHeight(49)), TextureHelper.getYFlippedPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(0, 40), new Vector2f(400, 49)));
         ModelTexture logoTexture = new ModelTexture(Loader.singleton.loadTexture(MenuManager.class.getResource("/img/gui.png")));
@@ -58,7 +57,7 @@ public class LoginMenuScreen implements IMenuScreen {
         logo = new GUIObject("logo", texuredLogoModel, new Vector3f(), new Vector3f(), new Vector3f(1, 1, 1));
 
         if(offline) {
-            playOfflineButton = new LargeButton("Play Offline", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 200, (DisplayManager.getDefaultHeight() / 2) + 132), new IOnClickListener() {
+            playOfflineButton = new LargeButton("Play Offline", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 198, (DisplayManager.getDefaultHeight() / 2) + 172), new IOnClickListener() {
                 @Override
                 public void onClick() {
                     try {
@@ -70,7 +69,7 @@ public class LoginMenuScreen implements IMenuScreen {
             });
         }
 
-        loginButton = new LargeButton("Login", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 200, (DisplayManager.getDefaultHeight() / 2) + 86), new IOnClickListener() {
+        loginButton = new LargeButton("Login", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 198, (DisplayManager.getDefaultHeight() / 2) + 126), new IOnClickListener() {
             @Override
             public void onClick() {
                 try {
@@ -88,32 +87,32 @@ public class LoginMenuScreen implements IMenuScreen {
 
                     if (sessionToken != null) {
                         new Session(login.getJSONObject("selectedProfile").getString("name"), sessionToken, uuid);
-                        LastLogin.writeLastLogin(usernameInput.getValue(), passwordInput.getValue(), uuid);
+                        LastLogin.writeLastLogin(usernameInput.getValue(), Globals.USE_MOJANG_API ? null : passwordInput.getValue(), uuid);
                         MenuManager.setMenuScreen(new MainMenuScreen());
                     } else {
                         if (errorText != null)
                             errorText.remove();
 
-                        errorText = new GUIText("Incorrect username or password.", 1.5f, TextMaster.minecraftFont, new Vector2f(0, (DisplayManager.getDefaultHeight() / 2) - 80), DisplayManager.getDefaultWidth(), true, true);
+                        errorText = new GUIText("Incorrect username or password.", 1.5f, TextMaster.minecraftFont, new Vector2f(0, (DisplayManager.getDefaultHeight() / 2) - 60), DisplayManager.getDefaultWidth(), true, true);
                         errorText.setColour(1, 0.33f, 0.33f);
                     }
                 } catch (Exception ex) {
                     ex.printStackTrace();
 
                     String errorMessage = ex.getMessage();
-                    if (errorMessage.startsWith("Bad login")) {
+                    if (errorMessage.startsWith("Bad authenticate")) {
                         errorMessage = "Incorrect username or password.";
                     }
 
                     if (errorText != null)
                         errorText.remove();
 
-                    errorText = new GUIText(errorMessage, 1.5f, TextMaster.minecraftFont, new Vector2f(0, (DisplayManager.getDefaultHeight() / 2) - 80), DisplayManager.getDefaultWidth(), true, true);
+                    errorText = new GUIText(errorMessage, 1.5f, TextMaster.minecraftFont, new Vector2f(0, (DisplayManager.getDefaultHeight() / 2) - 100), DisplayManager.getDefaultWidth(), true, true);
                     errorText.setColour(1, 0.33f, 0.33f);
 
                     offline = true;
                     if(playOfflineButton == null)
-                        playOfflineButton = new LargeButton("Play Offline", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 200, (DisplayManager.getDefaultHeight() / 2) + 132), new IOnClickListener() {
+                        playOfflineButton = new LargeButton("Play Offline", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 200, (DisplayManager.getDefaultHeight() / 2) + 172), new IOnClickListener() {
                             @Override
                             public void onClick() {
                                 try {
@@ -127,8 +126,8 @@ public class LoginMenuScreen implements IMenuScreen {
             }
         });
 
-        usernameLabel = new GUIText("Username", 1.5f, TextMaster.minecraftFont, new Vector2f((DisplayManager.getDefaultWidth() / 2) - 204, (DisplayManager.getDefaultHeight() / 2) - 36), 200, false, true);
-        passwordLabel = new GUIText("Password", 1.5f, TextMaster.minecraftFont, new Vector2f((DisplayManager.getDefaultWidth() / 2) + 4, (DisplayManager.getDefaultHeight() / 2) - 36 ), 200, false, true);
+        usernameLabel = new GUIText("Username or E-Mail:", 1.5f, TextMaster.minecraftFont, new Vector2f((DisplayManager.getDefaultWidth() / 2) - 202, (DisplayManager.getDefaultHeight() / 2) - 64), 200, false, true);
+        passwordLabel = new GUIText("Password:", 1.5f, TextMaster.minecraftFont, new Vector2f((DisplayManager.getDefaultWidth() / 2) - 202, (DisplayManager.getDefaultHeight() / 2) + 4), 200, false, true);
 
 
         needAccount = new GUIText("Need Account?", 1.5f, TextMaster.minecraftFont, new Vector2f(0, DisplayManager.getDefaultHeight() - 40), DisplayManager.getDefaultWidth(), true, true);
@@ -159,7 +158,9 @@ public class LoginMenuScreen implements IMenuScreen {
 
         if(MouseHandler.didClick() && mouseIsOver) {
             try {
-                Desktop.getDesktop().browse(new URI(Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/register"));
+                Desktop.getDesktop().browse(new URI(Globals.USE_MOJANG_API
+                        ? "https://checkout.minecraft.net/en-us/store/minecraft/#register"
+                        : Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/register"));
             } catch (Exception ex) {
 
             }

@@ -200,7 +200,7 @@ public class MenuManager {
 
         if (sessionToken != null && username != null) {
             new Session(username, sessionToken, uuid);
-            LastLogin.writeLastLogin(lastLogin.username, lastLogin.password, uuid);
+            LastLogin.writeLastLogin(lastLogin.username, Globals.USE_MOJANG_API ? null : lastLogin.password, uuid);
         }
 
         if (Session.session != null && Session.session.isOnline() && joinserver != null) {

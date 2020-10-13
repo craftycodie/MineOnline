@@ -118,6 +118,10 @@ public class MainMenuScreen implements IMenuScreen {
             }
         });
 
+        // TODO: Restore this.
+        if (Globals.USE_MOJANG_API)
+            skinButton.setDisabled(true);
+
         if(MenuManager.isUpdateAvailable() && !Globals.DEV) {
             updateAvailableText = new GUIText("Update available!", 1.5f, TextMaster.minecraftFont, new Vector2f(0, DisplayManager.getDefaultHeight() - 32), DisplayManager.getDefaultWidth(), true, true);
             updateAvailableText.setColour(1f, 1f, 0f);

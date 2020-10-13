@@ -3,6 +3,7 @@ package gg.codie.mineonline.server;
 import gg.codie.mineonline.Globals;
 import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.LibraryManager;
+import gg.codie.mineonline.patches.StringPatch;
 import gg.codie.mineonline.patches.URLPatch;
 import gg.codie.mineonline.utils.JREUtils;
 import gg.codie.mineonline.utils.Logging;
@@ -79,6 +80,7 @@ public class MinecraftServerProcess {
 
         Properties serverProperties = new Properties(args[0]);
         URLPatch.redefineURL(serverProperties.serverIP(), "" + serverProperties.serverPort());
+        StringPatch.checkservResponsePatch();
 
         Class mainClass = null;
 
@@ -127,10 +129,12 @@ public class MinecraftServerProcess {
 
         Method main = mainClass.getMethod("main", String[].class);
 
-        // Release args.
-        System.setProperty(PROP_AUTH_HOST, Globals.API_PROTOCOL + Globals.API_HOSTNAME);
-        System.setProperty(PROP_ACCOUNT_HOST, Globals.API_PROTOCOL + Globals.API_HOSTNAME);
-        System.setProperty(PROP_SESSION_HOST, Globals.API_PROTOCOL + Globals.API_HOSTNAME);
+        if (Globals.USE_MOJANG_API) {
+            // Release args.
+            System.setProperty(PROP_AUTH_HOST, Globals.API_PROTOCOL + Globals.API_HOSTNAME);
+            System.setProperty(PROP_ACCOUNT_HOST, Globals.API_PROTOCOL + Globals.API_HOSTNAME);
+            System.setProperty(PROP_SESSION_HOST, Globals.API_PROTOCOL + Globals.API_HOSTNAME);
+        }
 
         // Fixes the player list on Bukkit.
         System.setProperty("jline.terminal", "jline.UnsupportedTerminal");

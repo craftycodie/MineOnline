@@ -60,7 +60,7 @@ public class URLConstructAdvice {
                 url = updateUrl;
             } else if (url.contains("launcher.mojang.com/v1/objects/")) {
                 // Quick patch to allow launchers to pull from this endpoint.
-            } else if (url.contains("/game/joinserver.jsp")) {
+            } else if (USE_MOJANG_API && url.contains("/game/joinserver.jsp")) {
                 Class sessionClass = ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.Session");
                 Object session = sessionClass.getField("session").get(null);
                 System.out.println("session " + session);
@@ -79,6 +79,8 @@ public class URLConstructAdvice {
                 );
 
                 url = Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/stub/ok";
+            } else if (USE_MOJANG_API && url.contains("/game/checkserver.jsp")) {
+                url = url.replace("http://www.minecraft.net/game/checkserver.jsp?user=", "https://sessionserver.mojang.com/session/minecraft/hasJoined?username=");
             } else {
                 for (String replaceHost : new String[]{
                         "textures.minecraft.net",
