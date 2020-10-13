@@ -1,6 +1,8 @@
 package gg.codie.mineonline.patches;
 
+import gg.codie.minecraft.api.SessionServer;
 import gg.codie.mineonline.Globals;
+import gg.codie.mineonline.Session;
 import net.bytebuddy.asm.Advice;
 
 public class URLConstructAdvice {
