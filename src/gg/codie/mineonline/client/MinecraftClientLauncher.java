@@ -26,7 +26,6 @@ import java.util.Map;
 
 public class MinecraftClientLauncher {
 
-    public static final String PROP_ENV = "minecraft.api.env";
     public static final String PROP_AUTH_HOST = "minecraft.api.auth.host";
     public static final String PROP_ACCOUNT_HOST = "minecraft.api.account.host";
     public static final String PROP_SESSION_HOST = "minecraft.api.session.host";
@@ -214,13 +213,16 @@ public class MinecraftClientLauncher {
 
             Method main = clazz.getMethod("main", String[].class);
 
-            System.setProperty(PROP_AUTH_HOST, Globals.API_PROTOCOL + Globals.API_HOSTNAME);
-            System.setProperty(PROP_ACCOUNT_HOST, Globals.API_PROTOCOL + Globals.API_HOSTNAME);
-            System.setProperty(PROP_SESSION_HOST, Globals.API_PROTOCOL + Globals.API_HOSTNAME);
+            if (!Globals.USE_MOJANG_API) {
+                System.setProperty(PROP_AUTH_HOST, Globals.API_PROTOCOL + Globals.API_HOSTNAME);
+                System.setProperty(PROP_ACCOUNT_HOST, Globals.API_PROTOCOL + Globals.API_HOSTNAME);
+                System.setProperty(PROP_SESSION_HOST, Globals.API_PROTOCOL + Globals.API_HOSTNAME);
 
-            URLPatch.redefineURL();
-            PropertiesSignaturePatch.redefineIsSignatureValid(classLoader);
-            YggdrasilMinecraftSessionServicePatch.allowMineonlineSkins(classLoader);
+                URLPatch.redefineURL();
+                PropertiesSignaturePatch.redefineIsSignatureValid(classLoader);
+                YggdrasilMinecraftSessionServicePatch.allowMineonlineSkins(classLoader);
+            }
+
             SocketPatch.watchSockets();
 
             main.invoke(null, new Object[] {args.toArray(new String[0])});

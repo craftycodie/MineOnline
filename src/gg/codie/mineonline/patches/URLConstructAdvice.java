@@ -20,6 +20,7 @@ public class URLConstructAdvice {
             }
 
             boolean DEV = (boolean)ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.Globals").getField("DEV").get(null);
+            boolean USE_MOJANG_API = (boolean)ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.Globals").getField("USE_MOJANG_API").get(null);
 
             if(DEV) {
                 System.out.println("Old URL: " + url);
@@ -57,30 +58,37 @@ public class URLConstructAdvice {
                 url = updateUrl;
             } else if (url.contains("launcher.mojang.com/v1/objects/")) {
                 // Quick patch to allow launchers to pull from this endpoint.
+            } else if (url.contains("/game/joinserver.jsp")) {
+                Class sessionClass = ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.Session");
+                Object session = sessionClass.getField("session").get(null);
+                System.out.println("session " + session);
+
+                Class sessionServerClass = ClassLoader.getSystemClassLoader().loadClass("gg.codie.minecraft.api.SessionServer");
+                String serverId = url.substring(url.indexOf("&serverId=") + 10);
+                System.out.println("serverId " + serverId);
+                System.out.println(sessionClass.getMethod("getSessionToken").invoke(session));
+                System.out.println(sessionClass.getMethod("getUuid").invoke(session));
+
+                sessionServerClass.getMethod("joinGame", String.class, String.class, String.class).invoke(
+                        null,
+                        sessionClass.getMethod("getSessionToken").invoke(session),
+                        sessionClass.getMethod("getUuid").invoke(session),
+                        serverId
+                );
+
+                url = Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/stub/ok";
             } else {
                 for (String replaceHost : new String[]{
                         "textures.minecraft.net",
-                        "pc.realms.minecraft.net",
                         "www.minecraft.net:-1",
                         "skins.minecraft.net",
                         "session.minecraft.net",
-                        "login.minecraft.net",
-                        "realms.minecraft.net",
+                        "authenticate.minecraft.net",
                         "assets.minecraft.net",
                         "mcoapi.minecraft.net",
-                        "snoop.minecraft.net",
                         "www.minecraft.net",
-                        "resources.download.minecraft.net",
-                        "libraries.minecraft.net",
                         "minecraft.net",
                         "s3.amazonaws.com",
-                        "api.mojang.com",
-                        "authserver.mojang.com",
-                        "account.mojang.com",
-                        "sessionserver.mojang.com",
-                        "launchermeta.mojang.com",
-                        "mojang.com",
-                        "aka.ms",
 
                         // for mods
                         "banshee.alex231.com",
@@ -90,6 +98,37 @@ public class URLConstructAdvice {
                         url = url.replace(replaceHost, Globals.API_HOSTNAME);
                         url = url.replace("https://", Globals.API_PROTOCOL);
                         url = url.replace("http://", Globals.API_PROTOCOL);
+                    }
+                }
+
+                if (!USE_MOJANG_API) {
+                    for (String replaceHost : new String[]{
+                        "pc.realms.minecraft.net",
+                        "realms.minecraft.net",
+                        "snoop.minecraft.net",
+                        "resources.download.minecraft.net",
+                        "libraries.minecraft.net",
+                        "api.mojang.com",
+                        "authserver.mojang.com",
+                        "account.mojang.com",
+                        "sessionserver.mojang.com",
+                        "launchermeta.mojang.com",
+                        "mojang.com",
+                        "aka.ms",
+                    }) {
+                        if (url.contains(replaceHost)) {
+                            url = url.replace(replaceHost, Globals.API_HOSTNAME);
+                            url = url.replace("https://", Globals.API_PROTOCOL);
+                            url = url.replace("http://", Globals.API_PROTOCOL);
+                        }
+                    }
+                } else {
+                    if (url.contains(Globals.API_HOSTNAME)) {
+                        // These could be more strict.
+                        url = url.replace("/MinecraftSkins/", "/mojang/MinecraftSkins/");
+                        url = url.replace("/MinecraftCloaks/", "/mojang/MinecraftCloaks/");
+                        url = url.replace("/skin/", "/mojang/skin/");
+                        url = url.replace("/cloak/get.jsp", "/mojang/cloak/get.jsp");
                     }
                 }
             }

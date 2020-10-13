@@ -1,6 +1,6 @@
 package gg.codie.mineonline.gui;
 
-import com.sun.xml.internal.ws.api.message.ExceptionHasMessage;
+import gg.codie.minecraft.api.AuthServer;
 import gg.codie.mineonline.Globals;
 import gg.codie.mineonline.Session;
 import gg.codie.mineonline.api.MineOnlineAPI;
@@ -22,7 +22,6 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
-import javax.naming.AuthenticationException;
 import java.awt.*;
 import java.net.URI;
 
@@ -75,18 +74,20 @@ public class LoginMenuScreen implements IMenuScreen {
             @Override
             public void onClick() {
                 try {
-                    JSONObject login = MineOnlineAPI.login(usernameInput.getValue(), passwordInput.getValue());
+                    JSONObject login = Globals.USE_MOJANG_API
+                            ? AuthServer.authenticate(usernameInput.getValue(), passwordInput.getValue())
+                            : MineOnlineAPI.authenticate(usernameInput.getValue(), passwordInput.getValue());
 
                     if (login.has("error"))
                         throw new Exception(login.getString("error"));
-                    if (!login.has("uuid") || !login.has("sessionId"))
-                        throw new Exception("Failed to login!");
+                    if (!login.has("accessToken") || !login.has("selectedProfile"))
+                        throw new Exception("Failed to authenticate!");
 
-                    String sessionToken = login.getString("sessionId");
-                    String uuid = login.getString("uuid");
+                    String sessionToken = login.getString("accessToken");
+                    String uuid = login.getJSONObject("selectedProfile").getString("id");
 
                     if (sessionToken != null) {
-                        new Session(usernameInput.getValue(), sessionToken, uuid);
+                        new Session(login.getJSONObject("selectedProfile").getString("name"), sessionToken, uuid);
                         LastLogin.writeLastLogin(usernameInput.getValue(), passwordInput.getValue(), uuid);
                         MenuManager.setMenuScreen(new MainMenuScreen());
                     } else {

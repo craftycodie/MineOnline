@@ -64,7 +64,11 @@ public class Session {
             public void run() {
                 Settings.loadSettings();
 
-                try (BufferedInputStream in = new BufferedInputStream(new URL(Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/player/" + uuid + "/skin").openStream())) {
+                String skinUrl = Globals.USE_MOJANG_API
+                        ? Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/mojang/player/" + uuid + "/skin"
+                        : Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/player/" + uuid + "/skin";
+
+                try (BufferedInputStream in = new BufferedInputStream(new URL(skinUrl).openStream())) {
 
                     // Delete the currently cached skin.
                     File cachedSkin = new File(LauncherFiles.CACHED_SKIN_PATH);
@@ -89,7 +93,11 @@ public class Session {
                     }
                 }
 
-                try (BufferedInputStream in = new BufferedInputStream(new URL(Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/player/" + uuid + "/cloak").openStream())) {
+                String cloakUrl = Globals.USE_MOJANG_API
+                        ? Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/mojang/player/" + uuid + "/cloak"
+                        : Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/player/" + uuid + "/cloak";
+
+                try (BufferedInputStream in = new BufferedInputStream(new URL(cloakUrl).openStream())) {
 
                     // Delete the currently cached skin.
                     File cachedCloak = new File(LauncherFiles.CACHED_CLOAK_PATH);

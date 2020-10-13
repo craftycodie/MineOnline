@@ -1,5 +1,6 @@
 package gg.codie.mineonline.gui;
 
+import gg.codie.minecraft.api.AuthServer;
 import gg.codie.minecraft.client.Options;
 import gg.codie.mineonline.*;
 import gg.codie.mineonline.api.MineOnlineAPI;
@@ -154,15 +155,24 @@ public class MenuManager {
         if(!multiinstance)
             lastLogin = LastLogin.readLastLogin();
 
+        String username = null;
         String sessionToken = null;
         String uuid = null;
 
         if(lastLogin != null ) {
             try {
-                JSONObject login = MineOnlineAPI.login(lastLogin.username, lastLogin.password);
+                JSONObject login = Globals.USE_MOJANG_API
+                        ? AuthServer.authenticate(lastLogin.username, lastLogin.password)
+                        : MineOnlineAPI.authenticate(lastLogin.username, lastLogin.password);
 
-                sessionToken = login.getString("sessionId");
-                uuid = login.getString("uuid");
+                if (login.has("error"))
+                    throw new Exception(login.getString("error"));
+                if (!login.has("accessToken") || !login.has("selectedProfile"))
+                    throw new Exception("Failed to authenticate!");
+
+                sessionToken = login.getString("accessToken");
+                uuid = login.getJSONObject("selectedProfile").getString("id");
+                username = login.getJSONObject("selectedProfile").getString("name");
             } catch (IOException ex) {
                 ex.printStackTrace();
             } catch (JSONException ex) {
@@ -188,8 +198,8 @@ public class MenuManager {
         Loader loader = new Loader();
         TextMaster.init(loader);
 
-        if (sessionToken != null) {
-            new Session(lastLogin.username, sessionToken, uuid);
+        if (sessionToken != null && username != null) {
+            new Session(username, sessionToken, uuid);
             LastLogin.writeLastLogin(lastLogin.username, lastLogin.password, uuid);
         }
 

@@ -135,6 +135,32 @@ public class MineOnlineAPI {
         return jsonObject;
     }
 
+    public static JSONObject getMojangSkinMetadata(String uuid) throws IOException {
+        HttpURLConnection connection;
+
+        URL url = new URL(Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/mojang/player/" + uuid + "/skin/metadata");
+        connection = (HttpURLConnection) url.openConnection();
+        connection.connect();
+
+        InputStream is = connection.getInputStream();
+        BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+
+        StringBuilder response = new StringBuilder();
+        String line;
+        while ((line = rd.readLine()) != null) {
+            response.append(line);
+            response.append('\r');
+        }
+        rd.close();
+
+        JSONObject jsonObject = new JSONObject(response.toString());
+
+        if (connection != null)
+            connection.disconnect();
+
+        return jsonObject;
+    }
+
     public static void deleteServerListing(String uuid) throws IOException {
         HttpURLConnection connection;
 
@@ -457,7 +483,7 @@ public class MineOnlineAPI {
         }
     }
 
-    public static JSONObject login(String username, String password) throws IOException {
+    public static JSONObject authenticate(String username, String password) throws IOException {
         HttpURLConnection connection;
 
         JSONObject jsonObject = new JSONObject();
@@ -465,7 +491,7 @@ public class MineOnlineAPI {
         jsonObject.put("password", password);
         String json = jsonObject.toString();
 
-        URL url = new URL(Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/login");
+        URL url = new URL(Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/authenticate");
         connection = (HttpURLConnection) url.openConnection();
         connection.setRequestProperty("Content-Type", "application/json");
         connection.setRequestMethod("POST");
