@@ -169,6 +169,8 @@ public class MenuManager {
                     throw new Exception(login.getString("error"));
                 if (!login.has("accessToken") || !login.has("selectedProfile"))
                     throw new Exception("Failed to authenticate!");
+                if (login.has("selectedProfile") && !login.getJSONObject("selectedProfile").optBoolean("paid", false))
+                    throw new Exception("Please buy Minecraft to use MineOnline.");
 
                 sessionToken = login.getString("accessToken");
                 uuid = login.getJSONObject("selectedProfile").getString("id");
@@ -199,7 +201,7 @@ public class MenuManager {
         TextMaster.init(loader);
 
         if (sessionToken != null && username != null) {
-            new Session(username, sessionToken, uuid);
+            new Session(username, sessionToken, uuid, true);
             LastLogin.writeLastLogin(lastLogin.username, Globals.USE_MOJANG_API ? null : lastLogin.password, uuid);
         }
 

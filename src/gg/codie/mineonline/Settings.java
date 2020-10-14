@@ -12,7 +12,6 @@ public class Settings {
     public static JSONObject settings;
 
     public static final String SETTINGS_VERSION = "settingsVersion";
-    public static final String IS_PREMIUM = "isPremium";
     public static final String FULLSCREEN = "fullscreen";
     public static final String MINECRAFT_UPDATE_URL = "minecraftUpdateURL";
     public static final String JAVA_HOME = "javaHome";
@@ -44,7 +43,6 @@ public class Settings {
     public static void resetSettings() {
         settings = new JSONObject();
         settings.put(SETTINGS_VERSION, SETTINGS_VERSION_NUMBER);
-        settings.put(IS_PREMIUM, true);
         settings.put(FULLSCREEN, false);
         settings.put(MINECRAFT_UPDATE_URL, "");
         settings.put(JAVA_HOME, "");
@@ -74,19 +72,7 @@ public class Settings {
 
             // Assume V1, reset settings.
             if(!settings.has(SETTINGS_VERSION)) {
-                JSONObject oldSettings = settings;
-                String[] oldKeys = new String[] {
-                        IS_PREMIUM,
-                        FULLSCREEN,
-                };
-
                 resetSettings();
-
-                for (String key : oldKeys) {
-                    if(oldSettings.has(key))
-                        settings.put(key, oldSettings.get(key));
-                }
-
                 saveSettings();
             } else {
                 switch (settings.getInt(SETTINGS_VERSION)) {

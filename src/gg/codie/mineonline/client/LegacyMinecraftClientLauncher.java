@@ -171,7 +171,8 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
         this.startWidth = widthBeforeFullscreen = width;
         this.startHeight = heightBeforeFullscreen = height;
 
-        new Session(System.getProperty("mineonline.username"), System.getProperty("mineonline.token"), System.getProperty("mineonline.uuid"));
+        boolean premium = System.getProperty("mineonline.token") != null;
+        new Session(System.getProperty("mineonline.username"), System.getProperty("mineonline.token"), System.getProperty("mineonline.uuid"), premium);
 
         if(serverAddress != null && serverPort == null)
             this.serverPort = "25565";
@@ -742,10 +743,10 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
                 value = Session.session.getSessionToken();
                 break;
             case "haspaid":
-                value = String.valueOf(Settings.settings.getBoolean(Settings.IS_PREMIUM));
+                value = "" + Session.session.isPremium();
                 break;
             case "demo":
-                value = !Settings.settings.getBoolean(Settings.IS_PREMIUM) ? "true" : null;
+                value = "" + !Session.session.isPremium();
                 break;
             case "server":
                 value = serverAddress;

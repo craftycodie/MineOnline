@@ -146,7 +146,8 @@ public class MinecraftClientLauncher {
         this.width = width;
         this.height = height;
 
-        new Session(System.getProperty("mineonline.username"), System.getProperty("mineonline.token"), System.getProperty("mineonline.uuid"));
+        boolean premium = System.getProperty("mineonline.token") != null;
+        new Session(System.getProperty("mineonline.username"), System.getProperty("mineonline.token"), System.getProperty("mineonline.uuid"), premium);
 
         if(serverAddress != null && serverPort == null)
             this.serverPort = "25565";
@@ -208,7 +209,7 @@ public class MinecraftClientLauncher {
             if (Settings.settings.has(Settings.FULLSCREEN) && Settings.settings.getBoolean(Settings.FULLSCREEN))
                 args.add("--fullscreen");
 
-            if (Settings.settings.has(Settings.IS_PREMIUM) && !Settings.settings.getBoolean(Settings.IS_PREMIUM))
+            if (!Session.session.isPremium())
                 args.add("--demo");
 
             Method main = clazz.getMethod("main", String[].class);

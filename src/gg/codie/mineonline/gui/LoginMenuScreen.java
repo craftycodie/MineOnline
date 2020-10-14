@@ -81,12 +81,14 @@ public class LoginMenuScreen implements IMenuScreen {
                         throw new Exception(login.getString("error"));
                     if (!login.has("accessToken") || !login.has("selectedProfile"))
                         throw new Exception("Failed to authenticate!");
+                    if (login.has("selectedProfile") && !login.getJSONObject("selectedProfile").optBoolean("paid", false))
+                        throw new Exception("Please buy Minecraft to use MineOnline.");
 
                     String sessionToken = login.getString("accessToken");
                     String uuid = login.getJSONObject("selectedProfile").getString("id");
 
                     if (sessionToken != null) {
-                        new Session(login.getJSONObject("selectedProfile").getString("name"), sessionToken, uuid);
+                        new Session(login.getJSONObject("selectedProfile").getString("name"), sessionToken, uuid, true);
                         LastLogin.writeLastLogin(usernameInput.getValue(), Globals.USE_MOJANG_API ? null : passwordInput.getValue(), uuid);
                         MenuManager.setMenuScreen(new MainMenuScreen());
                     } else {

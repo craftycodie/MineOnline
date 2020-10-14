@@ -37,18 +37,26 @@ public class Session {
         return sessionToken != null;
     }
 
+    private boolean isPremium;
+
+    public boolean isPremium() {
+        return isPremium;
+    }
+
     public Session(String username) {
         session = this;
         this.username = username;
         this.uuid = UUID.randomUUID().toString();
+        this.isPremium = false;
         cacheSkin();
     }
 
-    public Session(String username, String sessionToken, String uuid) {
+    public Session(String username, String sessionToken, String uuid, boolean isPremium) {
         session = this;
         this.username = username;
         this.sessionToken = sessionToken;
         this.uuid = uuid;
+        this.isPremium = isPremium;
         cacheSkin();
     }
 
