@@ -15,9 +15,6 @@ public class MojangAPI {
     public static JSONObject minecraftProfile(String username) throws IOException {
         HttpURLConnection connection;
 
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("username", username);
-
         URL url = new URL(BASE_URL + "/users/profiles/minecraft/" + username);
         connection = (HttpURLConnection) url.openConnection();
         connection.setRequestProperty("Content-Type", "application/json");

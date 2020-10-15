@@ -1,9 +1,12 @@
 package gg.codie.mineonline.patches;
 
 import gg.codie.minecraft.api.SessionServer;
+import gg.codie.minecraft.skins.SkinUtils;
 import gg.codie.mineonline.Globals;
 import gg.codie.mineonline.Session;
 import net.bytebuddy.asm.Advice;
+
+import java.lang.reflect.Method;
 
 public class URLConstructAdvice {
     public static String updateURL;
@@ -78,6 +81,35 @@ public class URLConstructAdvice {
                 url = Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/stub/ok";
             } else if (url.contains("/game/checkserver.jsp")) {
                 url = url.replace("http://www.minecraft.net/game/checkserver.jsp?user=", "https://sessionserver.mojang.com/session/minecraft/hasJoined?username=");
+            } else if ((url.contains("/MinecraftSkins/") || url.contains("/skin/")) && url.contains(".png")) {
+                String username = (url.contains("/MinecraftSkins/")
+                        ? url.substring(url.indexOf("/MinecraftSkins/"))
+                        : url.substring(url.indexOf("/skin/")))
+                        .replace("/MinecraftSkins/", "")
+                        .replace("/skin/", "")
+                        .replace(".png", "");
+
+                Class skinUtilsClass = ClassLoader.getSystemClassLoader().loadClass("gg.codie.minecraft.skins.SkinUtils");
+                Method findSkinURLForUsername = skinUtilsClass.getMethod("findSkinURLForUsername", String.class);
+
+                url = (String)findSkinURLForUsername.invoke(null, username);
+            } else if (url.contains("/MinecraftCloaks/") && url.contains(".png")) {
+                String username = url.substring(url.indexOf("/MinecraftCloaks/"))
+                        .replace("/MinecraftCloaks/", "")
+                        .replace(".png", "");
+
+                Class skinUtilsClass = ClassLoader.getSystemClassLoader().loadClass("gg.codie.minecraft.skins.SkinUtils");
+                Method findCloakURLForUsername = skinUtilsClass.getMethod("findCloakURLForUsername", String.class);
+
+                url = (String)findCloakURLForUsername.invoke(null, username);
+            } else if (url.contains("/cloak/get.jsp?user=")) {
+                String username = url.substring(url.indexOf("/cloak/get.jsp?user="))
+                        .replace("/cloak/get.jsp?user=", "");
+
+                Class skinUtilsClass = ClassLoader.getSystemClassLoader().loadClass("gg.codie.minecraft.skins.SkinUtils");
+                Method findCloakURLForUsername = skinUtilsClass.getMethod("findCloakURLForUsername", String.class);
+
+                url = (String)findCloakURLForUsername.invoke(null, username);
             } else {
                 for (String replaceHost : new String[]{
                         "textures.minecraft.net",

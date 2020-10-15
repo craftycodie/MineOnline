@@ -109,32 +109,6 @@ public class MineOnlineAPI {
         return jsonObject;
     }
 
-    public static JSONObject getSkinMetadata(String uuid) throws IOException {
-        HttpURLConnection connection;
-
-        URL url = new URL(Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/player/" + uuid + "/skin/metadata");
-        connection = (HttpURLConnection) url.openConnection();
-        connection.connect();
-
-        InputStream is = connection.getInputStream();
-        BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-
-        StringBuilder response = new StringBuilder();
-        String line;
-        while ((line = rd.readLine()) != null) {
-            response.append(line);
-            response.append('\r');
-        }
-        rd.close();
-
-        JSONObject jsonObject = new JSONObject(response.toString());
-
-        if (connection != null)
-            connection.disconnect();
-
-        return jsonObject;
-    }
-
     public static void deleteServerListing(String uuid) throws IOException {
         HttpURLConnection connection;
 
@@ -251,37 +225,6 @@ public class MineOnlineAPI {
         return MineOnlineServer.parseServer(jsonObject);
     }
 
-    public static boolean removeCloak(String uuid, String sessionId) {
-        HttpURLConnection connection = null;
-
-        try {
-            String parameters = "sessionId=" + URLEncoder.encode(sessionId, "UTF-8");
-            URL url = new URL(Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/player/" + uuid + "/cloak?" + parameters);
-            connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("DELETE");
-            connection.setDoInput(true);
-            connection.setDoOutput(false);
-            connection.connect();
-
-            InputStream is = connection.getInputStream();
-            BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-
-            String res = rd.readLine();
-
-            rd.close();
-
-            return res.equals("ok");
-        } catch (Exception e) {
-
-            e.printStackTrace();
-            return false;
-        } finally {
-
-            if (connection != null)
-                connection.disconnect();
-        }
-    }
-
     public static boolean uploadSkin(String uuid, String sessionId, InputStream skinFile) {
         HttpURLConnection connection = null;
 
@@ -302,54 +245,6 @@ public class MineOnlineAPI {
             byte[] buffer = new byte[8096];
             int bytes_read = 0;
             while ((bytes_read = skinFile.read(buffer, 0, 8096)) != -1) {
-                for(int i = 0; i < bytes_read; i++) {
-                    connection.getOutputStream().write(buffer[i]);
-                }
-            }
-
-            connection.getOutputStream().flush();
-            connection.getOutputStream().close();
-
-            InputStream is = connection.getInputStream();
-            BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-
-            String res = rd.readLine();
-
-            rd.close();
-
-            return res.equals("ok");
-        } catch (Exception e) {
-
-            e.printStackTrace();
-            return false;
-        } finally {
-
-            if (connection != null)
-                connection.disconnect();
-        }
-
-    }
-
-    public static boolean uploadCloak(String uuid, String sessionId, InputStream cloakFile) {
-        HttpURLConnection connection = null;
-
-        try {
-            URL url = new URL(Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/player/" + uuid + "/cloak");
-            connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("POST");
-            connection.setDoInput(true);
-            connection.setDoOutput(true);
-
-            connection.getOutputStream().write(ByteBuffer.allocate(2).putShort((short)sessionId.length()).array());
-            connection.getOutputStream().write(sessionId.getBytes(Charset.forName("UTF-8")));
-
-            int cloakSize = cloakFile.available();
-
-            connection.getOutputStream().write(ByteBuffer.allocate(4).putInt(cloakSize).array());
-
-            byte[] buffer = new byte[8096];
-            int bytes_read = 0;
-            while ((bytes_read = cloakFile.read(buffer, 0, 8096)) != -1) {
                 for(int i = 0; i < bytes_read; i++) {
                     connection.getOutputStream().write(buffer[i]);
                 }
@@ -496,27 +391,6 @@ public class MineOnlineAPI {
             errorObject.put("error", response.toString());
             return errorObject;
         }
-    }
-
-    public static void sendDiscordUserID(String userUUID, String sessionID, String discordUserID) throws Exception {
-        HttpURLConnection connection;
-
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("sessionId", sessionID);
-        jsonObject.put("discordUserID", discordUserID);
-        String json = jsonObject.toString();
-
-        URL url = new URL(Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/player/" + userUUID + "/discordUserID");
-        connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestProperty("Content-Type", "application/json");
-        connection.setRequestMethod("POST");
-        connection.setDoOutput(true);
-
-        connection.getOutputStream().write(json.getBytes(StandardCharsets.UTF_8));
-        connection.getOutputStream().flush();
-        connection.disconnect();
-
-        connection.getResponseCode();
     }
 
     public static String getLauncherVersion() throws IOException {

@@ -1,5 +1,6 @@
 package gg.codie.mineonline;
 
+import gg.codie.minecraft.skins.SkinUtils;
 import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.mineonline.gui.rendering.PlayerGameObject;
 import gg.codie.mineonline.utils.LastLogin;
@@ -72,7 +73,7 @@ public class Session {
             public void run() {
                 Settings.loadSettings();
 
-                String skinUrl = Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/player/" + uuid + "/skin";
+                String skinUrl = SkinUtils.findSkinURLForUuid(uuid);
 
                 try (BufferedInputStream in = new BufferedInputStream(new URL(skinUrl).openStream())) {
 
@@ -99,7 +100,7 @@ public class Session {
                     }
                 }
 
-                String cloakUrl = Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/player/" + uuid + "/cloak";
+                String cloakUrl = SkinUtils.findCloakURLForUuid(uuid);
 
                 try (BufferedInputStream in = new BufferedInputStream(new URL(cloakUrl).openStream())) {
 
@@ -128,7 +129,7 @@ public class Session {
                 }
 
                 try {
-                    JSONObject skinMetadata = MineOnlineAPI.getSkinMetadata(uuid);
+                    JSONObject skinMetadata = SkinUtils.getSkinMetadata(uuid);
 
                     FileWriter fileWriter = new FileWriter(LauncherFiles.CACHED_SKIN_METADATA_PATH, false);
                     fileWriter.write(skinMetadata.toString());
