@@ -46,7 +46,7 @@ public class MineOnlineAPI {
         } catch (Exception e) {
             if (e.getClass() != FileNotFoundException.class)
                 e.printStackTrace();
-            return null;
+            return "0";
         } finally {
 
             if (connection != null)
