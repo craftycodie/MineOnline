@@ -97,7 +97,7 @@ public class SkinMenuScreen implements IMenuScreen {
                                         ByteArrayOutputStream os = new ByteArrayOutputStream();
                                         ImageIO.write(bufferedImage, "png", os);
                                         ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
-                                        MineOnlineAPI.uploadSkin(Session.session.getUuid(), Session.session.getSessionToken(), is);
+                                        //MineOnlineAPI.uploadSkin(Session.session.getUuid(), Session.session.getSessionToken(), is);
                                     } catch (IOException ex) {
                                         JOptionPane.showMessageDialog(null, "Failed to upload skin.");
                                         failed = true;
@@ -131,7 +131,7 @@ public class SkinMenuScreen implements IMenuScreen {
                         unsavedModel = false;
 
                         try {
-                            MineOnlineAPI.setSkinMetadata(Session.session.getUuid(), Session.session.getSessionToken(), metadata);
+                            //MineOnlineAPI.setSkinMetadata(Session.session.getUuid(), Session.session.getSessionToken(), metadata);
                         } catch (Exception ex) {
                             unsavedModel = true;
                         }
