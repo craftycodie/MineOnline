@@ -7,5 +7,7 @@
   "baseVersion": "a1.2.6",
   "scaledResolutionClass": "kl",
   "useFOVPatch": true,
-  "ingameVersionString": "Minecraft Alpha v1.2.6"
+  "ingameVersionString": "Minecraft Alpha v1.2.6",
+  "entityRendererClass": "kb",
+  "viewModelFunction": "b"
 }
