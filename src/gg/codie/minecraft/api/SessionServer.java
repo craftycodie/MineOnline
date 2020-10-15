@@ -13,7 +13,7 @@ import java.nio.charset.StandardCharsets;
 public class SessionServer {
     private static final String BASE_URL = "https://sessionserver.mojang.com";
 
-    public static void joinGame(String accessToken, String selectedProfile, String serverId) throws IOException {
+    public static boolean joinGame(String accessToken, String selectedProfile, String serverId) throws IOException {
         HttpURLConnection connection;
 
         JSONObject jsonObject = new JSONObject();
@@ -34,20 +34,9 @@ public class SessionServer {
         connection.getOutputStream().flush();
         connection.getOutputStream().close();
 
+        connection.connect();
 
-        InputStream is = connection.getInputStream();
-        BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-
-        StringBuilder response = new StringBuilder();
-        String line;
-        while ((line = rd.readLine()) != null) {
-            response.append(line);
-            response.append('\r');
-        }
-        rd.close();
-
-        System.out.println(response);
-        return;
+        return connection.getResponseCode() == 204;
     }
 
     public static JSONObject minecraftProfile(String uuid) throws IOException {

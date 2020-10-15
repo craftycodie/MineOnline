@@ -63,22 +63,21 @@ public class URLConstructAdvice {
             } else if (url.contains("/game/joinserver.jsp")) {
                 Class sessionClass = ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.Session");
                 Object session = sessionClass.getField("session").get(null);
-                System.out.println("session " + session);
 
                 Class sessionServerClass = ClassLoader.getSystemClassLoader().loadClass("gg.codie.minecraft.api.SessionServer");
                 String serverId = url.substring(url.indexOf("&serverId=") + 10);
-                System.out.println("serverId " + serverId);
-                System.out.println(sessionClass.getMethod("getSessionToken").invoke(session));
-                System.out.println(sessionClass.getMethod("getUuid").invoke(session));
 
-                sessionServerClass.getMethod("joinGame", String.class, String.class, String.class).invoke(
+                boolean validJoin = (boolean)sessionServerClass.getMethod("joinGame", String.class, String.class, String.class).invoke(
                         null,
                         sessionClass.getMethod("getSessionToken").invoke(session),
                         sessionClass.getMethod("getUuid").invoke(session),
                         serverId
                 );
 
-                url = Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/stub/ok";
+                if (validJoin)
+                    url = Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/ok";
+                else // Just something to make it error.
+                    url = "";
             } else if (url.contains("/game/checkserver.jsp")) {
                 url = url.replace("http://www.minecraft.net/game/checkserver.jsp?user=", "https://sessionserver.mojang.com/session/minecraft/hasJoined?username=");
             } else if ((url.contains("/MinecraftSkins/") || url.contains("/skin/")) && url.contains(".png")) {
