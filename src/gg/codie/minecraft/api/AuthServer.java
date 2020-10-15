@@ -74,7 +74,7 @@ public class AuthServer {
         connection = (HttpURLConnection) url.openConnection();
         connection.setRequestProperty("Content-Type", "application/json");
         connection.setRequestMethod("POST");
-        connection.setDoInput(false);
+        connection.setDoInput(true);
         connection.setDoOutput(true);
 
         connection.getOutputStream().write(json.getBytes(StandardCharsets.UTF_8));

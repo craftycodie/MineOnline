@@ -392,7 +392,8 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
 
         if (minecraftVersion != null && minecraftVersion.useFOVPatch) {
             LWJGLPerspectivePatch.useCustomFOV();
-            FOVViewmodelPatch.fixViewmodelFOV();
+            if (minecraftVersion.entityRendererClass != null && minecraftVersion.viewModelFunction != null)
+                FOVViewmodelPatch.fixViewmodelFOV(minecraftVersion.entityRendererClass, minecraftVersion.viewModelFunction);
         }
 
         if (Settings.settings.optInt(Settings.GUI_SCALE, 0) != 0 && minecraftVersion != null) {

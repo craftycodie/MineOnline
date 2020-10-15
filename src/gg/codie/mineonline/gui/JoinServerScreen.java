@@ -123,10 +123,6 @@ public class JoinServerScreen implements IMenuScreen {
             }
         });
 
-        if (!Session.session.isOnline()) {
-            serverListButton.setDisabled(true);
-        }
-
         doneButton = new LargeButton("Cancel", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 200, DisplayManager.getDefaultHeight() - 20), new IOnClickListener() {
             @Override
             public void onClick() {

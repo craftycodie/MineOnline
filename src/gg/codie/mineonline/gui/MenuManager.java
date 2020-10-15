@@ -1,7 +1,6 @@
 package gg.codie.mineonline.gui;
 
 import gg.codie.minecraft.api.AuthServer;
-import gg.codie.minecraft.api.MojangAPI;
 import gg.codie.minecraft.client.Options;
 import gg.codie.mineonline.*;
 import gg.codie.mineonline.api.MineOnlineAPI;
@@ -15,10 +14,9 @@ import gg.codie.mineonline.gui.rendering.models.RawModel;
 import gg.codie.mineonline.gui.rendering.models.TexturedModel;
 import gg.codie.mineonline.gui.rendering.shaders.StaticShader;
 import gg.codie.mineonline.gui.rendering.textures.ModelTexture;
-import gg.codie.mineonline.utils.Logging;
 import gg.codie.mineonline.utils.LastLogin;
+import gg.codie.mineonline.utils.Logging;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;

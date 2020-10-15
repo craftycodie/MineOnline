@@ -28,6 +28,7 @@ public class LastLogin {
             }
             dos.writeUTF(accessToken);
             dos.writeUTF(clientToken);
+            dos.writeUTF(loginUsername);
             dos.writeUTF(username);
             dos.writeUTF(uuid);
             dos.close();

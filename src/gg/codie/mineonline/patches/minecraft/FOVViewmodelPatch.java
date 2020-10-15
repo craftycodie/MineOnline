@@ -1,7 +1,5 @@
 package gg.codie.mineonline.patches.minecraft;
 
-import gg.codie.mineonline.Settings;
-import gg.codie.mineonline.patches.lwjgl.LWJGLPerspectiveAdvice;
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.asm.Advice;
 import net.bytebuddy.dynamic.loading.ClassReloadingStrategy;

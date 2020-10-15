@@ -22,7 +22,6 @@ public class URLConstructAdvice {
             }
 
             boolean DEV = (boolean)ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.Globals").getField("DEV").get(null);
-            boolean USE_MOJANG_API = (boolean)ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.Globals").getField("USE_MOJANG_API").get(null);
 
             if(DEV) {
                 System.out.println("Old URL: " + url);
@@ -58,9 +57,7 @@ public class URLConstructAdvice {
 
             if (updateUrl != null && url.contains(oldUpdateUrl)) {
                 url = updateUrl;
-            } else if (url.contains("launcher.mojang.com/v1/objects/")) {
-                // Quick patch to allow launchers to pull from this endpoint.
-            } else if (USE_MOJANG_API && url.contains("/game/joinserver.jsp")) {
+            } else if (url.contains("/game/joinserver.jsp")) {
                 Class sessionClass = ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.Session");
                 Object session = sessionClass.getField("session").get(null);
                 System.out.println("session " + session);
@@ -79,7 +76,7 @@ public class URLConstructAdvice {
                 );
 
                 url = Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/stub/ok";
-            } else if (USE_MOJANG_API && url.contains("/game/checkserver.jsp")) {
+            } else if (url.contains("/game/checkserver.jsp")) {
                 url = url.replace("http://www.minecraft.net/game/checkserver.jsp?user=", "https://sessionserver.mojang.com/session/minecraft/hasJoined?username=");
             } else {
                 for (String replaceHost : new String[]{
@@ -102,37 +99,6 @@ public class URLConstructAdvice {
                         url = url.replace(replaceHost, Globals.API_HOSTNAME);
                         url = url.replace("https://", Globals.API_PROTOCOL);
                         url = url.replace("http://", Globals.API_PROTOCOL);
-                    }
-                }
-
-                if (!USE_MOJANG_API) {
-                    for (String replaceHost : new String[]{
-                        "pc.realms.minecraft.net",
-                        "realms.minecraft.net",
-                        "snoop.minecraft.net",
-                        "resources.download.minecraft.net",
-                        "libraries.minecraft.net",
-                        "api.mojang.com",
-                        "authserver.mojang.com",
-                        "account.mojang.com",
-                        "sessionserver.mojang.com",
-                        "launchermeta.mojang.com",
-                        "mojang.com",
-                        "aka.ms",
-                    }) {
-                        if (url.contains(replaceHost)) {
-                            url = url.replace(replaceHost, Globals.API_HOSTNAME);
-                            url = url.replace("https://", Globals.API_PROTOCOL);
-                            url = url.replace("http://", Globals.API_PROTOCOL);
-                        }
-                    }
-                } else {
-                    if (url.contains(Globals.API_HOSTNAME)) {
-                        // These could be more strict.
-                        url = url.replace("/MinecraftSkins/", "/mojang/MinecraftSkins/");
-                        url = url.replace("/MinecraftCloaks/", "/mojang/MinecraftCloaks/");
-                        url = url.replace("/skin/", "/mojang/skin/");
-                        url = url.replace("/cloak/get.jsp", "/mojang/cloak/get.jsp");
                     }
                 }
             }
