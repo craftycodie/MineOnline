@@ -47,9 +47,7 @@ public class JoinServerScreen implements IMenuScreen {
                     if(serverIPField.getValue().contains(":"))
                         split = serverIPField.getValue().split(":");
 
-                    String mppass = Globals.USE_MOJANG_API
-                            ? MineOnlineAPI.getMojangMpPass(Session.session.getSessionToken(), split[0], split.length > 1 ? split[1] : "25565", Session.session.getUuid())
-                            : MineOnlineAPI.getMpPass(Session.session.getSessionToken(), split[0], split.length > 1 ? split[1] : "25565");
+                    String mppass = MineOnlineAPI.getMpPass(Session.session.getSessionToken(), Session.session.getUsername(), Session.session.getUuid(), split[0], split.length > 1 ? split[1] : "25565");
 
                     MinecraftVersion.launchMinecraft(MinecraftVersionRepository.getSingleton().getLastSelectedJarPath(), split[0], split.length > 1 ? split[1] : "25565", mppass);
                 }
@@ -99,9 +97,7 @@ public class JoinServerScreen implements IMenuScreen {
                     if(serverIPField.getValue().contains(":"))
                         split = serverIPField.getValue().split(":");
 
-                    String mppass = Globals.USE_MOJANG_API
-                            ? MineOnlineAPI.getMojangMpPass(Session.session.getSessionToken(), split[0], split.length > 1 ? split[1] : "25565", Session.session.getUuid())
-                            : MineOnlineAPI.getMpPass(Session.session.getSessionToken(), split[0], split.length > 1 ? split[1] : "25565");
+                    String mppass = MineOnlineAPI.getMpPass(Session.session.getSessionToken(), Session.session.getUsername(), Session.session.getUuid(), split[0], split.length > 1 ? split[1] : "25565");
 
                     MinecraftVersion.launchMinecraft(MinecraftVersionRepository.getSingleton().getLastSelectedJarPath(), split[0], split.length > 1 ? split[1] : "25565", mppass);
                 }

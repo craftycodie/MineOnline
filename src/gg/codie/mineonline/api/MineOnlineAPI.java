@@ -17,7 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 
 public class MineOnlineAPI {
-    public static String getMpPass (String sessionId, String serverIP, String serverPort) {
+    public static String getMpPass(String sessionId, String username, String useruuid, String serverIP, String serverPort) {
 
         try {
             InetAddress inetAddress = InetAddress.getByName(serverIP);
@@ -29,45 +29,8 @@ public class MineOnlineAPI {
         HttpURLConnection connection = null;
 
         try {
-            String parameters = "sessionId=" + URLEncoder.encode(sessionId, "UTF-8") + "&serverIP=" + URLEncoder.encode(serverIP, "UTF-8") + "&serverPort=" + URLEncoder.encode(serverPort, "UTF-8");
+            String parameters = "sessionId=" + URLEncoder.encode(sessionId, "UTF-8") + "&serverIP=" + URLEncoder.encode(serverIP, "UTF-8") + "&serverPort=" + URLEncoder.encode(serverPort, "UTF-8") + "&username=" + URLEncoder.encode(username, "UTF-8") + "&uuid=" + URLEncoder.encode(useruuid, "UTF-8");
             URL url = new URL(Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/servertoken?" + parameters);
-            connection = (HttpURLConnection) url.openConnection();
-            connection.setDoOutput(false);
-            connection.connect();
-
-            InputStream is = connection.getInputStream();
-            BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-
-            String mpPass = rd.readLine();
-
-            rd.close();
-
-            return mpPass;
-        } catch (Exception e) {
-            if (e.getClass() != FileNotFoundException.class)
-                e.printStackTrace();
-            return null;
-        } finally {
-
-            if (connection != null)
-                connection.disconnect();
-        }
-    }
-
-    public static String getMojangMpPass (String sessionId, String serverIP, String serverPort, String uuid) {
-
-        try {
-            InetAddress inetAddress = InetAddress.getByName(serverIP);
-            serverIP = inetAddress.getHostAddress();
-        } catch (Exception ex) {
-            //ignore.
-        }
-
-        HttpURLConnection connection = null;
-
-        try {
-            String parameters = "sessionId=" + URLEncoder.encode(sessionId, "UTF-8") + "&serverIP=" + URLEncoder.encode(serverIP, "UTF-8") + "&serverPort=" + URLEncoder.encode(serverPort, "UTF-8") + "&uuid=" + URLEncoder.encode(uuid, "UTF-8");
-            URL url = new URL(Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/mojang/servertoken?" + parameters);
             connection = (HttpURLConnection) url.openConnection();
             connection.setDoOutput(false);
             connection.connect();
@@ -150,32 +113,6 @@ public class MineOnlineAPI {
         HttpURLConnection connection;
 
         URL url = new URL(Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/player/" + uuid + "/skin/metadata");
-        connection = (HttpURLConnection) url.openConnection();
-        connection.connect();
-
-        InputStream is = connection.getInputStream();
-        BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-
-        StringBuilder response = new StringBuilder();
-        String line;
-        while ((line = rd.readLine()) != null) {
-            response.append(line);
-            response.append('\r');
-        }
-        rd.close();
-
-        JSONObject jsonObject = new JSONObject(response.toString());
-
-        if (connection != null)
-            connection.disconnect();
-
-        return jsonObject;
-    }
-
-    public static JSONObject getMojangSkinMetadata(String uuid) throws IOException {
-        HttpURLConnection connection;
-
-        URL url = new URL(Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/mojang/player/" + uuid + "/skin/metadata");
         connection = (HttpURLConnection) url.openConnection();
         connection.connect();
 

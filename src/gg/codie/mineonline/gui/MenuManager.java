@@ -1,6 +1,7 @@
 package gg.codie.mineonline.gui;
 
 import gg.codie.minecraft.api.AuthServer;
+import gg.codie.minecraft.api.MojangAPI;
 import gg.codie.minecraft.client.Options;
 import gg.codie.mineonline.*;
 import gg.codie.mineonline.api.MineOnlineAPI;
@@ -169,7 +170,7 @@ public class MenuManager {
                     throw new Exception(login.getString("error"));
                 if (!login.has("accessToken") || !login.has("selectedProfile"))
                     throw new Exception("Failed to authenticate!");
-                if (login.has("selectedProfile") && !login.getJSONObject("selectedProfile").optBoolean("paid", false))
+                if (MojangAPI.minecraftProfile(login.getJSONObject("selectedProfile").getString("name")).optBoolean("demo", false))
                     throw new Exception("Please buy Minecraft to use MineOnline.");
 
                 sessionToken = login.getString("accessToken");
@@ -233,9 +234,7 @@ public class MenuManager {
 
                                 String mppass = null;
                                 if(serverVersion != null && serverVersion.hasHeartbeat) {
-                                    mppass = Globals.USE_MOJANG_API
-                                            ? MineOnlineAPI.getMojangMpPass(Session.session.getSessionToken(), mineOnlineServer.ip, "" + mineOnlineServer.port, Session.session.getUuid())
-                                            : MineOnlineAPI.getMpPass(Session.session.getSessionToken(), mineOnlineServer.ip, "" + mineOnlineServer.port);
+                                    mppass = MineOnlineAPI.getMpPass(Session.session.getSessionToken(), Session.session.getUsername(), Session.session.getUuid(), mineOnlineServer.ip, "" + mineOnlineServer.port);
                                 }
 
                                 MinecraftVersion.launchMinecraft(path, mineOnlineServer.ip, "" + mineOnlineServer.port, mppass);
@@ -262,9 +261,7 @@ public class MenuManager {
                     ip = ipAndPort[0];
                     port = "25565";
                 }
-                mppass = Globals.USE_MOJANG_API
-                        ? MineOnlineAPI.getMojangMpPass(Session.session.getSessionToken(), ip, port, Session.session.getUuid())
-                        : MineOnlineAPI.getMpPass(Session.session.getSessionToken(), ip, port);
+                mppass = MineOnlineAPI.getMpPass(Session.session.getSessionToken(), Session.session.getUsername(), Session.session.getUuid(), ip, port);
             }
             MinecraftVersion.launchMinecraft(quicklaunch, ip, port, mppass);
             return;

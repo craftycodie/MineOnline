@@ -12,6 +12,7 @@ import gg.codie.mineonline.patches.*;
 import gg.codie.mineonline.patches.lwjgl.LWJGLDisplayPatch;
 import gg.codie.mineonline.patches.lwjgl.LWJGLOrthoPatch;
 import gg.codie.mineonline.patches.lwjgl.LWJGLPerspectivePatch;
+import gg.codie.mineonline.patches.minecraft.FOVViewmodelPatch;
 import gg.codie.mineonline.patches.minecraft.GuiScreenPatch;
 import gg.codie.mineonline.patches.minecraft.ScaledResolutionConstructorPatch;
 import gg.codie.mineonline.utils.JREUtils;
@@ -389,8 +390,11 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
         SocketPatch.watchSockets();
         URLPatch.redefineURL(null);
 
-        if (minecraftVersion != null && minecraftVersion.useFOVPatch)
+        if (minecraftVersion != null && minecraftVersion.useFOVPatch) {
             LWJGLPerspectivePatch.useCustomFOV();
+            if (minecraftVersion.entityRendererClass != null && minecraftVersion.viewModelFunction != null)
+                FOVViewmodelPatch.fixViewmodelFOV(minecraftVersion.entityRendererClass, minecraftVersion.viewModelFunction);
+        }
 
         if (Settings.settings.optInt(Settings.GUI_SCALE, 0) != 0 && minecraftVersion != null) {
             if (minecraftVersion.scaledResolutionClass != null) {

@@ -44,9 +44,7 @@ public class ServerListMenuScreen implements IMenuScreen {
                             if (selectedVersion != null && selectedVersion.baseVersion.equals(serverVersion.baseVersion)) {
                                 String mppass = null;
                                 if(serverVersion != null && serverVersion.hasHeartbeat)
-                                    mppass = Globals.USE_MOJANG_API
-                                            ? MineOnlineAPI.getMojangMpPass(Session.session.getSessionToken(), selectedServer.server.ip, "" + selectedServer.server.port, Session.session.getUuid())
-                                            : MineOnlineAPI.getMpPass(Session.session.getSessionToken(), selectedServer.server.ip, "" + selectedServer.server.port);
+                                    mppass = MineOnlineAPI.getMpPass(Session.session.getSessionToken(), Session.session.getUsername(), Session.session.getUuid(), selectedServer.server.ip, "" + selectedServer.server.port);
 
                                 MinecraftVersion.launchMinecraft(MinecraftVersionRepository.getSingleton().getLastSelectedJarPath(), selectedServer.server.ip, "" + selectedServer.server.port, mppass);
                             }
@@ -67,9 +65,7 @@ public class ServerListMenuScreen implements IMenuScreen {
 
                                         String mppass = null;
                                         if(serverVersion != null && serverVersion.hasHeartbeat)
-                                            mppass = Globals.USE_MOJANG_API
-                                                    ? MineOnlineAPI.getMojangMpPass(Session.session.getSessionToken(), selectedServer.server.ip, "" + selectedServer.server.port, Session.session.getUuid())
-                                                    : MineOnlineAPI.getMpPass(Session.session.getSessionToken(), selectedServer.server.ip, "" + selectedServer.server.port);
+                                            mppass = MineOnlineAPI.getMpPass(Session.session.getSessionToken(), Session.session.getUsername(), Session.session.getUuid(), selectedServer.server.ip, "" + selectedServer.server.port);
 
                                         MinecraftVersion.launchMinecraft(path, selectedServer.server.ip, "" + selectedServer.server.port, mppass);
                                         return;
@@ -97,9 +93,7 @@ public class ServerListMenuScreen implements IMenuScreen {
 
                                 String mppass = null;
                                 if(serverVersion != null && serverVersion.hasHeartbeat)
-                                    mppass = Globals.USE_MOJANG_API
-                                            ? MineOnlineAPI.getMojangMpPass(Session.session.getSessionToken(), selectedServer.server.ip, "" + selectedServer.server.port, Session.session.getUuid())
-                                            : MineOnlineAPI.getMpPass(Session.session.getSessionToken(), selectedServer.server.ip, "" + selectedServer.server.port);
+                                    mppass = MineOnlineAPI.getMpPass(Session.session.getSessionToken(), Session.session.getUsername(), Session.session.getUuid(), selectedServer.server.ip, "" + selectedServer.server.port);
                                 try {
                                     MinecraftVersion.launchMinecraft(selectVersionMenuScreen.getSelectedPath(), selectedServer.server.ip, "" + selectedServer.server.port, mppass);
                                 } catch (Exception ex) {
@@ -110,10 +104,6 @@ public class ServerListMenuScreen implements IMenuScreen {
                         }, "Play");
 
                         MenuManager.setMenuScreen(selectVersionMenuScreen);
-
-                        //new MinecraftLauncher("D:\\Projects\\GitHub\\MineOnline\\jars\\b1.7.3-modded.jar", null, null, null).startMinecraft();
-
-                        //new MinecraftLauncher("D:\\Projects\\GitHub\\MineOnline\\jars\\c0.0.11a-launcher.jar", null, null, null).startMinecraft();
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }

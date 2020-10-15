@@ -45,6 +45,8 @@ public class MinecraftVersion {
     public final String guiClass;
     public final String guiScreenClass;
     public final String scaledResolutionClass;
+    public final String entityRendererClass;
+    public final String viewModelFunction;
     public final boolean useFOVPatch;
     public final boolean useTexturepackPatch;
     public final String ingameVersionString;
@@ -71,6 +73,8 @@ public class MinecraftVersion {
             String guiClass,
             String guiScreenClass,
             String scaledResolutionClass,
+            String entityRendererClass,
+            String viewModelFunction,
             boolean useFOVPatch,
             boolean useTexturepackPatch,
             String ingameVersionString
@@ -96,6 +100,8 @@ public class MinecraftVersion {
         this.guiClass = guiClass;
         this.guiScreenClass = guiScreenClass;
         this.scaledResolutionClass = scaledResolutionClass;
+        this.entityRendererClass = entityRendererClass;
+        this.viewModelFunction = viewModelFunction;
         this.useFOVPatch = useFOVPatch;
         this.useTexturepackPatch = useTexturepackPatch;
         this.ingameVersionString = ingameVersionString;
@@ -123,6 +129,8 @@ public class MinecraftVersion {
         guiClass = (object.has("guiClass") ? object.getString("guiClass") : null);
         guiScreenClass = (object.has("guiScreenClass") ? object.getString("guiScreenClass") : null);
         scaledResolutionClass = (object.has("scaledResolutionClass") ? object.getString("scaledResolutionClass") : null);
+        entityRendererClass = (object.has("entityRendererClass") ? object.getString("entityRendererClass") : null);
+        viewModelFunction = (object.has("viewModelFunction") ? object.getString("viewModelFunction") : null);
         useFOVPatch = (object.has("useFOVPatch") && object.getBoolean("useFOVPatch"));
         useTexturepackPatch = (object.has("useTexturepackPatch") && object.getBoolean("useTexturepackPatch"));
         ingameVersionString = object.optString("ingameVersionString", null);
@@ -314,6 +322,8 @@ public class MinecraftVersion {
                 libraries.toArray(new String[0]),
                 natives.toArray(new String[0]),
                 typeName + " " + versionNumber,
+                null,
+                null,
                 null,
                 null,
                 null,

@@ -1,6 +1,7 @@
 package gg.codie.mineonline.gui;
 
 import gg.codie.minecraft.api.AuthServer;
+import gg.codie.minecraft.api.MojangAPI;
 import gg.codie.mineonline.Globals;
 import gg.codie.mineonline.Session;
 import gg.codie.mineonline.api.MineOnlineAPI;
@@ -81,7 +82,7 @@ public class LoginMenuScreen implements IMenuScreen {
                         throw new Exception(login.getString("error"));
                     if (!login.has("accessToken") || !login.has("selectedProfile"))
                         throw new Exception("Failed to authenticate!");
-                    if (login.has("selectedProfile") && !login.getJSONObject("selectedProfile").optBoolean("paid", false))
+                    if (MojangAPI.minecraftProfile(login.getJSONObject("selectedProfile").getString("name")).optBoolean("demo", false))
                         throw new Exception("Please buy Minecraft to use MineOnline.");
 
                     String sessionToken = login.getString("accessToken");
