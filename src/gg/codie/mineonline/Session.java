@@ -2,7 +2,7 @@ package gg.codie.mineonline;
 
 import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.mineonline.gui.rendering.PlayerGameObject;
-import gg.codie.utils.LastLogin;
+import gg.codie.mineonline.utils.LastLogin;
 import org.json.JSONObject;
 
 import java.io.*;
@@ -72,9 +72,7 @@ public class Session {
             public void run() {
                 Settings.loadSettings();
 
-                String skinUrl = Globals.USE_MOJANG_API
-                        ? Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/mojang/player/" + uuid + "/skin"
-                        : Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/player/" + uuid + "/skin";
+                String skinUrl = Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/player/" + uuid + "/skin";
 
                 try (BufferedInputStream in = new BufferedInputStream(new URL(skinUrl).openStream())) {
 
@@ -101,9 +99,7 @@ public class Session {
                     }
                 }
 
-                String cloakUrl = Globals.USE_MOJANG_API
-                        ? Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/mojang/player/" + uuid + "/cloak"
-                        : Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/player/" + uuid + "/cloak";
+                String cloakUrl = Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/player/" + uuid + "/cloak";
 
                 try (BufferedInputStream in = new BufferedInputStream(new URL(cloakUrl).openStream())) {
 

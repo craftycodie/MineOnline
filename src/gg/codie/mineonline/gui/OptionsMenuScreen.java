@@ -13,7 +13,6 @@ import gg.codie.mineonline.gui.rendering.DisplayManager;
 import gg.codie.mineonline.gui.rendering.Renderer;
 import gg.codie.mineonline.gui.rendering.font.TextMaster;
 import gg.codie.mineonline.gui.rendering.shaders.GUIShader;
-import gg.codie.utils.LastLogin;
 import org.lwjgl.util.vector.Vector2f;
 
 import java.io.File;

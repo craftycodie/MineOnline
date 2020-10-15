@@ -15,9 +15,8 @@ import gg.codie.mineonline.gui.rendering.models.RawModel;
 import gg.codie.mineonline.gui.rendering.models.TexturedModel;
 import gg.codie.mineonline.gui.rendering.shaders.StaticShader;
 import gg.codie.mineonline.gui.rendering.textures.ModelTexture;
-import gg.codie.mineonline.patches.lwjgl.LWJGLDisplayPatch;
 import gg.codie.mineonline.utils.Logging;
-import gg.codie.utils.LastLogin;
+import gg.codie.mineonline.utils.LastLogin;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.lwjgl.input.Keyboard;
@@ -162,20 +161,11 @@ public class MenuManager {
 
         if(lastLogin != null ) {
             try {
-                JSONObject login = Globals.USE_MOJANG_API
-                        ? AuthServer.authenticate(lastLogin.username, lastLogin.password)
-                        : MineOnlineAPI.authenticate(lastLogin.username, lastLogin.password);
-
-                if (login.has("error"))
-                    throw new Exception(login.getString("error"));
-                if (!login.has("accessToken") || !login.has("selectedProfile"))
-                    throw new Exception("Failed to authenticate!");
-                if (MojangAPI.minecraftProfile(login.getJSONObject("selectedProfile").getString("name")).optBoolean("demo", false))
-                    throw new Exception("Please buy Minecraft to use MineOnline.");
-
-                sessionToken = login.getString("accessToken");
-                uuid = login.getJSONObject("selectedProfile").getString("id");
-                username = login.getJSONObject("selectedProfile").getString("name");
+                if (AuthServer.validate(lastLogin.accessToken)) {
+                    sessionToken = lastLogin.accessToken;
+                    uuid = lastLogin.uuid;
+                    username = lastLogin.username;
+                }
             } catch (IOException ex) {
                 ex.printStackTrace();
             } catch (JSONException ex) {
@@ -203,7 +193,7 @@ public class MenuManager {
 
         if (sessionToken != null && username != null) {
             new Session(username, sessionToken, uuid, true);
-            LastLogin.writeLastLogin(lastLogin.username, Globals.USE_MOJANG_API ? null : lastLogin.password, uuid);
+            LastLogin.writeLastLogin(sessionToken, lastLogin.clientToken, lastLogin.loginUsername, lastLogin.username, uuid);
         }
 
         if (Session.session != null && Session.session.isOnline() && joinserver != null) {

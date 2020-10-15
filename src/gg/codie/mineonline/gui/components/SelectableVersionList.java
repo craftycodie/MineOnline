@@ -26,6 +26,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class SelectableVersionList extends GUIObject {
 
@@ -143,7 +145,17 @@ public class SelectableVersionList extends GUIObject {
         emptyText.setMaxLines(0);
         emptyText.setColour(0.5f, 0.5f, 0.5f);
 
-        for (String path : MinecraftVersionRepository.getSingleton().getInstalledJars().keySet()) {
+        List<String> jarPaths = MinecraftVersionRepository.getSingleton().getInstalledJars().keySet().stream().sorted((String jarPath1, String jarPath2) -> {
+            MinecraftVersion version1 = MinecraftVersionRepository.getSingleton().getInstalledJars().get(jarPath1);
+            MinecraftVersion version2 = MinecraftVersionRepository.getSingleton().getInstalledJars().get(jarPath2);
+
+            String versionName1 = version1 != null ? version1.name : "Unknown Version";
+            String versionName2 = version2 != null ? version2.name : "Unknown Version";
+
+            return versionName1.compareTo(versionName2);
+        }).collect(Collectors.toList());
+
+        for (String path : jarPaths) {
             File file = new File(path);
 
             MinecraftVersion minecraftVersion = MinecraftVersionRepository.getSingleton().getInstalledJars().get(path);

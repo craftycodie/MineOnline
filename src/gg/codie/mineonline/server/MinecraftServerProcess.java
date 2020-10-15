@@ -129,13 +129,6 @@ public class MinecraftServerProcess {
 
         Method main = mainClass.getMethod("main", String[].class);
 
-        if (Globals.USE_MOJANG_API) {
-            // Release args.
-            System.setProperty(PROP_AUTH_HOST, Globals.API_PROTOCOL + Globals.API_HOSTNAME);
-            System.setProperty(PROP_ACCOUNT_HOST, Globals.API_PROTOCOL + Globals.API_HOSTNAME);
-            System.setProperty(PROP_SESSION_HOST, Globals.API_PROTOCOL + Globals.API_HOSTNAME);
-        }
-
         // Fixes the player list on Bukkit.
         System.setProperty("jline.terminal", "jline.UnsupportedTerminal");
 

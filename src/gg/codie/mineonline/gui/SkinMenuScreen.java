@@ -33,15 +33,12 @@ import java.nio.file.Paths;
 
 public class SkinMenuScreen implements IMenuScreen {
     MediumButton skinButton;
-    MediumButton cloakButton;
-    MediumButton resetCloakButton;
     MediumButton modelButton;
     LargeButton doneButton;
     JFileChooser fileChooser = new JFileChooser();
     GUIText label;
 
     String skinPath = "";
-    String cloakPath = "";
     private boolean unsavedSkin = false;
     private boolean unsavedCloak = false;
     private boolean unsavedModel = false;
@@ -143,68 +140,6 @@ public class SkinMenuScreen implements IMenuScreen {
             }
         });
 
-        if (!Globals.USE_MOJANG_API) {
-            cloakButton = new MediumButton("Select Cloak", new Vector2f((DisplayManager.getDefaultWidth() / 2) + 30, (DisplayManager.getDefaultHeight() / 2) + 8), new IOnClickListener() {
-                @Override
-                public void onClick() {
-                    EventQueue.invokeLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            int returnVal = fileChooser.showOpenDialog(DisplayManager.getCanvas());
-
-                            if (returnVal == JFileChooser.APPROVE_OPTION) {
-                                File file = fileChooser.getSelectedFile();
-
-                                cloakPath = file.getPath();
-
-                                if(cloakPath.isEmpty())
-                                    return;
-
-                                File cloakTexture = new File(cloakPath);
-                                if (cloakTexture.exists() && PlayerGameObject.thePlayer != null) {
-                                    try {
-                                        boolean failed = false;
-                                        PlayerGameObject.thePlayer.setCloak(Paths.get(cloakTexture.getPath()).toUri().toURL());
-
-                                        unsavedCloak = false;
-
-                                        try {
-                                            BufferedImage bufferedImage = ImageIO.read(new File(cloakPath));
-                                            bufferedImage = TextureHelper.cropImage(bufferedImage, 0, 0, 64, 32);
-                                            ByteArrayOutputStream os = new ByteArrayOutputStream();
-                                            ImageIO.write(bufferedImage, "png", os);
-                                            ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
-                                            MineOnlineAPI.uploadCloak(Session.session.getUuid(), Session.session.getSessionToken(), is);
-                                        } catch (IOException ex) {
-                                            JOptionPane.showMessageDialog(null, "Failed to upload skin.");
-                                            failed = true;
-                                        }
-                                        if(failed) {
-                                            unsavedCloak = true;
-                                        }
-                                    } catch (MalformedURLException mx) {
-
-                                    }
-                                }
-                            }
-                        }
-                    });
-                }
-            });
-
-            resetCloakButton = new MediumButton("Remove Cloak", new Vector2f((DisplayManager.getDefaultWidth() / 2) + 30, (DisplayManager.getDefaultHeight() / 2) + 104), new IOnClickListener() {
-                @Override
-                public void onClick() {
-                    if (MineOnlineAPI.removeCloak(Session.session.getUuid(), Session.session.getSessionToken())) {
-                        if (PlayerGameObject.thePlayer != null) {
-                            PlayerGameObject.thePlayer.setCloak(LauncherFiles.TEMPLATE_CLOAK_PATH);
-                            new File(LauncherFiles.CACHED_CLOAK_PATH).delete();
-                        }
-                    }
-                }
-            });
-        }
-
         doneButton = new LargeButton("Done", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 200, DisplayManager.getDefaultHeight() - 20), new IOnClickListener() {
             @Override
             public void onClick() {
@@ -224,16 +159,8 @@ public class SkinMenuScreen implements IMenuScreen {
     }
 
     public void update() {
-        if (!Globals.USE_MOJANG_API) {
-            if(!skinPath.isEmpty() && skinButton.getName() != "Skin: " + Paths.get(skinPath).getFileName().toString())
-                skinButton.setName("Skin: " + Paths.get(skinPath).getFileName().toString());
-
-            if(!cloakPath.isEmpty() && cloakButton.getName() != "Cloak: " + Paths.get(cloakPath).getFileName().toString())
-                cloakButton.setName("Cloak: " + Paths.get(cloakPath).getFileName().toString());
-
-            cloakButton.update();
-            resetCloakButton.update();
-        }
+        if(!skinPath.isEmpty() && skinButton.getName() != "Skin: " + Paths.get(skinPath).getFileName().toString())
+            skinButton.setName("Skin: " + Paths.get(skinPath).getFileName().toString());
 
         if(modelButton.getName() != "Model: " + (slim ? "Alex" : "Steve"))
             modelButton.setName("Model: " + (slim ? "Alex" : "Steve"));
@@ -251,11 +178,6 @@ public class SkinMenuScreen implements IMenuScreen {
         modelButton.render(renderer, GUIShader.singleton);
         doneButton.render(renderer, GUIShader.singleton);
 
-        if (!Globals.USE_MOJANG_API) {
-            cloakButton.render(renderer, GUIShader.singleton);
-            resetCloakButton.render(renderer, GUIShader.singleton);
-        }
-
         GUIShader.singleton.stop();
     }
 
@@ -264,22 +186,12 @@ public class SkinMenuScreen implements IMenuScreen {
     }
 
     public void resize() {
-        if (!Globals.USE_MOJANG_API) {
-            cloakButton.resize();
-            resetCloakButton.resize();
-        }
-
         skinButton.resize();
         doneButton.resize();
     }
 
     @Override
     public void cleanUp() {
-        if (!Globals.USE_MOJANG_API) {
-            cloakButton.cleanUp();
-            resetCloakButton.cleanUp();
-        }
-
         skinButton.cleanUp();
         modelButton.cleanUp();
         doneButton.cleanUp();

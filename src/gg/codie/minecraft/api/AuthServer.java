@@ -9,13 +9,11 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.UUID;
 
 public class AuthServer {
     private static final String BASE_URL = "https://authserver.mojang.com";
-    private static final UUID CLIENT_TOKEN = UUID.randomUUID();
 
-    public static JSONObject authenticate(String username, String password) throws IOException {
+    public static JSONObject authenticate(String username, String password, String clientToken) throws IOException {
         HttpURLConnection connection;
 
         JSONObject jsonObject = new JSONObject();
@@ -27,8 +25,8 @@ public class AuthServer {
         agentObject.put("version", 1);
 
         jsonObject.put("agent", agentObject);
-        jsonObject.put("clientToken", CLIENT_TOKEN);
-//        jsonObject.put("requestUser", true);
+        jsonObject.put("clientToken", clientToken);
+        jsonObject.put("requestUser", true);
 
         String json = jsonObject.toString();
 
@@ -63,5 +61,28 @@ public class AuthServer {
             errorObject.put("error", response.toString());
             return errorObject;
         }
+    }
+
+    public static boolean validate(String accessToken) throws IOException {
+        HttpURLConnection connection;
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("accessToken", accessToken);
+        String json = jsonObject.toString();
+
+        URL url = new URL(BASE_URL + "/validate");
+        connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestProperty("Content-Type", "application/json");
+        connection.setRequestMethod("POST");
+        connection.setDoInput(false);
+        connection.setDoOutput(true);
+
+        connection.getOutputStream().write(json.getBytes(StandardCharsets.UTF_8));
+        connection.getOutputStream().flush();
+        connection.getOutputStream().close();
+
+        connection.connect();
+
+        return connection.getResponseCode() == 204;
     }
 }

@@ -214,16 +214,6 @@ public class MinecraftClientLauncher {
 
             Method main = clazz.getMethod("main", String[].class);
 
-            if (!Globals.USE_MOJANG_API) {
-                System.setProperty(PROP_AUTH_HOST, Globals.API_PROTOCOL + Globals.API_HOSTNAME);
-                System.setProperty(PROP_ACCOUNT_HOST, Globals.API_PROTOCOL + Globals.API_HOSTNAME);
-                System.setProperty(PROP_SESSION_HOST, Globals.API_PROTOCOL + Globals.API_HOSTNAME);
-
-                URLPatch.redefineURL();
-                PropertiesSignaturePatch.redefineIsSignatureValid(classLoader);
-                YggdrasilMinecraftSessionServicePatch.allowMineonlineSkins(classLoader);
-            }
-
             SocketPatch.watchSockets();
 
             main.invoke(null, new Object[] {args.toArray(new String[0])});

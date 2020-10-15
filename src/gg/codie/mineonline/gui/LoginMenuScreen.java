@@ -7,7 +7,6 @@ import gg.codie.mineonline.Session;
 import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.mineonline.gui.components.LargeButton;
 import gg.codie.mineonline.gui.components.PasswordInputField;
-import gg.codie.mineonline.gui.components.SmallInputField;
 import gg.codie.mineonline.gui.components.InputField;
 import gg.codie.mineonline.gui.events.IOnClickListener;
 import gg.codie.mineonline.gui.font.GUIText;
@@ -17,7 +16,7 @@ import gg.codie.mineonline.gui.rendering.models.RawModel;
 import gg.codie.mineonline.gui.rendering.models.TexturedModel;
 import gg.codie.mineonline.gui.rendering.shaders.GUIShader;
 import gg.codie.mineonline.gui.rendering.textures.ModelTexture;
-import gg.codie.utils.LastLogin;
+import gg.codie.mineonline.utils.LastLogin;
 import org.json.JSONObject;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
@@ -26,6 +25,7 @@ import org.lwjgl.util.vector.Vector3f;
 
 import java.awt.*;
 import java.net.URI;
+import java.util.UUID;
 
 public class LoginMenuScreen implements IMenuScreen {
     GUIObject logo;
@@ -46,8 +46,7 @@ public class LoginMenuScreen implements IMenuScreen {
         String password = "";
         LastLogin lastLogin = LastLogin.readLastLogin();
         if(lastLogin != null) {
-            username = lastLogin.username;
-            password = lastLogin.password;
+            username = lastLogin.loginUsername;
         }
         usernameInput = new InputField("Username Input", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 204, (DisplayManager.getDefaultHeight() / 2) + 2), username, null);
         passwordInput = new PasswordInputField("Password Input", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 204, (DisplayManager.getDefaultHeight() / 2) + 74 ), password, null);
@@ -74,9 +73,8 @@ public class LoginMenuScreen implements IMenuScreen {
             @Override
             public void onClick() {
                 try {
-                    JSONObject login = Globals.USE_MOJANG_API
-                            ? AuthServer.authenticate(usernameInput.getValue(), passwordInput.getValue())
-                            : MineOnlineAPI.authenticate(usernameInput.getValue(), passwordInput.getValue());
+                    String clientSecret = UUID.randomUUID().toString();
+                    JSONObject login = AuthServer.authenticate(usernameInput.getValue(), passwordInput.getValue(), clientSecret);
 
                     if (login.has("error"))
                         throw new Exception(login.getString("error"));
@@ -90,7 +88,7 @@ public class LoginMenuScreen implements IMenuScreen {
 
                     if (sessionToken != null) {
                         new Session(login.getJSONObject("selectedProfile").getString("name"), sessionToken, uuid, true);
-                        LastLogin.writeLastLogin(usernameInput.getValue(), Globals.USE_MOJANG_API ? null : passwordInput.getValue(), uuid);
+                        LastLogin.writeLastLogin(Session.session.getSessionToken(), clientSecret, usernameInput.getValue(), Session.session.getUsername(), Session.session.getUuid());
                         MenuManager.setMenuScreen(new MainMenuScreen());
                     } else {
                         if (errorText != null)
@@ -161,9 +159,7 @@ public class LoginMenuScreen implements IMenuScreen {
 
         if(MouseHandler.didClick() && mouseIsOver) {
             try {
-                Desktop.getDesktop().browse(new URI(Globals.USE_MOJANG_API
-                        ? "https://checkout.minecraft.net/en-us/store/minecraft/#register"
-                        : Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/register"));
+                Desktop.getDesktop().browse(new URI("https://checkout.minecraft.net/en-us/store/minecraft/#register"));
             } catch (Exception ex) {
 
             }
