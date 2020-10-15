@@ -12,9 +12,6 @@ public class StringEqualsAdvice {
 
         // If it's comparing with a legacy checkserv response...
         if (Arrays.equals(((String)other).toCharArray(), new char[] {'Y', 'E', 'S'})) {
-            System.out.println("Wanted: " + Arrays.toString(new char[] { '{' }));
-            System.out.println("Got: " + Arrays.toString(thisObj.toCharArray()));
-
             // If it looks like a modern checkserv response....
             if (Arrays.equals(thisObj.toCharArray(), new char[] { '{' })) {
                 // Say they're equal.
