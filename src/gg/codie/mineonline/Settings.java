@@ -20,7 +20,9 @@ public class Settings {
     public static final String GUI_SCALE = "guiScale";
     public static final String TEXTURE_PACK = "texturePack";
     public static final String HIDE_VERSION_STRING = "hideVersionString";
-    private static final int SETTINGS_VERSION_NUMBER = 7;
+    public static final String GAME_WIDTH = "gameWidth";
+    public static final String GAME_HEIGHT = "gameHeight";
+    private static final int SETTINGS_VERSION_NUMBER = 8;
 
     private static boolean readonly = true;
 
@@ -30,7 +32,7 @@ public class Settings {
 
             readonly = false;
 
-            if (new File(LauncherFiles.MINEONLINE_PROPS_FILE).exists()) {
+            if (new File(LauncherFiles.MINEONLINE_SETTINGS_FILE).exists()) {
                 loadSettings();
             } else {
                 resetSettings();
@@ -51,13 +53,15 @@ public class Settings {
         settings.put(GUI_SCALE, 3);
         settings.put(TEXTURE_PACK, "");
         settings.put(HIDE_VERSION_STRING, false);
+        settings.put(GAME_WIDTH, 854);
+        settings.put(GAME_HEIGHT, 480);
 
         saveSettings();
         loadSettings();
     }
 
     public static void loadSettings() {
-        try (FileInputStream input = new FileInputStream(LauncherFiles.MINEONLINE_PROPS_FILE)) {
+        try (FileInputStream input = new FileInputStream(LauncherFiles.MINEONLINE_SETTINGS_FILE)) {
             // load a settings file
             byte[] buffer = new byte[8096];
             int bytes_read = 0;
@@ -87,6 +91,9 @@ public class Settings {
                         settings.put(TEXTURE_PACK, "");
                     case 6:
                         settings.put(HIDE_VERSION_STRING, false);
+                    case 7:
+                        settings.put(GAME_WIDTH, 854);
+                        settings.put(GAME_HEIGHT, 480);
                 }
                 settings.put(SETTINGS_VERSION, SETTINGS_VERSION_NUMBER);
             }
@@ -105,11 +112,11 @@ public class Settings {
             return;
 
         try {
-            FileWriter fileWriter = new FileWriter(LauncherFiles.MINEONLINE_PROPS_FILE, false);
+            FileWriter fileWriter = new FileWriter(LauncherFiles.MINEONLINE_SETTINGS_FILE, false);
             fileWriter.write(settings.toString(2));
             fileWriter.close();
 
-            FileInputStream input = new FileInputStream(LauncherFiles.MINEONLINE_PROPS_FILE);
+            FileInputStream input = new FileInputStream(LauncherFiles.MINEONLINE_SETTINGS_FILE);
             byte[] buffer = new byte[8096];
             int bytes_read = 0;
             StringBuffer stringBuffer = new StringBuffer();

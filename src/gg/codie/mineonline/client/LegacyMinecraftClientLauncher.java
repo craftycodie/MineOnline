@@ -92,8 +92,8 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
             }));
             launchArgs.add(LegacyMinecraftClientLauncher.class.getCanonicalName());
             launchArgs.add(jarPath);
-            launchArgs.add("" + DisplayManager.getFrame().getWidth());
-            launchArgs.add("" + DisplayManager.getFrame().getHeight());
+            launchArgs.add(Settings.settings.optString(Settings.GAME_WIDTH, "" + DisplayManager.getDefaultWidth()));
+            launchArgs.add(Settings.settings.optString(Settings.GAME_HEIGHT, "" + DisplayManager.getDefaultHeight()));
             if (serverIP != null) {
                 launchArgs.add(serverIP);
                 if (serverPort != null)
@@ -198,6 +198,10 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
         DisplayManager.getCanvas().setSize(startWidth, startHeight);
         DisplayManager.getFrame().pack();
         DisplayManager.getFrame().setVisible(true);
+        Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+        int x = (int) ((dimension.getWidth() - DisplayManager.getFrame().getWidth()) / 2);
+        int y = (int) ((dimension.getHeight() - DisplayManager.getFrame().getHeight()) / 2);
+        DisplayManager.getFrame().setLocation(x, y);
 
         DisplayManager.getFrame().addWindowListener(new WindowAdapter() {
             @Override

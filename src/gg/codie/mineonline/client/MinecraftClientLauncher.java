@@ -25,11 +25,6 @@ import java.util.LinkedList;
 import java.util.Map;
 
 public class MinecraftClientLauncher {
-
-    public static final String PROP_AUTH_HOST = "minecraft.api.auth.host";
-    public static final String PROP_ACCOUNT_HOST = "minecraft.api.account.host";
-    public static final String PROP_SESSION_HOST = "minecraft.api.session.host";
-
     String jarPath;
     String serverAddress;
     String serverPort;
@@ -74,8 +69,8 @@ public class MinecraftClientLauncher {
             launchArgs.add(LibraryManager.getClasspath(false, libraries.toArray(new String[libraries.size()])));
             launchArgs.add(MinecraftClientLauncher.class.getCanonicalName());
             launchArgs.add(jarPath);
-            launchArgs.add("" + Display.getWidth());
-            launchArgs.add("" + Display.getHeight());
+            launchArgs.add(Settings.settings.optString(Settings.GAME_WIDTH, "" + DisplayManager.getDefaultWidth()));
+            launchArgs.add(Settings.settings.optString(Settings.GAME_HEIGHT, "" + DisplayManager.getDefaultHeight()));
             if(serverIP != null) {
                 launchArgs.add(serverIP);
                 if(serverPort != null)
