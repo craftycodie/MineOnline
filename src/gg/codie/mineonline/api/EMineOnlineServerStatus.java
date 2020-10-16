@@ -5,7 +5,7 @@ import org.lwjgl.util.vector.Vector3f;
 public enum EMineOnlineServerStatus {
     ON_THE_WHITELIST,
     BANNED,
-    OFFLINEMODE,
+    ONLINEMODE,
     NOT_ON_THE_WHITELIST,
     NONE;
 
@@ -13,8 +13,8 @@ public enum EMineOnlineServerStatus {
         switch(this) {
             case BANNED:
                 return "Banned";
-            case OFFLINEMODE:
-                return "Offline Mode";
+            case ONLINEMODE:
+                return "Online Mode";
             case ON_THE_WHITELIST:
                 return "Whitelisted";
             case NOT_ON_THE_WHITELIST:
@@ -26,9 +26,9 @@ public enum EMineOnlineServerStatus {
     public Vector3f getColor() {
         switch (this) {
             case NOT_ON_THE_WHITELIST:
-            case OFFLINEMODE:
             case BANNED:
                 return new Vector3f(1f, 0.33f, 0.33f);
+            case ONLINEMODE:
             case ON_THE_WHITELIST:
                 return new Vector3f(0.33f, 1f, 0.33f);
         }
@@ -40,7 +40,7 @@ public enum EMineOnlineServerStatus {
             case NOT_ON_THE_WHITELIST:
             case BANNED:
                 return false;
-            case OFFLINEMODE:
+            case ONLINEMODE:
             case ON_THE_WHITELIST:
             default:
                 return true;
