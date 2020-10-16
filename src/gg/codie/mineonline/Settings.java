@@ -22,6 +22,7 @@ public class Settings {
     public static final String HIDE_VERSION_STRING = "hideVersionString";
     public static final String GAME_WIDTH = "gameWidth";
     public static final String GAME_HEIGHT = "gameHeight";
+    public static final String CUSTOM_CAPES = "customCapes";
     private static final int SETTINGS_VERSION_NUMBER = 8;
 
     private static boolean readonly = true;
@@ -55,6 +56,7 @@ public class Settings {
         settings.put(HIDE_VERSION_STRING, false);
         settings.put(GAME_WIDTH, 854);
         settings.put(GAME_HEIGHT, 480);
+        settings.put(CUSTOM_CAPES, true);
 
         saveSettings();
         loadSettings();
@@ -94,6 +96,7 @@ public class Settings {
                     case 7:
                         settings.put(GAME_WIDTH, 854);
                         settings.put(GAME_HEIGHT, 480);
+                        settings.put(CUSTOM_CAPES, true);
                 }
                 settings.put(SETTINGS_VERSION, SETTINGS_VERSION_NUMBER);
             }

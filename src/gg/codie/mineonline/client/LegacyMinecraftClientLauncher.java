@@ -194,8 +194,9 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
 
         DisplayManager.init();
         DisplayManager.getCanvas().setPreferredSize(new Dimension(startWidth, startHeight));
-        DisplayManager.getFrame().setPreferredSize(new Dimension(startWidth, startHeight));
+        DisplayManager.getFrame().setPreferredSize(new Dimension(startWidth + DisplayManager.getFrame().getInsets().left + DisplayManager.getFrame().getInsets().right, startHeight + DisplayManager.getFrame().getInsets().top + DisplayManager.getFrame().getInsets().bottom));
         DisplayManager.getCanvas().setSize(startWidth, startHeight);
+        DisplayManager.getFrame().setSize(startWidth + DisplayManager.getFrame().getInsets().left + DisplayManager.getFrame().getInsets().right, startHeight + DisplayManager.getFrame().getInsets().top + DisplayManager.getFrame().getInsets().bottom);
         DisplayManager.getFrame().pack();
         DisplayManager.getFrame().setVisible(true);
         Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();

@@ -1,9 +1,6 @@
 package gg.codie.mineonline.patches;
 
-import gg.codie.minecraft.api.SessionServer;
-import gg.codie.minecraft.skins.SkinUtils;
 import gg.codie.mineonline.Globals;
-import gg.codie.mineonline.Session;
 import net.bytebuddy.asm.Advice;
 
 import java.lang.reflect.Method;
@@ -121,7 +118,7 @@ public class URLConstructAdvice {
                         .replace("/skin/", "")
                         .replace(".png", "");
 
-                Class skinUtilsClass = ClassLoader.getSystemClassLoader().loadClass("gg.codie.minecraft.skins.SkinUtils");
+                Class skinUtilsClass = ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.utils.SkinUtils");
                 Method findSkinURLForUsername = skinUtilsClass.getMethod("findSkinURLForUsername", String.class);
 
                 url = (String)findSkinURLForUsername.invoke(null, username);
@@ -130,7 +127,7 @@ public class URLConstructAdvice {
                         .replace("/MinecraftCloaks/", "")
                         .replace(".png", "");
 
-                Class skinUtilsClass = ClassLoader.getSystemClassLoader().loadClass("gg.codie.minecraft.skins.SkinUtils");
+                Class skinUtilsClass = ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.utils.SkinUtils");
                 Method findCloakURLForUsername = skinUtilsClass.getMethod("findCloakURLForUsername", String.class);
 
                 url = (String)findCloakURLForUsername.invoke(null, username);
@@ -138,7 +135,7 @@ public class URLConstructAdvice {
                 String username = url.substring(url.indexOf("/cloak/get.jsp?user="))
                         .replace("/cloak/get.jsp?user=", "");
 
-                Class skinUtilsClass = ClassLoader.getSystemClassLoader().loadClass("gg.codie.minecraft.skins.SkinUtils");
+                Class skinUtilsClass = ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.utils.SkinUtils");
                 Method findCloakURLForUsername = skinUtilsClass.getMethod("findCloakURLForUsername", String.class);
 
                 url = (String)findCloakURLForUsername.invoke(null, username);

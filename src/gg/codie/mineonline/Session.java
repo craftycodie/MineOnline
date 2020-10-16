@@ -1,7 +1,6 @@
 package gg.codie.mineonline;
 
-import gg.codie.minecraft.skins.SkinUtils;
-import gg.codie.mineonline.api.MineOnlineAPI;
+import gg.codie.mineonline.utils.SkinUtils;
 import gg.codie.mineonline.gui.rendering.PlayerGameObject;
 import gg.codie.mineonline.utils.LastLogin;
 import org.json.JSONObject;
