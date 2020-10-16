@@ -75,7 +75,7 @@ public class URLConstructAdvice {
                 );
 
                 if (validJoin)
-                    url = Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/ok";
+                    url = ClassLoader.getSystemResource("ok").toString();
                 else // Just something to make it error.
                     url = "";
             } else if (url.contains("/game/checkserver.jsp")) {
