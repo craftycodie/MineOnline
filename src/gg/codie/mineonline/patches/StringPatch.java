@@ -20,13 +20,4 @@ public class StringPatch {
                 .make()
                 .load(String.class.getClassLoader(), ClassReloadingStrategy.fromInstalledAgent());
     }
-
-    public static void checkservResponsePatch() {
-        new ByteBuddy()
-                .with(Implementation.Context.Disabled.Factory.INSTANCE)
-                .redefine(String.class)
-                .visit(Advice.to(StringEqualsAdvice.class).on(ElementMatchers.named("equals").and(ElementMatchers.takesArguments(Object.class))))
-                .make()
-                .load(String.class.getClassLoader(), ClassReloadingStrategy.fromInstalledAgent());
-    }
 }

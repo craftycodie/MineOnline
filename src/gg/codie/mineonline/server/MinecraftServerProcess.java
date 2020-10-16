@@ -3,7 +3,6 @@ package gg.codie.mineonline.server;
 import gg.codie.mineonline.Globals;
 import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.LibraryManager;
-import gg.codie.mineonline.patches.StringPatch;
 import gg.codie.mineonline.patches.URLPatch;
 import gg.codie.mineonline.utils.JREUtils;
 import gg.codie.mineonline.utils.Logging;
@@ -80,7 +79,6 @@ public class MinecraftServerProcess {
 
         Properties serverProperties = new Properties(args[0]);
         URLPatch.redefineURL(serverProperties.serverIP(), "" + serverProperties.serverPort());
-        StringPatch.checkservResponsePatch();
 
         Class mainClass = null;
 

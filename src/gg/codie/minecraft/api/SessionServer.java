@@ -39,6 +39,20 @@ public class SessionServer {
         return connection.getResponseCode() == 204;
     }
 
+    public static boolean hasJoined(String username, String serverId, String ip) throws IOException {
+        HttpURLConnection connection;
+
+        URL url = new URL(BASE_URL + "/session/minecraft/hasJoined?username=" + username + "&serverId=" + serverId + (ip != null ? "&ip=" + ip : ""));
+        connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+        connection.setDoInput(true);
+        connection.setDoOutput(false);
+
+        connection.connect();
+
+        return connection.getResponseCode() == 200;
+    }
+
     public static JSONObject minecraftProfile(String uuid) throws IOException {
         HttpURLConnection connection;
 

@@ -79,7 +79,40 @@ public class URLConstructAdvice {
                 else // Just something to make it error.
                     url = "";
             } else if (url.contains("/game/checkserver.jsp")) {
-                url = url.replace("http://www.minecraft.net/game/checkserver.jsp?user=", "https://sessionserver.mojang.com/session/minecraft/hasJoined?username=");
+                String username = null;
+                String serverId = null;
+                String ip = null;
+
+                String[] args = url.replace("http://www.minecraft.net/game/checkserver.jsp?", "").split("&");
+                for (String arg : args) {
+                    String[] keyValue = arg.split("=");
+
+                    if (keyValue[0].equals("user"))
+                        username = keyValue[1];
+                    else if (keyValue[0].equals("serverId"))
+                        serverId = keyValue[1];
+                    else if (keyValue[0].equals("ip"))
+                        ip = keyValue[1];
+                }
+
+                if (username == null || serverId == null) {
+                    url = "";
+                    return;
+                }
+
+                Class sessionServerClass = ClassLoader.getSystemClassLoader().loadClass("gg.codie.minecraft.api.SessionServer");
+
+                boolean validJoin = (boolean)sessionServerClass.getMethod("hasJoined", String.class, String.class, String.class).invoke(
+                        null,
+                        username,
+                        serverId,
+                        ip
+                );
+
+                if (validJoin)
+                    url = ClassLoader.getSystemResource("YES").toString();
+                else // Just something to make it error.
+                    url = "";
             } else if ((url.contains("/MinecraftSkins/") || url.contains("/skin/")) && url.contains(".png")) {
                 String username = (url.contains("/MinecraftSkins/")
                         ? url.substring(url.indexOf("/MinecraftSkins/"))
