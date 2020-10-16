@@ -10,6 +10,7 @@ import gg.codie.mineonline.gui.events.IOnClickListener;
 import gg.codie.mineonline.gui.font.GUIText;
 import gg.codie.mineonline.gui.rendering.Camera;
 import gg.codie.mineonline.gui.rendering.DisplayManager;
+import gg.codie.mineonline.gui.rendering.PlayerGameObject;
 import gg.codie.mineonline.gui.rendering.Renderer;
 import gg.codie.mineonline.gui.rendering.font.TextMaster;
 import gg.codie.mineonline.gui.rendering.shaders.GUIShader;
@@ -25,6 +26,7 @@ public class OptionsMenuScreen implements IMenuScreen {
     ValueSlider fovSlider;
     MediumButton skinCustomizationButton;
     MediumButton aboutButton;
+    MediumButton customCapesButton;
     LargeButton doneButton;
     GUIText label;
 
@@ -84,8 +86,22 @@ public class OptionsMenuScreen implements IMenuScreen {
             }
         });
 
+        customCapesButton = new MediumButton("Use Custom Capes: " + (Settings.settings.optBoolean(Settings.CUSTOM_CAPES, false) ? "YES" : "NO"), new Vector2f((DisplayManager.getDefaultWidth() / 2) - 308, (DisplayManager.getDefaultHeight() / 2) + 104), new IOnClickListener() {
+            @Override
+            public void onClick() {
+                boolean useCustomCapes = !Settings.settings.getBoolean(Settings.CUSTOM_CAPES);
+                Settings.settings.put(Settings.CUSTOM_CAPES, useCustomCapes);
+                Settings.saveSettings();
+                customCapesButton.setName("Use Custom Capes: " + (Settings.settings.getBoolean(Settings.CUSTOM_CAPES) ? "YES" : "NO"));
+                if(PlayerGameObject.thePlayer != null) {
+                    PlayerGameObject.thePlayer.setCloak(LauncherFiles.TEMPLATE_CLOAK_PATH);
+                    new File(LauncherFiles.CACHED_CLOAK_PATH).delete();
+                }
+                Session.session.cacheSkin();
+            }
+        });
 
-        aboutButton = new MediumButton("About", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 150, (DisplayManager.getDefaultHeight() / 2) + 104), new IOnClickListener() {
+        aboutButton = new MediumButton("About", new Vector2f((DisplayManager.getDefaultWidth() / 2) + 8, (DisplayManager.getDefaultHeight() / 2) + 104), new IOnClickListener() {
             @Override
             public void onClick() {
                 MenuManager.setMenuScreen(new AboutMenuScreen());
@@ -133,6 +149,7 @@ public class OptionsMenuScreen implements IMenuScreen {
         guiScaleButton.update();
         doneButton.update();
         fovSlider.update();
+        customCapesButton.update();
         aboutButton.update();
         skinCustomizationButton.update();
     }
@@ -147,6 +164,7 @@ public class OptionsMenuScreen implements IMenuScreen {
         guiScaleButton.render(renderer, GUIShader.singleton);
         fovSlider.render(renderer, GUIShader.singleton);
         skinCustomizationButton.render(renderer, GUIShader.singleton);
+        customCapesButton.render(renderer, GUIShader.singleton);
         aboutButton.render(renderer, GUIShader.singleton);
         doneButton.render(renderer, GUIShader.singleton);
         GUIShader.singleton.stop();
@@ -163,6 +181,7 @@ public class OptionsMenuScreen implements IMenuScreen {
         doneButton.resize();
         guiScaleButton.resize();
         fovSlider.resize();
+        customCapesButton.resize();
         aboutButton.resize();
         skinCustomizationButton.resize();
     }
@@ -175,6 +194,7 @@ public class OptionsMenuScreen implements IMenuScreen {
         guiScaleButton.cleanUp();
         fovSlider.cleanUp();
         skinCustomizationButton.cleanUp();
+        customCapesButton.cleanUp();
         aboutButton.cleanUp();
         doneButton.cleanUp();
         label.remove();

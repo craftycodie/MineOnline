@@ -12,7 +12,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.OpenOption;
 import java.nio.file.StandardOpenOption;
 import java.util.Base64;
 
@@ -155,16 +154,22 @@ public class SkinUtils {
     public static String findCloakURLForUuid(String uuid) {
         try {
             if (Settings.settings.optBoolean(Settings.CUSTOM_CAPES, false)) {
-                byte[] capePng = minecraftCapesCape(uuid);
+//                byte[] capePng = minecraftCapesCape(uuid);
+//
+//                if (capePng != null) {
+//                    File capeFile = new File(LauncherFiles.MINEONLINE_TEMP_CAPES_FOLDER + uuid + ".png");
+//                    if (capeFile.exists())
+//                        capeFile.delete();
+//                    capeFile.getParentFile().mkdirs();
+//                    Files.write(capeFile.toPath(), capePng, StandardOpenOption.CREATE_NEW);
+//                    capeFile.deleteOnExit();
+//
+//                    return capeFile.toURI().toURL().toString();
+//                }
 
-                if (capePng != null) {
-                    File capeFile = new File(LauncherFiles.MINEONLINE_TEMP_CAPES_FOLDER + uuid + ".png");
-                    capeFile.getParentFile().mkdirs();
-                    Files.write(capeFile.toPath(), capePng, StandardOpenOption.CREATE_NEW);
-                    capeFile.deleteOnExit();
-
-                    return capeFile.toURI().toURL().toString();
-                }
+                String capeUrl = minecraftCapesCapeUrl(uuid);
+                if (capeUrl != null)
+                    return capeUrl;
             }
 
             JSONObject profile = SessionServer.minecraftProfile(uuid);
