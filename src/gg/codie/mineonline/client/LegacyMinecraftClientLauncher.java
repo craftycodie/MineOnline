@@ -394,6 +394,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
         // Patches
         SocketPatch.watchSockets();
         URLPatch.redefineURL(null);
+        URLConnectionPatch.convertModernSkins();
 
         if (minecraftVersion != null && minecraftVersion.useFOVPatch) {
             LWJGLPerspectivePatch.useCustomFOV();
