@@ -1,8 +1,6 @@
 package gg.codie.mineonline.gui;
 
-import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.Session;
-import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.mineonline.gui.components.LargeButton;
 import gg.codie.mineonline.gui.components.MediumButton;
 import gg.codie.mineonline.gui.events.IOnClickListener;
@@ -32,15 +30,12 @@ import java.nio.file.Paths;
 
 public class SkinMenuScreen implements IMenuScreen {
     MediumButton skinButton;
-    MediumButton cloakButton;
-    MediumButton resetCloakButton;
     MediumButton modelButton;
     LargeButton doneButton;
     JFileChooser fileChooser = new JFileChooser();
     GUIText label;
 
     String skinPath = "";
-    String cloakPath = "";
     private boolean unsavedSkin = false;
     private boolean unsavedCloak = false;
     private boolean unsavedModel = false;
@@ -99,7 +94,7 @@ public class SkinMenuScreen implements IMenuScreen {
                                         ByteArrayOutputStream os = new ByteArrayOutputStream();
                                         ImageIO.write(bufferedImage, "png", os);
                                         ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
-                                        MineOnlineAPI.uploadSkin(Session.session.getUuid(), Session.session.getSessionToken(), is);
+                                        //MineOnlineAPI.uploadSkin(Session.session.getUuid(), Session.session.getSessionToken(), is);
                                     } catch (IOException ex) {
                                         JOptionPane.showMessageDialog(null, "Failed to upload skin.");
                                         failed = true;
@@ -108,54 +103,6 @@ public class SkinMenuScreen implements IMenuScreen {
                                         unsavedSkin = true;
                                     }
 
-                                } catch (MalformedURLException mx) {
-
-                                }
-                            }
-                        }
-                    }
-                });
-            }
-        });
-
-        cloakButton = new MediumButton("Select Cloak", new Vector2f((DisplayManager.getDefaultWidth() / 2) + 30, (DisplayManager.getDefaultHeight() / 2) + 8), new IOnClickListener() {
-            @Override
-            public void onClick() {
-                EventQueue.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        int returnVal = fileChooser.showOpenDialog(DisplayManager.getCanvas());
-
-                        if (returnVal == JFileChooser.APPROVE_OPTION) {
-                            File file = fileChooser.getSelectedFile();
-
-                            cloakPath = file.getPath();
-
-                            if(cloakPath.isEmpty())
-                                return;
-
-                            File cloakTexture = new File(cloakPath);
-                            if (cloakTexture.exists() && PlayerGameObject.thePlayer != null) {
-                                try {
-                                    boolean failed = false;
-                                    PlayerGameObject.thePlayer.setCloak(Paths.get(cloakTexture.getPath()).toUri().toURL());
-
-                                    unsavedCloak = false;
-
-                                    try {
-                                        BufferedImage bufferedImage = ImageIO.read(new File(cloakPath));
-                                        bufferedImage = TextureHelper.cropImage(bufferedImage, 0, 0, 64, 32);
-                                        ByteArrayOutputStream os = new ByteArrayOutputStream();
-                                        ImageIO.write(bufferedImage, "png", os);
-                                        ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
-                                        MineOnlineAPI.uploadCloak(Session.session.getUuid(), Session.session.getSessionToken(), is);
-                                    } catch (IOException ex) {
-                                        JOptionPane.showMessageDialog(null, "Failed to upload skin.");
-                                        failed = true;
-                                    }
-                                    if(failed) {
-                                        unsavedCloak = true;
-                                    }
                                 } catch (MalformedURLException mx) {
 
                                 }
@@ -181,24 +128,12 @@ public class SkinMenuScreen implements IMenuScreen {
                         unsavedModel = false;
 
                         try {
-                            MineOnlineAPI.setSkinMetadata(Session.session.getUuid(), Session.session.getSessionToken(), metadata);
+                            //MineOnlineAPI.setSkinMetadata(Session.session.getUuid(), Session.session.getSessionToken(), metadata);
                         } catch (Exception ex) {
                             unsavedModel = true;
                         }
                     }
                 });
-            }
-        });
-
-        resetCloakButton = new MediumButton("Remove Cloak", new Vector2f((DisplayManager.getDefaultWidth() / 2) + 30, (DisplayManager.getDefaultHeight() / 2) + 104), new IOnClickListener() {
-            @Override
-            public void onClick() {
-                if(MineOnlineAPI.removeCloak(Session.session.getUuid(), Session.session.getSessionToken())) {
-                    if(PlayerGameObject.thePlayer != null) {
-                        PlayerGameObject.thePlayer.setCloak(LauncherFiles.TEMPLATE_CLOAK_PATH);
-                        new File(LauncherFiles.CACHED_CLOAK_PATH).delete();
-                    }
-                }
             }
         });
 
@@ -224,16 +159,11 @@ public class SkinMenuScreen implements IMenuScreen {
         if(!skinPath.isEmpty() && skinButton.getName() != "Skin: " + Paths.get(skinPath).getFileName().toString())
             skinButton.setName("Skin: " + Paths.get(skinPath).getFileName().toString());
 
-        if(!cloakPath.isEmpty() && cloakButton.getName() != "Cloak: " + Paths.get(cloakPath).getFileName().toString())
-            cloakButton.setName("Cloak: " + Paths.get(cloakPath).getFileName().toString());
-
         if(modelButton.getName() != "Model: " + (slim ? "Alex" : "Steve"))
             modelButton.setName("Model: " + (slim ? "Alex" : "Steve"));
 
         skinButton.update();
-        cloakButton.update();
         modelButton.update();
-        resetCloakButton.update();
         doneButton.update();
     }
 
@@ -242,10 +172,9 @@ public class SkinMenuScreen implements IMenuScreen {
         GUIShader.singleton.loadViewMatrix(Camera.singleton);
         renderer.prepareGUI();
         skinButton.render(renderer, GUIShader.singleton);
-        cloakButton.render(renderer, GUIShader.singleton);
         modelButton.render(renderer, GUIShader.singleton);
-        resetCloakButton.render(renderer, GUIShader.singleton);
         doneButton.render(renderer, GUIShader.singleton);
+
         GUIShader.singleton.stop();
     }
 
@@ -255,17 +184,13 @@ public class SkinMenuScreen implements IMenuScreen {
 
     public void resize() {
         skinButton.resize();
-        cloakButton.resize();
-        resetCloakButton.resize();
         doneButton.resize();
     }
 
     @Override
     public void cleanUp() {
         skinButton.cleanUp();
-        cloakButton.cleanUp();
         modelButton.cleanUp();
-        resetCloakButton.cleanUp();
         doneButton.cleanUp();
         label.remove();
     }

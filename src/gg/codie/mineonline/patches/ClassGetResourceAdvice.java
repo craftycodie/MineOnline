@@ -20,9 +20,8 @@ public class ClassGetResourceAdvice {
         try {
             boolean DEV = (boolean) ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.Globals").getField("DEV").get(null);
 
-            if (DEV) {
+            if (DEV)
                 System.out.println("Loading texture: " + textureName);
-            }
 
             String texturePack = (String) ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.ClassGetResourceAdvice").getField("texturePack").get(null);
             String texturePacksPath = (String) ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.LauncherFiles").getField("MINECRAFT_TEXTURE_PACKS_PATH").get(null);

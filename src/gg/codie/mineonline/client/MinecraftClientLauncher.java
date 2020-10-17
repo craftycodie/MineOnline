@@ -25,12 +25,6 @@ import java.util.LinkedList;
 import java.util.Map;
 
 public class MinecraftClientLauncher {
-
-    public static final String PROP_ENV = "minecraft.api.env";
-    public static final String PROP_AUTH_HOST = "minecraft.api.auth.host";
-    public static final String PROP_ACCOUNT_HOST = "minecraft.api.account.host";
-    public static final String PROP_SESSION_HOST = "minecraft.api.session.host";
-
     String jarPath;
     String serverAddress;
     String serverPort;
@@ -75,8 +69,8 @@ public class MinecraftClientLauncher {
             launchArgs.add(LibraryManager.getClasspath(false, libraries.toArray(new String[libraries.size()])));
             launchArgs.add(MinecraftClientLauncher.class.getCanonicalName());
             launchArgs.add(jarPath);
-            launchArgs.add("" + Display.getWidth());
-            launchArgs.add("" + Display.getHeight());
+            launchArgs.add(Settings.settings.optString(Settings.GAME_WIDTH, "" + DisplayManager.getDefaultWidth()));
+            launchArgs.add(Settings.settings.optString(Settings.GAME_HEIGHT, "" + DisplayManager.getDefaultHeight()));
             if(serverIP != null) {
                 launchArgs.add(serverIP);
                 if(serverPort != null)
@@ -147,7 +141,8 @@ public class MinecraftClientLauncher {
         this.width = width;
         this.height = height;
 
-        new Session(System.getProperty("mineonline.username"), System.getProperty("mineonline.token"), System.getProperty("mineonline.uuid"));
+        boolean premium = System.getProperty("mineonline.token") != null;
+        new Session(System.getProperty("mineonline.username"), System.getProperty("mineonline.token"), System.getProperty("mineonline.uuid"), premium);
 
         if(serverAddress != null && serverPort == null)
             this.serverPort = "25565";
@@ -209,18 +204,11 @@ public class MinecraftClientLauncher {
             if (Settings.settings.has(Settings.FULLSCREEN) && Settings.settings.getBoolean(Settings.FULLSCREEN))
                 args.add("--fullscreen");
 
-            if (Settings.settings.has(Settings.IS_PREMIUM) && !Settings.settings.getBoolean(Settings.IS_PREMIUM))
+            if (!Session.session.isPremium())
                 args.add("--demo");
 
             Method main = clazz.getMethod("main", String[].class);
 
-            System.setProperty(PROP_AUTH_HOST, Globals.API_PROTOCOL + Globals.API_HOSTNAME);
-            System.setProperty(PROP_ACCOUNT_HOST, Globals.API_PROTOCOL + Globals.API_HOSTNAME);
-            System.setProperty(PROP_SESSION_HOST, Globals.API_PROTOCOL + Globals.API_HOSTNAME);
-
-            URLPatch.redefineURL();
-            PropertiesSignaturePatch.redefineIsSignatureValid(classLoader);
-            YggdrasilMinecraftSessionServicePatch.allowMineonlineSkins(classLoader);
             SocketPatch.watchSockets();
 
             main.invoke(null, new Object[] {args.toArray(new String[0])});

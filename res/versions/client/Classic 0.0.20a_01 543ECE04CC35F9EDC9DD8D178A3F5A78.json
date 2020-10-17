@@ -1,0 +1,10 @@
+{
+  "name": "Classic 0.0.20a_01",
+  "md5": "543ECE04CC35F9EDC9DD8D178A3F5A78",
+  "type": "client",
+  "baseVersion": "c0.0.20a_01",
+  "useFOVPatch": true,
+  "useTexturepackPatch": true,
+  "ingameVersionString": "0.0.20a_01",
+  "legacy": true
+}

@@ -1,5 +1,6 @@
 package gg.codie.mineonline.gui;
 
+import gg.codie.minecraft.api.AuthServer;
 import gg.codie.minecraft.client.Options;
 import gg.codie.mineonline.*;
 import gg.codie.mineonline.api.MineOnlineAPI;
@@ -13,11 +14,9 @@ import gg.codie.mineonline.gui.rendering.models.RawModel;
 import gg.codie.mineonline.gui.rendering.models.TexturedModel;
 import gg.codie.mineonline.gui.rendering.shaders.StaticShader;
 import gg.codie.mineonline.gui.rendering.textures.ModelTexture;
-import gg.codie.mineonline.patches.lwjgl.LWJGLDisplayPatch;
+import gg.codie.mineonline.utils.LastLogin;
 import gg.codie.mineonline.utils.Logging;
-import gg.codie.utils.LastLogin;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
@@ -154,15 +153,17 @@ public class MenuManager {
         if(!multiinstance)
             lastLogin = LastLogin.readLastLogin();
 
+        String username = null;
         String sessionToken = null;
         String uuid = null;
 
         if(lastLogin != null ) {
             try {
-                JSONObject login = MineOnlineAPI.login(lastLogin.username, lastLogin.password);
-
-                sessionToken = login.getString("sessionId");
-                uuid = login.getString("uuid");
+                if (AuthServer.validate(lastLogin.accessToken)) {
+                    sessionToken = lastLogin.accessToken;
+                    uuid = lastLogin.uuid;
+                    username = lastLogin.username;
+                }
             } catch (IOException ex) {
                 ex.printStackTrace();
             } catch (JSONException ex) {
@@ -188,9 +189,9 @@ public class MenuManager {
         Loader loader = new Loader();
         TextMaster.init(loader);
 
-        if (sessionToken != null) {
-            new Session(lastLogin.username, sessionToken, uuid);
-            LastLogin.writeLastLogin(lastLogin.username, lastLogin.password, uuid);
+        if (sessionToken != null && username != null) {
+            new Session(username, sessionToken, uuid, true);
+            LastLogin.writeLastLogin(sessionToken, lastLogin.clientToken, lastLogin.loginUsername, lastLogin.username, uuid);
         }
 
         if (Session.session != null && Session.session.isOnline() && joinserver != null) {
@@ -220,8 +221,9 @@ public class MenuManager {
                                 }
 
                                 String mppass = null;
-                                if(serverVersion != null && serverVersion.hasHeartbeat)
-                                    mppass = MineOnlineAPI.getMpPass(Session.session.getSessionToken(), mineOnlineServer.ip, "" + mineOnlineServer.port);
+                                if(serverVersion != null && serverVersion.hasHeartbeat) {
+                                    mppass = MineOnlineAPI.getMpPass(Session.session.getSessionToken(), Session.session.getUsername(), Session.session.getUuid(), mineOnlineServer.ip, "" + mineOnlineServer.port);
+                                }
 
                                 MinecraftVersion.launchMinecraft(path, mineOnlineServer.ip, "" + mineOnlineServer.port, mppass);
                                 return;
@@ -247,7 +249,7 @@ public class MenuManager {
                     ip = ipAndPort[0];
                     port = "25565";
                 }
-                mppass = MineOnlineAPI.getMpPass(Session.session.getSessionToken(), ip, port);
+                mppass = MineOnlineAPI.getMpPass(Session.session.getSessionToken(), Session.session.getUsername(), Session.session.getUuid(), ip, port);
             }
             MinecraftVersion.launchMinecraft(quicklaunch, ip, port, mppass);
             return;

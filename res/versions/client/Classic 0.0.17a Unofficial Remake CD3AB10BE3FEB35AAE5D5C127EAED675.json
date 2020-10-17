@@ -6,5 +6,6 @@
   "baseVersion": "c0.0.17a",
   "useFOVPatch": true,
   "useTexturepackPatch": true,
-  "ingameVersionString": "0.0.17a"
+  "ingameVersionString": "0.0.17a",
+  "legacy": true
 }

@@ -1,10 +1,7 @@
 package gg.codie.mineonline.gui;
 
 import gg.codie.minecraft.client.Options;
-import gg.codie.mineonline.LauncherFiles;
-import gg.codie.mineonline.MinecraftVersion;
-import gg.codie.mineonline.MinecraftVersionRepository;
-import gg.codie.mineonline.Session;
+import gg.codie.mineonline.*;
 import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.mineonline.gui.components.InputField;
 import gg.codie.mineonline.gui.components.LargeButton;
@@ -50,7 +47,7 @@ public class JoinServerScreen implements IMenuScreen {
                     if(serverIPField.getValue().contains(":"))
                         split = serverIPField.getValue().split(":");
 
-                    String mppass = MineOnlineAPI.getMpPass(Session.session.getSessionToken(), split[0], split.length > 1 ? split[1] : "25565");
+                    String mppass = MineOnlineAPI.getMpPass(Session.session.getSessionToken(), Session.session.getUsername(), Session.session.getUuid(), split[0], split.length > 1 ? split[1] : "25565");
 
                     MinecraftVersion.launchMinecraft(MinecraftVersionRepository.getSingleton().getLastSelectedJarPath(), split[0], split.length > 1 ? split[1] : "25565", mppass);
                 }
@@ -100,7 +97,7 @@ public class JoinServerScreen implements IMenuScreen {
                     if(serverIPField.getValue().contains(":"))
                         split = serverIPField.getValue().split(":");
 
-                    String mppass = MineOnlineAPI.getMpPass(Session.session.getSessionToken(), split[0], split.length > 1 ? split[1] : "25565");
+                    String mppass = MineOnlineAPI.getMpPass(Session.session.getSessionToken(), Session.session.getUsername(), Session.session.getUuid(), split[0], split.length > 1 ? split[1] : "25565");
 
                     MinecraftVersion.launchMinecraft(MinecraftVersionRepository.getSingleton().getLastSelectedJarPath(), split[0], split.length > 1 ? split[1] : "25565", mppass);
                 }
@@ -125,10 +122,6 @@ public class JoinServerScreen implements IMenuScreen {
                 } catch (Exception ex) {}
             }
         });
-
-        if (!Session.session.isOnline()) {
-            serverListButton.setDisabled(true);
-        }
 
         doneButton = new LargeButton("Cancel", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 200, DisplayManager.getDefaultHeight() - 20), new IOnClickListener() {
             @Override

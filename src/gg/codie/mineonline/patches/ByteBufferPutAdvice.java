@@ -2,7 +2,6 @@ package gg.codie.mineonline.patches;
 
 import net.bytebuddy.asm.Advice;
 
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
@@ -25,7 +24,6 @@ public class ByteBufferPutAdvice {
             guestBytes[i] = 0x20;
 
         if (Arrays.equals(bytes, guestBytes)) {
-            System.out.println("equal");
             try {
                 String username = (String) ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.ByteBufferPutAdvice").getField("username").get(null);
                 bytes = Arrays.copyOf(username.getBytes(StandardCharsets.UTF_8), 64);

@@ -12,6 +12,7 @@ import gg.codie.mineonline.patches.*;
 import gg.codie.mineonline.patches.lwjgl.LWJGLDisplayPatch;
 import gg.codie.mineonline.patches.lwjgl.LWJGLOrthoPatch;
 import gg.codie.mineonline.patches.lwjgl.LWJGLPerspectivePatch;
+import gg.codie.mineonline.patches.minecraft.FOVViewmodelPatch;
 import gg.codie.mineonline.patches.minecraft.GuiScreenPatch;
 import gg.codie.mineonline.patches.minecraft.ScaledResolutionConstructorPatch;
 import gg.codie.mineonline.utils.JREUtils;
@@ -91,8 +92,8 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
             }));
             launchArgs.add(LegacyMinecraftClientLauncher.class.getCanonicalName());
             launchArgs.add(jarPath);
-            launchArgs.add("" + DisplayManager.getFrame().getWidth());
-            launchArgs.add("" + DisplayManager.getFrame().getHeight());
+            launchArgs.add(Settings.settings.optString(Settings.GAME_WIDTH, "" + DisplayManager.getDefaultWidth()));
+            launchArgs.add(Settings.settings.optString(Settings.GAME_HEIGHT, "" + DisplayManager.getDefaultHeight()));
             if (serverIP != null) {
                 launchArgs.add(serverIP);
                 if (serverPort != null)
@@ -171,7 +172,8 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
         this.startWidth = widthBeforeFullscreen = width;
         this.startHeight = heightBeforeFullscreen = height;
 
-        new Session(System.getProperty("mineonline.username"), System.getProperty("mineonline.token"), System.getProperty("mineonline.uuid"));
+        boolean premium = System.getProperty("mineonline.token") != null;
+        new Session(System.getProperty("mineonline.username"), System.getProperty("mineonline.token"), System.getProperty("mineonline.uuid"), premium);
 
         if(serverAddress != null && serverPort == null)
             this.serverPort = "25565";
@@ -192,10 +194,15 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
 
         DisplayManager.init();
         DisplayManager.getCanvas().setPreferredSize(new Dimension(startWidth, startHeight));
-        DisplayManager.getFrame().setPreferredSize(new Dimension(startWidth, startHeight));
+        DisplayManager.getFrame().setPreferredSize(new Dimension(startWidth + DisplayManager.getFrame().getInsets().left + DisplayManager.getFrame().getInsets().right, startHeight + DisplayManager.getFrame().getInsets().top + DisplayManager.getFrame().getInsets().bottom));
         DisplayManager.getCanvas().setSize(startWidth, startHeight);
+        DisplayManager.getFrame().setSize(startWidth + DisplayManager.getFrame().getInsets().left + DisplayManager.getFrame().getInsets().right, startHeight + DisplayManager.getFrame().getInsets().top + DisplayManager.getFrame().getInsets().bottom);
         DisplayManager.getFrame().pack();
         DisplayManager.getFrame().setVisible(true);
+        Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+        int x = (int) ((dimension.getWidth() - DisplayManager.getFrame().getWidth()) / 2);
+        int y = (int) ((dimension.getHeight() - DisplayManager.getFrame().getHeight()) / 2);
+        DisplayManager.getFrame().setLocation(x, y);
 
         DisplayManager.getFrame().addWindowListener(new WindowAdapter() {
             @Override
@@ -387,9 +394,13 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
         // Patches
         SocketPatch.watchSockets();
         URLPatch.redefineURL(null);
+        URLConnectionPatch.convertModernSkins();
 
-        if (minecraftVersion != null && minecraftVersion.useFOVPatch)
+        if (minecraftVersion != null && minecraftVersion.useFOVPatch) {
             LWJGLPerspectivePatch.useCustomFOV();
+            if (minecraftVersion.entityRendererClass != null && minecraftVersion.viewModelFunction != null)
+                FOVViewmodelPatch.fixViewmodelFOV(minecraftVersion.entityRendererClass, minecraftVersion.viewModelFunction);
+        }
 
         if (Settings.settings.optInt(Settings.GUI_SCALE, 0) != 0 && minecraftVersion != null) {
             if (minecraftVersion.scaledResolutionClass != null) {
@@ -742,10 +753,10 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
                 value = Session.session.getSessionToken();
                 break;
             case "haspaid":
-                value = String.valueOf(Settings.settings.getBoolean(Settings.IS_PREMIUM));
+                value = "" + Session.session.isPremium();
                 break;
             case "demo":
-                value = !Settings.settings.getBoolean(Settings.IS_PREMIUM) ? "true" : null;
+                value = "" + !Session.session.isPremium();
                 break;
             case "server":
                 value = serverAddress;

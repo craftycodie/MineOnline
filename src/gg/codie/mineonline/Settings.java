@@ -12,7 +12,6 @@ public class Settings {
     public static JSONObject settings;
 
     public static final String SETTINGS_VERSION = "settingsVersion";
-    public static final String IS_PREMIUM = "isPremium";
     public static final String FULLSCREEN = "fullscreen";
     public static final String MINECRAFT_UPDATE_URL = "minecraftUpdateURL";
     public static final String JAVA_HOME = "javaHome";
@@ -21,7 +20,10 @@ public class Settings {
     public static final String GUI_SCALE = "guiScale";
     public static final String TEXTURE_PACK = "texturePack";
     public static final String HIDE_VERSION_STRING = "hideVersionString";
-    private static final int SETTINGS_VERSION_NUMBER = 7;
+    public static final String GAME_WIDTH = "gameWidth";
+    public static final String GAME_HEIGHT = "gameHeight";
+    public static final String CUSTOM_CAPES = "customCapes";
+    private static final int SETTINGS_VERSION_NUMBER = 8;
 
     private static boolean readonly = true;
 
@@ -31,7 +33,7 @@ public class Settings {
 
             readonly = false;
 
-            if (new File(LauncherFiles.MINEONLINE_PROPS_FILE).exists()) {
+            if (new File(LauncherFiles.MINEONLINE_SETTINGS_FILE).exists()) {
                 loadSettings();
             } else {
                 resetSettings();
@@ -44,7 +46,6 @@ public class Settings {
     public static void resetSettings() {
         settings = new JSONObject();
         settings.put(SETTINGS_VERSION, SETTINGS_VERSION_NUMBER);
-        settings.put(IS_PREMIUM, true);
         settings.put(FULLSCREEN, false);
         settings.put(MINECRAFT_UPDATE_URL, "");
         settings.put(JAVA_HOME, "");
@@ -53,13 +54,16 @@ public class Settings {
         settings.put(GUI_SCALE, 3);
         settings.put(TEXTURE_PACK, "");
         settings.put(HIDE_VERSION_STRING, false);
+        settings.put(GAME_WIDTH, 854);
+        settings.put(GAME_HEIGHT, 480);
+        settings.put(CUSTOM_CAPES, true);
 
         saveSettings();
         loadSettings();
     }
 
     public static void loadSettings() {
-        try (FileInputStream input = new FileInputStream(LauncherFiles.MINEONLINE_PROPS_FILE)) {
+        try (FileInputStream input = new FileInputStream(LauncherFiles.MINEONLINE_SETTINGS_FILE)) {
             // load a settings file
             byte[] buffer = new byte[8096];
             int bytes_read = 0;
@@ -74,19 +78,7 @@ public class Settings {
 
             // Assume V1, reset settings.
             if(!settings.has(SETTINGS_VERSION)) {
-                JSONObject oldSettings = settings;
-                String[] oldKeys = new String[] {
-                        IS_PREMIUM,
-                        FULLSCREEN,
-                };
-
                 resetSettings();
-
-                for (String key : oldKeys) {
-                    if(oldSettings.has(key))
-                        settings.put(key, oldSettings.get(key));
-                }
-
                 saveSettings();
             } else {
                 switch (settings.getInt(SETTINGS_VERSION)) {
@@ -101,6 +93,10 @@ public class Settings {
                         settings.put(TEXTURE_PACK, "");
                     case 6:
                         settings.put(HIDE_VERSION_STRING, false);
+                    case 7:
+                        settings.put(GAME_WIDTH, 854);
+                        settings.put(GAME_HEIGHT, 480);
+                        settings.put(CUSTOM_CAPES, true);
                 }
                 settings.put(SETTINGS_VERSION, SETTINGS_VERSION_NUMBER);
             }
@@ -119,11 +115,11 @@ public class Settings {
             return;
 
         try {
-            FileWriter fileWriter = new FileWriter(LauncherFiles.MINEONLINE_PROPS_FILE, false);
+            FileWriter fileWriter = new FileWriter(LauncherFiles.MINEONLINE_SETTINGS_FILE, false);
             fileWriter.write(settings.toString(2));
             fileWriter.close();
 
-            FileInputStream input = new FileInputStream(LauncherFiles.MINEONLINE_PROPS_FILE);
+            FileInputStream input = new FileInputStream(LauncherFiles.MINEONLINE_SETTINGS_FILE);
             byte[] buffer = new byte[8096];
             int bytes_read = 0;
             StringBuffer stringBuffer = new StringBuffer();

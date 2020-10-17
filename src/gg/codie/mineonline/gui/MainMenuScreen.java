@@ -28,8 +28,8 @@ public class MainMenuScreen implements IMenuScreen {
     MediumButton joinServerButton;
     MediumButton versionButton;
     MediumButton texturePacksButton;
-    TinyButton optionsButton;
-    TinyButton skinButton;
+    MediumButton optionsButton;
+//    TinyButton skinButton;
 
     GUIText updateAvailableText;
 
@@ -104,27 +104,26 @@ public class MainMenuScreen implements IMenuScreen {
             }
         });
 
-        optionsButton = new TinyButton("Options...", new Vector2f((DisplayManager.getDefaultWidth() / 2) + 30, (DisplayManager.getDefaultHeight() / 2) + 160), new IOnClickListener() {
+        optionsButton = new MediumButton("Options...", new Vector2f((DisplayManager.getDefaultWidth() / 2) + 30, (DisplayManager.getDefaultHeight() / 2) + 152), new IOnClickListener() {
             @Override
             public void onClick() {
                 MenuManager.setMenuScreen(new OptionsMenuScreen());
             }
         });
 
-        skinButton = new TinyButton("Change Skin", new Vector2f((DisplayManager.getDefaultWidth() / 2) + 188, (DisplayManager.getDefaultHeight() / 2) + 160), new IOnClickListener() {
-            @Override
-            public void onClick() {
-                MenuManager.setMenuScreen(new SkinMenuScreen());
-            }
-        });
+//        skinButton = new TinyButton("Change Skin", new Vector2f((DisplayManager.getDefaultWidth() / 2) + 188, (DisplayManager.getDefaultHeight() / 2) + 160), new IOnClickListener() {
+//            @Override
+//            public void onClick() {
+//                MenuManager.setMenuScreen(new SkinMenuScreen());
+//            }
+//        });
+//
+//        // TODO: Restore this.
+//        skinButton.setDisabled(true);
 
         if(MenuManager.isUpdateAvailable() && !Globals.DEV) {
             updateAvailableText = new GUIText("Update available!", 1.5f, TextMaster.minecraftFont, new Vector2f(0, DisplayManager.getDefaultHeight() - 32), DisplayManager.getDefaultWidth(), true, true);
             updateAvailableText.setColour(1f, 1f, 0f);
-        }
-
-        if (!Session.session.isOnline()) {
-            skinButton.setDisabled(true);
         }
     }
 
@@ -134,7 +133,7 @@ public class MainMenuScreen implements IMenuScreen {
         versionButton.update();
         texturePacksButton.update();
         optionsButton.update();
-        skinButton.update();
+//        skinButton.update();
 
         if(MenuManager.isUpdateAvailable()) {
             int x = Mouse.getX();
@@ -166,7 +165,7 @@ public class MainMenuScreen implements IMenuScreen {
         versionButton.render(renderer, GUIShader.singleton);
         texturePacksButton.render(renderer, GUIShader.singleton);
         optionsButton.render(renderer, GUIShader.singleton);
-        skinButton.render(renderer, GUIShader.singleton);
+//        skinButton.render(renderer, GUIShader.singleton);
         GUIShader.singleton.stop();
     }
 
@@ -180,7 +179,7 @@ public class MainMenuScreen implements IMenuScreen {
         versionButton.resize();
         texturePacksButton.resize();
         optionsButton.resize();
-        skinButton.resize();
+//        skinButton.resize();
         logo.model.setRawModel(Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth((DisplayManager.getDefaultWidth() / 2) -200) + DisplayManager.getXBuffer(), Display.getHeight() - DisplayManager.scaledHeight(69)), new Vector2f(DisplayManager.scaledWidth(400), DisplayManager.scaledHeight(49)), TextureHelper.getYFlippedPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(0, 40), new Vector2f(400, 49))));
     }
 
@@ -190,7 +189,7 @@ public class MainMenuScreen implements IMenuScreen {
         joinServerButton.cleanUp();
         versionButton.cleanUp();
         texturePacksButton.cleanUp();
-        skinButton.cleanUp();
+//        skinButton.cleanUp();
         optionsButton.cleanUp();
         if(updateAvailableText != null)
             updateAvailableText.remove();

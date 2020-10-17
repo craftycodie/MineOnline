@@ -5,5 +5,7 @@
   "type": "client",
   "legacy": true,
   "baseVersion": "b1.7.3",
-  "useFOVPatch": true
+  "useFOVPatch": true,
+  "entityRendererClass": "px",
+  "viewModelFunction": "b"
 }

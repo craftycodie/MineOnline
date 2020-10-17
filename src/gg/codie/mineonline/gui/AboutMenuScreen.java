@@ -17,6 +17,7 @@ import java.net.URI;
 public class AboutMenuScreen implements IMenuScreen {
     LargeButton discordButton;
     LargeButton websiteButton;
+    LargeButton capesButton;
     LargeButton doneButton;
     GUIText label;
     GUIText info;
@@ -49,6 +50,19 @@ public class AboutMenuScreen implements IMenuScreen {
             }
         });
 
+        capesButton = new LargeButton("Custom Capes", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 200, (DisplayManager.getDefaultHeight() / 2) + 104), new IOnClickListener() {
+            @Override
+            public void onClick() {
+                if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+                    try {
+                        Desktop.getDesktop().browse(new URI("https://www.minecraftcapes.co.uk/"));
+                    } catch (Exception ex) {
+
+                    }
+                }
+            }
+        });
+
         doneButton = new LargeButton("Done", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 200, DisplayManager.getDefaultHeight() - 20), new IOnClickListener() {
             @Override
             public void onClick() {
@@ -64,6 +78,7 @@ public class AboutMenuScreen implements IMenuScreen {
     public void update() {
         discordButton.update();
         websiteButton.update();
+        capesButton.update();
         doneButton.update();
     }
 
@@ -73,6 +88,7 @@ public class AboutMenuScreen implements IMenuScreen {
         renderer.prepareGUI();
         discordButton.render(renderer, GUIShader.singleton);
         websiteButton.render(renderer, GUIShader.singleton);
+        capesButton.render(renderer, GUIShader.singleton);
         doneButton.render(renderer, GUIShader.singleton);
         GUIShader.singleton.stop();
     }
@@ -84,6 +100,7 @@ public class AboutMenuScreen implements IMenuScreen {
     public void resize() {
         discordButton.resize();
         websiteButton.resize();
+        capesButton.resize();
         doneButton.resize();
     }
 
@@ -92,6 +109,7 @@ public class AboutMenuScreen implements IMenuScreen {
         doneButton.cleanUp();
         websiteButton.cleanUp();
         discordButton.cleanUp();
+        capesButton.cleanUp();
         label.remove();
         info.remove();
     }

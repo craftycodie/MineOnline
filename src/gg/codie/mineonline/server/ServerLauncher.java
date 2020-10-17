@@ -83,10 +83,10 @@ public abstract class ServerLauncher {
         new Thread(new Runnable() {
             public void run() {
                 Scanner inScanner = new Scanner(src);
-                try {
-                    while(true) {
-                        if(inScanner.hasNext()) {
-                            String nextLine = inScanner.nextLine();
+                while(true) {
+                    if(inScanner.hasNext()) {
+                        String nextLine = inScanner.nextLine();
+                        try {
                             if (minecraftVersion != null && minecraftVersion.hasHeartbeat) {
                                 if (nextLine.length() > 15) {
                                     if (nextLine.contains(" logged in as ")) {
@@ -173,10 +173,20 @@ public abstract class ServerLauncher {
                                 dest.write(nextLine.getBytes("UTF-8"));
                                 dest.write("\n".getBytes());
                             }
+                        } catch (Exception e) { // just exit
+                            if(playerCountRequested > 0) {
+                                playerCountRequested--;
+                            }
+                            else {
+                                try {
+                                    dest.write(nextLine.getBytes("UTF-8"));
+                                    dest.write("\n".getBytes());
+                                } catch (Exception ex) {
+                                    // ingore.
+                                }
+                            }
                         }
                     }
-                } catch (IOException e) { // just exit
-                    e.printStackTrace();
                 }
             }
         }).start();

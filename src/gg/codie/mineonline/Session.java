@@ -1,8 +1,8 @@
 package gg.codie.mineonline;
 
-import gg.codie.mineonline.api.MineOnlineAPI;
+import gg.codie.mineonline.utils.SkinUtils;
 import gg.codie.mineonline.gui.rendering.PlayerGameObject;
-import gg.codie.utils.LastLogin;
+import gg.codie.mineonline.utils.LastLogin;
 import org.json.JSONObject;
 
 import java.io.*;
@@ -37,18 +37,26 @@ public class Session {
         return sessionToken != null;
     }
 
+    private boolean isPremium;
+
+    public boolean isPremium() {
+        return isPremium;
+    }
+
     public Session(String username) {
         session = this;
         this.username = username;
         this.uuid = UUID.randomUUID().toString();
+        this.isPremium = false;
         cacheSkin();
     }
 
-    public Session(String username, String sessionToken, String uuid) {
+    public Session(String username, String sessionToken, String uuid, boolean isPremium) {
         session = this;
         this.username = username;
         this.sessionToken = sessionToken;
         this.uuid = uuid;
+        this.isPremium = isPremium;
         cacheSkin();
     }
 
@@ -64,7 +72,9 @@ public class Session {
             public void run() {
                 Settings.loadSettings();
 
-                try (BufferedInputStream in = new BufferedInputStream(new URL(Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/player/" + uuid + "/skin").openStream())) {
+                String skinUrl = SkinUtils.findSkinURLForUuid(uuid);
+
+                try (BufferedInputStream in = new BufferedInputStream(new URL(skinUrl).openStream())) {
 
                     // Delete the currently cached skin.
                     File cachedSkin = new File(LauncherFiles.CACHED_SKIN_PATH);
@@ -89,7 +99,9 @@ public class Session {
                     }
                 }
 
-                try (BufferedInputStream in = new BufferedInputStream(new URL(Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/player/" + uuid + "/cloak").openStream())) {
+                String cloakUrl = SkinUtils.findCloakURLForUuid(uuid);
+
+                try (BufferedInputStream in = new BufferedInputStream(new URL(cloakUrl).openStream())) {
 
                     // Delete the currently cached skin.
                     File cachedCloak = new File(LauncherFiles.CACHED_CLOAK_PATH);
@@ -116,7 +128,7 @@ public class Session {
                 }
 
                 try {
-                    JSONObject skinMetadata = MineOnlineAPI.getSkinMetadata(uuid);
+                    JSONObject skinMetadata = SkinUtils.getSkinMetadata(uuid);
 
                     FileWriter fileWriter = new FileWriter(LauncherFiles.CACHED_SKIN_METADATA_PATH, false);
                     fileWriter.write(skinMetadata.toString());

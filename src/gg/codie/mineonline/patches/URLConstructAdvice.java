@@ -1,7 +1,10 @@
 package gg.codie.mineonline.patches;
 
 import gg.codie.mineonline.Globals;
+import gg.codie.mineonline.LauncherFiles;
 import net.bytebuddy.asm.Advice;
+
+import java.lang.reflect.Method;
 
 public class URLConstructAdvice {
     public static String updateURL;
@@ -55,32 +58,91 @@ public class URLConstructAdvice {
 
             if (updateUrl != null && url.contains(oldUpdateUrl)) {
                 url = updateUrl;
-            } else if (url.contains("launcher.mojang.com/v1/objects/")) {
-                // Quick patch to allow launchers to pull from this endpoint.
+            } else if (url.contains("/game/joinserver.jsp")) {
+                Class sessionClass = ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.Session");
+                Object session = sessionClass.getField("session").get(null);
+
+                Class sessionServerClass = ClassLoader.getSystemClassLoader().loadClass("gg.codie.minecraft.api.SessionServer");
+                String serverId = url.substring(url.indexOf("&serverId=") + 10);
+
+                boolean validJoin = (boolean)sessionServerClass.getMethod("joinGame", String.class, String.class, String.class).invoke(
+                        null,
+                        sessionClass.getMethod("getSessionToken").invoke(session),
+                        sessionClass.getMethod("getUuid").invoke(session),
+                        serverId
+                );
+
+                if (validJoin)
+                    url = ClassLoader.getSystemResource("ok").toString();
+                else // Just something to make it error.
+                    url = "";
+            } else if (url.contains("/game/checkserver.jsp")) {
+                String username = null;
+                String serverId = null;
+                String ip = null;
+
+                String[] args = url.replace("http://www.minecraft.net/game/checkserver.jsp?", "").split("&");
+                for (String arg : args) {
+                    String[] keyValue = arg.split("=");
+
+                    if (keyValue[0].equals("user"))
+                        username = keyValue[1];
+                    else if (keyValue[0].equals("serverId"))
+                        serverId = keyValue[1];
+                    else if (keyValue[0].equals("ip"))
+                        ip = keyValue[1];
+                }
+
+                if (username == null || serverId == null) {
+                    url = "";
+                    return;
+                }
+
+                Class sessionServerClass = ClassLoader.getSystemClassLoader().loadClass("gg.codie.minecraft.api.SessionServer");
+
+                boolean validJoin = (boolean)sessionServerClass.getMethod("hasJoined", String.class, String.class, String.class).invoke(
+                        null,
+                        username,
+                        serverId,
+                        ip
+                );
+
+                if (validJoin)
+                    url = ClassLoader.getSystemResource("YES").toString();
+                else // Just something to make it error.
+                    url = "";
+            } else if ((url.contains("/MinecraftSkins/") || url.contains("/skin/")) && url.contains(".png")) {
+                // Handled by UrlConnectionPatch
+            } else if (url.contains("textures.minecraft.net")) {
+                // This is where official skins are fetched, so don't mod it!
+            } else if (url.contains("/MinecraftCloaks/") && url.contains(".png")) {
+                String username = url.substring(url.indexOf("/MinecraftCloaks/"))
+                        .replace("/MinecraftCloaks/", "")
+                        .replace(".png", "");
+
+                Class skinUtilsClass = ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.utils.SkinUtils");
+                Method findCloakURLForUsername = skinUtilsClass.getMethod("findCloakURLForUsername", String.class);
+
+                url = (String)findCloakURLForUsername.invoke(null, username);
+            } else if (url.contains("/cloak/get.jsp?user=")) {
+                String username = url.substring(url.indexOf("/cloak/get.jsp?user="))
+                        .replace("/cloak/get.jsp?user=", "");
+
+                Class skinUtilsClass = ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.utils.SkinUtils");
+                Method findCloakURLForUsername = skinUtilsClass.getMethod("findCloakURLForUsername", String.class);
+
+                url = (String)findCloakURLForUsername.invoke(null, username);
             } else {
                 for (String replaceHost : new String[]{
-                        "textures.minecraft.net",
-                        "pc.realms.minecraft.net",
                         "www.minecraft.net:-1",
                         "skins.minecraft.net",
                         "session.minecraft.net",
-                        "login.minecraft.net",
-                        "realms.minecraft.net",
+                        "authenticate.minecraft.net",
                         "assets.minecraft.net",
                         "mcoapi.minecraft.net",
-                        "snoop.minecraft.net",
                         "www.minecraft.net",
-                        "resources.download.minecraft.net",
-                        "libraries.minecraft.net",
                         "minecraft.net",
                         "s3.amazonaws.com",
-                        "api.mojang.com",
-                        "authserver.mojang.com",
-                        "account.mojang.com",
-                        "sessionserver.mojang.com",
-                        "launchermeta.mojang.com",
-                        "mojang.com",
-                        "aka.ms",
 
                         // for mods
                         "banshee.alex231.com",
