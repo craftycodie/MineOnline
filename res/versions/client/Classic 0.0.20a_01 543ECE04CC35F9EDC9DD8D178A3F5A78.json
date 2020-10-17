@@ -6,5 +6,8 @@
   "useFOVPatch": true,
   "useTexturepackPatch": true,
   "ingameVersionString": "0.0.20a_01",
+  "enableScreenshotPatch": true,
+  "forceFullscreenMacos": true,
+  "enableMacosCursorPatch": true,
   "legacy": true
 }
