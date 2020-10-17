@@ -175,7 +175,7 @@ public abstract class ServerLauncher {
                             }
                         }
                     }
-                } catch (IOException e) { // just exit
+                } catch (Exception e) { // just exit
                     e.printStackTrace();
                 }
             }
