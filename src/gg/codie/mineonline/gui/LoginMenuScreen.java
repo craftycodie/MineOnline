@@ -11,6 +11,7 @@ import gg.codie.mineonline.gui.components.InputField;
 import gg.codie.mineonline.gui.events.IOnClickListener;
 import gg.codie.mineonline.gui.font.GUIText;
 import gg.codie.mineonline.gui.rendering.*;
+import gg.codie.mineonline.gui.rendering.Renderer;
 import gg.codie.mineonline.gui.rendering.font.TextMaster;
 import gg.codie.mineonline.gui.rendering.models.RawModel;
 import gg.codie.mineonline.gui.rendering.models.TexturedModel;
@@ -23,7 +24,9 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
+import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 import java.net.URI;
 import java.util.UUID;
 
@@ -61,6 +64,16 @@ public class LoginMenuScreen implements IMenuScreen {
                 @Override
                 public void onClick() {
                     try {
+                        if (usernameInput.getValue().contains("@")) {
+                            EventQueue.invokeLater(new Runnable() {
+                                @Override
+                                public void run() {
+                                    JOptionPane.showMessageDialog(null, "Enter a username to play in offline-mode.");
+                                }
+                            });
+                            return;
+                        }
+
                         new Session(usernameInput.getValue());
                         MenuManager.setMenuScreen(new MainMenuScreen());
                     } catch (Exception ex) {
@@ -101,9 +114,12 @@ public class LoginMenuScreen implements IMenuScreen {
                     ex.printStackTrace();
 
                     String errorMessage = ex.getMessage();
-                    if (errorMessage.startsWith("Bad authenticate")) {
+                    if (errorMessage.startsWith("Bad login")) {
                         errorMessage = "Incorrect username or password.";
                     }
+
+                    if (ex instanceof IOException)
+                        errorMessage = "Bad login.";
 
                     if (errorText != null)
                         errorText.remove();
@@ -117,6 +133,16 @@ public class LoginMenuScreen implements IMenuScreen {
                             @Override
                             public void onClick() {
                                 try {
+                                    if(usernameInput.getValue().contains("@")) {
+                                        EventQueue.invokeLater(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                JOptionPane.showMessageDialog(null, "Enter a username to play in offline-mode.");
+                                            }
+                                        });
+                                        return;
+                                    }
+
                                     new Session(usernameInput.getValue());
                                     MenuManager.setMenuScreen(new MainMenuScreen());
                                 } catch (Exception ex) {
