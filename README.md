@@ -28,7 +28,7 @@ These are features MineOnline will bring to Minecraft.
 
 - Resource Files (Sounds)
 
-- Server List
+- [Server List](https://mineonline.codie.gg/servers)
 
 - Online World Saves
   - You can also upload classic maps via the website.
@@ -43,7 +43,7 @@ These are features MineOnline will bring to Minecraft.
 
 - Launcher Authentication and Updates
 
-- Server Authentication (online-mode)
+- Server Authentication (online-mode and verify-names)
 
 - Resizable & Fullscreenable Applets
 
