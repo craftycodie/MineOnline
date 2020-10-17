@@ -2,8 +2,12 @@ package gg.codie.mineonline.gui.rendering;
 
 import org.lwjgl.util.vector.Vector2f;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 
 public class TextureHelper {
 
@@ -43,6 +47,19 @@ public class TextureHelper {
     public static BufferedImage cropImage(BufferedImage bufferedImage, int x, int y, int width, int height){
         BufferedImage croppedImage = bufferedImage.getSubimage(x, y, width, height);
         return croppedImage;
+    }
+
+    public static InputStream convertModernSkin(InputStream inputStream){
+        try {
+            BufferedImage skin = ImageIO.read(inputStream);
+            BufferedImage croppedSkin = skin.getSubimage(0, 0, 64, 32);
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            ImageIO.write(croppedSkin, "png", os);
+            byte[] bytes = os.toByteArray();
+            return new ByteArrayInputStream(bytes);
+        } catch (Exception ex) {
+            return null;
+        }
     }
 
     public static BufferedImage convertSkin(BufferedImage legacySkin) {

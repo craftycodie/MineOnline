@@ -1,6 +1,7 @@
 package gg.codie.mineonline.patches;
 
 import gg.codie.mineonline.Globals;
+import gg.codie.mineonline.LauncherFiles;
 import net.bytebuddy.asm.Advice;
 
 import java.lang.reflect.Method;
@@ -111,17 +112,9 @@ public class URLConstructAdvice {
                 else // Just something to make it error.
                     url = "";
             } else if ((url.contains("/MinecraftSkins/") || url.contains("/skin/")) && url.contains(".png")) {
-                String username = (url.contains("/MinecraftSkins/")
-                        ? url.substring(url.indexOf("/MinecraftSkins/"))
-                        : url.substring(url.indexOf("/skin/")))
-                        .replace("/MinecraftSkins/", "")
-                        .replace("/skin/", "")
-                        .replace(".png", "");
-
-                Class skinUtilsClass = ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.utils.SkinUtils");
-                Method findSkinURLForUsername = skinUtilsClass.getMethod("findSkinURLForUsername", String.class);
-
-                url = (String)findSkinURLForUsername.invoke(null, username);
+                // Handled by UrlConnectionPatch
+            } else if (url.contains("textures.minecraft.net")) {
+                // This is where official skins are fetched, so don't mod it!
             } else if (url.contains("/MinecraftCloaks/") && url.contains(".png")) {
                 String username = url.substring(url.indexOf("/MinecraftCloaks/"))
                         .replace("/MinecraftCloaks/", "")
@@ -141,7 +134,6 @@ public class URLConstructAdvice {
                 url = (String)findCloakURLForUsername.invoke(null, username);
             } else {
                 for (String replaceHost : new String[]{
-                        "textures.minecraft.net",
                         "www.minecraft.net:-1",
                         "skins.minecraft.net",
                         "session.minecraft.net",

@@ -30,7 +30,6 @@ public class LauncherFiles {
     public static final String MINEONLINE_CACHE_FOLDER = MINEONLINE_FOLDER + "cache" + File.separator;
 
     public static final String MINEONLINE_TEMP_FOLDER = MINEONLINE_FOLDER + "temp" + File.separator;
-    public static final String MINEONLINE_TEMP_CAPES_FOLDER = MINEONLINE_TEMP_FOLDER + "capes" + File.separator;
     public static final String MINEONLINE_RUNTIME_NATIVES_FOLDER = MINEONLINE_TEMP_FOLDER + "natives" + File.separator;
     public static final String MINEONLINE_RICH_PRESENCE_FILE = MINEONLINE_TEMP_FOLDER + "presence.txt";
 
