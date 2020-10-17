@@ -1,7 +1,7 @@
 package gg.codie.mineonline.gui;
 
 import gg.codie.minecraft.api.AuthServer;
-import gg.codie.minecraft.client.Options;
+import gg.codie.minecraft.api.LauncherAPI;
 import gg.codie.mineonline.*;
 import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.mineonline.api.MineOnlineServer;
@@ -209,11 +209,11 @@ public class MenuManager {
                 Set<String> minecraftJars = MinecraftVersionRepository.getSingleton().getInstalledJars().keySet();
 
                 if (serverVersion != null) {
-                    for (String compatibleClientMd5 : serverVersion.clientVersions) {
+                    for (String compatibleClientBaseVersion : serverVersion.clientVersions) {
                         for (String path : minecraftJars) {
                             MinecraftVersion clientVersion = MinecraftVersionRepository.getSingleton().getInstalledJars().get(path);
 
-                            if (clientVersion != null && clientVersion.baseVersion.equals(compatibleClientMd5)) {
+                            if (clientVersion != null && clientVersion.baseVersion.equals(compatibleClientBaseVersion)) {
                                 String mppass = null;
                                 if(serverVersion != null && serverVersion.hasHeartbeat) {
                                     mppass = MineOnlineAPI.getMpPass(Session.session.getSessionToken(), Session.session.getUsername(), Session.session.getUuid(), mineOnlineServer.ip, "" + mineOnlineServer.port);
@@ -222,6 +222,28 @@ public class MenuManager {
                                 MinecraftVersion.launchMinecraft(path, mineOnlineServer.ip, "" + mineOnlineServer.port, mppass);
                                 return;
                             }
+                        }
+
+                        try {
+                            File clientJar = new File(LauncherFiles.MINECRAFT_VERSIONS_PATH + compatibleClientBaseVersion + File.separator + "client.jar");
+                            try {
+                                LauncherAPI.downloadVersion(compatibleClientBaseVersion);
+                            } catch (Exception ex) {
+                                System.err.println("Couldn't find " + compatibleClientBaseVersion + " in the official versions list.");
+                                ex.printStackTrace();
+                            }
+                            if (!clientJar.exists())
+                                MineOnlineAPI.downloadVersion(compatibleClientBaseVersion);
+
+                            MinecraftVersionRepository.getSingleton().addInstalledVersion(clientJar.getPath());
+                            String mppass = null;
+                            if(serverVersion != null && serverVersion.hasHeartbeat) {
+                                mppass = MineOnlineAPI.getMpPass(Session.session.getSessionToken(), Session.session.getUsername(), Session.session.getUuid(), mineOnlineServer.ip, "" + mineOnlineServer.port);
+                            }
+                            MinecraftVersion.launchMinecraft(clientJar.getPath(), mineOnlineServer.ip, "" + mineOnlineServer.port, mppass);
+                            return;
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
                         }
                     }
                 }
