@@ -29,7 +29,7 @@ public class ProgressDialog extends JDialog {
 
     public static void setSubMessage(String message) {
         if (singleton != null) {
-            if(message == null || message.isEmpty()) message = " ";
+            if (message == null || message.isEmpty()) message = " ";
             singleton.subMessage.setText(message);
         }
     }
@@ -43,8 +43,14 @@ public class ProgressDialog extends JDialog {
     }
 
     public static void setProgress(int progress) {
-        if (singleton != null)
+        if (singleton != null) {
             singleton.progress = progress;
+
+            if (progress >= 100) {
+                singleton.dispose();
+                singleton = null;
+            }
+        }
     }
 
     private void start() {
@@ -83,7 +89,10 @@ public class ProgressDialog extends JDialog {
     }
 
     public static void showProgress(String title, WindowAdapter closeListener) {
-        if (singleton != null) return;
+        if (singleton != null) {
+            singleton.dispose();
+            singleton = null;
+        }
 
         ProgressDialog dialog = new ProgressDialog(title);
 
@@ -107,7 +116,9 @@ public class ProgressDialog extends JDialog {
                 dialog.start();
                 dialog.setLocationRelativeTo(null);
                 dialog.setVisible(true);
-                dialog.addWindowListener(closeListener);
+
+                if (closeListener != null)
+                    dialog.addWindowListener(closeListener);
             }
         }).run();
 

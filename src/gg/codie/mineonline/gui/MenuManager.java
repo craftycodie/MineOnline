@@ -214,12 +214,6 @@ public class MenuManager {
                             MinecraftVersion clientVersion = MinecraftVersionRepository.getSingleton().getInstalledJars().get(path);
 
                             if (clientVersion != null && clientVersion.baseVersion.equals(compatibleClientMd5)) {
-                                try {
-                                    new Options(LauncherFiles.MINECRAFT_OPTIONS_PATH).setOption("lastServer", mineOnlineServer.ip + "_" + mineOnlineServer.port);
-                                } catch (Exception ex) {
-                                    // ignore
-                                }
-
                                 String mppass = null;
                                 if(serverVersion != null && serverVersion.hasHeartbeat) {
                                     mppass = MineOnlineAPI.getMpPass(Session.session.getSessionToken(), Session.session.getUsername(), Session.session.getUuid(), mineOnlineServer.ip, "" + mineOnlineServer.port);
@@ -253,13 +247,6 @@ public class MenuManager {
             }
             MinecraftVersion.launchMinecraft(quicklaunch, ip, port, mppass);
             return;
-        }
-        else if (joinserver != null) {
-            try {
-                new Options(LauncherFiles.MINECRAFT_OPTIONS_PATH).setOption("lastServer", joinserver.replace(":", "_"));
-            } catch (Exception ex) {
-
-            }
         }
 
         GameObject playerPivot = new GameObject("player_origin", new Vector3f(), new Vector3f(0, 30, 0), new Vector3f(1, 1, 1));

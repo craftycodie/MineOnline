@@ -1,5 +1,6 @@
 package gg.codie.mineonline.gui;
 
+import gg.codie.minecraft.api.LauncherAPI;
 import gg.codie.minecraft.client.Options;
 import gg.codie.mineonline.*;
 import gg.codie.mineonline.api.MineOnlineAPI;
@@ -40,29 +41,23 @@ public class ServerListMenuScreen implements IMenuScreen {
                         Set<String> minecraftJars = MinecraftVersionRepository.getSingleton().getInstalledJars().keySet();
 
                         if(serverVersion != null) {
-                            MinecraftVersion selectedVersion = MinecraftVersionRepository.getSingleton().getVersion(MinecraftVersionRepository.getSingleton().getLastSelectedJarPath());
-                            if (selectedVersion != null && selectedVersion.baseVersion.equals(serverVersion.baseVersion)) {
-                                String mppass = null;
-                                if(serverVersion != null && serverVersion.hasHeartbeat)
-                                    mppass = MineOnlineAPI.getMpPass(Session.session.getSessionToken(), Session.session.getUsername(), Session.session.getUuid(), selectedServer.server.ip, "" + selectedServer.server.port);
+                            if (MinecraftVersionRepository.getSingleton().getLastSelectedJarPath() != null) {
+                                MinecraftVersion selectedVersion = MinecraftVersionRepository.getSingleton().getVersion(MinecraftVersionRepository.getSingleton().getLastSelectedJarPath());
+                                if (selectedVersion != null && selectedVersion.baseVersion.equals(serverVersion.baseVersion)) {
+                                    String mppass = null;
+                                    if (serverVersion != null && serverVersion.hasHeartbeat)
+                                        mppass = MineOnlineAPI.getMpPass(Session.session.getSessionToken(), Session.session.getUsername(), Session.session.getUuid(), selectedServer.server.ip, "" + selectedServer.server.port);
 
-                                MinecraftVersion.launchMinecraft(MinecraftVersionRepository.getSingleton().getLastSelectedJarPath(), selectedServer.server.ip, "" + selectedServer.server.port, mppass);
+                                    MinecraftVersion.launchMinecraft(MinecraftVersionRepository.getSingleton().getLastSelectedJarPath(), selectedServer.server.ip, "" + selectedServer.server.port, mppass);
+                                }
                             }
 
 
-                            for (String compatibleClientMd5 : serverVersion.clientVersions) {
+                            for (String compatibleClientBaseVersion : serverVersion.clientVersions) {
                                 for (String path : minecraftJars) {
                                     MinecraftVersion clientVersion = MinecraftVersionRepository.getSingleton().getInstalledJars().get(path);
 
-                                    if (clientVersion != null && clientVersion.baseVersion.equals(compatibleClientMd5)) {
-                                        try {
-                                            new Options(LauncherFiles.MINECRAFT_OPTIONS_PATH).setOption("lastServer", selectedServer.server.ip + "_" + selectedServer.server.port);
-                                        } catch (Exception ex) {
-                                            // ignore
-                                        }
-
-
-
+                                    if (clientVersion != null && clientVersion.baseVersion.equals(compatibleClientBaseVersion)) {
                                         String mppass = null;
                                         if(serverVersion != null && serverVersion.hasHeartbeat)
                                             mppass = MineOnlineAPI.getMpPass(Session.session.getSessionToken(), Session.session.getUsername(), Session.session.getUuid(), selectedServer.server.ip, "" + selectedServer.server.port);
@@ -70,6 +65,28 @@ public class ServerListMenuScreen implements IMenuScreen {
                                         MinecraftVersion.launchMinecraft(path, selectedServer.server.ip, "" + selectedServer.server.port, mppass);
                                         return;
                                     }
+                                }
+
+
+                                try {
+                                    File clientJar = new File(LauncherFiles.MINECRAFT_VERSIONS_PATH + compatibleClientBaseVersion + File.separator + "client.jar");
+                                    try {
+                                        LauncherAPI.downloadVersion(compatibleClientBaseVersion);
+                                    } catch (Exception ex) {
+                                        System.err.println("Couldn't find " + compatibleClientBaseVersion + " in the official versions list.");
+                                        ex.printStackTrace();
+                                    }
+                                    if (!clientJar.exists())
+                                        MineOnlineAPI.downloadVersion(compatibleClientBaseVersion);
+
+                                    MinecraftVersionRepository.getSingleton().addInstalledVersion(clientJar.getPath());
+                                    String mppass = null;
+                                    if (serverVersion != null && serverVersion.hasHeartbeat)
+                                        mppass = MineOnlineAPI.getMpPass(Session.session.getSessionToken(), Session.session.getUsername(), Session.session.getUuid(), selectedServer.server.ip, "" + selectedServer.server.port);
+                                    MinecraftVersion.launchMinecraft(clientJar.getPath(), selectedServer.server.ip, "" + selectedServer.server.port, mppass);
+                                    return;
+                                } catch (Exception ex) {
+                                    ex.printStackTrace();
                                 }
                             }
                         }
@@ -83,12 +100,6 @@ public class ServerListMenuScreen implements IMenuScreen {
                         }, new IOnClickListener() {
                             @Override
                             public void onClick() {
-                                try {
-                                    new Options(LauncherFiles.MINECRAFT_OPTIONS_PATH).setOption("lastServer", selectedServer.server.ip + "_" + selectedServer.server.port);
-                                } catch (Exception ex) {
-                                    // ignore
-                                }
-
                                 MinecraftVersion serverVersion = MinecraftVersionRepository.getSingleton().getVersionByMD5(selectedServer.server.md5);
 
                                 String mppass = null;

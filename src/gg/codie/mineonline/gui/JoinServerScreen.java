@@ -87,12 +87,6 @@ public class JoinServerScreen implements IMenuScreen {
             @Override
             public void onClick() {
                 try {
-                    try {
-                        new Options(LauncherFiles.MINECRAFT_OPTIONS_PATH).setOption("lastServer", serverIPField.getValue().replace(":", "_"));
-                    } catch (Exception ex) {
-                        // ignore
-                    }
-
                     String[] split = new String[] { serverIPField.getValue() };
                     if(serverIPField.getValue().contains(":"))
                         split = serverIPField.getValue().split(":");

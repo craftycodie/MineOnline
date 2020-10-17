@@ -106,21 +106,21 @@ public class SelectableServerList extends GUIObject {
                         info2 = version.name;
                     }
 
-                    boolean clientInstalled = false;
+//                    boolean clientInstalled = false;
+//
+//                    found:
+//                    for (String clientVersion : version.clientVersions) {
+//                        for (MinecraftVersion installedClient : MinecraftVersionRepository.getSingleton().getInstalledClients()) {
+//                            if (installedClient.baseVersion.equals(clientVersion)) {
+//                                clientInstalled = true;
+//                                break found;
+//                            }
+//                        }
+//                    }
 
-                    found:
-                    for (String clientVersion : version.clientVersions) {
-                        for (MinecraftVersion installedClient : MinecraftVersionRepository.getSingleton().getInstalledClients()) {
-                            if (installedClient.baseVersion.equals(clientVersion)) {
-                                clientInstalled = true;
-                                break found;
-                            }
-                        }
-                    }
-
-                    if (!clientInstalled) {
-                        info2 = info2 + " - Not Installed!";
-                    }
+//                    if (!clientInstalled) {
+//                        info2 = info2 + " - Not Installed!";
+//                    }
                 }
 
                 if (server.isMineOnline)
