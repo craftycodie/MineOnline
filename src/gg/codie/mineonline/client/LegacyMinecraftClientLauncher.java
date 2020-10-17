@@ -104,7 +104,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
                     launchArgs.add(mpPass);
             }
 
-            ProcessBuilder processBuilder = new ProcessBuilder(launchArgs.toArray(new String[0]));
+            ProcessBuilder processBuilder = new ProcessBuilder(launchArgs.toArray(new String[launchArgs.size()]));
 
             Map<String, String> env = processBuilder.environment();
             for (String prop : props.stringPropertyNames()) {
@@ -121,8 +121,6 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
                 Options options = new Options(LauncherFiles.MINECRAFT_OPTIONS_PATH);
                 options.setOption("guiScale", "" + Settings.settings.optInt(Settings.GUI_SCALE, 0));
                 options.setOption("skin", Settings.settings.optString(Settings.TEXTURE_PACK, ""));
-                if (serverIP != null)
-                    options.setOption("lastServer", serverIP + "_" + serverPort);
             } catch (Exception ex) {
                 System.err.println("Couldn't save guiScale to options.txt");
             }
@@ -385,8 +383,6 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
             Options options = new Options(LauncherFiles.MINECRAFT_OPTIONS_PATH);
             options.setOption("guiScale", "" + Settings.settings.optInt(Settings.GUI_SCALE, 0));
             options.setOption("skin", Settings.settings.optString(Settings.TEXTURE_PACK, ""));
-            if (serverAddress != null)
-                options.setOption("lastServer", serverAddress + "_" + serverPort);
         } catch (Exception ex) {
             System.err.println("Couldn't update options.txt");
         }

@@ -1,0 +1,9 @@
+{
+  "name": "Release 1.16.3",
+  "baseVersion": "1.16.3",
+  "type": "server",
+  "clientVersions": [
+    "1.16.3"
+  ],
+  "md5": "51F363D9FDF9CAF953C1FEC932E50593"
+}

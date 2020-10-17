@@ -1,5 +1,6 @@
 package gg.codie.mineonline;
 
+import gg.codie.minecraft.client.Options;
 import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.mineonline.client.LegacyMinecraftClientLauncher;
 import gg.codie.mineonline.client.LegacyMinecraftLauncherLauncher;
@@ -340,6 +341,12 @@ public class MinecraftVersion {
 
     public static void launchMinecraft(String jarPath, String serverIP, String serverPort, String mpPass) throws Exception {
         System.gc();
+
+        try {
+            new Options(LauncherFiles.MINECRAFT_OPTIONS_PATH).setOption("lastServer", serverIP + "_" + serverPort);
+        } catch (Exception ex) {
+            // ignore
+        }
 
         MinecraftVersion minecraftVersion = MinecraftVersionRepository.getSingleton().getVersion(jarPath);
 

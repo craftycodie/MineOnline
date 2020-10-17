@@ -94,8 +94,6 @@ public class MinecraftClientLauncher {
                 Options options = new Options(LauncherFiles.MINECRAFT_OPTIONS_PATH);
                 options.setOption("guiScale", "" + Settings.settings.optInt(Settings.GUI_SCALE, 0));
                 options.setOption("skin", Settings.settings.optString(Settings.TEXTURE_PACK, ""));
-                if (serverIP != null)
-                    options.setOption("lastServer", serverIP + "_" + serverPort);
             } catch (Exception ex) {
                 System.err.println("Couldn't save guiScale to options.txt");
             }

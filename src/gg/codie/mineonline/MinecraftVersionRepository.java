@@ -66,7 +66,11 @@ public class MinecraftVersionRepository {
     }
 
     public String getLastSelectedJarPath() {
-        return installedVersionJSON.has(SELECTED_VERSION) ? installedVersionJSON.getString(SELECTED_VERSION) : null;
+        String jarPath =  installedVersionJSON.has(SELECTED_VERSION) ? installedVersionJSON.getString(SELECTED_VERSION) : null;
+        if (jarPath != null && !new File(jarPath).exists())
+            jarPath = null;
+
+        return jarPath;
     }
 
     public void selectJar(String jarPath) {
@@ -297,6 +301,15 @@ public class MinecraftVersionRepository {
 
     public MinecraftVersion getVersionByMD5(String md5) {
         return getVersionByMD5(md5, ArrayUtils.concatenate(versions, customVersions));
+    }
+
+    public List<MinecraftVersion> getVersionsByBaseVersion(String baseVersion) {
+        return getVersionsByBaseVersion(baseVersion, ArrayUtils.concatenate(versions, customVersions));
+    }
+
+    private static List<MinecraftVersion> getVersionsByBaseVersion(String baseVersion, MinecraftVersion[] versions) {
+        List<MinecraftVersion> matches = Arrays.stream(versions).filter(version -> version.baseVersion.equals(baseVersion)).collect(Collectors.toList());
+        return matches;
     }
 
     private static MinecraftVersion getVersionByMD5(String md5, MinecraftVersion[] versions) {
