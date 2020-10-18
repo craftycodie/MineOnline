@@ -23,7 +23,7 @@ public class MineOnlineServerRepository {
 
         CompletableFuture.runAsync(() -> {
             try {
-                servers = MineOnlineAPI.listServers(Session.session.getSessionToken());
+                servers = MineOnlineAPI.listServers();
             } catch (Exception ex) {
                 servers = new LinkedList<>();
                 failed = true;

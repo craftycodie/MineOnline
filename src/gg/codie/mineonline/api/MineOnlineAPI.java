@@ -183,11 +183,10 @@ public class MineOnlineAPI {
         return response.toString();
     }
 
-    public static LinkedList<MineOnlineServer> listServers(String sessionId) throws IOException {
+    public static LinkedList<MineOnlineServer> listServers() throws IOException {
         HttpURLConnection connection;
 
-        String parameters = "sessionId=" + URLEncoder.encode(sessionId, "UTF-8");
-        URL url = new URL(Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/servers?" + parameters);
+        URL url = new URL(Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/servers");
         connection = (HttpURLConnection) url.openConnection();
         connection.setDoInput(true);
         connection.setDoOutput(false);
