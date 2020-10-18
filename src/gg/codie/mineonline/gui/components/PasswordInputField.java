@@ -18,6 +18,7 @@ import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
+import java.awt.event.KeyEvent;
 
 public class PasswordInputField extends GUIObject {
 
@@ -87,6 +88,70 @@ public class PasswordInputField extends GUIObject {
         }
     }
 
+    boolean isValidInputKey(int key) {
+            return !(
+                   key == Keyboard.KEY_LCONTROL
+                || key == Keyboard.KEY_RCONTROL
+                || key == Keyboard.KEY_LSHIFT
+                || key == Keyboard.KEY_RSHIFT
+                || key == Keyboard.KEY_KANA
+                || key == Keyboard.KEY_KANJI
+                || key == Keyboard.KEY_LMENU
+                || key == Keyboard.KEY_RMENU
+                || key == Keyboard.KEY_LMETA
+                || key == Keyboard.KEY_RMETA
+                || key == Keyboard.KEY_SCROLL
+                || key == Keyboard.KEY_NEXT
+                || key == Keyboard.KEY_NOCONVERT
+                || key == Keyboard.KEY_NONE
+                || key == Keyboard.KEY_RETURN
+                || key == Keyboard.KEY_NUMPADENTER
+                || key == Keyboard.KEY_NUMLOCK
+                || key == Keyboard.KEY_PAUSE
+                || key == Keyboard.KEY_FUNCTION
+                || key == Keyboard.KEY_F1
+                || key == Keyboard.KEY_F2
+                || key == Keyboard.KEY_F3
+                || key == Keyboard.KEY_F4
+                || key == Keyboard.KEY_F5
+                || key == Keyboard.KEY_F6
+                || key == Keyboard.KEY_F7
+                || key == Keyboard.KEY_F8
+                || key == Keyboard.KEY_F9
+                || key == Keyboard.KEY_F10
+                || key == Keyboard.KEY_F11
+                || key == Keyboard.KEY_F12
+                || key == Keyboard.KEY_F13
+                || key == Keyboard.KEY_F14
+                || key == Keyboard.KEY_F15
+                || key == Keyboard.KEY_F16
+                || key == Keyboard.KEY_F17
+                || key == Keyboard.KEY_F18
+                || key == Keyboard.KEY_F19
+                || key == Keyboard.KEY_HOME
+                || key == Keyboard.KEY_INSERT
+                || key == Keyboard.KEY_PRIOR
+                || key == Keyboard.KEY_SECTION
+                || key == Keyboard.KEY_SLEEP
+                || key == Keyboard.KEY_STOP
+                || key == Keyboard.KEY_UNDERLINE
+                || key == Keyboard.KEY_UNLABELED
+                || key == Keyboard.KEY_SYSRQ
+                || key == Keyboard.KEY_TAB
+                || key == Keyboard.KEY_END
+                || key == Keyboard.KEY_ESCAPE
+                || key == Keyboard.KEY_DELETE
+                || key == Keyboard.KEY_CIRCUMFLEX // ???
+                || key == Keyboard.KEY_DOWN
+                || key == Keyboard.KEY_UP
+                || key == Keyboard.KEY_CLEAR
+                || key == Keyboard.KEY_CAPITAL
+                || key == Keyboard.KEY_CONVERT
+                || key == Keyboard.KEY_APPS
+                || key == Keyboard.KEY_AX
+            );
+    }
+
     boolean focused = false;
     boolean mouseWasOver = false;
     public void update() {
@@ -105,9 +170,9 @@ public class PasswordInputField extends GUIObject {
                             char[] chars = new char[paste.length()];
                             paste.getChars(0, paste.length(), chars, 0);
                             for (char character : chars) {
-                                if(("" + character).matches("[A-Za-z0-9\\[\\]{}'#@~./,<>?;:\\-\\\\()&^$%£\"!*&=_@~`¬¦| ]+")) {
+//                                if(("" + character).matches("[A-Za-z0-9\\[\\]{}'#@~./,<>?;:\\-\\\\()&^$%£\"!*&=_@~`¬¦| ]+")) {
                                     stringBuilder.append(character);
-                                }
+//                                }
                             }
                             paste = stringBuilder.toString();
                             value = value.substring(0, cursorPosition) + paste + value.substring(cursorPosition);
@@ -119,6 +184,8 @@ public class PasswordInputField extends GUIObject {
                         cursorPosition++;
                     } else if (Keyboard.getEventKey() == Keyboard.KEY_LEFT) {
                         cursorPosition--;
+                    } else if (!isValidInputKey(Keyboard.getEventKey())) {
+                        return;
                     } else if (Keyboard.getEventKey() == Keyboard.KEY_BACK) { //Backspace
                         if (value.length() > 0) {
                             value = value.substring(0, cursorPosition - 1) + value.substring(cursorPosition);
@@ -126,8 +193,6 @@ public class PasswordInputField extends GUIObject {
                         }
                     } else if (Keyboard.getEventKey() == Keyboard.KEY_RETURN && this.onEnterPressed != null) {
                         this.onEnterPressed.onClick();
-                    } else if (!Character.toString(Keyboard.getEventCharacter()).matches("[A-Za-z0-9\\[\\]{}'#@~./,<>?;:\\-\\\\()&^$%£\"!*&=_@~`¬¦| ]+")) {
-                        continue;
                     } else {
                         value = value.substring(0, cursorPosition) +  Keyboard.getEventCharacter() + value.substring(cursorPosition);
                         cursorPosition++;
