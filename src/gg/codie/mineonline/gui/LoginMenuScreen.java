@@ -38,6 +38,7 @@ public class LoginMenuScreen implements IMenuScreen {
     LargeButton playOfflineButton;
     GUIText errorText;
     GUIText needAccount;
+    GUIText updateAvailableText;
     GUIText usernameLabel;
     GUIText passwordLabel;
     boolean offline;
@@ -156,9 +157,13 @@ public class LoginMenuScreen implements IMenuScreen {
         usernameLabel = new GUIText("Username or E-Mail:", 1.5f, TextMaster.minecraftFont, new Vector2f((DisplayManager.getDefaultWidth() / 2) - 202, (DisplayManager.getDefaultHeight() / 2) - 64), 200, false, true);
         passwordLabel = new GUIText("Password:", 1.5f, TextMaster.minecraftFont, new Vector2f((DisplayManager.getDefaultWidth() / 2) - 202, (DisplayManager.getDefaultHeight() / 2) + 4), 200, false, true);
 
-
-        needAccount = new GUIText("Need Account?", 1.5f, TextMaster.minecraftFont, new Vector2f(0, DisplayManager.getDefaultHeight() - 40), DisplayManager.getDefaultWidth(), true, true);
-        needAccount.setColour(0.33f, 0.33f, 0.66f);
+        if(MenuManager.isUpdateAvailable() && !Globals.DEV) {
+            updateAvailableText = new GUIText("Update available!", 1.5f, TextMaster.minecraftFont, new Vector2f(0, DisplayManager.getDefaultHeight() - 32), DisplayManager.getDefaultWidth(), true, true);
+            updateAvailableText.setColour(1f, 1f, 0f);
+        } else {
+            needAccount = new GUIText("Need Account?", 1.5f, TextMaster.minecraftFont, new Vector2f(0, DisplayManager.getDefaultHeight() - 40), DisplayManager.getDefaultWidth(), true, true);
+            needAccount.setColour(0.33f, 0.33f, 0.66f);
+        }
     }
 
     public void update() {
@@ -183,9 +188,13 @@ public class LoginMenuScreen implements IMenuScreen {
                         && y - DisplayManager.scaledHeight(18) - DisplayManager.getYBuffer() <= DisplayManager.scaledHeight(22)
                         && y - DisplayManager.scaledHeight(18) - DisplayManager.getYBuffer() >= 0;
 
-        if(MouseHandler.didClick() && mouseIsOver) {
+        if (MouseHandler.didClick() && mouseIsOver) {
             try {
-                Desktop.getDesktop().browse(new URI("https://checkout.minecraft.net/en-us/store/minecraft/#register"));
+                if (MenuManager.isUpdateAvailable()) {
+                    Desktop.getDesktop().browse(new URI(Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/download"));
+                } else {
+                    Desktop.getDesktop().browse(new URI("https://checkout.minecraft.net/en-us/store/minecraft/#register"));
+                }
             } catch (Exception ex) {
 
             }
@@ -222,7 +231,8 @@ public class LoginMenuScreen implements IMenuScreen {
     public void cleanUp() {
         if(errorText != null)
             errorText.remove();
-        needAccount.remove();
+        if (needAccount != null)
+            needAccount.remove();
         usernameInput.cleanUp();
         passwordInput.cleanUp();
         loginButton.cleanUp();
@@ -231,5 +241,7 @@ public class LoginMenuScreen implements IMenuScreen {
         needAccount.remove();
         if(playOfflineButton != null)
             playOfflineButton.cleanUp();
+        if(updateAvailableText != null)
+            updateAvailableText.remove();
     }
 }
