@@ -2,6 +2,7 @@ package gg.codie.mineonline.gui;
 
 import gg.codie.minecraft.api.AuthServer;
 import gg.codie.minecraft.api.LauncherAPI;
+import gg.codie.minecraft.api.MojangAPI;
 import gg.codie.mineonline.*;
 import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.mineonline.api.MineOnlineServer;
@@ -16,7 +17,7 @@ import gg.codie.mineonline.gui.rendering.shaders.StaticShader;
 import gg.codie.mineonline.gui.rendering.textures.ModelTexture;
 import gg.codie.mineonline.utils.LastLogin;
 import gg.codie.mineonline.utils.Logging;
-import org.json.JSONException;
+import org.json.JSONObject;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
@@ -27,7 +28,6 @@ import javax.swing.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
-import java.io.IOException;
 import java.util.Random;
 import java.util.Set;
 
@@ -159,15 +159,20 @@ public class MenuManager {
 
         if(lastLogin != null ) {
             try {
-                if (AuthServer.validate(lastLogin.accessToken)) {
-                    sessionToken = lastLogin.accessToken;
-                    uuid = lastLogin.uuid;
-                    username = lastLogin.username;
-                }
-            } catch (IOException ex) {
+                JSONObject login = AuthServer.refresh(lastLogin.accessToken, lastLogin.clientToken);
+
+                if (login.has("error"))
+                    throw new Exception(login.getString("error"));
+                if (!login.has("accessToken") || !login.has("selectedProfile"))
+                    throw new Exception("Failed to authenticate!");
+                if (MojangAPI.minecraftProfile(login.getJSONObject("selectedProfile").getString("name")).optBoolean("demo", false))
+                    throw new Exception("Please buy Minecraft to use MineOnline.");
+
+                sessionToken = login.getString("accessToken");
+                username = login.getJSONObject("selectedProfile").getString("name");
+                uuid = login.getJSONObject("selectedProfile").getString("id");
+            } catch (Exception ex) {
                 ex.printStackTrace();
-            } catch (JSONException ex) {
-                // ignore
             }
         }
 
@@ -191,7 +196,7 @@ public class MenuManager {
 
         if (sessionToken != null && username != null) {
             new Session(username, sessionToken, uuid, true);
-            LastLogin.writeLastLogin(sessionToken, lastLogin.clientToken, lastLogin.loginUsername, lastLogin.username, uuid);
+            LastLogin.writeLastLogin(sessionToken, lastLogin.clientToken, lastLogin.loginUsername, username, uuid);
         }
 
         if (Session.session != null && Session.session.isOnline() && joinserver != null) {

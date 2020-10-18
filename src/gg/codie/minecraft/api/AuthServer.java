@@ -63,14 +63,17 @@ public class AuthServer {
         }
     }
 
-    public static boolean validate(String accessToken) throws IOException {
+    public static JSONObject refresh(String accessToken, String clientToken) throws IOException {
         HttpURLConnection connection;
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("accessToken", accessToken);
+        jsonObject.put("clientToken", clientToken);
+        jsonObject.put("requestUser", true);
+
         String json = jsonObject.toString();
 
-        URL url = new URL(BASE_URL + "/validate");
+        URL url = new URL(BASE_URL + "/refresh");
         connection = (HttpURLConnection) url.openConnection();
         connection.setRequestProperty("Content-Type", "application/json");
         connection.setRequestMethod("POST");
@@ -81,8 +84,24 @@ public class AuthServer {
         connection.getOutputStream().flush();
         connection.getOutputStream().close();
 
-        connection.connect();
+        InputStream is = connection.getInputStream();
+        BufferedReader rd = new BufferedReader(new InputStreamReader(is));
 
-        return connection.getResponseCode() == 204;
+        StringBuilder response = new StringBuilder();
+        String line;
+        while ((line = rd.readLine()) != null) {
+            response.append(line);
+            response.append('\r');
+        }
+        rd.close();
+
+        try {
+            return new JSONObject(response.toString());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JSONObject errorObject = new JSONObject();
+            errorObject.put("error", response.toString());
+            return errorObject;
+        }
     }
 }
