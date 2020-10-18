@@ -30,14 +30,6 @@ public abstract class ServerLauncher {
     // to ensure each is removed.
     int playerCountRequested = 0;
 
-    protected final String classicPlayersPath;
-    protected final String whitelistPath;
-    protected final String whitelistPlayersJSONPath;
-    protected final String bannedPath;
-    protected final String bannedIpsPath;
-    protected final String bannedIpsJSONPath;
-    protected final String bannedPlayersJSONPath;
-
     public ServerLauncher(String jarPath) throws Exception {
         this.jarPath = jarPath;
         md5 = MD5Checksum.getMD5ChecksumForFile(jarPath);
@@ -63,20 +55,6 @@ public abstract class ServerLauncher {
 
         serverlistAddress = serverProperties.serverIP();
         serverlistPort = "" + serverProperties.serverPort();
-
-        classicPlayersPath = jarPath.replace(Paths.get(jarPath).getFileName().toString(), "players.txt");
-        whitelistPath = jarPath.replace(Paths.get(jarPath).getFileName().toString(), "whitelist.txt");
-        whitelistPlayersJSONPath = jarPath.replace(Paths.get(jarPath).getFileName().toString(), "whitelist.json");
-        bannedPath = jarPath.replace(Paths.get(jarPath).getFileName().toString(), "banned-players.txt");
-        bannedIpsPath = jarPath.replace(Paths.get(jarPath).getFileName().toString(), "banned-ips.txt");
-        bannedIpsJSONPath = jarPath.replace(Paths.get(jarPath).getFileName().toString(), "banned-ips.json");
-        bannedPlayersJSONPath = jarPath.replace(Paths.get(jarPath).getFileName().toString(), "banned-players.json");
-
-        File classicUsers = new File(classicPlayersPath);
-        if(classicUsers.exists()) {
-            classicUsers.delete();
-            classicUsers.createNewFile();
-        }
     }
 
     protected void redirectOutput(final InputStream src, final PrintStream dest) {
@@ -226,13 +204,6 @@ public abstract class ServerLauncher {
                     serverProperties = new Properties(null);
                 }
 
-                String[] whitelistedPlayers = new String[0];
-                String[] whitelistedIPs = new String[0];
-                String[] whitelistedUUIDs = new String[0];
-                String[] bannedPlayers ;
-                String[] bannedIPs;
-                String[] bannedUUIDs;
-
                 if (!updatingPlayerCount) {
                     playerCountRequested++;
                     writer.newLine();
@@ -243,21 +214,6 @@ public abstract class ServerLauncher {
 
                 boolean whitelisted = serverProperties.isWhitelisted();
 
-                if(whitelisted) {
-                    whitelistedPlayers = Files.readUsersFile(whitelistPath);
-                    String[][] jsonData = Files.readPlayersJSON(whitelistPlayersJSONPath);
-                    whitelistedPlayers = ArrayUtils.concatenate(whitelistedPlayers, jsonData[1]);
-                    whitelistedUUIDs = jsonData[0];
-                }
-
-                bannedPlayers = Files.readUsersFile(bannedPath);
-                String[][] jsonData = Files.readPlayersJSON(bannedPlayersJSONPath);
-                bannedPlayers = ArrayUtils.concatenate(bannedPlayers, jsonData[1]);
-                bannedUUIDs = jsonData[0];
-
-                bannedIPs = Files.readUsersFile(bannedIpsPath);
-                bannedIPs = ArrayUtils.concatenate(bannedIPs, Files.readBannedIPsJSON(bannedIpsJSONPath));
-
                 serverUUID = MineOnlineAPI.listServer(
                         serverProperties.serverIP(),
                         "" + serverProperties.serverPort(),
@@ -267,13 +223,6 @@ public abstract class ServerLauncher {
                         serverProperties.onlineMode(),
                         md5,
                         whitelisted,
-                        whitelistedPlayers,
-                        whitelistedIPs,
-                        whitelistedUUIDs,
-                        bannedPlayers,
-                        bannedIPs,
-                        bannedUUIDs,
-                        serverProperties.owner(),
                         playerNames
                 );
             } catch (Exception e) {

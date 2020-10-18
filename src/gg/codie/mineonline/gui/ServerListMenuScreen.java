@@ -139,10 +139,6 @@ public class ServerListMenuScreen implements IMenuScreen {
     }
 
     public void update() {
-        if(this.connectButton.getDisabled() && (selectableServerList.getSelected() != null && selectableServerList.getSelected().server.status.canJoin()))
-            this.connectButton.setDisabled(false);
-        else if(!this.connectButton.getDisabled() && (selectableServerList.getSelected() == null || !selectableServerList.getSelected().server.status.canJoin()))
-            this.connectButton.setDisabled(true);
         connectButton.update();
         backButton.update();
         selectableServerList.update();

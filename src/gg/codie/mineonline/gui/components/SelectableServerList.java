@@ -140,7 +140,7 @@ public class SelectableServerList extends GUIObject {
         }
 
         int buffer = (72) * getServers().size();
-        SelectableServer selectableServer = new SelectableServer(name, new Vector2f((DisplayManager.getDefaultWidth() / 2) - 220, 140 + buffer), name, info1, info2, server.status, server, this, new IOnClickListener() {
+        SelectableServer selectableServer = new SelectableServer(name, new Vector2f((DisplayManager.getDefaultWidth() / 2) - 220, 140 + buffer), name, info1, info2, server, this, new IOnClickListener() {
             @Override
             public void onClick() {
                 if (doubleClickListener != null)

@@ -16,9 +16,9 @@ public class MineOnlineServer {
     public final String name;
     public final String md5;
     public final boolean isMineOnline;
-    public final EMineOnlineServerStatus status;
+    public final boolean onlineMode;
 
-    MineOnlineServer(String createdAt, String ip, int port, int users, int maxUsers, String name, String md5, boolean isMineOnline, EMineOnlineServerStatus status) {
+    MineOnlineServer(String createdAt, String ip, int port, int users, int maxUsers, String name, String md5, boolean isMineOnline, boolean onlineMode) {
         this.createdAt = createdAt;
         this.ip = ip;
         this.port = port;
@@ -27,7 +27,7 @@ public class MineOnlineServer {
         this.name = name;
         this.md5 = md5;
         this.isMineOnline = isMineOnline;
-        this.status = status;
+        this.onlineMode = onlineMode;
     }
 
     public static LinkedList<MineOnlineServer> parseServers(JSONArray jsonArray) {
@@ -50,15 +50,6 @@ public class MineOnlineServer {
     }
 
     public static MineOnlineServer parseServer(JSONObject object) throws JSONException {
-        EMineOnlineServerStatus status = EMineOnlineServerStatus.NONE;
-        if(object.has("status")) {
-            try {
-                status = object.getEnum(EMineOnlineServerStatus.class, "status");
-            } catch (JSONException ex) {
-                ex.printStackTrace();
-            }
-        }
-
         return new MineOnlineServer(
                 object.has("createdAt") && !object.isNull("createdAt") ? object.getString("createdAt") : null,
                 object.has("ip") && !object.isNull("ip") ? object.getString("ip") : null,
@@ -68,7 +59,7 @@ public class MineOnlineServer {
                 object.getString("name"),
                 object.getString("md5"),
                 object.getBoolean("isMineOnline"),
-                status
+                object.getBoolean("onlinemode")
         );
     }
 }
