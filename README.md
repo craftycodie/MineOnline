@@ -49,6 +49,8 @@ These are features MineOnline will bring to Minecraft.
 
 - Resizable & Fullscreenable Applets
 
+- Full Discord Integration
+
 ![launcher](launcherdemo.png)
 
 ## Launching Servers
