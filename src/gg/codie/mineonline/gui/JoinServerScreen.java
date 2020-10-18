@@ -29,20 +29,15 @@ public class JoinServerScreen implements IMenuScreen {
 
     public JoinServerScreen(String value) {
         String server = "";
-        try {
-            server = new Options(LauncherFiles.MINECRAFT_OPTIONS_PATH).getOption("lastServer").replace("_", ":");
-        } catch (Exception e) {
-            /// ignore
-        }
+//        try {
+//            server = new Options(LauncherFiles.MINECRAFT_OPTIONS_PATH).getOption("lastServer").replace("_", ":");
+//        } catch (Exception e) {
+//            /// ignore
+//        }
         serverIPField = new InputField("Server IP Input", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 202, (DisplayManager.getDefaultHeight() / 2) - 42),  (value != null) ? value : server, new IOnClickListener() {
             @Override
             public void onClick() {
                 try {
-                    try {
-                        new Options(LauncherFiles.MINECRAFT_OPTIONS_PATH).setOption("lastServer", serverIPField.getValue().replace(":", "_"));
-                    } catch (Exception ex) {
-                        // ignore
-                    }
                     String[] split = new String[] { serverIPField.getValue() };
                     if(serverIPField.getValue().contains(":"))
                         split = serverIPField.getValue().split(":");
