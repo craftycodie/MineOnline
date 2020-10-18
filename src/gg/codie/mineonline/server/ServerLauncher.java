@@ -1,14 +1,11 @@
 package gg.codie.mineonline.server;
 
-import gg.codie.minecraft.server.Files;
 import gg.codie.mineonline.MinecraftVersion;
 import gg.codie.mineonline.MinecraftVersionRepository;
 import gg.codie.mineonline.api.MineOnlineAPI;
-import gg.codie.utils.ArrayUtils;
 import gg.codie.utils.MD5Checksum;
 
 import java.io.*;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
