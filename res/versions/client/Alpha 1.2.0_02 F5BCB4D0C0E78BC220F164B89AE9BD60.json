@@ -7,5 +7,8 @@
   "baseVersion": "a1.2.0_02",
   "useFOVPatch": true,
   "useTexturepackPatch": true,
-  "ingameVersionString": "Minecraft Alpha v1.2.0_02"
+  "ingameVersionString": "Minecraft Alpha v1.2.0_02",
+  "entityRendererClass": "jq",
+  "viewModelFunction": "b",
+  "scaledResolutionClass": "ka"
 }

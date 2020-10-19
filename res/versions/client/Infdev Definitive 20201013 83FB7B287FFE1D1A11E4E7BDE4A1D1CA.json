@@ -5,7 +5,6 @@
   "type": "client",
   "legacy": true,
   "baseVersion": "inf-20201013",
-  "enableScreenshotPatch": true,
   "scaledResolutionClass": "net.minecraft.client.d.r",
   "useFOVPatch": true,
   "useTexturepackPatch": true,
