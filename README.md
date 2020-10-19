@@ -49,7 +49,7 @@ These are features MineOnline will bring to Minecraft.
 
 - Resizable & Fullscreenable Applets
 
-- Minecraft Realms (for all release versions)
+- Full Discord Integration
 
 ![launcher](launcherdemo.png)
 
