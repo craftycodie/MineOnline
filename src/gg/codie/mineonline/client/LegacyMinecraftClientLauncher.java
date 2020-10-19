@@ -1,5 +1,6 @@
 package gg.codie.mineonline.client;
 
+import gg.codie.minecraft.client.MouseHelper;
 import gg.codie.minecraft.client.Options;
 import gg.codie.mineonline.*;
 import gg.codie.mineonline.discord.DiscordPresence;
@@ -238,6 +239,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
             public void onCreateEvent() {
                 DisplayManager.checkGLError("minecraft create hook start");
                 renderer = new Renderer();
+                MouseHelper.getSingleton();
                 DisplayManager.checkGLError("minecraft create hook end");
             }
         };
