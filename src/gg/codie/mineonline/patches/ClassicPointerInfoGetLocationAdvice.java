@@ -4,7 +4,7 @@ import net.bytebuddy.asm.Advice;
 
 import java.awt.*;
 
-public class PointerInfoGetLocationAdvice {
+public class ClassicPointerInfoGetLocationAdvice {
     @Advice.OnMethodExit
     static void intercept(@Advice.Return(readOnly = false) Point returnPoint) {
         try {

@@ -13,9 +13,9 @@ import gg.codie.mineonline.patches.lwjgl.LWJGLDisplayPatch;
 import gg.codie.mineonline.patches.lwjgl.LWJGLMouseSetNativeCursorAdvice;
 import gg.codie.mineonline.patches.lwjgl.LWJGLOrthoPatch;
 import gg.codie.mineonline.patches.lwjgl.LWJGLPerspectivePatch;
-import gg.codie.mineonline.patches.minecraft.ClassicMousePatch;
 import gg.codie.mineonline.patches.minecraft.FOVViewmodelPatch;
 import gg.codie.mineonline.patches.minecraft.GuiScreenPatch;
+import gg.codie.mineonline.patches.minecraft.IndevMousePatch;
 import gg.codie.mineonline.patches.minecraft.ScaledResolutionConstructorPatch;
 import gg.codie.mineonline.utils.JREUtils;
 import gg.codie.mineonline.utils.Logging;
@@ -185,8 +185,11 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
 
         LWJGLDisplayPatch.hijackLWJGLThreadPatch();
 
+//        if (minecraftVersion != null && minecraftVersion.enableCursorPatch && !OSUtils.isWindows())
+//            ClassicMousePatch.fixNativeCursorClassic();
+
         if (minecraftVersion != null && minecraftVersion.enableCursorPatch && !OSUtils.isWindows())
-            ClassicMousePatch.fixNativeCursorClassic();
+            IndevMousePatch.fixCursorIndev();
 
         if(minecraftVersion != null)
             DiscordPresence.play(minecraftVersion.name, serverAddress, serverPort);
@@ -304,9 +307,6 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
                         if (fullscreen) {
                             if (minecraftVersion != null && minecraftVersion.enableFullscreenPatch) {
                                 setFullscreen(true);
-                            } else {
-                                Display.setDisplayMode(Display.getDesktopDisplayMode());
-                                Display.setFullscreen(true);
                             }
                         }
                     } catch (Exception ex) {

@@ -1,7 +1,6 @@
 package gg.codie.mineonline.patches.lwjgl;
 
 import net.bytebuddy.asm.Advice;
-import org.lwjgl.opengl.Display;
 
 public class LWJGLMouseGetYAdvice {
 
@@ -19,14 +18,14 @@ public class LWJGLMouseGetYAdvice {
         if (!LWJGLMouseSetNativeCursorAdvice.isFocused)
             return;
 
-        //System.out.println("Getting y");
+        System.out.println("Getting y");
 
 
         try {
             Class lwjglMouseClass = ClassLoader.getSystemClassLoader().loadClass("org.lwjgl.input.Mouse");
             int dy = (int)lwjglMouseClass.getMethod("getDY").invoke(null);
 
-            returnY = dy + (Display.getHeight() / 2);
+            returnY = -dy;
         } catch (Exception ex) {
 
         }
