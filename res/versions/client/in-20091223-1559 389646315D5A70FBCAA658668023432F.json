@@ -4,7 +4,6 @@
   "sha256": "B2AC572F81A5CA1E2BDCCC1216E7706863EA15EEA311AB1F6BB7CCED8AA84639",
   "type": "client",
   "enableScreenshotPatch": true,
-  "forceFullscreenMacos": true,
   "enableFullscreenPatch": true,
   "legacy": true,
   "baseVersion": "in-20091223-1559",

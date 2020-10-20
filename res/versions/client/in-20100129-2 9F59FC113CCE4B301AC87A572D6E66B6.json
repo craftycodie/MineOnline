@@ -5,7 +5,6 @@
   "type": "client",
   "enableScreenshotPatch": true,
   "baseURLHasNoPort": true,
-  "forceFullscreenMacos": true,
   "enableFullscreenPatch": true,
   "legacy": true,
   "baseVersion": "in-20100129-2",

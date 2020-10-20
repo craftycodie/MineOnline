@@ -7,7 +7,6 @@
     "c18a_02"
   ],
   "enableScreenshotPatch": true,
-  "forceFullscreenMacos": true,
   "baseVersion": "c18a_02",
   "legacy": true
 }

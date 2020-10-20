@@ -5,7 +5,6 @@
   "type": "client",
   "enableScreenshotPatch": true,
   "baseURLHasNoPort": true,
-  "forceFullscreenMacos": true,
   "legacy": true,
   "baseVersion": "in-20100201-2",
   "scaledResolutionClass": "net.minecraft.client.b.h",

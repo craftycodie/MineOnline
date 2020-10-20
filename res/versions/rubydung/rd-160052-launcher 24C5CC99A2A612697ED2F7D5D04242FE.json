@@ -4,6 +4,7 @@
   "sha256": "BBD6E24A276C5082F8AAFAE152BED450C161D56FF776472821DE56C0DAA7FE1E",
   "type": "rubydung",
   "enableScreenshotPatch": true,
+  "enableCursorPatch": true,
   "legacy": true,
   "baseVersion": "rd-160052-launcher",
   "useFOVPatch": true,

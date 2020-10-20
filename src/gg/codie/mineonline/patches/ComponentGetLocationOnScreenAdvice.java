@@ -15,21 +15,11 @@ public class ComponentGetLocationOnScreenAdvice {
 
     @Advice.OnMethodExit
     static void intercept(@Advice.Return(readOnly = false) Point returnPoint) {
-        returnPoint = new Point(0, 0);
-//        try {
-//
-////            Class lwjglMouseClass = ClassLoader.getSystemClassLoader().loadClass("org.lwjgl.input.Mouse");
-////            int x = (int)lwjglMouseClass.getMethod("getX").invoke(null);
-////            int y = (int)lwjglMouseClass.getMethod("getY").invoke(null);
-////
-////            System.out.println("Getting location: " + x + ", " + y);
-////
-////            returnPoint = new Point(x, y);
-//            //System.out.println("Getting location " + x + ", " + y);
-//            //Mouse.setGrabbed(cursor != null);
-//            //return true;
-//        } catch (Exception ex) {
-//
-//        }
+        try {
+            if (ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.lwjgl.LWJGLMouseSetNativeCursorAdvice").getField("isFocused").getBoolean(null))
+                returnPoint = new Point(0, 0);
+        } catch (Exception ex) {
+
+        }
     }
 }
