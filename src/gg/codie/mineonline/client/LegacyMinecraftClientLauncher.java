@@ -1,6 +1,5 @@
 package gg.codie.mineonline.client;
 
-import gg.codie.minecraft.client.MouseHelper;
 import gg.codie.minecraft.client.Options;
 import gg.codie.mineonline.*;
 import gg.codie.mineonline.discord.DiscordPresence;
@@ -13,6 +12,7 @@ import gg.codie.mineonline.patches.*;
 import gg.codie.mineonline.patches.lwjgl.LWJGLDisplayPatch;
 import gg.codie.mineonline.patches.lwjgl.LWJGLOrthoPatch;
 import gg.codie.mineonline.patches.lwjgl.LWJGLPerspectivePatch;
+import gg.codie.mineonline.patches.minecraft.ClassicMousePatch;
 import gg.codie.mineonline.patches.minecraft.FOVViewmodelPatch;
 import gg.codie.mineonline.patches.minecraft.GuiScreenPatch;
 import gg.codie.mineonline.patches.minecraft.ScaledResolutionConstructorPatch;
@@ -22,7 +22,6 @@ import gg.codie.utils.OSUtils;
 import gg.codie.utils.TransferableImage;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector2f;
@@ -79,8 +78,6 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
             launchArgs.add("-javaagent:" + LauncherFiles.PATCH_AGENT_JAR);
             launchArgs.add("-Djava.util.Arrays.useLegacyMergeSort=true");
             launchArgs.add("-Djava.net.preferIPv4Stack=true");
-            if(OSUtils.isMac())
-                launchArgs.add("-XstartOnFirstThread");
             launchArgs.add("-Dmineonline.username=" + Session.session.getUsername());
             launchArgs.add("-Dmineonline.token=" + Session.session.getSessionToken());
             launchArgs.add("-Dmineonline.uuid=" + Session.session.getUuid());
@@ -214,13 +211,13 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
 
         fullscreen = Settings.settings.has(Settings.FULLSCREEN) && Settings.settings.getBoolean(Settings.FULLSCREEN);
 
-        if (OSUtils.isMac() && minecraftVersion.forceFullscreenMacos) {
-            Display.setDisplayMode(Display.getDesktopDisplayMode());
-            Display.setFullscreen(true);
-            DisplayManager.fullscreen(true);
-            fullscreen = true;
-
-            appletResize(DisplayManager.getFrame().getWidth(), DisplayManager.getFrame().getHeight());
+        if (OSUtils.isMac() && minecraftVersion != null && minecraftVersion.forceFullscreenMacos) {
+//            Display.setDisplayMode(Display.getDesktopDisplayMode());
+//            Display.setFullscreen(true);
+//            DisplayManager.fullscreen(true);
+//            fullscreen = true;
+//
+//            appletResize(DisplayManager.getFrame().getWidth(), DisplayManager.getFrame().getHeight());
         } else if (fullscreen) {
             if (minecraftVersion != null && minecraftVersion.enableFullscreenPatch) {
                 setFullscreen(true);
@@ -239,7 +236,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
             public void onCreateEvent() {
                 DisplayManager.checkGLError("minecraft create hook start");
                 renderer = new Renderer();
-                MouseHelper.getSingleton();
+                //MouseHelper.getSingleton();
                 DisplayManager.checkGLError("minecraft create hook end");
             }
         };
@@ -311,6 +308,16 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
             public void onUpdateEvent() {
                 DisplayManager.checkGLError("minecraft update hook start");
 
+                //Mouse.setGrabbed(false);
+
+//                if (LWJGLMouseSetNativeCursorAdvice.isFoucused) {
+//                    int h = (DisplayManager.getFrame().getHeight() - DisplayManager.getFrame().getInsets().top - DisplayManager.getFrame().getInsets().bottom);
+//
+//                    Mouse.setCursorPosition(DisplayManager.getFrame().getWidth() / 2, h / 2);
+//                }
+
+                //Mouse.setGrabbed(LWJGLMouseSetNativeCursorAdvice.isFoucused);
+
                 if (renderer != null) {
                     if (Globals.DEV) {
                         //renderer.renderStringIngame(new Vector2f(1, 1), 8, "MineOnline Dev " + Globals.LAUNCHER_VERSION, org.newdawn.slick.Color.white);
@@ -363,17 +370,17 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
                     firstUpdate = false;
                 }
 
-                // This stops the mouse from spinning out on mac os.
-                if (OSUtils.isMac() && minecraftVersion.enableMacosCursorPatch) {
-                    try {
-                        // If you're not in a menu...
-                        if (Mouse.getNativeCursor() != null) {
-                            Mouse.setCursorPosition(Display.getWidth() / 2, Display.getHeight() / 2);
-                        }
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
-                }
+//                // This stops the mouse from spinning out on mac os.
+//                if (OSUtils.isMac() && minecraftVersion.enableMacosCursorPatch) {
+//                    try {
+//                        // If you're not in a menu...
+//                        if (Mouse.getNativeCursor() != null) {
+//                            Mouse.setCursorPosition(Display.getWidth() / 2, Display.getHeight() / 2);
+//                        }
+//                    } catch (Exception ex) {
+//                        ex.printStackTrace();
+//                    }
+//                }
 
                 DisplayManager.checkGLError("minecraft update hook end");
             }
@@ -421,7 +428,12 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
         if (minecraftVersion != null && minecraftVersion.ingameVersionString != null && Settings.settings.optBoolean(Settings.HIDE_VERSION_STRING, false))
             StringPatch.hideVersionStrings(minecraftVersion.ingameVersionString);
 
+        ClassicMousePatch.fixNativeCursorClassic();
+
         minecraftApplet.init();
+
+        DisplayManager.getCanvas().setFocusable(true);
+
         minecraftApplet.start();
     }
 
