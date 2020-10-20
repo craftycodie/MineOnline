@@ -78,8 +78,6 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
             launchArgs.add("-javaagent:" + LauncherFiles.PATCH_AGENT_JAR);
             launchArgs.add("-Djava.util.Arrays.useLegacyMergeSort=true");
             launchArgs.add("-Djava.net.preferIPv4Stack=true");
-            if(OSUtils.isMac())
-                launchArgs.add("-XstartOnFirstThread");
             launchArgs.add("-Dmineonline.username=" + Session.session.getUsername());
             launchArgs.add("-Dmineonline.token=" + Session.session.getSessionToken());
             launchArgs.add("-Dmineonline.uuid=" + Session.session.getUuid());
@@ -219,7 +217,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
             DisplayManager.fullscreen(true);
             fullscreen = true;
 
-            appletResize(DisplayManager.getFrame().getWidth(), DisplayManager.getFrame().getHeight());
+            appletResize(Display.getDesktopDisplayMode().getWidth(), Display.getDesktopDisplayMode().getHeight());
         } else if (fullscreen) {
             if (minecraftVersion != null && minecraftVersion.enableFullscreenPatch) {
                 setFullscreen(true);
@@ -420,6 +418,11 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
             StringPatch.hideVersionStrings(minecraftVersion.ingameVersionString);
 
         minecraftApplet.init();
+
+        if (fullscreen) {
+            appletResize(Display.getDesktopDisplayMode().getWidth(), Display.getDesktopDisplayMode().getHeight());
+        }
+
         minecraftApplet.start();
     }
 
