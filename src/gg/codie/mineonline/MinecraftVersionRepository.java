@@ -277,10 +277,12 @@ public class MinecraftVersionRepository {
                     }
                 }
             }
-            // Fetch latest versions from the API
-            ProgressDialog.setSubMessage("Downloading latest version information...");
-            ProgressDialog.setProgress(44);
-            fetchVersions();
+            if (!Globals.DEV) {
+                // Fetch latest versions from the API
+                ProgressDialog.setSubMessage("Downloading latest version information...");
+                ProgressDialog.setProgress(44);
+                fetchVersions();
+            }
             // Load cached versions
             ProgressDialog.setSubMessage("Reading version information...");
             ProgressDialog.setProgress(48);

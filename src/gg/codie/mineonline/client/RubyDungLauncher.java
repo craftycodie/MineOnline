@@ -10,7 +10,9 @@ import gg.codie.mineonline.patches.ClassPatch;
 import gg.codie.mineonline.patches.StringPatch;
 import gg.codie.mineonline.patches.URLPatch;
 import gg.codie.mineonline.patches.lwjgl.LWJGLDisplayPatch;
+import gg.codie.mineonline.patches.lwjgl.LWJGLMouseSetNativeCursorAdvice;
 import gg.codie.mineonline.patches.lwjgl.LWJGLPerspectivePatch;
+import gg.codie.mineonline.patches.minecraft.ClassicMousePatch;
 import gg.codie.mineonline.utils.JREUtils;
 import gg.codie.mineonline.utils.Logging;
 import gg.codie.utils.OSUtils;
@@ -61,8 +63,6 @@ public class RubyDungLauncher {
             launchArgs.add("-javaagent:" + LauncherFiles.PATCH_AGENT_JAR);
             launchArgs.add("-Djava.util.Arrays.useLegacyMergeSort=true");
             launchArgs.add("-Djava.net.preferIPv4Stack=true");
-            if(OSUtils.isMac())
-                launchArgs.add("-XstartOnFirstThread");
             launchArgs.add("-Dmineonline.username=" + Session.session.getUsername());
             launchArgs.add("-Dmineonline.token=" + Session.session.getSessionToken());
             launchArgs.add("-Dmineonline.uuid=" + Session.session.getUuid());
@@ -144,6 +144,9 @@ public class RubyDungLauncher {
 
             LWJGLDisplayPatch.hijackLWJGLThreadPatch();
 
+            if (minecraftVersion != null && minecraftVersion.enableCursorPatch && !OSUtils.isWindows())
+                ClassicMousePatch.fixNativeCursorClassic();
+
             Class rubyDungClass;
             try {
                 rubyDungClass = classLoader.loadClass("com.mojang.rubydung.RubyDung");
@@ -169,6 +172,11 @@ public class RubyDungLauncher {
                 @Override
                 public void onUpdateEvent() {
                     DisplayManager.checkGLError("minecraft update hook start");
+
+                    if (!OSUtils.isWindows() && minecraftVersion != null && minecraftVersion.enableCursorPatch) {
+                        if (Mouse.isGrabbed() != LWJGLMouseSetNativeCursorAdvice.isFocused && !LWJGLMouseSetNativeCursorAdvice.isFocused)
+                            Mouse.setGrabbed(LWJGLMouseSetNativeCursorAdvice.isFocused);
+                    }
 
                     // DEBUG: Frees the cursor when pressing tab.
 //                    if (Keyboard.getEventKey() == Keyboard.KEY_TAB) {
@@ -207,18 +215,6 @@ public class RubyDungLauncher {
                             if (Keyboard.getEventKey() == Keyboard.KEY_F2 && !Keyboard.isRepeatEvent() && !Keyboard.getEventKeyState()) {
                                 f2wasDown = false;
                             }
-                        }
-                    }
-
-                    // This stops the mouse from spinning out on mac os.
-                    if (OSUtils.isMac() && minecraftVersion.enableMacosCursorPatch) {
-                        try {
-                            // If you're not in a menu...
-                            if (Mouse.getNativeCursor() != null) {
-                                Mouse.setCursorPosition(Display.getWidth() / 2, Display.getHeight() / 2);
-                            }
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
                         }
                     }
 

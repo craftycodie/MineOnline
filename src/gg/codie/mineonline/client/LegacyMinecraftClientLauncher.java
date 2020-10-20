@@ -10,8 +10,10 @@ import gg.codie.mineonline.lwjgl.OnCreateListener;
 import gg.codie.mineonline.lwjgl.OnUpdateListener;
 import gg.codie.mineonline.patches.*;
 import gg.codie.mineonline.patches.lwjgl.LWJGLDisplayPatch;
+import gg.codie.mineonline.patches.lwjgl.LWJGLMouseSetNativeCursorAdvice;
 import gg.codie.mineonline.patches.lwjgl.LWJGLOrthoPatch;
 import gg.codie.mineonline.patches.lwjgl.LWJGLPerspectivePatch;
+import gg.codie.mineonline.patches.minecraft.ClassicMousePatch;
 import gg.codie.mineonline.patches.minecraft.FOVViewmodelPatch;
 import gg.codie.mineonline.patches.minecraft.GuiScreenPatch;
 import gg.codie.mineonline.patches.minecraft.ScaledResolutionConstructorPatch;
@@ -183,6 +185,9 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
 
         LWJGLDisplayPatch.hijackLWJGLThreadPatch();
 
+        if (minecraftVersion != null && minecraftVersion.enableCursorPatch && !OSUtils.isWindows())
+            ClassicMousePatch.fixNativeCursorClassic();
+
         if(minecraftVersion != null)
             DiscordPresence.play(minecraftVersion.name, serverAddress, serverPort);
         else
@@ -208,25 +213,6 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
             }
         });
 
-
-        fullscreen = Settings.settings.has(Settings.FULLSCREEN) && Settings.settings.getBoolean(Settings.FULLSCREEN);
-
-        if (OSUtils.isMac() && minecraftVersion.forceFullscreenMacos) {
-            Display.setDisplayMode(Display.getDesktopDisplayMode());
-            Display.setFullscreen(true);
-            DisplayManager.fullscreen(true);
-            fullscreen = true;
-
-            appletResize(Display.getDesktopDisplayMode().getWidth(), Display.getDesktopDisplayMode().getHeight());
-        } else if (fullscreen) {
-            if (minecraftVersion != null && minecraftVersion.enableFullscreenPatch) {
-                setFullscreen(true);
-            } else {
-                Display.setDisplayMode(Display.getDesktopDisplayMode());
-                Display.setFullscreen(true);
-            }
-        }
-
         String appletClassName = MinecraftVersion.getAppletClass(jarPath);
 
         Frame frame = DisplayManager.getFrame();
@@ -236,6 +222,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
             public void onCreateEvent() {
                 DisplayManager.checkGLError("minecraft create hook start");
                 renderer = new Renderer();
+                //MouseHelper.getSingleton();
                 DisplayManager.checkGLError("minecraft create hook end");
             }
         };
@@ -307,6 +294,26 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
             public void onUpdateEvent() {
                 DisplayManager.checkGLError("minecraft update hook start");
 
+                if (!OSUtils.isWindows() && minecraftVersion != null && minecraftVersion.enableCursorPatch) {
+                    if (Mouse.isGrabbed() != LWJGLMouseSetNativeCursorAdvice.isFocused && !LWJGLMouseSetNativeCursorAdvice.isFocused)
+                        Mouse.setGrabbed(LWJGLMouseSetNativeCursorAdvice.isFocused);
+                }
+
+                if (firstUpdate) {
+                    try {
+                        if (fullscreen) {
+                            if (minecraftVersion != null && minecraftVersion.enableFullscreenPatch) {
+                                setFullscreen(true);
+                            } else {
+                                Display.setDisplayMode(Display.getDesktopDisplayMode());
+                                Display.setFullscreen(true);
+                            }
+                        }
+                    } catch (Exception ex) {
+
+                    }
+                }
+
                 if (renderer != null) {
                     if (Globals.DEV) {
                         //renderer.renderStringIngame(new Vector2f(1, 1), 8, "MineOnline Dev " + Globals.LAUNCHER_VERSION, org.newdawn.slick.Color.white);
@@ -344,7 +351,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
                             f2wasDown = false;
                         }
                     }
-                    if (minecraftVersion != null && minecraftVersion.enableFullscreenPatch && !(OSUtils.isMac() && minecraftVersion.forceFullscreenMacos)) {
+                    if (minecraftVersion != null && minecraftVersion.enableFullscreenPatch) {
                         if (Keyboard.getEventKey() == Keyboard.KEY_F11 && !Keyboard.isRepeatEvent() && Keyboard.getEventKeyState() && !f11WasDown) {
                             setFullscreen(!fullscreen);
                             f11WasDown = true;
@@ -357,18 +364,6 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
 
                 if (firstUpdate) {
                     firstUpdate = false;
-                }
-
-                // This stops the mouse from spinning out on mac os.
-                if (OSUtils.isMac() && minecraftVersion.enableMacosCursorPatch) {
-                    try {
-                        // If you're not in a menu...
-                        if (Mouse.getNativeCursor() != null) {
-                            Mouse.setCursorPosition(Display.getWidth() / 2, Display.getHeight() / 2);
-                        }
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
                 }
 
                 DisplayManager.checkGLError("minecraft update hook end");
@@ -419,9 +414,9 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
 
         minecraftApplet.init();
 
-        if (fullscreen) {
-            appletResize(Display.getDesktopDisplayMode().getWidth(), Display.getDesktopDisplayMode().getHeight());
-        }
+        DisplayManager.getCanvas().setFocusable(true);
+
+        fullscreen = Settings.settings.has(Settings.FULLSCREEN) && Settings.settings.getBoolean(Settings.FULLSCREEN);
 
         minecraftApplet.start();
     }
@@ -479,7 +474,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
 
         If any of these searches fail, resizing should just do nothing.
     */
-    public void appletResize(int width,int height){
+    public void appletResize(int width, int height){
         try {
             Field minecraftField = null;
 
@@ -626,9 +621,11 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
             minecraftApplet.setPreferredSize(new Dimension(widthBeforeFullscreen, heightBeforeFullscreen));
             minecraftApplet.resize(new Dimension(widthBeforeFullscreen , heightBeforeFullscreen));
         } else {
-            appletResize(DisplayManager.getFrame().getWidth(), DisplayManager.getFrame().getHeight());
-            minecraftApplet.setPreferredSize(new Dimension(DisplayManager.getFrame().getWidth(), DisplayManager.getFrame().getHeight()));
-            minecraftApplet.resize(new Dimension(DisplayManager.getFrame().getWidth(), DisplayManager.getFrame().getHeight()));
+            appletResize(Display.getDesktopDisplayMode().getWidth(), Display.getDesktopDisplayMode().getHeight());
+            minecraftApplet.setPreferredSize(new Dimension(Display.getDesktopDisplayMode().getWidth(), Display.getDesktopDisplayMode().getHeight()));
+            minecraftApplet.resize(new Dimension(Display.getDesktopDisplayMode().getWidth(), Display.getDesktopDisplayMode().getHeight()));
+            DisplayManager.getFrame().setPreferredSize(new Dimension(Display.getDesktopDisplayMode().getWidth(), Display.getDesktopDisplayMode().getHeight()));
+            DisplayManager.getFrame().resize(new Dimension(Display.getDesktopDisplayMode().getWidth(), Display.getDesktopDisplayMode().getHeight()));
         }
 
         DisplayManager.getFrame().pack();
@@ -654,7 +651,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
                 height = minecraftApplet.getHeight();
             }
 
-            if(buffer == null || buffer.capacity() < width * height)
+            if(buffer == null || buffer.capacity() != width * height)
             {
                 buffer = BufferUtils.createByteBuffer(width * height * 3);
             }

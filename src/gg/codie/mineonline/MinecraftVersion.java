@@ -36,8 +36,7 @@ public class MinecraftVersion {
     public final boolean enableFullscreenPatch;
     public final String info;
     public final String[] clientVersions;
-    public final boolean forceFullscreenMacos;
-    public final boolean enableMacosCursorPatch;
+    public final boolean enableCursorPatch;
     public final boolean legacy;
     public final String assetIndex;
     public final String[] libraries;
@@ -64,8 +63,7 @@ public class MinecraftVersion {
             boolean enableFullscreenPatch,
             String info,
             String[] clientVersions,
-            boolean forceFullscreenMacos,
-            boolean enableMacosCursorPatch,
+            boolean enableCursorPatch,
             boolean legacy,
             String assetIndex,
             String[] libraries,
@@ -90,9 +88,8 @@ public class MinecraftVersion {
         this.baseVersion = baseVersion;
         this.enableFullscreenPatch = enableFullscreenPatch;
         this.info = info;
-        this.forceFullscreenMacos = forceFullscreenMacos;
         this.clientVersions = clientVersions;
-        this.enableMacosCursorPatch = enableMacosCursorPatch;
+        this.enableCursorPatch = enableCursorPatch;
         this.legacy = legacy;
         this.assetIndex = assetIndex;
         this.libraries = libraries;
@@ -120,8 +117,7 @@ public class MinecraftVersion {
         enableFullscreenPatch = (object.has("enableFullscreenPatch") && object.getBoolean("enableFullscreenPatch"));
         info = (object.has("info") ? object.getString("info") : null);
         clientVersions = (object.has("clientVersions") ? JSONUtils.getStringArray(object.getJSONArray("clientVersions")) : new String[] { object.getString("baseVersion")});
-        forceFullscreenMacos = (object.has("forceFullscreenMacos") && object.getBoolean("forceFullscreenMacos"));
-        enableMacosCursorPatch = (object.has("enableMacosCursorPatch") && object.getBoolean("enableMacosCursorPatch"));
+        enableCursorPatch = (object.has("enableCursorPatch") && object.getBoolean("enableCursorPatch"));
         legacy = (object.has("legacy") && object.getBoolean("legacy"));
         assetIndex = (object.has("assetIndex") ? object.getString("assetIndex") : object.has("baseVersion") ? object.getString("baseVersion") : null);
         libraries = (object.has("libraries") ? JSONUtils.getStringArray(object.getJSONArray("libraries")) : new String[0]);
@@ -316,7 +312,6 @@ public class MinecraftVersion {
                 false,
                 null,
                 new String[] { versionManifest.getString("id")},
-                false,
                 false,
                 false,
                 versionManifest.getString("assets"),
