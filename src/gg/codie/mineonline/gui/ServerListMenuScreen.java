@@ -123,6 +123,7 @@ public class ServerListMenuScreen implements IMenuScreen {
         };
 
         connectButton = new MediumButton("Connect", new Vector2f((DisplayManager.getDefaultWidth() / 2) + 8, DisplayManager.getDefaultHeight() - 20), selectListener);
+        connectButton.setDisabled(true);
 
         backButton = new MediumButton("Back", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 308, DisplayManager.getDefaultHeight() - 20), new IOnClickListener() {
             @Override
@@ -141,6 +142,9 @@ public class ServerListMenuScreen implements IMenuScreen {
         connectButton.update();
         backButton.update();
         selectableServerList.update();
+
+        if (selectableServerList.getSelected() != null && connectButton.getDisabled())
+            connectButton.setDisabled(false);
     }
 
     public void render(Renderer renderer) {
