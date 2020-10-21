@@ -91,6 +91,8 @@ This file should contain an array of JSON versions, like this:
 Legacy is true for any pre-1.6 minecraft version.
 For 1.6 and above, libraries should be provided. Examples can be found [here](https://github.com/codieradical/MineOnline/blob/master/res/versions/client/).
 
+I recommend you start with the unmodded version information as a template, as most of the settings will carry over.
+
 If you would like a version to be added to the main list, contact me (Codie).
 
 ## For Developers
