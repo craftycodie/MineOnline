@@ -10,5 +10,6 @@
   "baseVersion": "in-20100129-2",
   "useFOVPatch": true,
   "useTexturepackPatch": true,
-  "ingameVersionString": "0.31"
+  "ingameVersionString": "0.31",
+  "enableCursorPatch": true
 }

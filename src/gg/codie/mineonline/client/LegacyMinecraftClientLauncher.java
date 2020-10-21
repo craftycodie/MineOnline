@@ -15,7 +15,7 @@ import gg.codie.mineonline.patches.lwjgl.LWJGLOrthoPatch;
 import gg.codie.mineonline.patches.lwjgl.LWJGLPerspectivePatch;
 import gg.codie.mineonline.patches.minecraft.FOVViewmodelPatch;
 import gg.codie.mineonline.patches.minecraft.GuiScreenPatch;
-import gg.codie.mineonline.patches.minecraft.IndevMousePatch;
+import gg.codie.mineonline.patches.minecraft.MousePatch;
 import gg.codie.mineonline.patches.minecraft.ScaledResolutionConstructorPatch;
 import gg.codie.mineonline.utils.JREUtils;
 import gg.codie.mineonline.utils.Logging;
@@ -185,11 +185,8 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
 
         LWJGLDisplayPatch.hijackLWJGLThreadPatch();
 
-//        if (minecraftVersion != null && minecraftVersion.enableCursorPatch && !OSUtils.isWindows())
-//            ClassicMousePatch.fixNativeCursorClassic();
-
         if (minecraftVersion != null && minecraftVersion.enableCursorPatch && !OSUtils.isWindows())
-            IndevMousePatch.fixCursorIndev();
+            MousePatch.fixMouseIssues();
 
         if(minecraftVersion != null)
             DiscordPresence.play(minecraftVersion.name, serverAddress, serverPort);
@@ -298,7 +295,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
                 DisplayManager.checkGLError("minecraft update hook start");
 
                 if (!OSUtils.isWindows() && minecraftVersion != null && minecraftVersion.enableCursorPatch) {
-                    if (Mouse.isGrabbed() != LWJGLMouseSetNativeCursorAdvice.isFocused && !LWJGLMouseSetNativeCursorAdvice.isFocused)
+                    if (Mouse.isGrabbed() != LWJGLMouseSetNativeCursorAdvice.isFocused)
                         Mouse.setGrabbed(LWJGLMouseSetNativeCursorAdvice.isFocused);
                 }
 

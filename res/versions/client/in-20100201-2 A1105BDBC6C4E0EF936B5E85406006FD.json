@@ -10,5 +10,6 @@
   "scaledResolutionClass": "net.minecraft.client.b.h",
   "useFOVPatch": true,
   "useTexturepackPatch": true,
-  "ingameVersionString": "0.31"
+  "ingameVersionString": "0.31",
+  "enableCursorPatch": true
 }

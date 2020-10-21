@@ -8,5 +8,6 @@
   "baseVersion": "inf-20100327",
   "useFOVPatch": true,
   "useTexturepackPatch": true,
-  "ingameVersionString": "Minecraft Infdev"
+  "ingameVersionString": "Minecraft Infdev",
+  "enableCursorPatch": true
 }

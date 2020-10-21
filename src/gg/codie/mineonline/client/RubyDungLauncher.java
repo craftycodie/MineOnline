@@ -12,7 +12,7 @@ import gg.codie.mineonline.patches.URLPatch;
 import gg.codie.mineonline.patches.lwjgl.LWJGLDisplayPatch;
 import gg.codie.mineonline.patches.lwjgl.LWJGLMouseSetNativeCursorAdvice;
 import gg.codie.mineonline.patches.lwjgl.LWJGLPerspectivePatch;
-import gg.codie.mineonline.patches.minecraft.ClassicMousePatch;
+import gg.codie.mineonline.patches.minecraft.MousePatch;
 import gg.codie.mineonline.utils.JREUtils;
 import gg.codie.mineonline.utils.Logging;
 import gg.codie.utils.OSUtils;
@@ -145,7 +145,7 @@ public class RubyDungLauncher {
             LWJGLDisplayPatch.hijackLWJGLThreadPatch();
 
             if (minecraftVersion != null && minecraftVersion.enableCursorPatch && !OSUtils.isWindows())
-                ClassicMousePatch.fixNativeCursorClassic();
+                MousePatch.fixMouseIssues();
 
             Class rubyDungClass;
             try {
@@ -174,7 +174,7 @@ public class RubyDungLauncher {
                     DisplayManager.checkGLError("minecraft update hook start");
 
                     if (!OSUtils.isWindows() && minecraftVersion != null && minecraftVersion.enableCursorPatch) {
-                        if (Mouse.isGrabbed() != LWJGLMouseSetNativeCursorAdvice.isFocused && !LWJGLMouseSetNativeCursorAdvice.isFocused)
+                        if (Mouse.isGrabbed() != LWJGLMouseSetNativeCursorAdvice.isFocused)
                             Mouse.setGrabbed(LWJGLMouseSetNativeCursorAdvice.isFocused);
                     }
 
