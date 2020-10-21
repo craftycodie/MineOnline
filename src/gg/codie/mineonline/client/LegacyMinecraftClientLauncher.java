@@ -622,7 +622,6 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
             minecraftApplet.setPreferredSize(new Dimension(Display.getDesktopDisplayMode().getWidth(), Display.getDesktopDisplayMode().getHeight()));
             minecraftApplet.resize(new Dimension(Display.getDesktopDisplayMode().getWidth(), Display.getDesktopDisplayMode().getHeight()));
             DisplayManager.getFrame().setPreferredSize(new Dimension(Display.getDesktopDisplayMode().getWidth(), Display.getDesktopDisplayMode().getHeight()));
-            DisplayManager.getFrame().resize(new Dimension(Display.getDesktopDisplayMode().getWidth(), Display.getDesktopDisplayMode().getHeight()));
         }
 
         DisplayManager.getFrame().pack();
