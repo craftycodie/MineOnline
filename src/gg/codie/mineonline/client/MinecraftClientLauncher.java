@@ -208,6 +208,9 @@ public class MinecraftClientLauncher {
             Method main = clazz.getMethod("main", String[].class);
 
             SocketPatch.watchSockets();
+            URLPatch.redefineURL();
+            YggdrasilMinecraftSessionServicePatch.allowMineonlineSkins(classLoader);
+            PropertiesSignaturePatch.redefineIsSignatureValid(classLoader);
 
             main.invoke(null, new Object[] {args.toArray(new String[0])});
 
