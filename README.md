@@ -47,7 +47,7 @@ These are features MineOnline will bring to Minecraft.
 
 - Server Authentication (online-mode and verify-names)
 
-- Resizable & Fullscreenable Applets
+- Resizable & Fullscreenable Applets with Mac and Linux Support
 
 - Full Discord Integration
 
