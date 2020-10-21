@@ -185,7 +185,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
 
         LWJGLDisplayPatch.hijackLWJGLThreadPatch();
 
-        if (minecraftVersion != null && minecraftVersion.enableCursorPatch && !OSUtils.isWindows())
+        if (minecraftVersion != null && minecraftVersion.enableCursorPatch && OSUtils.isMac())
             MousePatch.fixMouseIssues();
 
         if(minecraftVersion != null)

@@ -144,7 +144,7 @@ public class RubyDungLauncher {
 
             LWJGLDisplayPatch.hijackLWJGLThreadPatch();
 
-            if (minecraftVersion != null && minecraftVersion.enableCursorPatch && !OSUtils.isWindows())
+            if (minecraftVersion != null && minecraftVersion.enableCursorPatch && OSUtils.isMac())
                 MousePatch.fixMouseIssues();
 
             Class rubyDungClass;

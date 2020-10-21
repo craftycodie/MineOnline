@@ -9,7 +9,7 @@ public class LWJGLMouseSetNativeCursorAdvice {
 
     @Advice.OnMethodEnter(skipOn = Advice.OnNonDefaultValue.class)
     static boolean intercept(@Advice.Argument(0) Cursor cursor) {
-        System.out.println("cursor " + cursor);
+        //System.out.println("cursor " + cursor);
 
         isFocused = cursor != null;
 
