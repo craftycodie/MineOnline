@@ -20,10 +20,6 @@ import java.util.Map;
 
 public class MinecraftServerProcess {
 
-    public static final String PROP_AUTH_HOST = "minecraft.api.auth.host";
-    public static final String PROP_ACCOUNT_HOST = "minecraft.api.account.host";
-    public static final String PROP_SESSION_HOST = "minecraft.api.session.host";
-
     public static Process startMinecraftServer(String[] args) throws Exception {
         java.util.Properties props = System.getProperties();
 

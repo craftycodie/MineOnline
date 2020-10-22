@@ -11,6 +11,9 @@ public class FileConstructWithParentAdvice {
             return;
         if (child == null || child.isEmpty())
             return;
+        // Warning: This stops the hook from recurring, the class load below uses this same constructor!
+        if (!parent.toString().contains("resources") || parent.toString().contains(".jar") || parent.toString().contains(".exe"))
+            return;
 
         String path = parent.getPath() + File.separator + child;
 
