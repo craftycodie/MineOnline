@@ -9,5 +9,6 @@
   "baseVersion": "inf-20100630-2",
   "useFOVPatch": true,
   "useTexturepackPatch": true,
-  "ingameVersionString": "Minecraft Infdev"
+  "ingameVersionString": "Minecraft Infdev",
+  "resourcesVersion": "a1.0.1_01"
 }

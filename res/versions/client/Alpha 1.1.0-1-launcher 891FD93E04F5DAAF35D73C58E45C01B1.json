@@ -11,5 +11,6 @@
   "ingameVersionString": "Minecraft Alpha v1.1.0",
   "entityRendererClass": "iq",
   "viewModelFunction": "b",
-  "scaledResolutionClass": "iy"
+  "scaledResolutionClass": "iy",
+  "resourcesVersion": "a1.1.0"
 }

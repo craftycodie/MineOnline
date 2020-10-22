@@ -9,5 +9,6 @@
   "ingameVersionString": "Minecraft Beta 1.3_01",
   "entityRendererClass": "mh",
   "viewModelFunction": "b",
-  "scaledResolutionClass": "mt"
+  "scaledResolutionClass": "mt",
+  "resourcesVersion": "b1.3_01"
 }

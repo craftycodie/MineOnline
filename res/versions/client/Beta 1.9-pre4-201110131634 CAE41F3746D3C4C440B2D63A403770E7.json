@@ -6,5 +6,6 @@
   "appletOnly": true,
   "legacy": true,
   "baseVersion": "b1.9-pre4",
-  "ingameVersionString": "Minecraft Beta 1.9 Prerelease 4"
+  "ingameVersionString": "Minecraft Beta 1.9 Prerelease 4",
+  "resourcesVersion": "b1.9-pre4"
 }

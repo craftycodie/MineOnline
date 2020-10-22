@@ -6,5 +6,6 @@
   "legacy": true,
   "baseVersion": "b1.3",
   "useFOVPatch": true,
-  "ingameVersionString": "Minecraft Beta 1.3"
+  "ingameVersionString": "Minecraft Beta 1.3",
+  "resourcesVersion": "b1.3_01"
 }

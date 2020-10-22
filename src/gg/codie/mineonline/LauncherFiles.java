@@ -41,6 +41,8 @@ public class LauncherFiles {
     public static final String MINEONLINE_CUSTOM_VERSIONS_FOLDER = MINEONLINE_FOLDER + "custom-versions" + File.separator;
     public static final String MINEONLINE_VERSIONS_FOLDER = MINEONLINE_FOLDER + "versions" + File.separator;
     public static final String MINEONLINE_LATEST_LOG = MINEONLINE_FOLDER + "latest.log";
+    public static final String MINEONLINE_RESOURCES_PATH = MINEONLINE_FOLDER + "resources" + File.separator;
+
 
     public static final String MINECRAFT_RESOURCES_PATH = getOldMinecraftDirectory() + File.separator + "resources" + File.separator;
     public static final String MINECRAFT_TEXTURE_PACKS_PATH = getOldMinecraftDirectory() + File.separator + "texturepacks" + File.separator;

@@ -8,5 +8,6 @@
   "ingameVersionString": "0.0.18a_02",
   "enableScreenshotPatch": true,
   "enableCursorPatch": true,
-  "legacy": true
+  "legacy": true,
+  "resourcesVersion": "c0.0.22a_05"
 }

@@ -16,8 +16,13 @@ public class URLContextConstructAdvice {
                 context = new URL(updateURL.substring(0, updateURL.lastIndexOf("/") + 1));
                 spec = updateURL.substring(updateURL.lastIndexOf("/") + 1);
             }
-            if (context != null && context.toString().endsWith("/MinecraftResources/") || context.toString().endsWith("/resources")) {
-                System.out.println("Downloading resource " + spec);
+            if (context != null && context.toString().endsWith("/MinecraftResources/") || context.toString().endsWith("/resources")|| context.toString().endsWith("/resources/")) {
+                String resourcesVersion = (String) ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.FilePatch").getField("resourcesVersion").get(null);
+
+                if (resourcesVersion != null)
+                    context = new URL(context.toString() + resourcesVersion + "/");
+
+                System.out.println("Downloading resource " + context.toString() + spec);
             }
         } catch (Exception ex) {
             ex.printStackTrace();

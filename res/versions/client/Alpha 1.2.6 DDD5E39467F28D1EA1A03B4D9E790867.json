@@ -9,5 +9,6 @@
   "useFOVPatch": true,
   "ingameVersionString": "Minecraft Alpha v1.2.6",
   "entityRendererClass": "kb",
-  "viewModelFunction": "b"
+  "viewModelFunction": "b",
+  "resourcesVersion": "b1.3_01"
 }

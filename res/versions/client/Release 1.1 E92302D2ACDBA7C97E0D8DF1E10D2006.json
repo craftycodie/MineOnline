@@ -4,5 +4,6 @@
   "sha256": "E065E9681462AA1B78F3CC589BA880D9AAE51994BCD4AF8C67BCAB5C47391CA0",
   "type": "client",
   "legacy": true,
-  "baseVersion": "1.1"
+  "baseVersion": "1.1",
+  "resourcesVersion": "1.2.5"
 }

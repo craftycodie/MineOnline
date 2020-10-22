@@ -5,5 +5,6 @@
   "type": "client",
   "appletOnly": true,
   "legacy": true,
-  "baseVersion": "1.2.1"
+  "baseVersion": "1.2.1",
+  "resourcesVersion": "1.2.5"
 }

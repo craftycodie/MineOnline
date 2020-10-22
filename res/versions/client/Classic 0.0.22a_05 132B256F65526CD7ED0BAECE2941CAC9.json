@@ -9,5 +9,6 @@
   "baseVersion": "c0.0.22a_05",
   "useFOVPatch": true,
   "useTexturepackPatch": true,
-  "ingameVersionString": "0.0.22a_05"
+  "ingameVersionString": "0.0.22a_05",
+  "resourcesVersion": "c0.0.22a_05"
 }

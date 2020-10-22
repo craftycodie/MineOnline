@@ -5,5 +5,6 @@
   "type": "client",
   "legacy": true,
   "baseVersion": "b1.9-pre2",
-  "ingameVersionString": "Minecraft Beta 1.9 Prerelease 2"
+  "ingameVersionString": "Minecraft Beta 1.9 Prerelease 2",
+  "resourcesVersion": "b1.9-pre4"
 }

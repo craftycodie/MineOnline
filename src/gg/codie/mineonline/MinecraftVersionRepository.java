@@ -134,23 +134,28 @@ public class MinecraftVersionRepository {
         if(dir == null)
             dir = Paths.get(LauncherFiles.MINECRAFT_VERSIONS_PATH);
 
-        try(DirectoryStream<Path> stream = Files.newDirectoryStream(dir)) {
-            for (Path path : stream) {
-                if(path.toFile().isDirectory()) {
-                    getOfficialLauncherJars(fileNames, path);
-                } else if(path.toAbsolutePath().toString().endsWith(".jar")) {
-                    String fileName = path.toAbsolutePath().getFileName().toString();
-                    if (fileName.equals("lwjgl.jar") || fileName.equals("lwjgl_util.jar") || fileName.equals("jinput.jar"))
-                        continue;
+        try {
 
-                    fileNames.add(path.toAbsolutePath().toString());
+            try (DirectoryStream<Path> stream = Files.newDirectoryStream(dir)) {
+                for (Path path : stream) {
+                    if (path.toFile().isDirectory()) {
+                        getOfficialLauncherJars(fileNames, path);
+                    } else if (path.toAbsolutePath().toString().endsWith(".jar")) {
+                        String fileName = path.toAbsolutePath().getFileName().toString();
+                        if (fileName.equals("lwjgl.jar") || fileName.equals("lwjgl_util.jar") || fileName.equals("jinput.jar"))
+                            continue;
+
+                        fileNames.add(path.toAbsolutePath().toString());
+                    }
                 }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch(IOException e) {
-            e.printStackTrace();
-        }
 
-        return fileNames;
+            return fileNames;
+        } catch (Exception ex) {
+            return new LinkedList<>();
+        }
     }
 
     private void loadOfficialLauncherVersions() {

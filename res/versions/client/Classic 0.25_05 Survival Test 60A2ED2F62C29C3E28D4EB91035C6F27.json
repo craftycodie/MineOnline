@@ -9,5 +9,6 @@
   "baseVersion": "c0.25_05_st",
   "useFOVPatch": true,
   "useTexturepackPatch": true,
-  "ingameVersionString": "0.25_05 SURVIVAL TEST"
+  "ingameVersionString": "0.25_05 SURVIVAL TEST",
+  "resourcesVersion": "a1.0.1_01"
 }

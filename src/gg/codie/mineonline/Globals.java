@@ -1,7 +1,7 @@
 package gg.codie.mineonline;
 
 public class Globals {
-    public static final String LAUNCHER_VERSION = "3.0.3_01";
+    public static final String LAUNCHER_VERSION = "3.1.0";
     public static final boolean DEV = false;
     public static final String API_HOSTNAME = "mineonline.codie.gg";
     public static final String API_PROTOCOL = "https://";

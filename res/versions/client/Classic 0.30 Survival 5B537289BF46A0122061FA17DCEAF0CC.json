@@ -10,5 +10,6 @@
   "guiClass": "com.mojang.minecraft.e.m",
   "useFOVPatch": true,
   "useTexturepackPatch": true,
-  "ingameVersionString": "0.30"
+  "ingameVersionString": "0.30",
+  "resourcesVersion": "a1.0.1_01"
 }

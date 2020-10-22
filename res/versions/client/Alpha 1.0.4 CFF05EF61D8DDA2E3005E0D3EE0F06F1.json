@@ -8,5 +8,6 @@
   "baseVersion": "a1.0.4",
   "useFOVPatch": true,
   "useTexturepackPatch": true,
-  "ingameVersionString": "Minecraft Alpha v1.0.4"
+  "ingameVersionString": "Minecraft Alpha v1.0.4",
+  "resourcesVersion": "a1.0.15"
 }

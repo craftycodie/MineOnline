@@ -10,5 +10,6 @@
   "scaledResolutionClass": "net.minecraft.client.c.g",
   "useTexturepackPatch": true,
   "ingameVersionString": "Minecraft Infdev",
-  "enableCursorPatch": true
+  "enableCursorPatch": true,
+  "resourcesVersion": "a1.0.1_01"
 }

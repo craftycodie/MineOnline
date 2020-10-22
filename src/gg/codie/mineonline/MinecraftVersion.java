@@ -50,6 +50,8 @@ public class MinecraftVersion {
     public final boolean useFOVPatch;
     public final boolean useTexturepackPatch;
     public final String ingameVersionString;
+    public final String resourcesVersion;
+    public final boolean useUsernamesPatch;
 
     public MinecraftVersion(
             String sha256,
@@ -76,7 +78,9 @@ public class MinecraftVersion {
             String viewModelFunction,
             boolean useFOVPatch,
             boolean useTexturepackPatch,
-            String ingameVersionString
+            String ingameVersionString,
+            String resourcesVersion,
+            boolean useUsernamesPatch
     ) {
         this.sha256 = sha256;
         this.name = name;
@@ -103,6 +107,8 @@ public class MinecraftVersion {
         this.useFOVPatch = useFOVPatch;
         this.useTexturepackPatch = useTexturepackPatch;
         this.ingameVersionString = ingameVersionString;
+        this.resourcesVersion = resourcesVersion;
+        this.useUsernamesPatch = useUsernamesPatch;
     }
 
     public MinecraftVersion(JSONObject object) {
@@ -131,6 +137,8 @@ public class MinecraftVersion {
         useFOVPatch = (object.has("useFOVPatch") && object.getBoolean("useFOVPatch"));
         useTexturepackPatch = (object.has("useTexturepackPatch") && object.getBoolean("useTexturepackPatch"));
         ingameVersionString = object.optString("ingameVersionString", null);
+        resourcesVersion = object.optString("resourcesVersion", "default");
+        useUsernamesPatch = object.optBoolean("useUsernamesPatch", false);
     }
 
 
@@ -301,31 +309,33 @@ public class MinecraftVersion {
             }
 
             return new MinecraftVersion(
-                null,
-                typeName + " " + versionNumber,
-                versionManifest.getString("id"),
-                MD5Checksum.getMD5ChecksumForFile(jarFile.getPath()),
-                "client",
-                false,
-                false,
-                false,
-                false,
-                null,
-                new String[] { versionManifest.getString("id")},
-                false,
-                false,
-                versionManifest.getString("assets"),
-                libraries.toArray(new String[0]),
-                natives.toArray(new String[0]),
-                typeName + " " + versionNumber,
-                null,
-                null,
-                null,
-                null,
-                null,
-                false,
-                false,
-                null
+                    null,
+                    typeName + " " + versionNumber,
+                    versionManifest.getString("id"),
+                    MD5Checksum.getMD5ChecksumForFile(jarFile.getPath()),
+                    "client",
+                    false,
+                    false,
+                    false,
+                    false,
+                    null,
+                    new String[] { versionManifest.getString("id")},
+                    false,
+                    false,
+                    versionManifest.getString("assets"),
+                    libraries.toArray(new String[0]),
+                    natives.toArray(new String[0]),
+                    typeName + " " + versionNumber,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    false,
+                    false,
+                    null,
+                    "default",
+                    false
             );
         } catch (Exception ex) {
             System.err.println("Bad launcher JSON for version " + jarFile);

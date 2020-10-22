@@ -5,6 +5,7 @@ import gg.codie.mineonline.LauncherFiles;
 import net.bytebuddy.asm.Advice;
 
 import java.lang.reflect.Method;
+import java.net.URL;
 
 public class URLConstructAdvice {
     public static String updateURL;
@@ -14,8 +15,9 @@ public class URLConstructAdvice {
     @Advice.OnMethodEnter
     static void intercept(@Advice.Argument(value = 0, readOnly = false) String url) {
         try {
-            if (url == null || url.isEmpty() || url.startsWith("file:"))
+            if (url == null || url.isEmpty() || url.startsWith("file:")) {
                 return;
+            }
 
             // Dont mess with document base urls. These need to stay the same.
             if (url.equals("http://www.minecraft.net:80/game/") || url.equals("http://www.minecraft.net/game/")) {
@@ -133,6 +135,13 @@ public class URLConstructAdvice {
 
                 url = (String)findCloakURLForUsername.invoke(null, username);
             } else {
+                if (url.endsWith("/MinecraftResources/") || url.endsWith("/resources")|| url.endsWith("/resources/")) {
+                    String resourcesVersion = (String) ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.FilePatch").getField("resourcesVersion").get(null);
+
+                    if (resourcesVersion != null)
+                        url = url + resourcesVersion + "/";
+                }
+
                 for (String replaceHost : new String[]{
                         "www.minecraft.net:-1",
                         "skins.minecraft.net",

@@ -7,5 +7,6 @@
   "baseVersion": "b1.7.3",
   "useFOVPatch": true,
   "entityRendererClass": "px",
-  "viewModelFunction": "b"
+  "viewModelFunction": "b",
+  "resourcesVersion": "b1.7.3"
 }

@@ -70,7 +70,11 @@ public class SelectableServer extends GUIObject {
         }
 
         if(this.info2 != null) {
-            info2Text = new GUIText(this.info2, 1.5f, TextMaster.minecraftFont, new Vector2f(currentPosition.x + 8, currentPosition.y - 26), 440, false, true);
+            if (!this.server.onlineMode && (info1 == null || info1.isEmpty()))
+                info2Text = new GUIText(this.info2, 1.5f, TextMaster.minecraftFont, new Vector2f(currentPosition.x + 8, currentPosition.y - 48), 440, false, true);
+            else
+                info2Text = new GUIText(this.info2, 1.5f, TextMaster.minecraftFont, new Vector2f(currentPosition.x + 8, currentPosition.y - 26), 440, false, true);
+
             info2Text.setColour(0.7F, 0.7F, 0.7F);
             info2Text.setYBounds(new Vector2f(69, 69));
         }
@@ -136,7 +140,10 @@ public class SelectableServer extends GUIObject {
         info1Text.setPosition(new Vector2f(currentPosition.x + 8, currentPosition.y - 48));
 
         if(this.info2 != null) {
-            info2Text.setPosition(new Vector2f(currentPosition.x + 8, currentPosition.y - 26));
+            if (!this.server.onlineMode && (info1 == null || info1.isEmpty()))
+                info2Text.setPosition(new Vector2f(currentPosition.x + 8, currentPosition.y - 48));
+            else
+                info2Text.setPosition(new Vector2f(currentPosition.x + 8, currentPosition.y - 26));
         }
 
         if(this.statusText != null) {

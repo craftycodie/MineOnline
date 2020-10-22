@@ -8,5 +8,6 @@
   "useFOVPatch": true,
   "useTexturepackPatch": true,
   "ingameVersionString": "0.0.19a_06",
-  "legacy": true
+  "legacy": true,
+  "resourcesVersion": "c0.0.22a_05"
 }
