@@ -232,13 +232,12 @@ public class MenuManager {
                         try {
                             File clientJar = new File(LauncherFiles.MINECRAFT_VERSIONS_PATH + compatibleClientBaseVersion + File.separator + "client.jar");
                             try {
-                                LauncherAPI.downloadVersion(compatibleClientBaseVersion);
+                                MineOnlineAPI.downloadVersion(compatibleClientBaseVersion);
                             } catch (Exception ex) {
-                                System.err.println("Couldn't find " + compatibleClientBaseVersion + " in the official versions list.");
-                                ex.printStackTrace();
+                                // ignore
                             }
                             if (!clientJar.exists())
-                                MineOnlineAPI.downloadVersion(compatibleClientBaseVersion);
+                                LauncherAPI.downloadVersion(compatibleClientBaseVersion);
 
                             MinecraftVersionRepository.getSingleton().addInstalledVersion(clientJar.getPath());
                             String mppass = null;
