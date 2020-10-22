@@ -10,6 +10,7 @@ import java.util.LinkedList;
 public class MineOnlineServer {
     public final String createdAt;
     public final String ip;
+    public final String connectAddress;
     public final int port;
     public final int users;
     public final int maxUsers;
@@ -18,8 +19,9 @@ public class MineOnlineServer {
     public final boolean isMineOnline;
     public final boolean onlineMode;
 
-    MineOnlineServer(String createdAt, String ip, int port, int users, int maxUsers, String name, String md5, boolean isMineOnline, boolean onlineMode) {
+    MineOnlineServer(String createdAt, String connectAddress, String ip, int port, int users, int maxUsers, String name, String md5, boolean isMineOnline, boolean onlineMode) {
         this.createdAt = createdAt;
+        this.connectAddress = connectAddress;
         this.ip = ip;
         this.port = port;
         this.users = users;
@@ -52,6 +54,7 @@ public class MineOnlineServer {
     public static MineOnlineServer parseServer(JSONObject object) throws JSONException {
         return new MineOnlineServer(
                 object.has("createdAt") && !object.isNull("createdAt") ? object.getString("createdAt") : null,
+                object.optString("connectAddress", object.optString("ip", null)),
                 object.has("ip") && !object.isNull("ip") ? object.getString("ip") : null,
                 object.has("port") && !object.isNull("port") ? object.getInt("port") : 25565,
                 object.getInt("users"),

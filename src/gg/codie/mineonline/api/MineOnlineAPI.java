@@ -60,6 +60,10 @@ public class MineOnlineAPI {
         try {
             InetAddress inetAddress = InetAddress.getByName(serverIP);
             serverIP = inetAddress.getHostAddress();
+
+            if (inetAddress.isAnyLocalAddress()) {
+                serverIP = getExternalIP();
+            }
         } catch (Exception ex) {
             //ignore.
         }
