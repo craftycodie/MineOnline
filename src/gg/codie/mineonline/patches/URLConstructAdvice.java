@@ -69,7 +69,7 @@ public class URLConstructAdvice {
 
                 boolean validJoin = (boolean)sessionServerClass.getMethod("joinGame", String.class, String.class, String.class).invoke(
                         null,
-                        sessionClass.getMethod("getSessionToken").invoke(session),
+                        sessionClass.getMethod("getAccessToken").invoke(session),
                         sessionClass.getMethod("getUuid").invoke(session),
                         serverId
                 );

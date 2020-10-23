@@ -21,11 +21,17 @@ public class Session {
 
     private String username;
 
-    public String getSessionToken() {
-        return sessionToken;
+    private String clientToken;
+
+    public String getClientToken() {
+        return clientToken;
     }
 
-    private String sessionToken;
+    public String getAccessToken() {
+        return accessToken;
+    }
+
+    private String accessToken;
 
     public String getUuid() {
         return uuid;
@@ -34,7 +40,7 @@ public class Session {
     private String uuid;
 
     public boolean isOnline() {
-        return sessionToken != null;
+        return accessToken != null;
     }
 
     private boolean isPremium;
@@ -51,13 +57,19 @@ public class Session {
         cacheSkin();
     }
 
-    public Session(String username, String sessionToken, String uuid, boolean isPremium) {
+    public Session(String username, String accessToken, String clientToken, String uuid, boolean isPremium) {
+        this(username, accessToken, uuid, isPremium);
+        this.clientToken = clientToken;
+    }
+
+    public Session(String username, String accessToken, String uuid, boolean isPremium) {
         session = this;
         this.username = username;
-        this.sessionToken = sessionToken;
+        this.accessToken = accessToken;
         this.uuid = uuid;
         this.isPremium = isPremium;
         cacheSkin();
+
     }
 
     public void logout() {

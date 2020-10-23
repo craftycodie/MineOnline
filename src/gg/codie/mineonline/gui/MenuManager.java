@@ -195,7 +195,7 @@ public class MenuManager {
         TextMaster.init(loader);
 
         if (sessionToken != null && username != null) {
-            new Session(username, sessionToken, uuid, true);
+            new Session(username, sessionToken, lastLogin.clientToken, uuid, true);
             LastLogin.writeLastLogin(sessionToken, lastLogin.clientToken, lastLogin.loginUsername, username, uuid);
         }
 
@@ -221,7 +221,7 @@ public class MenuManager {
                             if (clientVersion != null && clientVersion.baseVersion.equals(compatibleClientBaseVersion)) {
                                 String mppass = null;
                                 if(serverVersion != null && serverVersion.hasHeartbeat) {
-                                    mppass = MineOnlineAPI.getMpPass(Session.session.getSessionToken(), Session.session.getUsername(), Session.session.getUuid(), mineOnlineServer.ip, "" + mineOnlineServer.port);
+                                    mppass = MineOnlineAPI.getMpPass(Session.session.getAccessToken(), Session.session.getUsername(), Session.session.getUuid(), mineOnlineServer.ip, "" + mineOnlineServer.port);
                                 }
 
                                 MinecraftVersion.launchMinecraft(path, mineOnlineServer.ip, "" + mineOnlineServer.port, mppass);
@@ -242,7 +242,7 @@ public class MenuManager {
                             MinecraftVersionRepository.getSingleton().addInstalledVersion(clientJar.getPath());
                             String mppass = null;
                             if(serverVersion != null && serverVersion.hasHeartbeat) {
-                                mppass = MineOnlineAPI.getMpPass(Session.session.getSessionToken(), Session.session.getUsername(), Session.session.getUuid(), mineOnlineServer.ip, "" + mineOnlineServer.port);
+                                mppass = MineOnlineAPI.getMpPass(Session.session.getAccessToken(), Session.session.getUsername(), Session.session.getUuid(), mineOnlineServer.ip, "" + mineOnlineServer.port);
                             }
                             MinecraftVersion.launchMinecraft(clientJar.getPath(), mineOnlineServer.ip, "" + mineOnlineServer.port, mppass);
                             return;
@@ -269,7 +269,7 @@ public class MenuManager {
                     ip = ipAndPort[0];
                     port = "25565";
                 }
-                mppass = MineOnlineAPI.getMpPass(Session.session.getSessionToken(), Session.session.getUsername(), Session.session.getUuid(), ip, port);
+                mppass = MineOnlineAPI.getMpPass(Session.session.getAccessToken(), Session.session.getUsername(), Session.session.getUuid(), ip, port);
             }
             MinecraftVersion.launchMinecraft(quicklaunch, ip, port, mppass);
             return;

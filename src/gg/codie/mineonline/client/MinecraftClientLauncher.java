@@ -10,7 +10,6 @@ import gg.codie.mineonline.patches.minecraft.YggdrasilMinecraftSessionServicePat
 import gg.codie.mineonline.utils.JREUtils;
 import gg.codie.mineonline.utils.Logging;
 import gg.codie.utils.OSUtils;
-import org.lwjgl.opengl.Display;
 
 import javax.swing.*;
 import java.awt.*;
@@ -61,7 +60,7 @@ public class MinecraftClientLauncher {
             if(OSUtils.isMac())
                 launchArgs.add("-XstartOnFirstThread");
             launchArgs.add("-Dmineonline.username=" + Session.session.getUsername());
-            launchArgs.add("-Dmineonline.token=" + Session.session.getSessionToken());
+            launchArgs.add("-Dmineonline.token=" + Session.session.getAccessToken());
             launchArgs.add("-Dmineonline.uuid=" + Session.session.getUuid());
             if (Settings.settings.has(Settings.CLIENT_LAUNCH_ARGS) && !Settings.settings.getString(Settings.CLIENT_LAUNCH_ARGS).isEmpty())
                 launchArgs.addAll(Arrays.asList(Settings.settings.getString(Settings.CLIENT_LAUNCH_ARGS).split(" ")));
@@ -194,10 +193,10 @@ public class MinecraftClientLauncher {
             args.add(Session.session.getUsername());
 
             args.add("--session");
-            args.add(Session.session.getSessionToken());
+            args.add(Session.session.getAccessToken());
 
             args.add("--accessToken");
-            args.add(Session.session.getSessionToken());
+            args.add(Session.session.getAccessToken());
 
             if (Settings.settings.has(Settings.FULLSCREEN) && Settings.settings.getBoolean(Settings.FULLSCREEN))
                 args.add("--fullscreen");

@@ -29,7 +29,7 @@ public class DiscordPresence {
                     StandardOpenOption.READ, StandardOpenOption.WRITE,
                     StandardOpenOption.WRITE, StandardOpenOption.SYNC);
 
-            fc.write(ByteBuffer.wrap((versionName + "\n" + serverIP + "\n" + serverPort + "\n" + Session.session.getUsername() + "\n" + Session.session.getUuid() + "\n" + Session.session.getSessionToken()).getBytes(StandardCharsets.UTF_8)), 0);
+            fc.write(ByteBuffer.wrap((versionName + "\n" + serverIP + "\n" + serverPort + "\n" + Session.session.getUsername() + "\n" + Session.session.getUuid() + "\n" + Session.session.getAccessToken()).getBytes(StandardCharsets.UTF_8)), 0);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

@@ -4,7 +4,6 @@ import gg.codie.minecraft.api.AuthServer;
 import gg.codie.minecraft.api.MojangAPI;
 import gg.codie.mineonline.Globals;
 import gg.codie.mineonline.Session;
-import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.mineonline.gui.components.LargeButton;
 import gg.codie.mineonline.gui.components.PasswordInputField;
 import gg.codie.mineonline.gui.components.InputField;
@@ -101,8 +100,8 @@ public class LoginMenuScreen implements IMenuScreen {
                     String uuid = login.getJSONObject("selectedProfile").getString("id");
 
                     if (sessionToken != null) {
-                        new Session(login.getJSONObject("selectedProfile").getString("name"), sessionToken, uuid, true);
-                        LastLogin.writeLastLogin(Session.session.getSessionToken(), clientSecret, usernameInput.getValue(), Session.session.getUsername(), Session.session.getUuid());
+                        new Session(login.getJSONObject("selectedProfile").getString("name"), sessionToken, clientSecret, uuid, true);
+                        LastLogin.writeLastLogin(Session.session.getAccessToken(), clientSecret, usernameInput.getValue(), Session.session.getUsername(), Session.session.getUuid());
                         MenuManager.setMenuScreen(new MainMenuScreen());
                     } else {
                         if (errorText != null)

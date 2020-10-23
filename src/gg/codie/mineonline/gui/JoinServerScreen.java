@@ -1,6 +1,5 @@
 package gg.codie.mineonline.gui;
 
-import gg.codie.minecraft.client.Options;
 import gg.codie.mineonline.*;
 import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.mineonline.gui.components.InputField;
@@ -42,7 +41,7 @@ public class JoinServerScreen implements IMenuScreen {
                     if(serverIPField.getValue().contains(":"))
                         split = serverIPField.getValue().split(":");
 
-                    String mppass = MineOnlineAPI.getMpPass(Session.session.getSessionToken(), Session.session.getUsername(), Session.session.getUuid(), split[0], split.length > 1 ? split[1] : "25565");
+                    String mppass = MineOnlineAPI.getMpPass(Session.session.getAccessToken(), Session.session.getUsername(), Session.session.getUuid(), split[0], split.length > 1 ? split[1] : "25565");
 
                     MinecraftVersion.launchMinecraft(MinecraftVersionRepository.getSingleton().getLastSelectedJarPath(), split[0], split.length > 1 ? split[1] : "25565", mppass);
                 }
@@ -86,7 +85,7 @@ public class JoinServerScreen implements IMenuScreen {
                     if(serverIPField.getValue().contains(":"))
                         split = serverIPField.getValue().split(":");
 
-                    String mppass = MineOnlineAPI.getMpPass(Session.session.getSessionToken(), Session.session.getUsername(), Session.session.getUuid(), split[0], split.length > 1 ? split[1] : "25565");
+                    String mppass = MineOnlineAPI.getMpPass(Session.session.getAccessToken(), Session.session.getUsername(), Session.session.getUuid(), split[0], split.length > 1 ? split[1] : "25565");
 
                     MinecraftVersion.launchMinecraft(MinecraftVersionRepository.getSingleton().getLastSelectedJarPath(), split[0], split.length > 1 ? split[1] : "25565", mppass);
                 }

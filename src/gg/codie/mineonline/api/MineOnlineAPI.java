@@ -1,11 +1,11 @@
 package gg.codie.mineonline.api;
 
+import gg.codie.minecraft.api.SessionServer;
 import gg.codie.mineonline.Globals;
 import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.gui.ProgressDialog;
-import javafx.util.Pair;
+import gg.codie.utils.SHA1Utils;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.*;
@@ -13,8 +13,6 @@ import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 
@@ -55,7 +53,7 @@ public class MineOnlineAPI {
         }
     }
 
-    public static String getMpPass(String sessionId, String username, String useruuid, String serverIP, String serverPort) {
+    public static String getMpPass(String accessToken, String username, String userID, String serverIP, String serverPort) {
 
         try {
             InetAddress inetAddress = InetAddress.getByName(serverIP);
@@ -71,12 +69,36 @@ public class MineOnlineAPI {
         HttpURLConnection connection = null;
 
         try {
-            String parameters = "sessionId=" + URLEncoder.encode(sessionId, "UTF-8") + "&serverIP=" + URLEncoder.encode(serverIP, "UTF-8") + "&serverPort=" + URLEncoder.encode(serverPort, "UTF-8") + "&username=" + URLEncoder.encode(username, "UTF-8") + "&uuid=" + URLEncoder.encode(useruuid, "UTF-8");
-            URL url = new URL(Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/servertoken?" + parameters);
-            connection = (HttpURLConnection) url.openConnection();
-            connection.setDoOutput(false);
-            connection.connect();
+            if(!SessionServer.joinGame(
+                    accessToken,
+                    userID,
+                    SHA1Utils.sha1(serverIP + ":" + serverPort)
+            )) {
+                if (Globals.DEV) {
+                    System.out.println("Bad server join.");
+                }
+                return null;
+            }
 
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("accessToken", accessToken);
+            jsonObject.put("serverIP", serverIP);
+            jsonObject.put("serverPort", serverPort);
+            jsonObject.put("userID", userID);
+            jsonObject.put("username", username);
+
+            String json = jsonObject.toString();
+
+            URL url = new URL(Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/servertoken");
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestProperty("Content-Type", "application/json");
+            connection.setRequestMethod("POST");
+            connection.setDoInput(true);
+            connection.setDoOutput(true);
+
+            connection.getOutputStream().write(json.getBytes(StandardCharsets.UTF_8));
+            connection.getOutputStream().flush();
+            connection.getOutputStream().close();
             InputStream is = connection.getInputStream();
             BufferedReader rd = new BufferedReader(new InputStreamReader(is));
 

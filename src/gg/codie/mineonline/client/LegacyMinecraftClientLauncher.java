@@ -81,7 +81,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
             launchArgs.add("-Djava.util.Arrays.useLegacyMergeSort=true");
             launchArgs.add("-Djava.net.preferIPv4Stack=true");
             launchArgs.add("-Dmineonline.username=" + Session.session.getUsername());
-            launchArgs.add("-Dmineonline.token=" + Session.session.getSessionToken());
+            launchArgs.add("-Dmineonline.token=" + Session.session.getAccessToken());
             launchArgs.add("-Dmineonline.uuid=" + Session.session.getUuid());
             if (Settings.settings.has(Settings.CLIENT_LAUNCH_ARGS) && !Settings.settings.getString(Settings.CLIENT_LAUNCH_ARGS).isEmpty())
                 launchArgs.addAll(Arrays.asList(Settings.settings.getString(Settings.CLIENT_LAUNCH_ARGS).split(" ")));
@@ -743,7 +743,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
             case "sessionid":
                 if (!Session.session.isOnline())
                     break;
-                value = Session.session.getSessionToken();
+                value = Session.session.getAccessToken();
                 break;
             case "haspaid":
                 value = "" + Session.session.isPremium();
