@@ -28,7 +28,7 @@ These are features MineOnline will bring to Minecraft.
 
 - Skins and Cloaks
 
-- Resource Files (Sounds)
+- Resource Files (Sounds, the right ones for each version!)
 
 - [Server List](https://mineonline.codie.gg/servers)
 
@@ -45,7 +45,7 @@ These are features MineOnline will bring to Minecraft.
 
 - Launcher Authentication and Updates
 
-- Server Authentication (online-mode and verify-names)
+- Secure Server Authentication (online-mode and verify-names)
 
 - Resizable & Fullscreenable Applets with Mac and Linux Support
 
