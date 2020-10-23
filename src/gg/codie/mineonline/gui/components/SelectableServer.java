@@ -54,7 +54,7 @@ public class SelectableServer extends GUIObject {
         nameText.setYBounds(new Vector2f(69 , 69));
 
         if (this.server.onlineMode) {
-            info1Text = new GUIText(this.info1 + " ", 1.5f, TextMaster.minecraftFont, new Vector2f(currentPosition.x + 8, currentPosition.y - 48), 440, false, true);
+            info1Text = new GUIText(this.info1 + (this.info1.isEmpty() ? "" : " "), 1.5f, TextMaster.minecraftFont, new Vector2f(currentPosition.x + 8, currentPosition.y - 48), 440, false, true);
             info1Text.setColour(0.5F, 0.5F, 0.5F);
             info1Text.setYBounds(new Vector2f(69, 69));
 
