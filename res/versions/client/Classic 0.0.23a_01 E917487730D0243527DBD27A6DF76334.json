@@ -11,5 +11,6 @@
   "useTexturepackPatch": true,
   "ingameVersionString": "0.0.23a_01",
   "resourcesVersion": "a1.0.1_01",
-  "guiClass": "com.mojang.minecraft.c.m"
+  "guiClass": "com.mojang.minecraft.c.m",
+  "guiScreenClass": "com.mojang.minecraft.c.o"
 }
