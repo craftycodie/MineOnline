@@ -380,7 +380,10 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
         // Patches
         SocketPatch.watchSockets();
         URLPatch.redefineURL(null);
-        FilePatch.relocateFiles(minecraftVersion != null ? minecraftVersion.resourcesVersion : "default");
+        if (Settings.settings.optBoolean(Settings.CUSTOM_SOUNDS, false))
+            FilePatch.relocateFiles("custom");
+        else
+            FilePatch.relocateFiles(minecraftVersion != null ? minecraftVersion.resourcesVersion : "default");
         URLConnectionPatch.convertModernSkins();
 
         if (minecraftVersion != null && minecraftVersion.useFOVPatch) {

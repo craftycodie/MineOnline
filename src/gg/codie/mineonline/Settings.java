@@ -23,7 +23,8 @@ public class Settings {
     public static final String GAME_WIDTH = "gameWidth";
     public static final String GAME_HEIGHT = "gameHeight";
     public static final String CUSTOM_CAPES = "customCapes";
-    private static final int SETTINGS_VERSION_NUMBER = 8;
+    public static final String CUSTOM_SOUNDS = "customSounds";
+    private static final int SETTINGS_VERSION_NUMBER = 9;
 
     private static boolean readonly = true;
 
@@ -57,6 +58,7 @@ public class Settings {
         settings.put(GAME_WIDTH, 854);
         settings.put(GAME_HEIGHT, 480);
         settings.put(CUSTOM_CAPES, true);
+        settings.put(CUSTOM_SOUNDS, false);
 
         saveSettings();
         loadSettings();
@@ -97,6 +99,8 @@ public class Settings {
                         settings.put(GAME_WIDTH, 854);
                         settings.put(GAME_HEIGHT, 480);
                         settings.put(CUSTOM_CAPES, true);
+                    case 8:
+                        settings.put(CUSTOM_SOUNDS, false);
                 }
                 settings.put(SETTINGS_VERSION, SETTINGS_VERSION_NUMBER);
             }

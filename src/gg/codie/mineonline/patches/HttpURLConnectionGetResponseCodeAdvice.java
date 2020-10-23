@@ -45,6 +45,8 @@ public class HttpURLConnectionGetResponseCodeAdvice {
 
                 returnCode = 404;
             }
+        } else if (thisObj.getURL().toString().contains("/MinecraftResources/custom/") || thisObj.getURL().toString().contains("/resources/custom/")) {
+            returnCode = 404;
         }
     }
 }
