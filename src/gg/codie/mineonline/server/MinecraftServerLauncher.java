@@ -17,7 +17,7 @@ public class MinecraftServerLauncher extends ServerLauncher {
 
         Thread closeLauncher = new Thread() {
             public void run() {
-                serverProcess.destroy();
+                Runtime.getRuntime().halt(0);
             }
         };
 
@@ -58,8 +58,12 @@ public class MinecraftServerLauncher extends ServerLauncher {
 
         scanner.close();
 
-        serverProcess.destroyForcibly();
-        System.exit(serverProcess.exitValue());
+        try {
+            Runtime.getRuntime().halt(serverProcess.exitValue());
+        } catch (IllegalStateException ex) {
+            ex.printStackTrace();
+            Runtime.getRuntime().halt(1);
+        }
     }
 
     public static void main(String[] args) throws Exception{

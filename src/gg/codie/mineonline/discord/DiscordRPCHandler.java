@@ -39,16 +39,15 @@ public class DiscordRPCHandler {
     private static long lastServerUpdate = System.currentTimeMillis();
     private static long startTimestamp = System.currentTimeMillis() / 1000;
 
-    public static String lastVersion = null;
+    private static boolean hasUpdate;
 
     // Other threads/processes can write a file to update presence on the main RPC thread.
     public static void play(String versionName, String serverIP, String serverPort) {
         try {
-            lastVersion = versionName;
-
             DiscordRPCHandler.versionName = versionName;
             DiscordRPCHandler.serverIP = serverIP;
             DiscordRPCHandler.serverPort = serverPort;
+            hasUpdate = true;
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -61,20 +60,23 @@ public class DiscordRPCHandler {
                 if (hostAddress.equals(InetAddress.getLocalHost().getHostAddress()) || hostAddress.equals(InetAddress.getLoopbackAddress().getHostAddress())) {
                     String externalIP = MineOnlineAPI.getExternalIP();
                     if (externalIP != null && !externalIP.isEmpty()) {
-                        play(lastVersion, externalIP, serverPort);
+                        DiscordRPCHandler.serverIP = externalIP;
                     } else {
-                        play(lastVersion, serverIP, serverPort);
+                        DiscordRPCHandler.serverIP = serverIP;
                     }
                 } else {
-                    play(lastVersion, serverIP, serverPort);
+                    DiscordRPCHandler.serverIP = serverIP;
                 }
+                DiscordRPCHandler.serverPort = serverPort;
             } catch (UnknownHostException ex) {
-                // ignore
-                play(lastVersion, serverIP, serverPort);
+                DiscordRPCHandler.serverIP = serverIP;
+                DiscordRPCHandler.serverPort = serverPort;
             }
         } else {
-            play(lastVersion, serverIP, serverPort);
+            DiscordRPCHandler.serverIP = null;
+            DiscordRPCHandler.serverPort = null;
         }
+        hasUpdate = true;
     }
 
     private static void play(String versionName, String serverIP, String serverPort, String username, String uuid) {
@@ -198,10 +200,10 @@ public class DiscordRPCHandler {
             .build();
             DiscordRPC.discordInitialize(Globals.DISCORD_APP_ID, handlers, false);
             try {
-                String launchJava = System.getProperty("java.home") + File.separator + "bin" + File.separator + "javaw.exe -jar";
+                String launchJava = "\"" + System.getProperty("java.home") + File.separator + "bin" + File.separator + "javaw.exe\" -jar \"";
                 if (!OSUtils.isWindows())
                     launchJava.replace(".exe", "s");
-                DiscordRPC.discordRegister(Globals.DISCORD_APP_ID, launchJava + Paths.get(LibraryManager.class.getProtectionDomain().getCodeSource().getLocation().toURI()).toString());
+                DiscordRPC.discordRegister(Globals.DISCORD_APP_ID, launchJava + Paths.get(LibraryManager.class.getProtectionDomain().getCodeSource().getLocation().toURI()).toString() + "\"");
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -210,7 +212,7 @@ public class DiscordRPCHandler {
             while (!Thread.currentThread().isInterrupted()) {
                 DiscordRPC.discordRunCallbacks();
 
-                if (DiscordRPCHandler.serverIP != null &&  System.currentTimeMillis() - DiscordRPCHandler.lastServerUpdate > 60000)
+                if (hasUpdate || DiscordRPCHandler.serverIP != null &&  System.currentTimeMillis() - DiscordRPCHandler.lastServerUpdate > 60000)
                     play(DiscordRPCHandler.versionName, DiscordRPCHandler.serverIP, DiscordRPCHandler.serverPort, DiscordRPCHandler.username, DiscordRPCHandler.uuid);
 
                 try {
