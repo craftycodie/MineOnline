@@ -109,43 +109,28 @@ public class SelectableTexturePackList extends GUIObject {
 
         if (texturePacksFolder.exists()) {
             for (File texturePack : texturePacksFolder.listFiles()) {
-                if (!texturePack.isDirectory() && !texturePack.getName().endsWith(".zip"))
+                if (!texturePack.getName().endsWith(".zip"))
                     continue;
 
                 String info = "";
                 int packIcon = -1;
 
                 try {
-                    if (texturePack.getName().endsWith(".zip")) {
-                        ZipFile texturePackZip = new ZipFile(texturePack.getPath());
-                        ZipEntry infoFile = texturePackZip.getEntry("pack.txt");
-                        if (infoFile != null) {
-                            info = new BufferedReader(new InputStreamReader(texturePackZip.getInputStream(infoFile)))
-                                    .lines().collect(Collectors.joining("\n"));
-                        }
-                    } else if (texturePack.isDirectory()) {
-                        File infoFile = new File(texturePack, "pack.txt");
-                        if (infoFile.exists()) {
-                            info = new BufferedReader(new FileReader(infoFile))
-                                    .lines().collect(Collectors.joining("\n"));
-                        }
+                    ZipFile texturePackZip = new ZipFile(texturePack.getPath());
+                    ZipEntry infoFile = texturePackZip.getEntry("pack.txt");
+                    if (infoFile != null) {
+                        info = new BufferedReader(new InputStreamReader(texturePackZip.getInputStream(infoFile)))
+                                .lines().collect(Collectors.joining("\n"));
                     }
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
 
                 try {
-                    if (texturePack.getName().endsWith(".zip")) {
-                        ZipFile texturePackZip = new ZipFile(texturePack.getPath());
-                        ZipEntry packPng = texturePackZip.getEntry("pack.png");
-                        if (packPng != null) {
-                            packIcon = Loader.singleton.loadTexture(texturePackZip.getInputStream(packPng));
-                        }
-                    } else if (texturePack.isDirectory()) {
-                        File packPng = new File(texturePack, "pack.png");
-                        if (packPng.exists()) {
-                            packIcon = Loader.singleton.loadTexture(packPng.getPath());
-                        }
+                    ZipFile texturePackZip = new ZipFile(texturePack.getPath());
+                    ZipEntry packPng = texturePackZip.getEntry("pack.png");
+                    if (packPng != null) {
+                        packIcon = Loader.singleton.loadTexture(texturePackZip.getInputStream(packPng));
                     }
                 } catch (Exception ex) {
                     System.err.println("Failed to load pack png for texture pack " + texturePack);

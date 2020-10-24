@@ -30,18 +30,11 @@ public class ClassGetResourceAdvice {
             if (texturePack == null || texturePack.isEmpty())
                 return;
 
-            if (texturePack.toLowerCase().endsWith(".zip")) {
-                ZipFile texturesZip = new ZipFile(texturePacksPath + texturePack);
-                ZipEntry texture = texturesZip.getEntry(textureName.substring(1));
-                if (texture != null) {
-                    inputStream = texturesZip.getInputStream(texture);
-                }
-            } else {
-                File texture = new File(texturePacksPath + texturePack + File.separator + textureName);
-                if (texture.exists())
-                    inputStream = new FileInputStream(texture);
+            ZipFile texturesZip = new ZipFile(texturePacksPath + texturePack);
+            ZipEntry texture = texturesZip.getEntry(textureName.substring(1));
+            if (texture != null) {
+                inputStream = texturesZip.getInputStream(texture);
             }
-
         } catch (Exception ex) {
             ex.printStackTrace();
         }
