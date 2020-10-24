@@ -70,7 +70,7 @@ public class RubyDungLauncher {
                 launchArgs.addAll(Arrays.asList(Settings.settings.getString(Settings.CLIENT_LAUNCH_ARGS).split(" ")));
             launchArgs.add("-cp");
             launchArgs.add(LibraryManager.getClasspath(true, new String[] {
-                    new File(MineOnline.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath(),
+                    new File(RubyDungLauncher.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath(),
                     jarPath
             }));
             launchArgs.add(RubyDungLauncher.class.getCanonicalName());

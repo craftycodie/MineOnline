@@ -18,7 +18,7 @@ public class InetSocketAddressConstructAdvice {
                 if (ip == null || ip.isEmpty())
                     ip = "100::ffff:ffff:ffff:ffff";
                 else {
-                    Class presenceClazz = ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.discord.DiscordPresence");
+                    Class presenceClazz = ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.discord.DiscordRPCHandler");
                     presenceClazz.getMethod("updateServer", new Class[]{String.class, String.class}).invoke(null, InetAddress.getByName(ip).getHostAddress(), "" + port);
                 }
             } catch (Exception ex) {

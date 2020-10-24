@@ -6,7 +6,6 @@ import gg.codie.mineonline.client.LegacyMinecraftClientLauncher;
 import gg.codie.mineonline.client.LegacyMinecraftLauncherLauncher;
 import gg.codie.mineonline.client.MinecraftClientLauncher;
 import gg.codie.mineonline.client.RubyDungLauncher;
-import gg.codie.mineonline.discord.DiscordPresence;
 import gg.codie.utils.JSONUtils;
 import gg.codie.utils.MD5Checksum;
 import gg.codie.utils.OSUtils;
@@ -345,8 +344,6 @@ public class MinecraftVersion {
     }
 
     public static void launchMinecraft(String jarPath, String serverIP, String serverPort, String mpPass) throws Exception {
-        System.gc();
-
         try {
             new Options(LauncherFiles.MINECRAFT_OPTIONS_PATH).setOption("lastServer", serverIP + "_" + serverPort);
         } catch (Exception ex) {
@@ -354,11 +351,6 @@ public class MinecraftVersion {
         }
 
         MinecraftVersion minecraftVersion = MinecraftVersionRepository.getSingleton().getVersion(jarPath);
-
-        if(minecraftVersion != null)
-            DiscordPresence.play(minecraftVersion.name, serverIP, serverPort);
-        else
-            DiscordPresence.play(Paths.get(jarPath).getFileName().toString(), serverIP, serverPort);
 
         if (serverIP != null) {
             InetAddress address = InetAddress.getByName(serverIP);

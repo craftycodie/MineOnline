@@ -8,7 +8,6 @@ import java.io.*;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.LinkedList;
-import java.util.Map;
 
 public class Startup {
     public static void main(String[] args) throws IOException, URISyntaxException {
@@ -22,7 +21,7 @@ public class Startup {
         launchArgs.add("-javaagent:" + LauncherFiles.PATCH_AGENT_JAR);
         launchArgs.add("-Djava.util.Arrays.useLegacyMergeSort=true");
         launchArgs.add("-cp");
-        launchArgs.add(LibraryManager.getClasspath(true, new String[] { new File(MineOnline.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath(), LauncherFiles.DISCORD_RPC_JAR }));
+        launchArgs.add(LibraryManager.getClasspath(true, new String[] { new File(MenuManager.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath(), LauncherFiles.DISCORD_RPC_JAR }));
         launchArgs.add(MenuManager.class.getCanonicalName());
         launchArgs.addAll(Arrays.asList(args));
 

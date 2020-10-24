@@ -1,11 +1,12 @@
 package gg.codie.mineonline.discord;
 
-import gg.codie.mineonline.MineOnline;
 import gg.codie.mineonline.Globals;
 import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.LibraryManager;
 import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.mineonline.api.MineOnlineServer;
+import gg.codie.mineonline.gui.MenuManager;
+import gg.codie.mineonline.utils.JREUtils;
 import gg.codie.utils.OSUtils;
 import net.arikia.dev.drpc.DiscordEventHandlers;
 import net.arikia.dev.drpc.DiscordRPC;
@@ -14,11 +15,16 @@ import net.arikia.dev.drpc.DiscordUser;
 import net.arikia.dev.drpc.callbacks.JoinGameCallback;
 import net.arikia.dev.drpc.callbacks.JoinRequestCallback;
 
+import javax.swing.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 // This is handled on the startup thread, that's the only way to implement joining.
@@ -32,7 +38,45 @@ public class DiscordRPCHandler {
     private static long lastServerUpdate = System.currentTimeMillis();
     private static long startTimestamp = System.currentTimeMillis() / 1000;
 
-    private static void play(String versionName, String serverIP, String serverPort, String username, String uuid, String sessionToken) {
+    public static String lastVersion = null;
+
+    // Other threads/processes can write a file to update presence on the main RPC thread.
+    public static void play(String versionName, String serverIP, String serverPort) {
+        try {
+            lastVersion = versionName;
+
+            DiscordRPCHandler.versionName = versionName;
+            DiscordRPCHandler.serverIP = serverIP;
+            DiscordRPCHandler.serverPort = serverPort;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public static void updateServer(String serverIP, String serverPort) {
+        if(serverIP != null) {
+            try {
+                String hostAddress = InetAddress.getByName(serverIP).getHostAddress();
+                if (hostAddress.equals(InetAddress.getLocalHost().getHostAddress()) || hostAddress.equals(InetAddress.getLoopbackAddress().getHostAddress())) {
+                    String externalIP = MineOnlineAPI.getExternalIP();
+                    if (externalIP != null && !externalIP.isEmpty()) {
+                        play(lastVersion, externalIP, serverPort);
+                    } else {
+                        play(lastVersion, serverIP, serverPort);
+                    }
+                } else {
+                    play(lastVersion, serverIP, serverPort);
+                }
+            } catch (UnknownHostException ex) {
+                // ignore
+                play(lastVersion, serverIP, serverPort);
+            }
+        } else {
+            play(lastVersion, serverIP, serverPort);
+        }
+    }
+
+    private static void play(String versionName, String serverIP, String serverPort, String username, String uuid) {
         boolean isUpdate = false;
 
         DiscordRPCHandler.uuid = uuid;
@@ -92,7 +136,7 @@ public class DiscordRPCHandler {
 
     public static void initialize(){
         DiscordEventHandlers handlers = new DiscordEventHandlers.Builder().setReadyEventHandler((user) -> {
-            //System.out.println("Discord logged in " + user.username + "#" + user.discriminator + "!");
+            System.out.println("Discord logged in " + user.username + "#" + user.discriminator + "!");
             DiscordRichPresence.Builder presence = new DiscordRichPresence.Builder("In the launcher.");
             presence.setDetails("Version " + Globals.LAUNCHER_VERSION + (Globals.DEV ? " Dev" : ""));
             presence.setBigImage("block", null);
@@ -101,7 +145,24 @@ public class DiscordRPCHandler {
         .setJoinGameEventHandler(new JoinGameCallback() {
             @Override
             public void apply(String s) {
-                MineOnline.joinDiscord(s.replace(", ", ":"));
+                try {
+                    System.out.println("Joining " + s);
+
+                    LinkedList<String> launchArgs = new LinkedList();
+                    launchArgs.add(JREUtils.getRunningJavaExecutable());
+                    launchArgs.add("-javaagent:" + LauncherFiles.PATCH_AGENT_JAR);
+                    launchArgs.add("-Djava.util.Arrays.useLegacyMergeSort=true");
+                    launchArgs.add("-cp");
+                    launchArgs.add(LibraryManager.getClasspath(true, new String[]{new File(MenuManager.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath(), LauncherFiles.DISCORD_RPC_JAR}));
+                    launchArgs.add(MenuManager.class.getCanonicalName());
+                    launchArgs.add("-server " + s.replace(", ", ":"));
+
+                    Runtime.getRuntime().exec(launchArgs.toArray(new String[launchArgs.size()]));
+
+                    Runtime.getRuntime().halt(0);
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null, "Failed to join game.");
+                }
             }
         })
         .setJoinRequestEventHandler(new JoinRequestCallback() {
@@ -121,28 +182,21 @@ public class DiscordRPCHandler {
             ex.printStackTrace();
         }
 
-        new Thread(() -> {
+        Thread discordThread = new Thread(() -> {
             while (!Thread.currentThread().isInterrupted()) {
                 DiscordRPC.discordRunCallbacks();
 
-                File presenceFile = new File(LauncherFiles.MINEONLINE_RICH_PRESENCE_FILE);
-                if(presenceFile.exists()) {
-                    try {
-                        List<String> lines = Files.readAllLines(Paths.get(LauncherFiles.MINEONLINE_RICH_PRESENCE_FILE));
-                        play(lines.get(0), lines.get(1), lines.get(2), lines.get(3), lines.get(4), lines.size() > 4 ? lines.get(5) : null);
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
-                    presenceFile.delete();
-                }
-
                 if (DiscordRPCHandler.serverIP != null &&  System.currentTimeMillis() - DiscordRPCHandler.lastServerUpdate > 60000)
-                    play(DiscordRPCHandler.versionName, DiscordRPCHandler.serverIP, DiscordRPCHandler.serverPort, DiscordRPCHandler.username, DiscordRPCHandler.uuid, null);
+                    play(DiscordRPCHandler.versionName, DiscordRPCHandler.serverIP, DiscordRPCHandler.serverPort, DiscordRPCHandler.username, DiscordRPCHandler.uuid);
 
                 try {
                     Thread.sleep(2000);
                 } catch (InterruptedException ignored) {}
             }
-        }, "Join-Callback-Handler").start();
+        }, "Join-Callback-Handler");
+
+        discordThread.start();
+
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> discordThread.interrupt()));
     }
 }

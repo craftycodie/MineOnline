@@ -14,7 +14,7 @@ public class SocketConstructAdvice {
        try {
            ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.SocketConstructAdvice").getField("serverAddress").set(null, ip);
            ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.SocketConstructAdvice").getField("serverPort").set(null, port);
-           Class presenceClazz = ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.discord.DiscordPresence");
+           Class presenceClazz = ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.discord.DiscordRPCHandler");
            presenceClazz.getMethod("updateServer", new Class[] { String.class, String.class }).invoke(null, ip.getHostAddress(), "" + port);
        } catch (Exception ex) {
            ex.printStackTrace();

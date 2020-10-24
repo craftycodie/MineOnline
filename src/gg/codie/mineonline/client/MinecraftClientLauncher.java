@@ -32,8 +32,6 @@ public class MinecraftClientLauncher {
 
     MinecraftVersion minecraftVersion;
 
-    private static Process gameProcess;
-
     public static void startProcess(String jarPath, String serverIP, String serverPort, MinecraftVersion minecraftVersion) {
         try {
 
@@ -76,19 +74,6 @@ public class MinecraftClientLauncher {
                     launchArgs.add(serverPort);
             }
 
-            ProcessBuilder processBuilder = new ProcessBuilder(launchArgs.toArray(new String[0]));
-
-            Map<String, String> env = processBuilder.environment();
-            for (String prop : props.stringPropertyNames()) {
-                env.put(prop, props.getProperty(prop));
-            }
-            processBuilder.directory(new File(System.getProperty("user.dir")));
-            processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
-            processBuilder.redirectErrorStream(true);
-            processBuilder.redirectInput(ProcessBuilder.Redirect.INHERIT);
-
-            DisplayManager.getFrame().setVisible(false);
-
             try {
                 Options options = new Options(LauncherFiles.MINECRAFT_OPTIONS_PATH);
                 options.setOption("guiScale", "" + Settings.settings.optInt(Settings.GUI_SCALE, 0));
@@ -97,27 +82,9 @@ public class MinecraftClientLauncher {
                 System.err.println("Couldn't save guiScale to options.txt");
             }
 
-            gameProcess = processBuilder.start();
+            Runtime.getRuntime().exec(launchArgs.toArray(new String[launchArgs.size()]));
 
-            Thread closeLauncher = new Thread(() -> gameProcess.destroyForcibly());
-            Runtime.getRuntime().addShutdownHook(closeLauncher);
-
-            while (gameProcess.isAlive()) {
-
-            }
-
-            if(gameProcess.exitValue() == 1) {
-                EventQueue.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        JOptionPane.showMessageDialog(null, "Failed to launch Minecraft.\nPlease make sure all libraries are present.");
-                    }
-                });
-                DisplayManager.getFrame().setVisible(true);
-
-            } else {
-                Runtime.getRuntime().halt(0);
-            }
+            System.exit(0);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -218,11 +185,11 @@ public class MinecraftClientLauncher {
             ex.printStackTrace();
             ex.getTargetException().printStackTrace();
 
-            System.exit(1);
+            JOptionPane.showMessageDialog(null, "Failed to launch Minecraft.\nPlease make sure all libraries are present.");
         } catch (Throwable e) {
             e.printStackTrace();
 
-            System.exit(1);
+            JOptionPane.showMessageDialog(null, "Failed to launch Minecraft.\nPlease make sure all libraries are present.");
         }
 
     }

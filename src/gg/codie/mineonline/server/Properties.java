@@ -5,7 +5,6 @@ import java.io.IOException;
 public class Properties extends gg.codie.minecraft.server.Properties {
     protected static final String SERVERLIST_IP = "serverlist-ip";
     protected static final String SERVERLIST_PORT = "serverlist-port";
-    protected static final String OWNER = "owner";
     protected static final String VERSION_MD5 = "version-md5";
 
     public Properties(String jarPath) throws IOException {
@@ -26,10 +25,6 @@ public class Properties extends gg.codie.minecraft.server.Properties {
         } else {
             return super.serverPort();
         }
-    }
-
-    public String owner() {
-        return properties.getProperty(OWNER, null);
     }
 
     public String versionMD5() {

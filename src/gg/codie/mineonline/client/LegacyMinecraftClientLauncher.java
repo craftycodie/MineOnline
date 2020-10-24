@@ -2,7 +2,6 @@ package gg.codie.mineonline.client;
 
 import gg.codie.minecraft.client.Options;
 import gg.codie.mineonline.*;
-import gg.codie.mineonline.discord.DiscordPresence;
 import gg.codie.mineonline.discord.DiscordRPCHandler;
 import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.gui.rendering.DisplayManager;
@@ -51,7 +50,6 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedList;
-import java.util.Map;
 
 public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
     Applet minecraftApplet;
@@ -86,7 +84,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
                 launchArgs.addAll(Arrays.asList(Settings.settings.getString(Settings.CLIENT_LAUNCH_ARGS).split(" ")));
             launchArgs.add("-cp");
             launchArgs.add(LibraryManager.getClasspath(true, new String[] {
-                    new File(MineOnline.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath(),
+                    new File(LegacyMinecraftClientLauncher.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath(),
                     jarPath,
                     LauncherFiles.DISCORD_RPC_JAR
             }));
@@ -116,14 +114,14 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
 
             Runtime.getRuntime().exec(launchArgs.toArray(new String[launchArgs.size()]));
 
-            System.exit(0);
+            Runtime.getRuntime().halt(0);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
 
     // [ jarPath, width, height, ip, port, mppass,  ]
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         Logging.enableLogging();
 
         DiscordRPCHandler.initialize();
@@ -131,7 +129,12 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
         String serverAddress = args.length > 3 ? args[3] : null;
         String serverPort = args.length > 4 ? args[4] : null;
         String mpPass = args.length > 5 ? args[5] : null;
-        new LegacyMinecraftClientLauncher(args[0], Integer.parseInt(args[1]), Integer.parseInt(args[2]), serverAddress, serverPort, mpPass).startMinecraft();
+
+        try {
+            new LegacyMinecraftClientLauncher(args[0], Integer.parseInt(args[1]), Integer.parseInt(args[2]), serverAddress, serverPort, mpPass).startMinecraft();
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, "Failed to launch Minecraft.");
+        }
     }
 
 
@@ -162,9 +165,9 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
             MousePatch.fixMouseIssues();
 
         if(minecraftVersion != null)
-            DiscordPresence.play(minecraftVersion.name, serverAddress, serverPort);
+            DiscordRPCHandler.play(minecraftVersion.name, serverAddress, serverPort);
         else
-            DiscordPresence.play(Paths.get(jarPath).getFileName().toString(), serverAddress, serverPort);
+            DiscordRPCHandler.play(Paths.get(jarPath).getFileName().toString(), serverAddress, serverPort);
 
         DisplayManager.init();
         DisplayManager.getCanvas().setPreferredSize(new Dimension(startWidth, startHeight));
