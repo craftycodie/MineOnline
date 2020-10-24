@@ -25,7 +25,6 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector2f;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.image.BufferedImage;
@@ -123,7 +122,7 @@ public class RubyDungLauncher {
 
             LibraryManager.updateNativesPath();
 
-            LWJGLDisplayPatch.hijackLWJGLThreadPatch();
+            LWJGLDisplayPatch.hijackLWJGLThreadPatch(minecraftVersion != null && minecraftVersion.useGreyScreenPatch);
 
             if (minecraftVersion != null && minecraftVersion.enableCursorPatch && OSUtils.isMac())
                 MousePatch.fixMouseIssues();
