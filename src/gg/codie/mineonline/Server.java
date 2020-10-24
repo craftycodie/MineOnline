@@ -43,15 +43,8 @@ public class Server {
         processBuilder.redirectErrorStream(true);
         processBuilder.redirectInput(ProcessBuilder.Redirect.INHERIT);
 
-        Process serverProcess = processBuilder.start();
+        processBuilder.inheritIO().start();
 
-        Thread closeLauncher = new Thread(() -> serverProcess.destroyForcibly());
-        Runtime.getRuntime().addShutdownHook(closeLauncher);
-
-        while (serverProcess.isAlive()) {
-
-        }
-
-        System.exit(serverProcess.exitValue());
+        Runtime.getRuntime().halt(0);
     }
 }

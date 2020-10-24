@@ -51,6 +51,7 @@ public class MinecraftVersion {
     public final String ingameVersionString;
     public final String resourcesVersion;
     public final boolean useUsernamesPatch;
+    public final boolean readPlayersFile;
 
     public MinecraftVersion(
             String sha256,
@@ -79,7 +80,8 @@ public class MinecraftVersion {
             boolean useTexturepackPatch,
             String ingameVersionString,
             String resourcesVersion,
-            boolean useUsernamesPatch
+            boolean useUsernamesPatch,
+            boolean readPlayersFile
     ) {
         this.sha256 = sha256;
         this.name = name;
@@ -108,6 +110,7 @@ public class MinecraftVersion {
         this.ingameVersionString = ingameVersionString;
         this.resourcesVersion = resourcesVersion;
         this.useUsernamesPatch = useUsernamesPatch;
+        this.readPlayersFile = readPlayersFile;
     }
 
     public MinecraftVersion(JSONObject object) {
@@ -138,6 +141,7 @@ public class MinecraftVersion {
         ingameVersionString = object.optString("ingameVersionString", null);
         resourcesVersion = object.optString("resourcesVersion", "default");
         useUsernamesPatch = object.optBoolean("useUsernamesPatch", false);
+        readPlayersFile = object.optBoolean("readPlayersFile", false);
     }
 
 
@@ -334,6 +338,7 @@ public class MinecraftVersion {
                     false,
                     null,
                     "default",
+                    false,
                     false
             );
         } catch (Exception ex) {

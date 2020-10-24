@@ -1,11 +1,13 @@
 package gg.codie.mineonline.server;
 
+import gg.codie.minecraft.server.Players;
 import gg.codie.mineonline.MinecraftVersion;
 import gg.codie.mineonline.MinecraftVersionRepository;
 import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.utils.MD5Checksum;
 
 import java.io.*;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -26,6 +28,8 @@ public abstract class ServerLauncher {
     // Since the server might be responding slowly, we count the amount of times this has been requested,
     // to ensure each is removed.
     int playerCountRequested = 0;
+    protected final String classicPlayersPath;
+
 
     public ServerLauncher(String jarPath) throws Exception {
         this.jarPath = jarPath;
@@ -52,6 +56,13 @@ public abstract class ServerLauncher {
 
         serverlistAddress = serverProperties.serverIP();
         serverlistPort = "" + serverProperties.serverPort();
+
+        classicPlayersPath = jarPath.replace(Paths.get(jarPath).getFileName().toString(), "players.txt");
+        File classicUsers = new File(classicPlayersPath);
+        if(classicUsers.exists()) {
+            classicUsers.delete();
+            classicUsers.createNewFile();
+        }
     }
 
     protected void redirectOutput(final InputStream src, final PrintStream dest) {
@@ -210,6 +221,11 @@ public abstract class ServerLauncher {
                 }
 
                 boolean whitelisted = serverProperties.isWhitelisted();
+
+                if (minecraftVersion != null && minecraftVersion.readPlayersFile) {
+                    playerNames = Players.readClassicPlayersFile(classicPlayersPath);
+                    users = playerNames.length;
+                }
 
                 serverUUID = MineOnlineAPI.listServer(
                         serverProperties.serverIP(),
