@@ -6,6 +6,7 @@ import gg.codie.minecraft.api.MojangAPI;
 import gg.codie.mineonline.*;
 import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.mineonline.api.MineOnlineServer;
+import gg.codie.mineonline.discord.DiscordRPCHandler;
 import gg.codie.mineonline.gui.font.GUIText;
 import gg.codie.mineonline.gui.rendering.Renderer;
 import gg.codie.mineonline.gui.rendering.*;
@@ -80,6 +81,8 @@ public class MenuManager {
 
     public static void main(String[] args) throws Exception {
         Logging.enableLogging();
+
+        DiscordRPCHandler.initialize();
 
         ProgressDialog.showProgress("Loading MineOnline", closeListener);
         ProgressDialog.setMessage("Loading LWJGL");

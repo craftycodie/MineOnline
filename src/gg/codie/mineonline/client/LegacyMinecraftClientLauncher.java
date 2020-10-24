@@ -3,6 +3,7 @@ package gg.codie.mineonline.client;
 import gg.codie.minecraft.client.Options;
 import gg.codie.mineonline.*;
 import gg.codie.mineonline.discord.DiscordPresence;
+import gg.codie.mineonline.discord.DiscordRPCHandler;
 import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.gui.rendering.DisplayManager;
 import gg.codie.mineonline.gui.rendering.Renderer;
@@ -68,8 +69,6 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
     int startHeight;
 
 
-    private static Process gameProcess;
-
     public static void startProcess(String jarPath, String serverIP, String serverPort, String mpPass) {
         // Launch normal jars.
         try {
@@ -88,7 +87,8 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
             launchArgs.add("-cp");
             launchArgs.add(LibraryManager.getClasspath(true, new String[] {
                     new File(MineOnline.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath(),
-                    jarPath
+                    jarPath,
+                    LauncherFiles.DISCORD_RPC_JAR
             }));
             launchArgs.add(LegacyMinecraftClientLauncher.class.getCanonicalName());
             launchArgs.add(jarPath);
@@ -104,17 +104,6 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
                     launchArgs.add(mpPass);
             }
 
-            ProcessBuilder processBuilder = new ProcessBuilder(launchArgs.toArray(new String[launchArgs.size()]));
-
-            Map<String, String> env = processBuilder.environment();
-            for (String prop : props.stringPropertyNames()) {
-                env.put(prop, props.getProperty(prop));
-            }
-            processBuilder.directory(new File(System.getProperty("user.dir")));
-            processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
-            processBuilder.redirectErrorStream(true);
-            processBuilder.redirectInput(ProcessBuilder.Redirect.INHERIT);
-
             DisplayManager.getFrame().setVisible(false);
 
             try {
@@ -125,27 +114,9 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
                 System.err.println("Couldn't save guiScale to options.txt");
             }
 
-            gameProcess = processBuilder.start();
+            Runtime.getRuntime().exec(launchArgs.toArray(new String[launchArgs.size()]));
 
-            Thread closeLauncher = new Thread(() -> gameProcess.destroyForcibly());
-            Runtime.getRuntime().addShutdownHook(closeLauncher);
-
-            while (gameProcess.isAlive()) {
-
-            }
-
-            if(gameProcess.exitValue() == 1) {
-                EventQueue.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        JOptionPane.showMessageDialog(null, "Failed to launch Minecraft.\nPlease make sure all libraries are present.");
-                    }
-                });
-                DisplayManager.getFrame().setVisible(true);
-
-            } else {
-                Runtime.getRuntime().halt(0);
-            }
+            System.exit(0);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -154,6 +125,8 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
     // [ jarPath, width, height, ip, port, mppass,  ]
     public static void main(String[] args) throws Exception {
         Logging.enableLogging();
+
+        DiscordRPCHandler.initialize();
 
         String serverAddress = args.length > 3 ? args[3] : null;
         String serverPort = args.length > 4 ? args[4] : null;
