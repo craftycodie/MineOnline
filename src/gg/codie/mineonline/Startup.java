@@ -8,6 +8,7 @@ import java.io.*;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.Map;
 
 public class Startup {
     public static void main(String[] args) throws IOException, URISyntaxException {
@@ -25,7 +26,18 @@ public class Startup {
         launchArgs.add(MenuManager.class.getCanonicalName());
         launchArgs.addAll(Arrays.asList(args));
 
-        Runtime.getRuntime().exec(launchArgs.toArray(new String[launchArgs.size()]));
+        java.util.Properties props = System.getProperties();
+        ProcessBuilder processBuilder = new ProcessBuilder(launchArgs);
+
+        Map<String, String> env = processBuilder.environment();
+        for(String prop : props.stringPropertyNames()) {
+            env.put(prop, props.getProperty(prop));
+        }
+        processBuilder.directory(new File(System.getProperty("user.dir")));
+
+        processBuilder.inheritIO().start();
+
+        Runtime.getRuntime().halt(0);
     }
 
 }

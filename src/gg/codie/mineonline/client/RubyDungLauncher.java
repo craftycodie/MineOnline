@@ -51,8 +51,6 @@ public class RubyDungLauncher {
     boolean f2wasDown = false;
     Renderer renderer;
 
-    private static Process gameProcess;
-
     public static void startProcess(String jarPath) {
         try {
 
@@ -97,27 +95,10 @@ public class RubyDungLauncher {
                 System.err.println("Couldn't save guiScale to options.txt");
             }
 
-            gameProcess = processBuilder.start();
+            processBuilder.inheritIO().start();
 
-            Thread closeLauncher = new Thread(() -> gameProcess.destroyForcibly());
-            Runtime.getRuntime().addShutdownHook(closeLauncher);
+            Runtime.getRuntime().halt(0);
 
-            while (gameProcess.isAlive()) {
-
-            }
-
-            if(gameProcess.exitValue() == 1) {
-                EventQueue.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        JOptionPane.showMessageDialog(null, "Failed to launch Minecraft.\nPlease make sure all libraries are present.");
-                    }
-                });
-                DisplayManager.getFrame().setVisible(true);
-
-            } else {
-                Runtime.getRuntime().halt(0);
-            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }

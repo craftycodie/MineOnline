@@ -82,9 +82,20 @@ public class MinecraftClientLauncher {
                 System.err.println("Couldn't save guiScale to options.txt");
             }
 
-            Runtime.getRuntime().exec(launchArgs.toArray(new String[launchArgs.size()]));
+            ProcessBuilder processBuilder = new ProcessBuilder(launchArgs.toArray(new String[0]));
 
-            System.exit(0);
+            Map<String, String> env = processBuilder.environment();
+            for (String prop : props.stringPropertyNames()) {
+                env.put(prop, props.getProperty(prop));
+            }
+            processBuilder.directory(new File(System.getProperty("user.dir")));
+            processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
+            processBuilder.redirectErrorStream(true);
+            processBuilder.redirectInput(ProcessBuilder.Redirect.INHERIT);
+
+            processBuilder.inheritIO().start();
+
+            Runtime.getRuntime().halt(0);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -191,6 +202,5 @@ public class MinecraftClientLauncher {
 
             JOptionPane.showMessageDialog(null, "Failed to launch Minecraft.\nPlease make sure all libraries are present.");
         }
-
     }
 }

@@ -50,6 +50,7 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedList;
+import java.util.Map;
 
 public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
     Applet minecraftApplet;
@@ -102,6 +103,17 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
                     launchArgs.add(mpPass);
             }
 
+            ProcessBuilder processBuilder = new ProcessBuilder(launchArgs.toArray(new String[launchArgs.size()]));
+
+            Map<String, String> env = processBuilder.environment();
+            for (String prop : props.stringPropertyNames()) {
+                env.put(prop, props.getProperty(prop));
+            }
+            processBuilder.directory(new File(System.getProperty("user.dir")));
+            processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
+            processBuilder.redirectErrorStream(true);
+            processBuilder.redirectInput(ProcessBuilder.Redirect.INHERIT);
+
             DisplayManager.getFrame().setVisible(false);
 
             try {
@@ -112,7 +124,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
                 System.err.println("Couldn't save guiScale to options.txt");
             }
 
-            Runtime.getRuntime().exec(launchArgs.toArray(new String[launchArgs.size()]));
+            processBuilder.inheritIO().start();
 
             Runtime.getRuntime().halt(0);
         } catch (Exception ex) {
@@ -120,7 +132,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
         }
     }
 
-    // [ jarPath, width, height, ip, port, mppass,  ]
+    // [ jarPath, width, height, ip, port, mppass ]
     public static void main(String[] args) {
         Logging.enableLogging();
 
@@ -198,7 +210,6 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
             public void onCreateEvent() {
                 DisplayManager.checkGLError("minecraft create hook start");
                 renderer = new Renderer();
-                //MouseHelper.getSingleton();
                 DisplayManager.checkGLError("minecraft create hook end");
             }
         };
