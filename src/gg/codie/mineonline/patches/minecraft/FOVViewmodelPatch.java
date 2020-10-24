@@ -6,7 +6,8 @@ import net.bytebuddy.dynamic.loading.ClassReloadingStrategy;
 import net.bytebuddy.matcher.ElementMatchers;
 
 public class FOVViewmodelPatch {
-    public static void fixViewmodelFOV(String entityRendererClassName, String viewModelFunctionName) {
+    public static void fixViewmodelFOV(String entityRendererClassName, String viewModelFunctionName, boolean leftHanded) {
+        FOVViewmodelAdvice.leftHanded = leftHanded;
         try {
             new ByteBuddy()
                     .redefine(Class.forName(entityRendererClassName))
