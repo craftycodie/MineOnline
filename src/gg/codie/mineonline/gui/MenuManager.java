@@ -255,7 +255,7 @@ public class MenuManager {
                     }
                 }
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(null, "Failed to join game.");
+                ex.printStackTrace();
             }
         }
         else if (Session.session != null && Session.session.isOnline() && quicklaunch != null) {

@@ -26,6 +26,7 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 // This is handled on the startup thread, that's the only way to implement joining.
 public class DiscordRPCHandler {
@@ -125,7 +126,15 @@ public class DiscordRPCHandler {
             presence.setDetails(DiscordRPCHandler.versionName);
             presence.setStartTimestamps(startTimestamp);
             presence.setSecrets(DiscordRPCHandler.serverIP + ", " + DiscordRPCHandler.serverPort, null);
-            presence.setParty(DiscordRPCHandler.serverIP + ":" + DiscordRPCHandler.serverPort, server != null ? (server.users > 0 ? server.users : 1) : 1, server != null ? server.maxUsers : 24);
+            try {
+                if (InetAddress.getByName(DiscordRPCHandler.serverIP).isAnyLocalAddress())
+                    presence.setParty(externalIP + ":" + DiscordRPCHandler.serverPort, server != null ? (server.users > 0 ? server.users : 1) : 1, server != null ? server.maxUsers : 24);
+                else
+                    presence.setParty(DiscordRPCHandler.serverIP + ":" + DiscordRPCHandler.serverPort, server != null ? (server.users > 0 ? server.users : 1) : 1, server != null ? server.maxUsers : 24);
+            } catch (Exception ex) {
+                presence.setParty(DiscordRPCHandler.serverIP + ":" + DiscordRPCHandler.serverPort, server != null ? (server.users > 0 ? server.users : 1) : 1, server != null ? server.maxUsers : 24);
+
+            }
             presence.setBigImage("keyart", null);
             presence.setSmallImage("block", DiscordRPCHandler.username);
 
@@ -134,55 +143,70 @@ public class DiscordRPCHandler {
         DiscordRPCHandler.lastServerUpdate = System.currentTimeMillis();
     }
 
+    static String externalIP;
+
     public static void initialize(){
-        DiscordEventHandlers handlers = new DiscordEventHandlers.Builder().setReadyEventHandler((user) -> {
-            System.out.println("Discord logged in " + user.username + "#" + user.discriminator + "!");
-            DiscordRichPresence.Builder presence = new DiscordRichPresence.Builder("In the launcher.");
-            presence.setDetails("Version " + Globals.LAUNCHER_VERSION + (Globals.DEV ? " Dev" : ""));
-            presence.setBigImage("block", null);
-            DiscordRPC.discordUpdatePresence(presence.build());
-        })
-        .setJoinGameEventHandler(new JoinGameCallback() {
-            @Override
-            public void apply(String s) {
-                try {
-                    System.out.println("Joining " + s);
-
-                    LinkedList<String> launchArgs = new LinkedList();
-                    launchArgs.add(JREUtils.getRunningJavaExecutable());
-                    launchArgs.add("-javaagent:" + LauncherFiles.PATCH_AGENT_JAR);
-                    launchArgs.add("-Djava.util.Arrays.useLegacyMergeSort=true");
-                    launchArgs.add("-cp");
-                    launchArgs.add(LibraryManager.getClasspath(true, new String[]{new File(MenuManager.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath(), LauncherFiles.DISCORD_RPC_JAR}));
-                    launchArgs.add(MenuManager.class.getCanonicalName());
-                    launchArgs.add("-server " + s.replace(", ", ":"));
-
-                    Runtime.getRuntime().exec(launchArgs.toArray(new String[launchArgs.size()]));
-
-                    Runtime.getRuntime().halt(0);
-                } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(null, "Failed to join game.");
-                }
-            }
-        })
-        .setJoinRequestEventHandler(new JoinRequestCallback() {
-            @Override
-            public void apply(DiscordUser discordUser) {
-                DiscordRPC.discordRespond(discordUser.userId, DiscordRPC.DiscordReply.YES);
-            }
-        })
-        .build();
-        DiscordRPC.discordInitialize(Globals.DISCORD_APP_ID, handlers, false);
-        try {
-            String launchJava = System.getProperty("java.home") + File.separator + "bin" + File.separator + "javaw.exe -jar";
-            if (!OSUtils.isWindows())
-                launchJava.replace(".exe", "s");
-            DiscordRPC.discordRegister(Globals.DISCORD_APP_ID, launchJava + Paths.get(LibraryManager.class.getProtectionDomain().getCodeSource().getLocation().toURI()).toString());
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        externalIP = MineOnlineAPI.getExternalIP();
 
         Thread discordThread = new Thread(() -> {
+            DiscordEventHandlers handlers = new DiscordEventHandlers.Builder().setReadyEventHandler((user) -> {
+                System.out.println("Discord logged in " + user.username + "#" + user.discriminator + "!");
+                DiscordRichPresence.Builder presence = new DiscordRichPresence.Builder("In the launcher.");
+                presence.setDetails("Version " + Globals.LAUNCHER_VERSION + (Globals.DEV ? " Dev" : ""));
+                presence.setBigImage("block", null);
+                DiscordRPC.discordUpdatePresence(presence.build());
+            })
+            .setJoinGameEventHandler(new JoinGameCallback() {
+                @Override
+                public void apply(String s) {
+                    try {
+                        System.out.println("Joining " + s);
+
+                        LinkedList<String> launchArgs = new LinkedList();
+                        launchArgs.add(JREUtils.getRunningJavaExecutable());
+                        launchArgs.add("-javaagent:" + LauncherFiles.PATCH_AGENT_JAR);
+                        launchArgs.add("-Djava.util.Arrays.useLegacyMergeSort=true");
+                        launchArgs.add("-cp");
+                        launchArgs.add(LibraryManager.getClasspath(true, new String[]{new File(MenuManager.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath(), LauncherFiles.DISCORD_RPC_JAR}));
+                        launchArgs.add(MenuManager.class.getCanonicalName());
+                        launchArgs.add("-server");
+                        launchArgs.add(s.replace(", ", ":"));
+
+                        java.util.Properties props = System.getProperties();
+                        ProcessBuilder processBuilder = new ProcessBuilder(launchArgs);
+
+                        Map<String, String> env = processBuilder.environment();
+                        for(String prop : props.stringPropertyNames()) {
+                            env.put(prop, props.getProperty(prop));
+                        }
+                        processBuilder.directory(new File(System.getProperty("user.dir")));
+
+                        processBuilder.inheritIO().start();
+
+                        Runtime.getRuntime().halt(0);
+                    } catch (Exception ex) {
+                        JOptionPane.showMessageDialog(null, "Failed to join game.");
+                    }
+                }
+            })
+            .setJoinRequestEventHandler(new JoinRequestCallback() {
+                @Override
+                public void apply(DiscordUser discordUser) {
+                    DiscordRPC.discordRespond(discordUser.userId, DiscordRPC.DiscordReply.YES);
+                }
+            })
+            .build();
+            DiscordRPC.discordInitialize(Globals.DISCORD_APP_ID, handlers, false);
+            try {
+                String launchJava = System.getProperty("java.home") + File.separator + "bin" + File.separator + "javaw.exe -jar";
+                if (!OSUtils.isWindows())
+                    launchJava.replace(".exe", "s");
+                DiscordRPC.discordRegister(Globals.DISCORD_APP_ID, launchJava + Paths.get(LibraryManager.class.getProtectionDomain().getCodeSource().getLocation().toURI()).toString());
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
+
             while (!Thread.currentThread().isInterrupted()) {
                 DiscordRPC.discordRunCallbacks();
 
