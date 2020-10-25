@@ -39,12 +39,21 @@ public class Server {
             env.put(prop, props.getProperty(prop));
         }
         processBuilder.directory(new File(System.getProperty("user.dir")));
+
         processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
-        processBuilder.redirectErrorStream(true);
+        processBuilder.redirectError(ProcessBuilder.Redirect.INHERIT);
         processBuilder.redirectInput(ProcessBuilder.Redirect.INHERIT);
 
-        processBuilder.inheritIO().start();
+        Process process = processBuilder.inheritIO().start();
 
-        Runtime.getRuntime().halt(0);
+        int exitCode = 1;
+
+        try {
+            exitCode = process.waitFor();
+        } catch (Exception ex) {
+            // ignore
+        }
+
+        Runtime.getRuntime().halt(exitCode);
     }
 }
