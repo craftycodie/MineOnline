@@ -110,9 +110,6 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
                 env.put(prop, props.getProperty(prop));
             }
             processBuilder.directory(new File(System.getProperty("user.dir")));
-            processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
-            processBuilder.redirectErrorStream(true);
-            processBuilder.redirectInput(ProcessBuilder.Redirect.INHERIT);
 
             DisplayManager.getFrame().setVisible(false);
 
