@@ -171,7 +171,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
     public void startMinecraft() throws Exception {
         LibraryManager.updateNativesPath();
 
-        LWJGLDisplayPatch.hijackLWJGLThreadPatch();
+        LWJGLDisplayPatch.hijackLWJGLThreadPatch(minecraftVersion != null && minecraftVersion.useGreyScreenPatch);
 
         if (minecraftVersion != null && minecraftVersion.enableCursorPatch && OSUtils.isMac())
             MousePatch.fixMouseIssues();

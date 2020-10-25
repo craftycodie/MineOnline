@@ -1,0 +1,13 @@
+{
+  "name": "Alpha 1.1.1",
+  "md5": "89B24A39FC3DA3B0059ABD29FB548075",
+  "type": "client",
+  "enableScreenshotPatch": true,
+  "legacy": true,
+  "baseVersion": "a1.1.1",
+  "useFOVPatch": true,
+  "useTexturepackPatch": true,
+  "ingameVersionString": "Minecraft Alpha v1.1.1",
+  "resourcesVersion": "a1.1.1",
+  "useGreyScreenPatch": true
+}

@@ -12,12 +12,13 @@ public class LWJGLDisplayPatch {
     public static OnUpdateListener updateListener;
     public static OnCreateListener createListener;
 
-    public static void hijackLWJGLThreadPatch() {
+    public static void hijackLWJGLThreadPatch(boolean enableGreyScreenPatch) {
         try {
             new ByteBuddy()
                     .redefine(LWJGLDisplayPatch.class.getClassLoader().loadClass("org.lwjgl.opengl.Display"))
                     .visit(Advice.to(LWJGLDisplayCreateAdvice.class).on(ElementMatchers.named("create").and(ElementMatchers.takesArgument(2, LWJGLDisplayPatch.class.getClassLoader().loadClass("org.lwjgl.opengl.ContextAttribs")))))
                     .visit(Advice.to(LWJGLDisplayUpdateAdvice.class).on(ElementMatchers.named("update").and(ElementMatchers.takesArgument(0, boolean.class))))
+                    .visit(Advice.to(LWJGLSetDisplayConfigurationAdvice.class).on(ElementMatchers.named("setDisplayConfiguration")))
                     .make()
                     .load(Class.forName("org.lwjgl.opengl.Display").getClassLoader(), ClassReloadingStrategy.fromInstalledAgent());
         } catch (ClassNotFoundException ex) {
