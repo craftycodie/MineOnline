@@ -38,12 +38,9 @@ public class Server {
         for(String prop : props.stringPropertyNames()) {
             env.put(prop, props.getProperty(prop));
         }
-        processBuilder.directory(new File(System.getProperty("user.dir")));
-        processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
-        processBuilder.redirectErrorStream(true);
-        processBuilder.redirectInput(ProcessBuilder.Redirect.INHERIT);
 
-        processBuilder.inheritIO().start();
+        processBuilder = processBuilder.inheritIO();
+        processBuilder.redirectInput(ProcessBuilder.Redirect.INHERIT);
 
         Runtime.getRuntime().halt(0);
     }

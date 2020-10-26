@@ -14,7 +14,6 @@ import gg.codie.mineonline.gui.rendering.font.TextMaster;
 import gg.codie.mineonline.gui.rendering.shaders.GUIShader;
 import org.lwjgl.util.vector.Vector2f;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class SkinCustomizationMenuScreen implements IMenuScreen {
@@ -36,7 +35,7 @@ public class SkinCustomizationMenuScreen implements IMenuScreen {
 
     public SkinCustomizationMenuScreen() {
         try {
-            Options minecraftOptions = new Options(LauncherFiles.MINECRAFT_OPTIONS_PATH);
+            Options minecraftOptions = new Options(LauncherFiles.MINEONLINE_OPTIONS_PATH);
 
             try {
                 hat = "true".equals(minecraftOptions.getOption("modelPart_hat"));
@@ -131,7 +130,7 @@ public class SkinCustomizationMenuScreen implements IMenuScreen {
             public void onClick() {
 
                 try {
-                    Options minecraftOptions = new Options(LauncherFiles.MINECRAFT_OPTIONS_PATH);
+                    Options minecraftOptions = new Options(LauncherFiles.MINEONLINE_OPTIONS_PATH);
                     minecraftOptions.setOption("modelPart_hat", hat ? "true" : "false");
                     minecraftOptions.setOption("modelPart_jacket", jacket ? "true" : "false");
                     minecraftOptions.setOption("modelPart_left_sleeve", leftSleeve ? "true" : "false");

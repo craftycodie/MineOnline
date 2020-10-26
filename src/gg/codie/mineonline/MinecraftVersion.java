@@ -350,7 +350,7 @@ public class MinecraftVersion {
 
     public static void launchMinecraft(String jarPath, String serverIP, String serverPort, String mpPass) throws Exception {
         try {
-            new Options(LauncherFiles.MINECRAFT_OPTIONS_PATH).setOption("lastServer", serverIP + "_" + serverPort);
+            new Options(LauncherFiles.MINEONLINE_OPTIONS_PATH).setOption("lastServer", serverIP + "_" + serverPort);
         } catch (Exception ex) {
             // ignore
         }

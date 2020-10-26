@@ -9,7 +9,6 @@ public class LauncherFiles {
 
     public static final String MINEONLINE_FOLDER = getOldMinecraftDirectory() + File.separator + "mineonline" + File.separator;
 
-
     public static final String MINEONLINE_SETTINGS_FILE = MINEONLINE_FOLDER + "settings.json";
 
     public static final String MINEONLINE_LIBRARY_FOLDER = MINEONLINE_FOLDER + "lib" + File.separator;
@@ -41,7 +40,7 @@ public class LauncherFiles {
     public static final String MINEONLINE_VERSIONS_FOLDER = MINEONLINE_FOLDER + "versions" + File.separator;
     public static final String MINEONLINE_LATEST_LOG = MINEONLINE_FOLDER + "latest.log";
     public static final String MINEONLINE_RESOURCES_PATH = MINEONLINE_FOLDER + "resources" + File.separator;
-
+    public static final String MINEONLINE_OPTIONS_PATH = MINEONLINE_FOLDER + "options.txt";
 
     public static final String MINECRAFT_RESOURCES_PATH = getOldMinecraftDirectory() + File.separator + "resources" + File.separator;
     public static final String MINECRAFT_TEXTURE_PACKS_PATH = getOldMinecraftDirectory() + File.separator + "texturepacks" + File.separator;
@@ -51,6 +50,9 @@ public class LauncherFiles {
     public static final String MINECRAFT_OPTIONS_PATH = getOldMinecraftDirectory() + File.separator + "options.txt";
     public static final String MINECRAFT_VERSIONS_PATH = getNewMinecraftDirectory() + File.separator + "versions" + File.separator;
     public static final String MINECRAFT_LIBRARIES_PATH = getNewMinecraftDirectory() + File.separator + "libraries" + File.separator;
+
+    public static final String OLD_MINECRAFT_FOLDER = getOldMinecraftDirectory().getPath();
+    public static final String NEW_MINECRAFT_FOLDER = getNewMinecraftDirectory().getPath();
 
     public static final String MINECRAFT_VERSION_FILE = MINECRAFT_BINARIES_PATH + "version";
 

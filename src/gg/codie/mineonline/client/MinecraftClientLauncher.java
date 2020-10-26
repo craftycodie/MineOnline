@@ -12,7 +12,6 @@ import gg.codie.mineonline.utils.Logging;
 import gg.codie.utils.OSUtils;
 
 import javax.swing.*;
-import java.awt.*;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -75,7 +74,7 @@ public class MinecraftClientLauncher {
             }
 
             try {
-                Options options = new Options(LauncherFiles.MINECRAFT_OPTIONS_PATH);
+                Options options = new Options(LauncherFiles.MINEONLINE_OPTIONS_PATH);
                 options.setOption("guiScale", "" + Settings.settings.optInt(Settings.GUI_SCALE, 0));
                 options.setOption("skin", Settings.settings.optString(Settings.TEXTURE_PACK, ""));
             } catch (Exception ex) {

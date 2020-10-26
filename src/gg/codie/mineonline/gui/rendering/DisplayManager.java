@@ -17,7 +17,7 @@ import java.nio.file.Paths;
 public class DisplayManager {
 
     static {
-        if (new File(LauncherFiles.MINECRAFT_OPTIONS_PATH).exists()) {
+        if (new File(LauncherFiles.MINEONLINE_OPTIONS_PATH).exists()) {
             try {
                 Settings.loadSettings();
                 guiScale = Settings.settings.optInt(Settings.GUI_SCALE, 0);
@@ -91,8 +91,8 @@ public class DisplayManager {
         DisplayManager.guiScale = guiScale;
 
         try {
-            if (!new File(LauncherFiles.MINECRAFT_OPTIONS_PATH).exists()) {
-                Files.createFile(Paths.get(LauncherFiles.MINECRAFT_OPTIONS_PATH));
+            if (!new File(LauncherFiles.MINEONLINE_OPTIONS_PATH).exists()) {
+                Files.createFile(Paths.get(LauncherFiles.MINEONLINE_OPTIONS_PATH));
             }
 
             Settings.settings.put(Settings.GUI_SCALE, guiScale);

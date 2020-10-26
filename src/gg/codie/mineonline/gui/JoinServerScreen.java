@@ -1,6 +1,8 @@
 package gg.codie.mineonline.gui;
 
-import gg.codie.mineonline.*;
+import gg.codie.mineonline.MinecraftVersion;
+import gg.codie.mineonline.MinecraftVersionRepository;
+import gg.codie.mineonline.Session;
 import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.mineonline.gui.components.InputField;
 import gg.codie.mineonline.gui.components.LargeButton;
@@ -29,7 +31,7 @@ public class JoinServerScreen implements IMenuScreen {
     public JoinServerScreen(String value) {
         String server = "";
 //        try {
-//            server = new Options(LauncherFiles.MINECRAFT_OPTIONS_PATH).getOption("lastServer").replace("_", ":");
+//            server = new Options(LauncherFiles.MINEONLINE_OPTIONS_PATH).getOption("lastServer").replace("_", ":");
 //        } catch (Exception e) {
 //            /// ignore
 //        }
