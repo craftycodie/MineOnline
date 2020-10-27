@@ -6,6 +6,7 @@
   "enableScreenshotPatch": true,
   "legacy": true,
   "baseVersion": "a1.1.2_01",
+  "scaledResolutionClass": "iy",
   "useFOVPatch": true,
   "useTexturepackPatch": true,
   "ingameVersionString": "Minecraft Alpha v1.1.2_01",
