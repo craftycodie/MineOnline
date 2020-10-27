@@ -319,7 +319,6 @@ public class MenuManager {
         int lastHeight = Display.getHeight();
 
         Vector3f rotation = new Vector3f();
-        Vector3f velocity = new Vector3f();
 
         // Game Loop
         while(!Display.isCloseRequested() && formopen) {
