@@ -317,6 +317,10 @@ public class MenuManager {
 
         int lastWidth = Display.getWidth();
         int lastHeight = Display.getHeight();
+
+        Vector3f rotation = new Vector3f();
+        Vector3f velocity = new Vector3f();
+
         // Game Loop
         while(!Display.isCloseRequested() && formopen) {
             MouseHandler.update();
@@ -347,14 +351,13 @@ public class MenuManager {
             }
 
             if(Mouse.isButtonDown(0)) {
-                Vector3f currentRotation = playerPivot.getLocalRotation();
-                Vector3f rotation = new Vector3f();
-
-                rotation.y = (Mouse.getDX() * 0.5f);
-
-                if (menuScreen.showPlayer())
-                    playerPivot.increaseRotation(rotation);
+                rotation.y = Mouse.getDX() * 0.5f;
+            } else if (!Mouse.isButtonDown(0)) {
+                rotation.y *= .97f;
             }
+
+            if (rotation.y != 0 && menuScreen.showPlayer())
+                playerPivot.increaseRotation(rotation);
 
             playerGameObject.update();
             menuScreen.update();
