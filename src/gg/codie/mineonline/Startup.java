@@ -4,7 +4,8 @@ import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.utils.JREUtils;
 import gg.codie.mineonline.utils.Logging;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -35,8 +36,18 @@ public class Startup {
         }
         processBuilder.directory(new File(System.getProperty("user.dir")));
 
-        processBuilder.inheritIO().start();
+        Process launcherProcess = processBuilder.inheritIO().start();
 
+        // for unix debugging, capture IO.
+        if (Globals.DEV) {
+            int exitCode = 1;
+            try {
+                exitCode = launcherProcess.waitFor();
+                System.exit(exitCode);
+            } catch (Exception ex) {
+                // ignore.
+            }
+        }
         Runtime.getRuntime().halt(0);
     }
 

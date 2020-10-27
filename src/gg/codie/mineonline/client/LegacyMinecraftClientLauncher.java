@@ -121,9 +121,18 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
                 System.err.println("Couldn't save guiScale to options.txt");
             }
 
-            processBuilder.inheritIO().start();
+            Process gameProcess = processBuilder.inheritIO().start();
 
-            Runtime.getRuntime().halt(0);
+            // for unix debugging, capture IO.
+            if (Globals.DEV) {
+                int exitCode = 1;
+                try {
+                    exitCode = gameProcess.waitFor();
+                    System.exit(exitCode);
+                } catch (Exception ex) {
+                    // ignore.
+                }
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
