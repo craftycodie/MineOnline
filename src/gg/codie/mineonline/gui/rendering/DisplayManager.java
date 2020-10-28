@@ -1,5 +1,6 @@
 package gg.codie.mineonline.gui.rendering;
 
+import gg.codie.minecraft.client.EMinecraftGUIScale;
 import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.Settings;
 import org.lwjgl.LWJGLException;
@@ -19,8 +20,8 @@ public class DisplayManager {
     static {
         if (new File(LauncherFiles.MINEONLINE_OPTIONS_PATH).exists()) {
             try {
-                Settings.loadSettings();
-                guiScale = Settings.settings.optInt(Settings.GUI_SCALE, 0);
+                Settings.singleton.loadSettings();
+                guiScale = Settings.singleton.getGUIScale().getIntValue();
             } catch (Exception ex) {
                 guiScale = 0;
             }
@@ -83,23 +84,11 @@ public class DisplayManager {
 //        return multiplier;
 //    }
 
-    public static int getGuiScale() {
-        return guiScale;
-    }
+    @Deprecated
+    public static void setGuiScale(EMinecraftGUIScale guiScale) {
+        DisplayManager.guiScale = guiScale.getIntValue();
 
-    public static void setGuiScale(int guiScale) {
-        DisplayManager.guiScale = guiScale;
-
-        try {
-            if (!new File(LauncherFiles.MINEONLINE_OPTIONS_PATH).exists()) {
-                Files.createFile(Paths.get(LauncherFiles.MINEONLINE_OPTIONS_PATH));
-            }
-
-            Settings.settings.put(Settings.GUI_SCALE, guiScale);
-            Settings.saveSettings();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        Settings.singleton.setGUIScale(guiScale);
     }
 
     static int guiScale;

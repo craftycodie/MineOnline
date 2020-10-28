@@ -1,5 +1,6 @@
 package gg.codie.mineonline.gui;
 
+import gg.codie.minecraft.client.EMinecraftGUIScale;
 import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.Session;
 import gg.codie.mineonline.Settings;
@@ -30,44 +31,42 @@ public class OptionsMenuScreen implements IMenuScreen {
     LargeButton doneButton;
     GUIText label;
 
-    private static final String[] guiScales = new String[] { "Auto", "Small", "Normal", "Large" };
-
     public OptionsMenuScreen() {
-        Settings.loadSettings();
+        Settings.singleton.loadSettings();
 
-        fullscreenButton = new MediumButton("Fullscreen: " + (Settings.settings.getBoolean(Settings.FULLSCREEN) ? "ON" : "OFF"), new Vector2f((DisplayManager.getDefaultWidth() / 2) - 308, (DisplayManager.getDefaultHeight() / 2) - 40), new IOnClickListener() {
+        fullscreenButton = new MediumButton("Fullscreen: " + (Settings.singleton.getFullscreen() ? "ON" : "OFF"), new Vector2f((DisplayManager.getDefaultWidth() / 2) - 308, (DisplayManager.getDefaultHeight() / 2) - 40), new IOnClickListener() {
             @Override
             public void onClick() {
-                boolean fullcreen = !Settings.settings.getBoolean(Settings.FULLSCREEN);
-                Settings.settings.put(Settings.FULLSCREEN, fullcreen);
-                Settings.saveSettings();
-                fullscreenButton.setName("Fullscreen: " + (Settings.settings.getBoolean(Settings.FULLSCREEN) ? "ON" : "OFF"));
+                boolean fullcreen = !Settings.singleton.getFullscreen();
+                Settings.singleton.setFullscreen(fullcreen);
+                Settings.singleton.saveSettings();
+                fullscreenButton.setName("Fullscreen: " + (Settings.singleton.getFullscreen() ? "ON" : "OFF"));
             }
         });
 
-        guiScaleButton = new MediumButton("GUI Scale: " + guiScales[DisplayManager.getGuiScale()], new Vector2f((DisplayManager.getDefaultWidth() / 2) - 308, (DisplayManager.getDefaultHeight() / 2) + 8), new IOnClickListener() {
+        guiScaleButton = new MediumButton("GUI Scale: " + Settings.singleton.getGUIScale().getName().toUpperCase(), new Vector2f((DisplayManager.getDefaultWidth() / 2) - 308, (DisplayManager.getDefaultHeight() / 2) + 8), new IOnClickListener() {
             @Override
             public void onClick() {
-                if (DisplayManager.getGuiScale() == guiScales.length - 1) {
-                    DisplayManager.setGuiScale(0);
+                if (Settings.singleton.getGUIScale().getIntValue() == EMinecraftGUIScale.values().length) {
+                    DisplayManager.setGuiScale(EMinecraftGUIScale.values()[0]);
                 } else {
-                    DisplayManager.setGuiScale(DisplayManager.getGuiScale() + 1);
+                    DisplayManager.setGuiScale(EMinecraftGUIScale.values()[Settings.singleton.getGUIScale().getIntValue()]);
                 }
 
                 MenuManager.resizeMenu();
 
-                guiScaleButton.setName("GUI Scale: " + guiScales[DisplayManager.getGuiScale()]);
+                guiScaleButton.setName("GUI Scale: " + Settings.singleton.getGUIScale().getName().toUpperCase());
             }
         });
 
         fovSlider = new ValueSlider("FOV: " + getFOVLabel(), new Vector2f((DisplayManager.getDefaultWidth() / 2) - 308, (DisplayManager.getDefaultHeight() / 2) + 56), new IOnClickListener() {
             @Override
             public void onClick() {
-                Settings.settings.put(Settings.FOV, fovSlider.getValue());
-                Settings.saveSettings();
+                Settings.singleton.setFOV(fovSlider.getValue());
+                Settings.singleton.saveSettings();
                 fovSlider.setName("FOV: " + getFOVLabel());
             }
-        }, Settings.settings.optInt(Settings.FOV, 70), 30, 110);
+        }, (int)Settings.singleton.getFOV(), 30, 110);
 
         skinCustomizationButton = new MediumButton("Skin Customization", new Vector2f((DisplayManager.getDefaultWidth() / 2) + 8, (DisplayManager.getDefaultHeight() / 2) + 56), new IOnClickListener() {
             @Override
@@ -76,23 +75,23 @@ public class OptionsMenuScreen implements IMenuScreen {
             }
         });
 
-        versionStringsButton = new MediumButton("Hide Version Number: " + (Settings.settings.getBoolean(Settings.HIDE_VERSION_STRING) ? "YES" : "NO"), new Vector2f((DisplayManager.getDefaultWidth() / 2) + 8, (DisplayManager.getDefaultHeight() / 2) - 40), new IOnClickListener() {
+        versionStringsButton = new MediumButton("Hide Version Number: " + (Settings.singleton.getHideVersionString() ? "YES" : "NO"), new Vector2f((DisplayManager.getDefaultWidth() / 2) + 8, (DisplayManager.getDefaultHeight() / 2) - 40), new IOnClickListener() {
             @Override
             public void onClick() {
-                boolean hideVersionStrings = !Settings.settings.getBoolean(Settings.HIDE_VERSION_STRING);
-                Settings.settings.put(Settings.HIDE_VERSION_STRING, hideVersionStrings);
-                Settings.saveSettings();
-                versionStringsButton.setName("Hide Version Number: " + (Settings.settings.getBoolean(Settings.HIDE_VERSION_STRING) ? "YES" : "NO"));
+                boolean hideVersionStrings = !Settings.singleton.getHideVersionString();
+                Settings.singleton.setHideVersionString(hideVersionStrings);
+                Settings.singleton.saveSettings();
+                versionStringsButton.setName("Hide Version Number: " + (Settings.singleton.getHideVersionString() ? "YES" : "NO"));
             }
         });
 
-        customCapesButton = new MediumButton("Use Custom Capes: " + (Settings.settings.optBoolean(Settings.CUSTOM_CAPES, false) ? "YES" : "NO"), new Vector2f((DisplayManager.getDefaultWidth() / 2) - 308, (DisplayManager.getDefaultHeight() / 2) + 104), new IOnClickListener() {
+        customCapesButton = new MediumButton("Use Custom Capes: " + (Settings.singleton.getCustomCapes() ? "YES" : "NO"), new Vector2f((DisplayManager.getDefaultWidth() / 2) - 308, (DisplayManager.getDefaultHeight() / 2) + 104), new IOnClickListener() {
             @Override
             public void onClick() {
-                boolean useCustomCapes = !Settings.settings.getBoolean(Settings.CUSTOM_CAPES);
-                Settings.settings.put(Settings.CUSTOM_CAPES, useCustomCapes);
-                Settings.saveSettings();
-                customCapesButton.setName("Use Custom Capes: " + (Settings.settings.getBoolean(Settings.CUSTOM_CAPES) ? "YES" : "NO"));
+                boolean useCustomCapes = !Settings.singleton.getCustomCapes();
+                Settings.singleton.setCustomCapes(useCustomCapes);
+                Settings.singleton.saveSettings();
+                customCapesButton.setName("Use Custom Capes: " + (Settings.singleton.getCustomCapes() ? "YES" : "NO"));
                 if(PlayerGameObject.thePlayer != null) {
                     PlayerGameObject.thePlayer.setCloak(LauncherFiles.TEMPLATE_CLOAK_PATH);
                     new File(LauncherFiles.CACHED_CLOAK_PATH).delete();
@@ -130,7 +129,7 @@ public class OptionsMenuScreen implements IMenuScreen {
     }
 
     public String getFOVLabel() {
-        int fov = Settings.settings.optInt(Settings.FOV, 70);
+        int fov = (int)Settings.singleton.getFOV();
 
         switch(fov) {
             case 70:

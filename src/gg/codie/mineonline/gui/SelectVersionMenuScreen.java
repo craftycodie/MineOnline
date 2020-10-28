@@ -88,7 +88,7 @@ public class SelectVersionMenuScreen implements IMenuScreen {
             @Override
             public void onClick() {
                 MinecraftVersionRepository.getSingleton().selectJar(selectableVersionList.getSelected());
-                Settings.saveSettings();
+                Settings.singleton.saveSettings();
                 MenuManager.setMenuScreen(new MainMenuScreen());
             }
         });

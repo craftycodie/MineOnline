@@ -148,8 +148,8 @@ public class SelectableTexturePackList extends GUIObject {
             }
         }
 
-        Settings.loadSettings();
-        selectTexturePack(Settings.settings.optString(Settings.TEXTURE_PACK, ""));
+        Settings.singleton.loadSettings();
+        selectTexturePack(Settings.singleton.getTexturePack());
     }
 
     private LinkedList<SelectableTexturePack> texturePacks = new LinkedList<>();

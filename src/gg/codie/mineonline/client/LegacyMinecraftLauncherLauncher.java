@@ -31,8 +31,8 @@ public class LegacyMinecraftLauncherLauncher {
             if (DisplayManager.getFrame() != null)
                 DisplayManager.getFrame().dispose();
 
-            Settings.loadSettings();
-            String updateURLString = Settings.settings.has(Settings.MINECRAFT_UPDATE_URL) ? Settings.settings.getString(Settings.MINECRAFT_UPDATE_URL) : null;
+            Settings.singleton.loadSettings();
+            String updateURLString = Settings.singleton.getMinecraftUpdateURL();
 
             SystemSetPropertyPatch.banNativeChanges();
 
@@ -55,7 +55,7 @@ public class LegacyMinecraftLauncherLauncher {
             URLPatch.redefineURL(updateURLString);
             // Allow texture packs in versions before Alpha 1.2.2
             if (minecraftVersion != null && minecraftVersion.useTexturepackPatch)
-                ClassPatch.useTexturePacks(Settings.settings.optString(Settings.TEXTURE_PACK, ""));
+                ClassPatch.useTexturePacks(Settings.singleton.getTexturePack());
 
             try {
                 Class launcherClass = urlClassLoader.loadClass("net.minecraft.LauncherFrame");

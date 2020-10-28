@@ -3,7 +3,7 @@ package gg.codie.minecraft.client;
 import java.io.*;
 import java.util.LinkedList;
 
-public class Options {
+public class Options implements IMinecraftOptionsHandler {
     String path;
 
     public Options(String path) throws IOException {
@@ -13,7 +13,7 @@ public class Options {
         this.path = path;
     }
 
-    public void setOption(String name, String value) throws IOException {
+    private void setOption(String name, String value) throws IOException {
         LinkedList<String> lines = new LinkedList<>();
 
         try (BufferedReader br = new BufferedReader(new FileReader(path))) {
@@ -40,7 +40,7 @@ public class Options {
         }
     }
 
-    public String getOption(String name) throws NoSuchFieldException, IOException {
+    private String getOption(String name) throws NoSuchFieldException, IOException {
         try (BufferedReader br = new BufferedReader(new FileReader(path))) {
             String line;
             while ((line = br.readLine()) != null) {
@@ -50,5 +50,616 @@ public class Options {
             }
         }
         throw new NoSuchFieldException(name + " not found.");
+    }
+
+    @Override
+    public float getMusicVolume() throws NoSuchFieldException {
+        try {
+            return Float.parseFloat(getOption("music"));
+        } catch (IOException | NumberFormatException ex) {
+            return 1;
+        }
+    }
+
+    @Override
+    public void setMusicVolume(float volume) {
+        try {
+            setOption("music", "" + volume);
+        } catch (IOException ex) {
+            // ignore
+        }
+    }
+
+    @Override
+    public float getSoundVolume() throws NoSuchFieldException {
+        try {
+            return Float.parseFloat(getOption("sound"));
+        } catch (IOException | NumberFormatException ex) {
+            return 1;
+        }
+    }
+
+    @Override
+    public void setSoundVolume(float volume) {
+        try {
+            setOption("sound", "" + volume);
+        } catch (IOException ex) {
+            // ignore
+        }
+    }
+
+    @Override
+    public boolean getInvertYMouse() throws NoSuchFieldException {
+        try {
+            return getOption("invertYMouse").equalsIgnoreCase("true");
+        } catch (IOException ex) {
+            return false;
+        }
+    }
+
+    @Override
+    public void setInvertYMouse(boolean invertYMouse) {
+        try {
+            setOption("invertYMouse", invertYMouse ? "true" : "false");
+        } catch (IOException ex) {
+            // ignore
+        }
+    }
+
+    @Override
+    public float getMouseSensitivity() throws NoSuchFieldException {
+        try {
+            return Float.parseFloat(getOption("mouseSensitivity"));
+        } catch (IOException | NumberFormatException ex) {
+            return 1;
+        }
+    }
+
+    @Override
+    public void setMouseSensitivity(float sensitivity) {
+        try {
+            setOption("mouseSensitivity", "" + sensitivity);
+        } catch (IOException ex) {
+            // ignore
+        }
+    }
+
+    @Override
+    public ELegacyMinecraftRenderDistance getRenderDistance() throws NoSuchFieldException {
+        try {
+            return ELegacyMinecraftRenderDistance.values()[Integer.parseInt(getOption("viewDistance"))];
+        } catch (IOException | NumberFormatException ex) {
+            return ELegacyMinecraftRenderDistance.FAR;
+        }
+    }
+
+    @Override
+    public void setRenderDistance(ELegacyMinecraftRenderDistance renderDistance) {
+        try {
+            setOption("viewDistance", "" + renderDistance.getIntValue());
+        } catch (IOException ex) {
+            // ignore
+        }
+    }
+
+    @Override
+    public EMinecraftGUIScale getGUIScale() throws NoSuchFieldException {
+        try {
+            return EMinecraftGUIScale.values()[Integer.parseInt(getOption("guiScale"))];
+        } catch (IOException | NumberFormatException ex) {
+            return EMinecraftGUIScale.AUTO;
+        }
+    }
+
+    @Override
+    public void setGUIScale(EMinecraftGUIScale guiScale) {
+        try {
+            setOption("viewDistance", "" + guiScale.getIntValue());
+        } catch (IOException ex) {
+            // ignore
+        }
+    }
+
+    @Override
+    public boolean getViewBobbing() throws NoSuchFieldException {
+        try {
+            return getOption("bobView").equalsIgnoreCase("true");
+        } catch (IOException ex) {
+            return false;
+        }
+    }
+
+    @Override
+    public void setViewBobbing(boolean viewBobbing) {
+        try {
+            setOption("bobView", viewBobbing ? "true" : "false");
+        } catch (IOException ex) {
+            // ignore
+        }
+    }
+
+    @Override
+    public boolean get3DAnaglyph() throws NoSuchFieldException {
+        try {
+            return getOption("anaglyph3d").equalsIgnoreCase("true");
+        } catch (IOException ex) {
+            return false;
+        }
+    }
+
+    @Override
+    public void set3DAnalyhph(boolean analyhph) {
+        try {
+            setOption("anaglyph3d", analyhph ? "true" : "false");
+        } catch (IOException ex) {
+            // ignore
+        }
+    }
+
+    @Override
+    public boolean getAdvancedOpenGL() throws NoSuchFieldException {
+        try {
+            return getOption("advancedOpengl").equalsIgnoreCase("true");
+        } catch (IOException ex) {
+            return false;
+        }
+    }
+
+    @Override
+    public void setAdvancedOpenGL(boolean advancedOpenGL) {
+        try {
+            setOption("advancedOpengl", advancedOpenGL ? "true" : "false");
+        } catch (IOException ex) {
+            // ignore
+        }
+    }
+
+    @Override
+    public EMinecraftPerformance getPerformance() throws NoSuchFieldException {
+        try {
+            return EMinecraftPerformance.values()[Integer.parseInt(getOption("difficulty"))];
+        } catch (IOException | NumberFormatException ex) {
+            return EMinecraftPerformance.BALANCED;
+        }
+    }
+
+    @Override
+    public void setPerformance(EMinecraftPerformance performance) {
+        try {
+            setOption("fpsLimit", "" + performance.getIntValue());
+        } catch (IOException ex) {
+            // ignore
+        }
+    }
+
+    @Override
+    public EMinecraftDifficulty getDifficulty() throws NoSuchFieldException {
+        try {
+            return EMinecraftDifficulty.values()[Integer.parseInt(getOption("difficulty"))];
+        } catch (IOException | NumberFormatException ex) {
+            return EMinecraftDifficulty.NORMAL;
+        }
+    }
+
+    @Override
+    public void setDifficulty(EMinecraftDifficulty difficulty) {
+        try {
+            setOption("difficulty", "" + difficulty.getIntValue());
+        } catch (IOException ex) {
+            // ignore
+        }
+    }
+
+    @Override
+    public boolean getFancyGraphics() throws NoSuchFieldException {
+        try {
+            return getOption("fancyGraphics").equals("true");
+        } catch (IOException ex) {
+            return false;
+        }
+    }
+
+    @Override
+    public void setFancyGraphics(boolean fancyGraphics) {
+        try {
+            setOption("fancyGraphics", fancyGraphics ? "true" : "false");
+        } catch (IOException ex) {
+            // ignore
+        }
+    }
+
+    @Override
+    public boolean getSmoothLighting() throws NoSuchFieldException {
+        try {
+            return getOption("ao").equals("true");
+        } catch (IOException ex) {
+            return false;
+        }
+    }
+
+    @Override
+    public void setSmoothLighting(boolean smoothLighting) {
+        try {
+            setOption("ao", smoothLighting ? "true" : "false");
+        } catch (IOException ex) {
+            // ignore
+        }
+    }
+
+    @Override
+    public String getTexturePack() throws NoSuchFieldException {
+        try {
+            return getOption("skin");
+        } catch (IOException ex) {
+            return "";
+        }
+    }
+
+    @Override
+    public void setTexturePack(String texturePack) {
+        try {
+            setOption("skin", texturePack);
+        } catch (IOException ex) {
+            // ignore
+        }
+    }
+
+    @Override
+    public String getLastServer() throws NoSuchFieldException {
+        try {
+            return getOption("lastServer");
+        } catch (IOException ex) {
+            return "";
+        }
+    }
+
+    @Override
+    public void setLastServer(String lastServer) {
+        try {
+            setOption("lastServer", lastServer);
+        } catch (IOException ex) {
+            // ignore
+        }
+    }
+
+    @Override
+    public EMinecraftMainHand getMainHand() throws NoSuchFieldException {
+        try {
+            return EMinecraftMainHand.fromString(getOption("mainHand"));
+        } catch (IOException ex) {
+            return EMinecraftMainHand.RIGHT;
+        }
+    }
+
+    @Override
+    public void setMainHand(EMinecraftMainHand mainHand) {
+        try {
+            setOption("mainHand", mainHand.getStringValue());
+        } catch (IOException ex) {
+            // ignore
+        }
+    }
+
+    @Override
+    public boolean getFullscreen() throws NoSuchFieldException {
+        try {
+            return getOption("fullscreen").equals("true");
+        } catch (IOException ex) {
+            return false;
+        }
+    }
+
+    @Override
+    public void setFullscreen(boolean fullscreen) {
+        try {
+            setOption("fullscreen", fullscreen ? "true" : "false");
+        } catch (IOException ex) {
+            // ignore
+        }
+    }
+
+    @Override
+    public float getFOV() throws NoSuchFieldException {
+        try {
+            return 70 + (40 * Float.parseFloat(getOption("fov")));
+        } catch (IOException ex) {
+            return 70;
+        }
+    }
+
+    @Override
+    public void setFOV(float fov) {
+        try {
+            setOption("fov", "" + ((fov - 70) / 40));
+        } catch (IOException ex) {
+            // ignore
+        }
+    }
+
+    @Override
+    public boolean getShowHat() throws NoSuchFieldException {
+        try {
+            return getOption("modelPart_hat").equals("true");
+        } catch (IOException ex) {
+            return true;
+        }
+    }
+
+    @Override
+    public void setShowHat(boolean showHat) {
+        try {
+            setOption("modelPart_hat", showHat ? "true" : "false");
+        } catch (IOException ex) {
+            // ignore
+        }
+    }
+
+    @Override
+    public boolean getShowJacket() throws NoSuchFieldException {
+        try {
+            return getOption("modelPart_jacket").equals("true");
+        } catch (IOException ex) {
+            return false;
+        }
+    }
+
+    @Override
+    public void setShowJacket(boolean showJacket) {
+        try {
+            setOption("modelPart_jacket", showJacket ? "true" : "false");
+        } catch (IOException ex) {
+            // ignore
+        }
+    }
+
+    @Override
+    public boolean getShowLeftSleeve() throws NoSuchFieldException {
+        try {
+            return getOption("modelPart_left_sleeve").equals("true");
+        } catch (IOException ex) {
+            return false;
+        }
+    }
+
+    @Override
+    public void setShowLeftSleeve(boolean showLeftSleeve) {
+        try {
+            setOption("modelPart_left_sleeve", showLeftSleeve ? "true" : "false");
+        } catch (IOException ex) {
+            // ignore
+        }
+    }
+
+    @Override
+    public boolean getShowRightSleeve() throws NoSuchFieldException {
+        try {
+            return getOption("modelPart_right_sleeve").equals("true");
+        } catch (IOException ex) {
+            return false;
+        }        }
+
+    @Override
+    public void setShowRightSleeve(boolean showRightSleeve) {
+        try {
+            setOption("modelPart_right_sleeve", showRightSleeve ? "true" : "false");
+        } catch (IOException ex) {
+            // ignore
+        }
+    }
+
+    @Override
+    public boolean getShowLeftPantsLeg() throws NoSuchFieldException {
+        try {
+            return getOption("modelPart_left_pants_leg").equals("true");
+        } catch (IOException ex) {
+            return false;
+        }
+    }
+
+    @Override
+    public void setShowLeftPantsLeg(boolean showLeftPantsLeg) {
+        try {
+            setOption("modelPart_left_pants_leg", showLeftPantsLeg ? "true" : "false");
+        } catch (IOException ex) {
+            // ignore
+        }
+    }
+
+    @Override
+    public boolean getShowRightPantsLeg() throws NoSuchFieldException {
+        try {
+            return getOption("modelPart_right_pants_leg").equals("true");
+        } catch (IOException ex) {
+            return false;
+        }
+    }
+
+    @Override
+    public void setShowRightPantsLeg(boolean showRightPantsLeg) {
+        try {
+            setOption("modelPart_right_pants_leg", showRightPantsLeg ? "true" : "false");
+        } catch (IOException ex) {
+            // ignore
+        }
+    }
+
+    @Override
+    public int getForwardKeyCode() throws NoSuchFieldException {
+        try {
+            return Integer.parseInt(getOption("key_key.forward"));
+        } catch (IOException | NumberFormatException ex) {
+            return 0;
+        }
+    }
+
+    @Override
+    public int getLeftKeyCode() throws NoSuchFieldException {
+        try {
+            return Integer.parseInt(getOption("key_key.left"));
+        } catch (IOException | NumberFormatException ex) {
+            return 0;
+        }
+    }
+
+    @Override
+    public int getBackKeyCode() throws NoSuchFieldException {
+        try {
+            return Integer.parseInt(getOption("key_key.back"));
+        } catch (IOException | NumberFormatException ex) {
+            return 0;
+        }
+    }
+
+    @Override
+    public int getRightKeyCode() throws NoSuchFieldException {
+        try {
+            return Integer.parseInt(getOption("key_key.right"));
+        } catch (IOException | NumberFormatException ex) {
+            return 0;
+        }
+    }
+
+    @Override
+    public int getJumpKeyCode() throws NoSuchFieldException {
+        try {
+            return Integer.parseInt(getOption("key_key.jump"));
+        } catch (IOException | NumberFormatException ex) {
+            return 0;
+        }
+    }
+
+    @Override
+    public int getSneakKeyCode() throws NoSuchFieldException {
+        try {
+            return Integer.parseInt(getOption("key_key.sneak"));
+        } catch (IOException | NumberFormatException ex) {
+            return 0;
+        }
+    }
+
+    @Override
+    public int getDropKeyCode() throws NoSuchFieldException {
+        try {
+            return Integer.parseInt(getOption("key_key.drop"));
+        } catch (IOException | NumberFormatException ex) {
+            return 0;
+        }
+    }
+
+    @Override
+    public int getInventoryKeyCode() throws NoSuchFieldException {
+        try {
+            return Integer.parseInt(getOption("key_key.inventory"));
+        } catch (IOException | NumberFormatException ex) {
+            return 0;
+        }
+    }
+
+    @Override
+    public int getChatKeyCode() throws NoSuchFieldException {
+        try {
+            return Integer.parseInt(getOption("key_key.chat"));
+        } catch (IOException | NumberFormatException ex) {
+            return 0;
+        }
+    }
+
+    @Override
+    public int getFogKeyCode() throws NoSuchFieldException {
+        try {
+            return Integer.parseInt(getOption("key_key.fog"));
+        } catch (IOException | NumberFormatException ex) {
+            return 0;
+        }
+    }
+
+    @Override
+    public void setForwardKeyCode(int keyCode) {
+        try {
+            setOption("key_key.forward", "" + keyCode);
+        } catch (IOException ex) {
+            // ignore
+        }
+    }
+
+    @Override
+    public void setLeftKeyCode(int keyCode) {
+        try {
+            setOption("key_key.left", "" + keyCode);
+        } catch (IOException ex) {
+            // ignore
+        }
+    }
+
+    @Override
+    public void setBackKeyCode(int keyCode) {
+        try {
+            setOption("key_key.back", "" + keyCode);
+        } catch (IOException ex) {
+            // ignore
+        }
+    }
+
+    @Override
+    public void setRightKeyCode(int keyCode) {
+        try {
+            setOption("key_key.right", "" + keyCode);
+        } catch (IOException ex) {
+            // ignore
+        }
+    }
+
+    @Override
+    public void setJumpKeyCode(int keyCode) {
+        try {
+            setOption("key_key.jump", "" + keyCode);
+        } catch (IOException ex) {
+            // ignore
+        }
+    }
+
+    @Override
+    public void setSneakKeyCode(int keyCode) {
+        try {
+            setOption("key_key.sneak", "" + keyCode);
+        } catch (IOException ex) {
+            // ignore
+        }
+    }
+
+    @Override
+    public void setDropKeyCode(int keyCode) {
+        try {
+            setOption("key_key.drop", "" + keyCode);
+        } catch (IOException ex) {
+            // ignore
+        }
+    }
+
+    @Override
+    public void setInventoryKeyCode(int keyCode) {
+        try {
+            setOption("key_key.inventory", "" + keyCode);
+        } catch (IOException ex) {
+            // ignore
+        }
+    }
+
+    @Override
+    public void setChatKeyCode(int keyCode) {
+        try {
+            setOption("key_key.chat", "" + keyCode);
+        } catch (IOException ex) {
+            // ignore
+        }
+    }
+
+    @Override
+    public void setFogKeyCode(int keyCode) {
+        try {
+            setOption("key_key.fog", "" + keyCode);
+        } catch (IOException ex) {
+            // ignore
+        }
     }
 }

@@ -50,7 +50,7 @@ public class SkinUtils {
             if (!profile.has("id"))
                 throw new FileNotFoundException("User not found: " + username);
 
-            if (Settings.settings.optBoolean(Settings.CUSTOM_CAPES, false)) {
+            if (Settings.singleton.getCustomCapes()) {
                 if (hasCustomCape(profile.getString("id")))
                     return Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/player/" + profile.getString("id") + "/customcape";
             }
@@ -85,7 +85,7 @@ public class SkinUtils {
 
     public static String findCloakURLForUuid(String uuid) {
         try {
-            if (Settings.settings.optBoolean(Settings.CUSTOM_CAPES, false)) {
+            if (Settings.singleton.getCustomCapes()) {
                 if (hasCustomCape(uuid))
                     return Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/player/" + uuid + "/customcape";
             }

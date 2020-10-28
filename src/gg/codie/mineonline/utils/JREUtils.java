@@ -16,8 +16,8 @@ public class JREUtils {
     }
 
     public static String getJavaExecutable() {
-        Settings.loadSettings();
-        String javaHome = Settings.settings.has(Settings.JAVA_HOME) ? Settings.settings.getString(Settings.JAVA_HOME) : null;
+        Settings.singleton.loadSettings();
+        String javaHome = Settings.singleton.getJavaHome();
         if (javaHome == null || javaHome.isEmpty())
             javaHome = System.getProperty("java.home");
 

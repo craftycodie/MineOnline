@@ -41,7 +41,7 @@ public class MainMenuScreen implements IMenuScreen {
         TexturedModel texuredLogoModel =  new TexturedModel(logoModel, logoTexture);
         logo = new GUIObject("logo", texuredLogoModel, new Vector3f(), new Vector3f(), new Vector3f(1, 1, 1));
 
-        Settings.loadSettings();
+        Settings.singleton.loadSettings();
         String jarPath = MinecraftVersionRepository.getSingleton().getLastSelectedJarPath();
         boolean jarSelected = jarPath != null && !jarPath.isEmpty();
 

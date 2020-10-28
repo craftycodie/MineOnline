@@ -1,6 +1,7 @@
 package gg.codie.mineonline.client;
 
-import gg.codie.minecraft.client.Options;
+import gg.codie.minecraft.client.EMinecraftGUIScale;
+import gg.codie.minecraft.client.EMinecraftMainHand;
 import gg.codie.mineonline.*;
 import gg.codie.mineonline.discord.DiscordRPCHandler;
 import gg.codie.mineonline.gui.MenuManager;
@@ -11,8 +12,8 @@ import gg.codie.mineonline.lwjgl.OnUpdateListener;
 import gg.codie.mineonline.patches.*;
 import gg.codie.mineonline.patches.lwjgl.LWJGLDisplayPatch;
 import gg.codie.mineonline.patches.lwjgl.LWJGLMouseSetNativeCursorAdvice;
-import gg.codie.mineonline.patches.lwjgl.LWJGLOrthoPatch;
-import gg.codie.mineonline.patches.lwjgl.LWJGLPerspectivePatch;
+import gg.codie.mineonline.patches.lwjgl.LWJGLGL11Patch;
+import gg.codie.mineonline.patches.lwjgl.LWJGLGLUPatch;
 import gg.codie.mineonline.patches.minecraft.FOVViewmodelPatch;
 import gg.codie.mineonline.patches.minecraft.GuiScreenPatch;
 import gg.codie.mineonline.patches.minecraft.MousePatch;
@@ -81,9 +82,8 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
             launchArgs.add("-Dmineonline.username=" + Session.session.getUsername());
             launchArgs.add("-Dmineonline.token=" + Session.session.getAccessToken());
             launchArgs.add("-Dmineonline.uuid=" + Session.session.getUuid());
-            launchArgs.add("--illegal-access=warn");
-            if (Settings.settings.has(Settings.CLIENT_LAUNCH_ARGS) && !Settings.settings.getString(Settings.CLIENT_LAUNCH_ARGS).isEmpty())
-                launchArgs.addAll(Arrays.asList(Settings.settings.getString(Settings.CLIENT_LAUNCH_ARGS).split(" ")));
+            if (Settings.singleton.getClientLaunchArgs().isEmpty())
+                launchArgs.addAll(Arrays.asList(Settings.singleton.getClientLaunchArgs().split(" ")));
             launchArgs.add("-cp");
             launchArgs.add(LibraryManager.getClasspath(true, new String[] {
                     new File(LegacyMinecraftClientLauncher.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath(),
@@ -92,8 +92,8 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
             }));
             launchArgs.add(LegacyMinecraftClientLauncher.class.getCanonicalName());
             launchArgs.add(jarPath);
-            launchArgs.add(Settings.settings.optString(Settings.GAME_WIDTH, "" + DisplayManager.getDefaultWidth()));
-            launchArgs.add(Settings.settings.optString(Settings.GAME_HEIGHT, "" + DisplayManager.getDefaultHeight()));
+            launchArgs.add("" + Settings.singleton.getGameWidth());
+            launchArgs.add("" + Settings.singleton.getGameHeight());
             if (serverIP != null) {
                 launchArgs.add(serverIP);
                 if (serverPort != null)
@@ -114,13 +114,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
 
             DisplayManager.getFrame().setVisible(false);
 
-            try {
-                Options options = new Options(LauncherFiles.MINEONLINE_OPTIONS_PATH);
-                options.setOption("guiScale", "" + Settings.settings.optInt(Settings.GUI_SCALE, 0));
-                options.setOption("skin", Settings.settings.optString(Settings.TEXTURE_PACK, ""));
-            } catch (Exception ex) {
-                System.err.println("Couldn't save guiScale to options.txt");
-            }
+            Settings.singleton.saveMinecraftOptions();
 
             Process gameProcess = processBuilder.inheritIO().start();
 
@@ -364,13 +358,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
 
         DisplayManager.getFrame().setTitle("Minecraft");
 
-        try {
-            Options options = new Options(LauncherFiles.MINEONLINE_OPTIONS_PATH);
-            options.setOption("guiScale", "" + Settings.settings.optInt(Settings.GUI_SCALE, 0));
-            options.setOption("skin", Settings.settings.optString(Settings.TEXTURE_PACK, ""));
-        } catch (Exception ex) {
-            System.err.println("Couldn't update options.txt");
-        }
+        Settings.singleton.saveMinecraftOptions();
 
         // Patches
         SocketPatch.watchSockets();
@@ -379,21 +367,21 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
         URLConnectionPatch.convertModernSkins();
 
         if (minecraftVersion != null && minecraftVersion.useFOVPatch) {
-            LWJGLPerspectivePatch.useCustomFOV();
+            LWJGLGLUPatch.useCustomFOV();
             if (minecraftVersion.entityRendererClass != null && minecraftVersion.viewModelFunction != null)
-                FOVViewmodelPatch.fixViewmodelFOV(minecraftVersion.entityRendererClass, minecraftVersion.viewModelFunction, Settings.settings.optBoolean(Settings.LEFT_HANDED, false));
-        } else if (minecraftVersion != null && Settings.settings.optBoolean(Settings.LEFT_HANDED, false)) {
+                FOVViewmodelPatch.fixViewmodelFOV(minecraftVersion.entityRendererClass, minecraftVersion.viewModelFunction, Settings.singleton.getMainHand() == EMinecraftMainHand.LEFT);
+        } else if (minecraftVersion != null && Settings.singleton.getMainHand() == EMinecraftMainHand.LEFT) {
             if (minecraftVersion.entityRendererClass != null && minecraftVersion.viewModelFunction != null)
                 FOVViewmodelPatch.fixViewmodelFOV(minecraftVersion.entityRendererClass, minecraftVersion.viewModelFunction, true);
         }
 
-        if (Settings.settings.optInt(Settings.GUI_SCALE, 0) != 0 && minecraftVersion != null) {
+        if (Settings.singleton.getGUIScale() != EMinecraftGUIScale.AUTO && minecraftVersion != null) {
             if (minecraftVersion.scaledResolutionClass != null) {
                 ScaledResolutionConstructorPatch.useGUIScale(minecraftVersion.scaledResolutionClass);
-                LWJGLOrthoPatch.useGuiScale();
+                LWJGLGL11Patch.useGuiScale();
             } else if (minecraftVersion.guiClass != null && minecraftVersion.guiScreenClass != null) {
                 GuiScreenPatch.useGUIScale(minecraftVersion.guiScreenClass);
-                LWJGLOrthoPatch.useGuiScale();
+                LWJGLGL11Patch.useGuiScale();
             }
         }
         // Allows c0.0.15a to connect to servers.
@@ -403,16 +391,16 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
             ByteBufferPatch.enableC0015aUsernames(Session.session.getUsername());
         // Allow texture packs in versions before Alpha 1.2.2
         if (minecraftVersion != null && minecraftVersion.useTexturepackPatch)
-            ClassPatch.useTexturePacks(Settings.settings.optString(Settings.TEXTURE_PACK, ""));
+            ClassPatch.useTexturePacks(Settings.singleton.getTexturePack());
         // Hide version strings from the HUD
-        if (minecraftVersion != null && minecraftVersion.ingameVersionString != null && Settings.settings.optBoolean(Settings.HIDE_VERSION_STRING, false))
+        if (minecraftVersion != null && minecraftVersion.ingameVersionString != null && Settings.singleton.getHideVersionString())
             StringPatch.hideVersionStrings(minecraftVersion.ingameVersionString);
 
         minecraftApplet.init();
 
         DisplayManager.getCanvas().setFocusable(true);
 
-        fullscreen = Settings.settings.has(Settings.FULLSCREEN) && Settings.settings.getBoolean(Settings.FULLSCREEN);
+        fullscreen = Settings.singleton.getFullscreen();
 
         minecraftApplet.start();
     }
@@ -566,7 +554,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
                 }
             }
 
-            int guiScale = Settings.settings.optInt(Settings.GUI_SCALE, 0);
+            int guiScale = Settings.singleton.getGUIScale().getIntValue();
 
             if (gui != null && guiHeightField != null && guiWidthField != null && guiScale != 0 && minecraftVersion != null && minecraftVersion.guiScreenClass != null) {
                 int scaledWidth;

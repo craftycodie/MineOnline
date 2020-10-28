@@ -59,27 +59,21 @@ public class MinecraftClientLauncher {
             launchArgs.add("-Dmineonline.username=" + Session.session.getUsername());
             launchArgs.add("-Dmineonline.token=" + Session.session.getAccessToken());
             launchArgs.add("-Dmineonline.uuid=" + Session.session.getUuid());
-            if (Settings.settings.has(Settings.CLIENT_LAUNCH_ARGS) && !Settings.settings.getString(Settings.CLIENT_LAUNCH_ARGS).isEmpty())
-                launchArgs.addAll(Arrays.asList(Settings.settings.getString(Settings.CLIENT_LAUNCH_ARGS).split(" ")));
+            if (Settings.singleton.getClientLaunchArgs().isEmpty())
+                launchArgs.addAll(Arrays.asList(Settings.singleton.getClientLaunchArgs().split(" ")));
             launchArgs.add("-cp");
             launchArgs.add(LibraryManager.getClasspath(false, libraries.toArray(new String[libraries.size()])));
             launchArgs.add(MinecraftClientLauncher.class.getCanonicalName());
             launchArgs.add(jarPath);
-            launchArgs.add(Settings.settings.optString(Settings.GAME_WIDTH, "" + DisplayManager.getDefaultWidth()));
-            launchArgs.add(Settings.settings.optString(Settings.GAME_HEIGHT, "" + DisplayManager.getDefaultHeight()));
+            launchArgs.add("" + Settings.singleton.getGameWidth());
+            launchArgs.add("" + Settings.singleton.getGameHeight());
             if(serverIP != null) {
                 launchArgs.add(serverIP);
                 if(serverPort != null)
                     launchArgs.add(serverPort);
             }
 
-            try {
-                Options options = new Options(LauncherFiles.MINEONLINE_OPTIONS_PATH);
-                options.setOption("guiScale", "" + Settings.settings.optInt(Settings.GUI_SCALE, 0));
-                options.setOption("skin", Settings.settings.optString(Settings.TEXTURE_PACK, ""));
-            } catch (Exception ex) {
-                System.err.println("Couldn't save guiScale to options.txt");
-            }
+            Settings.singleton.saveMinecraftOptions();
 
             ProcessBuilder processBuilder = new ProcessBuilder(launchArgs.toArray(new String[0]));
 
@@ -175,7 +169,7 @@ public class MinecraftClientLauncher {
             args.add("--accessToken");
             args.add(Session.session.getAccessToken());
 
-            if (Settings.settings.has(Settings.FULLSCREEN) && Settings.settings.getBoolean(Settings.FULLSCREEN))
+            if (Settings.singleton.getFullscreen())
                 args.add("--fullscreen");
 
             if (!Session.session.isPremium())

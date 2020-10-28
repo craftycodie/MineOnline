@@ -350,10 +350,12 @@ public class MinecraftVersion {
 
     public static void launchMinecraft(String jarPath, String serverIP, String serverPort, String mpPass) throws Exception {
         try {
-            new Options(LauncherFiles.MINEONLINE_OPTIONS_PATH).setOption("lastServer", serverIP + "_" + serverPort);
+            Settings.singleton.setLastServer(serverIP + "_" + serverPort);
         } catch (Exception ex) {
             // ignore
         }
+
+        Settings.singleton.saveMinecraftOptions();
 
         MinecraftVersion minecraftVersion = MinecraftVersionRepository.getSingleton().getVersion(jarPath);
 
