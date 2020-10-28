@@ -5,6 +5,7 @@
   "type": "client",
   "enableScreenshotPatch": true,
   "legacy": true,
+  "baseURLHasNoPort": true,
   "baseVersion": "inf-20100313",
   "useFOVPatch": true,
   "useTexturepackPatch": true,
