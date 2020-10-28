@@ -2,14 +2,11 @@ package gg.codie.mineonline;
 
 import gg.codie.minecraft.client.*;
 import org.json.JSONObject;
-import org.lwjgl.input.Keyboard;
-import sun.plugin2.message.LaunchJVMAppletMessage;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.security.Key;
 
 public class Settings implements IMinecraftOptionsHandler {
 
@@ -24,7 +21,7 @@ public class Settings implements IMinecraftOptionsHandler {
     public static final String GAME_WIDTH = "gameWidth";
     public static final String GAME_HEIGHT = "gameHeight";
     public static final String CUSTOM_CAPES = "customCapes";
-
+    public static final String KEY_CODE_ZOOM = "keyCodeZoom";
     public static final String SAMPLE_COUNT = "sampleCount";
     public static final String STENCIL_COUNT = "stencilCount";
     public static final String COVERAGE_SAMPLE_COUNT = "coverageSampleCount";
@@ -138,6 +135,7 @@ public class Settings implements IMinecraftOptionsHandler {
         settings.put(SKIN_LAYER_LEFT_ARM, true);
         settings.put(SKIN_LAYER_TORSO, true);
         settings.put(SKIN_LAYER_HEAD, true);
+        settings.put(KEY_CODE_ZOOM, 0);
 
         saveSettings();
         loadSettings();
@@ -447,6 +445,7 @@ public class Settings implements IMinecraftOptionsHandler {
                         settings.put(SKIN_LAYER_LEFT_ARM, true);
                         settings.put(SKIN_LAYER_TORSO, true);
                         settings.put(SKIN_LAYER_HEAD, true);
+                        settings.put(KEY_CODE_ZOOM, 0);
                 }
                 settings.put(SETTINGS_VERSION, SETTINGS_VERSION_NUMBER);
             }
@@ -474,8 +473,8 @@ public class Settings implements IMinecraftOptionsHandler {
             int bytes_read = 0;
             StringBuffer stringBuffer = new StringBuffer();
             while ((bytes_read = input.read(buffer, 0, 8096)) != -1) {
-                for (int i = 0; i < bytes_read; i++) {
-                    stringBuffer.append((char) buffer[i]);
+                for(int i = 0; i < bytes_read; i++) {
+                    stringBuffer.append((char)buffer[i]);
                 }
             }
 
@@ -533,6 +532,10 @@ public class Settings implements IMinecraftOptionsHandler {
 
     public int getCoverageSampleCount() {
         return settings.optInt(COVERAGE_SAMPLE_COUNT, 0);
+    }
+
+    public int getZoomKeyCode() {
+        return settings.optInt(KEY_CODE_ZOOM, 0);
     }
 
     @Override
