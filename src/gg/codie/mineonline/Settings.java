@@ -24,8 +24,9 @@ public class Settings {
     public static final String GAME_HEIGHT = "gameHeight";
     public static final String CUSTOM_CAPES = "customCapes";
     public static final String LEFT_HANDED = "leftHanded";
+    public static final String KEY_CODE_ZOOM = "keyCodeZoom";
 
-    private static final int SETTINGS_VERSION_NUMBER = 9;
+    private static final int SETTINGS_VERSION_NUMBER = 10;
 
     private static boolean readonly = true;
 
@@ -60,6 +61,7 @@ public class Settings {
         settings.put(GAME_HEIGHT, 480);
         settings.put(CUSTOM_CAPES, true);
         settings.put(LEFT_HANDED, false);
+        settings.put(KEY_CODE_ZOOM, 0);
 
         saveSettings();
         loadSettings();
@@ -102,6 +104,8 @@ public class Settings {
                         settings.put(CUSTOM_CAPES, true);
                     case 8:
                         settings.put(LEFT_HANDED, false);
+                    case 9:
+                        settings.put(KEY_CODE_ZOOM, 0);
                 }
                 settings.put(SETTINGS_VERSION, SETTINGS_VERSION_NUMBER);
             }
