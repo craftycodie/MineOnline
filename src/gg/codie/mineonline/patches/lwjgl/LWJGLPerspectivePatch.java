@@ -23,4 +23,15 @@ public class LWJGLPerspectivePatch {
             ex.printStackTrace();
         }
     }
+    public static void zoom(){
+        try {
+            LWJGLPerspectiveAdvice.customFOV = 20;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public static void unZoom(){
+        LWJGLPerspectiveAdvice.customFOV = Settings.settings.optFloat(Settings.FOV, 70);
+    }
 }

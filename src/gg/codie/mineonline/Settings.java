@@ -24,7 +24,7 @@ public class Settings {
     public static final String GAME_HEIGHT = "gameHeight";
     public static final String CUSTOM_CAPES = "customCapes";
     public static final String LEFT_HANDED = "leftHanded";
-
+    public static final String KEY_CODE_ZOOM = "keyCodeZoom";
     public static final String SAMPLE_COUNT = "sampleCount";
     public static final String STENCIL_COUNT = "stencilCount";
     public static final String COVERAGE_SAMPLE_COUNT = "coverageSampleCount";
@@ -67,6 +67,7 @@ public class Settings {
         settings.put(SAMPLE_COUNT, 0);
         settings.put(STENCIL_COUNT, 0);
         settings.put(COVERAGE_SAMPLE_COUNT, 0);
+        settings.put(KEY_CODE_ZOOM, 0);
 
         saveSettings();
         loadSettings();
@@ -113,6 +114,7 @@ public class Settings {
                         settings.put(SAMPLE_COUNT, 0);
                         settings.put(STENCIL_COUNT, 0);
                         settings.put(COVERAGE_SAMPLE_COUNT, 0);
+                        settings.put(KEY_CODE_ZOOM, 0);
                 }
                 settings.put(SETTINGS_VERSION, SETTINGS_VERSION_NUMBER);
             }
