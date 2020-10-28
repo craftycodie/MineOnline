@@ -25,7 +25,11 @@ public class Settings {
     public static final String CUSTOM_CAPES = "customCapes";
     public static final String LEFT_HANDED = "leftHanded";
 
-    private static final int SETTINGS_VERSION_NUMBER = 9;
+    public static final String SAMPLE_COUNT = "sampleCount";
+    public static final String STENCIL_COUNT = "stencilCount";
+    public static final String COVERAGE_SAMPLE_COUNT = "coverageSampleCount";
+
+    private static final int SETTINGS_VERSION_NUMBER = 10;
 
     private static boolean readonly = true;
 
@@ -60,6 +64,9 @@ public class Settings {
         settings.put(GAME_HEIGHT, 480);
         settings.put(CUSTOM_CAPES, true);
         settings.put(LEFT_HANDED, false);
+        settings.put(SAMPLE_COUNT, 0);
+        settings.put(STENCIL_COUNT, 0);
+        settings.put(COVERAGE_SAMPLE_COUNT, 0);
 
         saveSettings();
         loadSettings();
@@ -102,6 +109,10 @@ public class Settings {
                         settings.put(CUSTOM_CAPES, true);
                     case 8:
                         settings.put(LEFT_HANDED, false);
+                    case 9:
+                        settings.put(SAMPLE_COUNT, 0);
+                        settings.put(STENCIL_COUNT, 0);
+                        settings.put(COVERAGE_SAMPLE_COUNT, 0);
                 }
                 settings.put(SETTINGS_VERSION, SETTINGS_VERSION_NUMBER);
             }

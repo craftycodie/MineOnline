@@ -81,6 +81,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
             launchArgs.add("-Dmineonline.username=" + Session.session.getUsername());
             launchArgs.add("-Dmineonline.token=" + Session.session.getAccessToken());
             launchArgs.add("-Dmineonline.uuid=" + Session.session.getUuid());
+            launchArgs.add("--illegal-access=warn");
             if (Settings.settings.has(Settings.CLIENT_LAUNCH_ARGS) && !Settings.settings.getString(Settings.CLIENT_LAUNCH_ARGS).isEmpty())
                 launchArgs.addAll(Arrays.asList(Settings.settings.getString(Settings.CLIENT_LAUNCH_ARGS).split(" ")));
             launchArgs.add("-cp");
