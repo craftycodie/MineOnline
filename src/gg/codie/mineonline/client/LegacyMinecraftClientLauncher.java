@@ -343,13 +343,12 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
                             f2wasDown = false;
                         }
 
-                        if (Keyboard.getEventKey() == zoomKeyCode && !Keyboard.isRepeatEvent() && Keyboard.getEventKeyState() && !CwasDown) {
+                        if (Keyboard.getEventKey() == zoomKeyCode && !Keyboard.isRepeatEvent() && Keyboard.getEventKeyState() && !zoomWasDown) {
                             LWJGLPerspectivePatch.zoom();
-                            CwasDown = true;
-                        }
-                        if (Keyboard.getEventKey() == zoomKeyCode && !Keyboard.isRepeatEvent() && !Keyboard.getEventKeyState()) {
+                            zoomWasDown = true;
+                        } else if (Keyboard.getEventKey() == zoomKeyCode && !Keyboard.isRepeatEvent() && !Keyboard.getEventKeyState()) {
                             LWJGLPerspectivePatch.unZoom();
-                            CwasDown = false;
+                            zoomWasDown = false;
                         }
                     }
                     if (minecraftVersion != null && minecraftVersion.enableFullscreenPatch) {
@@ -428,7 +427,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
 
     boolean f2wasDown = false;
     boolean f11WasDown = false;
-    boolean CwasDown = false;
+    boolean zoomWasDown = false;
     int zoomKeyCode = Settings.settings.getInt(Settings.KEY_CODE_ZOOM);
 
     void closeApplet(){
