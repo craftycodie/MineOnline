@@ -121,7 +121,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
                 int exitCode = 1;
                 try {
                     exitCode = gameProcess.waitFor();
-                    System.exit(exitCode);
+                    Runtime.getRuntime().halt(exitCode);
                 } catch (Exception ex) {
                     // ignore.
                 }

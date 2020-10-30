@@ -77,7 +77,7 @@ public class URLConstructAdvice {
                 if (validJoin)
                     url = ClassLoader.getSystemResource("ok").toString();
                 else // Just something to make it error.
-                    url = "";
+                    url = ClassLoader.getSystemResource("bad login").toString();
             } else if (url.contains("/game/checkserver.jsp")) {
                 String username = null;
                 String serverId = null;
@@ -112,7 +112,7 @@ public class URLConstructAdvice {
                 if (validJoin)
                     url = ClassLoader.getSystemResource("YES").toString();
                 else // Just something to make it error.
-                    url = "";
+                    url = ClassLoader.getSystemResource("bad login").toString();
             } else if ((url.contains("/MinecraftSkins/") || url.contains("/skin/")) && url.contains(".png")) {
                 // Handled by UrlConnectionPatch
             } else if (url.contains("textures.minecraft.net")) {
