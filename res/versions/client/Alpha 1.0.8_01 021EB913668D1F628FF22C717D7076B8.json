@@ -9,5 +9,6 @@
   "useFOVPatch": true,
   "useTexturepackPatch": true,
   "ingameVersionString": "Minecraft Alpha v1.0.8_01",
-  "resourcesVersion": "a1.0.15"
+  "resourcesVersion": "a1.0.15",
+  "optionsVersion": "CLASSIC"
 }

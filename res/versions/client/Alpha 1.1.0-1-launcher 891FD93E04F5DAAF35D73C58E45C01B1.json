@@ -12,5 +12,6 @@
   "entityRendererClass": "iq",
   "viewModelFunction": "b",
   "scaledResolutionClass": "iy",
-  "resourcesVersion": "a1.1.0"
+  "resourcesVersion": "a1.1.0",
+  "optionsVersion": "CLASSIC"
 }
