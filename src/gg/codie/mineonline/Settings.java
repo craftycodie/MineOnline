@@ -524,15 +524,15 @@ public class Settings implements IMinecraftOptionsHandler {
     }
 
     public String getMinecraftUpdateURL() {
-        return settings.optString(MINECRAFT_UPDATE_URL, null);
+        return settings.optString(MINECRAFT_UPDATE_URL, "");
     }
 
     public String getJavaHome() {
-        return settings.optString(JAVA_HOME, null);
+        return settings.optString(JAVA_HOME, "");
     }
 
     public String getClientLaunchArgs() {
-        return settings.optString(CLIENT_LAUNCH_ARGS, null);
+        return settings.optString(CLIENT_LAUNCH_ARGS, "");
     }
 
     public boolean getHideVersionString() {
