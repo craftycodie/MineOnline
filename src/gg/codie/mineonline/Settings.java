@@ -128,13 +128,13 @@ public class Settings implements IMinecraftOptionsHandler {
         settings.put(SOUND, 1);
         settings.put(INVERT_Y_MOUSE, false);
         settings.put(MOUSE_SENSITIVITY, 0.5f);
-        settings.put(RENDER_DISTANCE, ELegacyMinecraftRenderDistance.FAR.getIntValue());
-        settings.put(MAIN_HAND, EMinecraftMainHand.RIGHT.getStringValue());
+        settings.put(RENDER_DISTANCE, ELegacyMinecraftRenderDistance.FAR);
+        settings.put(MAIN_HAND, EMinecraftMainHand.RIGHT);
         settings.put(VIEW_BOBBING, true);
         settings.put(ANAGLYPH_3D, false);
         settings.put(ADVANCED_OPEN_GL, true);
-        settings.put(PERFORMANCE, EMinecraftPerformance.BALANCED.getIntValue());
-        settings.put(DIFFICULTY, EMinecraftDifficulty.NORMAL.getIntValue());
+        settings.put(PERFORMANCE, EMinecraftPerformance.BALANCED);
+        settings.put(DIFFICULTY, EMinecraftDifficulty.NORMAL);
         settings.put(FANCY_GRAPHICS, true);
         settings.put(SMOOTH_LIGHTING, true);
         settings.put(LAST_SERVER, "");
@@ -460,13 +460,13 @@ public class Settings implements IMinecraftOptionsHandler {
                         settings.put(SOUND, 1);
                         settings.put(INVERT_Y_MOUSE, false);
                         settings.put(MOUSE_SENSITIVITY, 0.5f);
-                        settings.put(RENDER_DISTANCE, ELegacyMinecraftRenderDistance.FAR.getIntValue());
-                        settings.put(MAIN_HAND, EMinecraftMainHand.RIGHT.getStringValue());
+                        settings.put(RENDER_DISTANCE, ELegacyMinecraftRenderDistance.FAR);
+                        settings.put(MAIN_HAND, EMinecraftMainHand.RIGHT);
                         settings.put(VIEW_BOBBING, true);
                         settings.put(ANAGLYPH_3D, false);
                         settings.put(ADVANCED_OPEN_GL, true);
-                        settings.put(PERFORMANCE, EMinecraftPerformance.BALANCED.getIntValue());
-                        settings.put(DIFFICULTY, EMinecraftDifficulty.NORMAL.getIntValue());
+                        settings.put(PERFORMANCE, EMinecraftPerformance.BALANCED);
+                        settings.put(DIFFICULTY, EMinecraftDifficulty.NORMAL);
                         settings.put(FANCY_GRAPHICS, true);
                         settings.put(SMOOTH_LIGHTING, true);
                         settings.put(LAST_SERVER, "");
@@ -477,7 +477,7 @@ public class Settings implements IMinecraftOptionsHandler {
                         settings.put(SKIN_LAYER_TORSO, true);
                         settings.put(SKIN_LAYER_HEAD, true);
                         settings.put(KEY_CODE_ZOOM, 0);
-                        settings.put(LAST_LAUNCHED_OPTIONS_VERSION, "DEFAULT");
+                        settings.put(LAST_LAUNCHED_OPTIONS_VERSION, EMinecraftOptionsVersion.DEFAULT);
                 }
                 settings.put(SETTINGS_VERSION, SETTINGS_VERSION_NUMBER);
             }

@@ -356,7 +356,7 @@ public class MinecraftVersion {
 
     public static void launchMinecraft(String jarPath, String serverIP, String serverPort, String mpPass) throws Exception {
         try {
-            Settings.singleton.setLastServer(serverIP + "_" + serverPort);
+            Settings.singleton.setLastServer(serverIP != null && serverPort != null ? serverIP + "_" + serverPort : (serverIP != null ? serverIP : ""));
         } catch (Exception ex) {
             // ignore
         }

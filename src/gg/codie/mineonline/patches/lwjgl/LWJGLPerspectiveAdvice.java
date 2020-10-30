@@ -15,12 +15,15 @@ public class LWJGLPerspectiveAdvice {
                 return;
 
             ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.lwjgl.LWJGLPerspectiveAdvice").getField("originalFOV").set(null, fov);
+            ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.lwjgl.LWJGLPerspectiveAdvice").getField("zFar").set(null, zFar);
 
             float customFOV = (float)ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.lwjgl.LWJGLPerspectiveAdvice").getField("customFOV").get(null);
+
+            if (customFOV == 70)
+                return;
+
             float fovDiff = fov - 70;
             fov = customFOV + fovDiff;
-
-            ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.lwjgl.LWJGLPerspectiveAdvice").getField("zFar").set(null, fov);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

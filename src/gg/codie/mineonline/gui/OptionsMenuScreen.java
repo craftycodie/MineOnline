@@ -47,10 +47,10 @@ public class OptionsMenuScreen implements IMenuScreen {
         guiScaleButton = new MediumButton("GUI Scale: " + Settings.singleton.getGUIScale().getName().toUpperCase(), new Vector2f((DisplayManager.getDefaultWidth() / 2) - 308, (DisplayManager.getDefaultHeight() / 2) + 8), new IOnClickListener() {
             @Override
             public void onClick() {
-                if (Settings.singleton.getGUIScale().getIntValue() == EMinecraftGUIScale.values().length) {
+                if (Settings.singleton.getGUIScale().getIntValue() + 1 == EMinecraftGUIScale.values().length) {
                     DisplayManager.setGuiScale(EMinecraftGUIScale.values()[0]);
                 } else {
-                    DisplayManager.setGuiScale(EMinecraftGUIScale.values()[Settings.singleton.getGUIScale().getIntValue()]);
+                    DisplayManager.setGuiScale(EMinecraftGUIScale.values()[Settings.singleton.getGUIScale().getIntValue() + 1]);
                 }
 
                 MenuManager.resizeMenu();
