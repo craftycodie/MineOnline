@@ -182,6 +182,8 @@ public class MenuManager {
         ProgressDialog.setMessage("Preparing MineOnline");
         ProgressDialog.setProgress(80);
 
+        Settings.singleton.loadSettings(true);
+
         DisplayManager.init();
 
         ProgressDialog.setMessage("Loading done.");

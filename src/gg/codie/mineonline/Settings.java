@@ -403,6 +403,10 @@ public class Settings implements IMinecraftOptionsHandler {
     }
 
     public void loadSettings() {
+        loadSettings(false);
+    }
+
+    public void loadSettings(boolean reloadOptionsTxt) {
         try (FileInputStream input = new FileInputStream(LauncherFiles.MINEONLINE_SETTINGS_FILE)) {
             // load a settings file
             byte[] buffer = new byte[8096];
@@ -416,7 +420,8 @@ public class Settings implements IMinecraftOptionsHandler {
 
             settings = new JSONObject(stringBuffer.toString());
 
-            loadMinecraftOptions();
+            if (reloadOptionsTxt)
+                loadMinecraftOptions();
 
             // Assume V1, reset settings.
             if (!settings.has(SETTINGS_VERSION)) {
