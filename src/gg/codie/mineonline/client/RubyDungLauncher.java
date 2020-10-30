@@ -85,8 +85,6 @@ public class RubyDungLauncher {
 
             DisplayManager.getFrame().setVisible(false);
 
-            Settings.singleton.saveMinecraftOptions();
-
             processBuilder.inheritIO().start();
 
             Runtime.getRuntime().halt(0);
@@ -105,6 +103,7 @@ public class RubyDungLauncher {
     public RubyDungLauncher(String jarPath) {
         this.jarPath = jarPath;
         minecraftVersion = MinecraftVersionRepository.getSingleton(true).getVersion(jarPath);
+        Settings.singleton.saveMinecraftOptions(minecraftVersion.optionsVersion);
     }
 
     public void startRubyDung() throws Exception {

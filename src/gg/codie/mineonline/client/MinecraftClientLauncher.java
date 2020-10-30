@@ -73,7 +73,7 @@ public class MinecraftClientLauncher {
                     launchArgs.add(serverPort);
             }
 
-            Settings.singleton.saveMinecraftOptions();
+            Settings.singleton.saveMinecraftOptions(minecraftVersion.optionsVersion);
 
             ProcessBuilder processBuilder = new ProcessBuilder(launchArgs.toArray(new String[0]));
 

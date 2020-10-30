@@ -5,12 +5,24 @@ import java.util.LinkedList;
 
 public class Options implements IMinecraftOptionsHandler {
     String path;
+    EMinecraftOptionsVersion optionsVersion;
 
-    public Options(String path) throws IOException {
+    public Options(String path, String optionsVersionStr) throws IOException, IllegalArgumentException {
+        EMinecraftOptionsVersion optionsVersion = EMinecraftOptionsVersion.valueOf(optionsVersionStr);
+
         if(!new File(path).exists()) {
             new File(path).createNewFile();
         }
         this.path = path;
+        this.optionsVersion = optionsVersion;
+    }
+
+    public Options(String path, EMinecraftOptionsVersion optionsVersion) throws IOException {
+        if(!new File(path).exists()) {
+            new File(path).createNewFile();
+        }
+        this.path = path;
+        this.optionsVersion = optionsVersion;
     }
 
     private void setOption(String name, String value) throws IOException {
@@ -55,7 +67,13 @@ public class Options implements IMinecraftOptionsHandler {
     @Override
     public float getMusicVolume() throws NoSuchFieldException {
         try {
-            return Float.parseFloat(getOption("music"));
+            switch (optionsVersion) {
+                case CLASSIC:
+                    return getOption("music").equalsIgnoreCase("false") ? 0f : 1f;
+                default:
+                case DEFAULT:
+                    return Float.parseFloat(getOption("music"));
+            }
         } catch (IOException | NumberFormatException ex) {
             return 1;
         }
@@ -64,7 +82,14 @@ public class Options implements IMinecraftOptionsHandler {
     @Override
     public void setMusicVolume(float volume) {
         try {
-            setOption("music", "" + volume);
+            switch (optionsVersion) {
+                case CLASSIC:
+                    setOption("music", volume > 0 ? "true" : "false");
+                    break;
+                default:
+                case DEFAULT:
+                    setOption("music", "" + volume);
+            }
         } catch (IOException ex) {
             // ignore
         }
@@ -73,7 +98,13 @@ public class Options implements IMinecraftOptionsHandler {
     @Override
     public float getSoundVolume() throws NoSuchFieldException {
         try {
-            return Float.parseFloat(getOption("sound"));
+            switch (optionsVersion) {
+                case CLASSIC:
+                    return getOption("sound").equalsIgnoreCase("false") ? 0f : 1f;
+                default:
+                case DEFAULT:
+                    return Float.parseFloat(getOption("sound"));
+            }
         } catch (IOException | NumberFormatException ex) {
             return 1;
         }
@@ -82,7 +113,31 @@ public class Options implements IMinecraftOptionsHandler {
     @Override
     public void setSoundVolume(float volume) {
         try {
-            setOption("sound", "" + volume);
+            switch (optionsVersion) {
+                case CLASSIC:
+                    setOption("sound", volume > 0 ? "true" : "false");
+                    break;
+                default:
+                case DEFAULT:
+                    setOption("sound", "" + volume);
+            }        } catch (IOException ex) {
+            // ignore
+        }
+    }
+
+    @Override
+    public boolean getShowFPS() throws NoSuchFieldException {
+        try {
+            return getOption("showFrameRate").equalsIgnoreCase("true");
+        } catch (IOException ex) {
+            return false;
+        }
+    }
+
+    @Override
+    public void setShowFPS(boolean showFrameRate) {
+        try {
+            setOption("showFrameRate", showFrameRate ? "true" : "false");
         } catch (IOException ex) {
             // ignore
         }
@@ -485,8 +540,19 @@ public class Options implements IMinecraftOptionsHandler {
 
     @Override
     public int getForwardKeyCode() throws NoSuchFieldException {
+        String keyName;
+
+        switch (optionsVersion) {
+            case CLASSIC:
+                keyName = "key_Forward";
+                break;
+            case DEFAULT:
+            default:
+                keyName = "key_key.forward";
+        }
+
         try {
-            return Integer.parseInt(getOption("key_key.forward"));
+            return Integer.parseInt(getOption(keyName));
         } catch (IOException | NumberFormatException ex) {
             return 0;
         }
@@ -494,8 +560,19 @@ public class Options implements IMinecraftOptionsHandler {
 
     @Override
     public int getLeftKeyCode() throws NoSuchFieldException {
+        String keyName;
+
+        switch (optionsVersion) {
+            case CLASSIC:
+                keyName = "key_Left";
+                break;
+            case DEFAULT:
+            default:
+                keyName = "key_key.left";
+        }
+
         try {
-            return Integer.parseInt(getOption("key_key.left"));
+            return Integer.parseInt(getOption(keyName));
         } catch (IOException | NumberFormatException ex) {
             return 0;
         }
@@ -503,8 +580,19 @@ public class Options implements IMinecraftOptionsHandler {
 
     @Override
     public int getBackKeyCode() throws NoSuchFieldException {
+        String keyName;
+
+        switch (optionsVersion) {
+            case CLASSIC:
+                keyName = "key_Back";
+                break;
+            case DEFAULT:
+            default:
+                keyName = "key_key.back";
+        }
+
         try {
-            return Integer.parseInt(getOption("key_key.back"));
+            return Integer.parseInt(getOption(keyName));
         } catch (IOException | NumberFormatException ex) {
             return 0;
         }
@@ -512,8 +600,19 @@ public class Options implements IMinecraftOptionsHandler {
 
     @Override
     public int getRightKeyCode() throws NoSuchFieldException {
+        String keyName;
+
+        switch (optionsVersion) {
+            case CLASSIC:
+                keyName = "key_Right";
+                break;
+            case DEFAULT:
+            default:
+                keyName = "key_key.right";
+        }
+
         try {
-            return Integer.parseInt(getOption("key_key.right"));
+            return Integer.parseInt(getOption(keyName));
         } catch (IOException | NumberFormatException ex) {
             return 0;
         }
@@ -521,8 +620,19 @@ public class Options implements IMinecraftOptionsHandler {
 
     @Override
     public int getJumpKeyCode() throws NoSuchFieldException {
+        String keyName;
+
+        switch (optionsVersion) {
+            case CLASSIC:
+                keyName = "key_Jump";
+                break;
+            case DEFAULT:
+            default:
+                keyName = "key_key.jump";
+        }
+
         try {
-            return Integer.parseInt(getOption("key_key.jump"));
+            return Integer.parseInt(getOption(keyName));
         } catch (IOException | NumberFormatException ex) {
             return 0;
         }
@@ -557,8 +667,19 @@ public class Options implements IMinecraftOptionsHandler {
 
     @Override
     public int getChatKeyCode() throws NoSuchFieldException {
+        String keyName;
+
+        switch (optionsVersion) {
+            case CLASSIC:
+                keyName = "key_Chat";
+                break;
+            case DEFAULT:
+            default:
+                keyName = "key_key.chat";
+        }
+
         try {
-            return Integer.parseInt(getOption("key_key.chat"));
+            return Integer.parseInt(getOption(keyName));
         } catch (IOException | NumberFormatException ex) {
             return 0;
         }
@@ -566,8 +687,46 @@ public class Options implements IMinecraftOptionsHandler {
 
     @Override
     public int getFogKeyCode() throws NoSuchFieldException {
+        String keyName;
+
+        switch (optionsVersion) {
+            case CLASSIC:
+                keyName = "key_Toggle fog";
+                break;
+            case DEFAULT:
+            default:
+                keyName = "key_key.fog";
+        }
+
         try {
-            return Integer.parseInt(getOption("key_key.fog"));
+            return Integer.parseInt(getOption(keyName));
+        } catch (IOException | NumberFormatException ex) {
+            return 0;
+        }
+    }
+
+    @Override
+    public int getSaveLocationKeyCode() throws NoSuchFieldException {
+        try {
+            return Integer.parseInt(getOption("key_Save location"));
+        } catch (IOException | NumberFormatException ex) {
+            return 0;
+        }
+    }
+
+    @Override
+    public int getLoadLocationKeyCode() throws NoSuchFieldException {
+        try {
+            return Integer.parseInt(getOption("key_Load location"));
+        } catch (IOException | NumberFormatException ex) {
+            return 0;
+        }
+    }
+
+    @Override
+    public int getBuildMenuKeyCode() throws NoSuchFieldException {
+        try {
+            return Integer.parseInt(getOption("key_Build"));
         } catch (IOException | NumberFormatException ex) {
             return 0;
         }
@@ -575,45 +734,100 @@ public class Options implements IMinecraftOptionsHandler {
 
     @Override
     public void setForwardKeyCode(int keyCode) {
+        String keyName;
+
+        switch (optionsVersion) {
+            case CLASSIC:
+                keyName = "key_Forward";
+                break;
+            case DEFAULT:
+            default:
+                keyName = "key_key.forward";
+        }
+
         try {
-            setOption("key_key.forward", "" + keyCode);
-        } catch (IOException ex) {
+            setOption(keyName, "" + keyCode);
+        } catch (IOException | NumberFormatException ex) {
             // ignore
         }
     }
 
     @Override
     public void setLeftKeyCode(int keyCode) {
+        String keyName;
+
+        switch (optionsVersion) {
+            case CLASSIC:
+                keyName = "key_Left";
+                break;
+            case DEFAULT:
+            default:
+                keyName = "key_key.left";
+        }
+
         try {
-            setOption("key_key.left", "" + keyCode);
-        } catch (IOException ex) {
+            setOption(keyName, "" + keyCode);
+        } catch (IOException | NumberFormatException ex) {
             // ignore
         }
     }
 
     @Override
     public void setBackKeyCode(int keyCode) {
+        String keyName;
+
+        switch (optionsVersion) {
+            case CLASSIC:
+                keyName = "key_Back";
+                break;
+            case DEFAULT:
+            default:
+                keyName = "key_key.back";
+        }
+
         try {
-            setOption("key_key.back", "" + keyCode);
-        } catch (IOException ex) {
+            setOption(keyName, "" + keyCode);
+        } catch (IOException | NumberFormatException ex) {
             // ignore
         }
     }
 
     @Override
     public void setRightKeyCode(int keyCode) {
+        String keyName;
+
+        switch (optionsVersion) {
+            case CLASSIC:
+                keyName = "key_Right";
+                break;
+            case DEFAULT:
+            default:
+                keyName = "key_key.right";
+        }
+
         try {
-            setOption("key_key.right", "" + keyCode);
-        } catch (IOException ex) {
+            setOption(keyName, "" + keyCode);
+        } catch (IOException | NumberFormatException ex) {
             // ignore
         }
     }
 
     @Override
     public void setJumpKeyCode(int keyCode) {
+        String keyName;
+
+        switch (optionsVersion) {
+            case CLASSIC:
+                keyName = "key_Jump";
+                break;
+            case DEFAULT:
+            default:
+                keyName = "key_key.jump";
+        }
+
         try {
-            setOption("key_key.jump", "" + keyCode);
-        } catch (IOException ex) {
+            setOption(keyName, "" + keyCode);
+        } catch (IOException | NumberFormatException ex) {
             // ignore
         }
     }
@@ -647,18 +861,67 @@ public class Options implements IMinecraftOptionsHandler {
 
     @Override
     public void setChatKeyCode(int keyCode) {
+        String keyName;
+
+        switch (optionsVersion) {
+            case CLASSIC:
+                keyName = "key_Chat";
+                break;
+            case DEFAULT:
+            default:
+                keyName = "key_key.chat";
+        }
+
         try {
-            setOption("key_key.chat", "" + keyCode);
-        } catch (IOException ex) {
+            setOption(keyName, "" + keyCode);
+        } catch (IOException | NumberFormatException ex) {
             // ignore
         }
     }
 
     @Override
     public void setFogKeyCode(int keyCode) {
+        String keyName;
+
+        switch (optionsVersion) {
+            case CLASSIC:
+                keyName = "key_Toggle fog";
+                break;
+            case DEFAULT:
+            default:
+                keyName = "key_key.fog";
+        }
+
         try {
-            setOption("key_key.fog", "" + keyCode);
-        } catch (IOException ex) {
+            setOption(keyName, "" + keyCode);
+        } catch (IOException | NumberFormatException ex) {
+            // ignore
+        }
+    }
+
+    @Override
+    public void setSaveLocationKeyCode(int keyCode) {
+        try {
+            setOption("key_Save location", "" + keyCode);
+        } catch (IOException | NumberFormatException ex) {
+            // ignore
+        }
+    }
+
+    @Override
+    public void setLoadLocationKeyCode(int keyCode) {
+        try {
+            setOption("key_Load location", "" + keyCode);
+        } catch (IOException | NumberFormatException ex) {
+            // ignore
+        }
+    }
+
+    @Override
+    public void setBuildMenuKeyCode(int keyCode) {
+        try {
+            setOption("key_Build", "" + keyCode);
+        } catch (IOException | NumberFormatException ex) {
             // ignore
         }
     }

@@ -8,7 +8,7 @@ import net.bytebuddy.matcher.ElementMatchers;
 
 public class ClassPatch {
     public static void useTexturePacks(String texturePack) {
-        if (texturePack == null || texturePack.isEmpty())
+        if (texturePack == null || texturePack.isEmpty() || texturePack.equalsIgnoreCase("Default"))
             return;
 
         ClassGetResourceAdvice.texturePack = texturePack;

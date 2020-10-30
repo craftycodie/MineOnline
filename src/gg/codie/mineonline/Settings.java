@@ -25,6 +25,7 @@ public class Settings implements IMinecraftOptionsHandler {
     public static final String SAMPLE_COUNT = "sampleCount";
     public static final String STENCIL_COUNT = "stencilCount";
     public static final String COVERAGE_SAMPLE_COUNT = "coverageSampleCount";
+    public static final String LAST_LAUNCHED_OPTIONS_VERSION = "lastLaunchedOptionsVersion";
 
     public static final String FULLSCREEN = "fullscreen";
     public static final String GUI_SCALE = "guiScale";
@@ -44,6 +45,7 @@ public class Settings implements IMinecraftOptionsHandler {
     public static final String FANCY_GRAPHICS = "fancyGraphics";
     public static final String SMOOTH_LIGHTING = "smoothLighting";
     public static final String LAST_SERVER = "lastServer";
+    public static final String SHOW_FPS = "showFPS";
     public static final String KEY_CODE_FORWARD = "keyCodeForward";
     public static final String KEY_CODE_LEFT = "keyCodeLeft";
     public static final String KEY_CODE_BACK = "keyCodeBack";
@@ -54,6 +56,9 @@ public class Settings implements IMinecraftOptionsHandler {
     public static final String KEY_CODE_INVENTORY = "keyCodeInventory";
     public static final String KEY_CODE_CHAT = "keyCodeChat";
     public static final String KEY_CODE_FOG = "keyCodeFog";
+    public static final String KEY_CODE_SAVE_LOCATION = "keyCodeSaveLocation";
+    public static final String KEY_CODE_LOAD_LOCATION = "keyCodeLoadLocation";
+    public static final String KEY_CODE_BUILD_MENU = "keyCodeBuildMenu";
     public static final String SKIN_LAYER_HEAD = "skinLayerHead";
     public static final String SKIN_LAYER_TORSO = "skinLayerTorso";
     public static final String SKIN_LAYER_LEFT_ARM = "skinLayerLeftArm";
@@ -97,7 +102,7 @@ public class Settings implements IMinecraftOptionsHandler {
         settings.put(CLIENT_LAUNCH_ARGS, "");
         settings.put(FOV, 70);
         settings.put(GUI_SCALE, 3);
-        settings.put(TEXTURE_PACK, "");
+        settings.put(TEXTURE_PACK, "Default");
         settings.put(HIDE_VERSION_STRING, false);
         settings.put(GAME_WIDTH, 854);
         settings.put(GAME_HEIGHT, 480);
@@ -115,6 +120,10 @@ public class Settings implements IMinecraftOptionsHandler {
         settings.put(KEY_CODE_RIGHT, 32);
         settings.put(KEY_CODE_BACK, 31);
         settings.put(KEY_CODE_LEFT, 30);
+        settings.put(KEY_CODE_SAVE_LOCATION, 28);
+        settings.put(KEY_CODE_LOAD_LOCATION, 19);
+        settings.put(KEY_CODE_BUILD_MENU, 48);
+        settings.put(SHOW_FPS, false);
         settings.put(MUSIC, 1);
         settings.put(SOUND, 1);
         settings.put(INVERT_Y_MOUSE, false);
@@ -136,6 +145,7 @@ public class Settings implements IMinecraftOptionsHandler {
         settings.put(SKIN_LAYER_TORSO, true);
         settings.put(SKIN_LAYER_HEAD, true);
         settings.put(KEY_CODE_ZOOM, 0);
+        settings.put(LAST_LAUNCHED_OPTIONS_VERSION, "DEFAULT");
 
         saveSettings();
         loadSettings();
@@ -147,15 +157,33 @@ public class Settings implements IMinecraftOptionsHandler {
             if (!optionsFile.exists())
                 return;
 
-            Options options = new Options(LauncherFiles.MINEONLINE_OPTIONS_PATH);
+            EMinecraftOptionsVersion lastLaunchedOptionsVersion = getLastLaunchedOptionsVersion();
+
+            Options options = new Options(LauncherFiles.MINEONLINE_OPTIONS_PATH, lastLaunchedOptionsVersion);
 
             try {
-                setMusicVolume(options.getMusicVolume());
+                // If the player used the classic music toggle, keep volume where possible.
+                if (getLastLaunchedOptionsVersion() == EMinecraftOptionsVersion.CLASSIC) {
+                   if (getMusicVolume() > 0 && options.getMusicVolume() == 0)
+                       setMusicVolume(0);
+                   else if (getMusicVolume() == 0 && options.getMusicVolume() == 1)
+                       setMusicVolume(1);
+                }
+                else
+                    setMusicVolume(options.getMusicVolume());
             } catch (NoSuchFieldException ex) {
                 // ignore.
             }
             try {
-                setSoundVolume(options.getSoundVolume());
+                // If the player used the classic music toggle, keep volume where possible.
+                if (getLastLaunchedOptionsVersion() == EMinecraftOptionsVersion.CLASSIC) {
+                    if (getSoundVolume() > 0 && options.getSoundVolume() == 0)
+                        setSoundVolume(0);
+                    else if (getSoundVolume() == 0 && options.getSoundVolume() == 1)
+                        setSoundVolume(1);
+                }
+                else
+                    setSoundVolume(options.getSoundVolume());
             } catch (NoSuchFieldException ex) {
                 // ignore.
             }
@@ -324,13 +352,16 @@ public class Settings implements IMinecraftOptionsHandler {
         }
     }
 
-    public void saveMinecraftOptions() {
+    public void saveMinecraftOptions(EMinecraftOptionsVersion optionsVersion) {
         try {
             File optionsFile = new File(LauncherFiles.MINEONLINE_OPTIONS_PATH);
             if (!optionsFile.exists())
                 optionsFile.createNewFile();
 
-            Options options = new Options(LauncherFiles.MINEONLINE_OPTIONS_PATH);
+            Options options = new Options(LauncherFiles.MINEONLINE_OPTIONS_PATH, optionsVersion);
+
+            setLastLaunchedOptionsVersion(optionsVersion);
+            saveSettings();
 
             options.setMusicVolume(getMusicVolume());
             options.setSoundVolume(getSoundVolume());
@@ -401,7 +432,7 @@ public class Settings implements IMinecraftOptionsHandler {
                         settings.put(FOV, 70);
                         settings.put(GUI_SCALE, 3);
                     case 5:
-                        settings.put(TEXTURE_PACK, "");
+                        settings.put(TEXTURE_PACK, "Default");
                     case 6:
                         settings.put(HIDE_VERSION_STRING, false);
                     case 7:
@@ -446,6 +477,7 @@ public class Settings implements IMinecraftOptionsHandler {
                         settings.put(SKIN_LAYER_TORSO, true);
                         settings.put(SKIN_LAYER_HEAD, true);
                         settings.put(KEY_CODE_ZOOM, 0);
+                        settings.put(LAST_LAUNCHED_OPTIONS_VERSION, "DEFAULT");
                 }
                 settings.put(SETTINGS_VERSION, SETTINGS_VERSION_NUMBER);
             }
@@ -538,6 +570,14 @@ public class Settings implements IMinecraftOptionsHandler {
         return settings.optInt(KEY_CODE_ZOOM, 0);
     }
 
+    public EMinecraftOptionsVersion getLastLaunchedOptionsVersion() {
+        return settings.optEnum(EMinecraftOptionsVersion.class, LAST_LAUNCHED_OPTIONS_VERSION, EMinecraftOptionsVersion.DEFAULT);
+    }
+
+    public void setLastLaunchedOptionsVersion(EMinecraftOptionsVersion optionsVersion) {
+        settings.put(LAST_LAUNCHED_OPTIONS_VERSION, optionsVersion);
+    }
+
     @Override
     public float getMusicVolume() {
         return settings.optFloat(MUSIC, 1);
@@ -556,6 +596,16 @@ public class Settings implements IMinecraftOptionsHandler {
     @Override
     public void setSoundVolume(float volume) {
         settings.put(SOUND, volume);
+    }
+
+    @Override
+    public boolean getShowFPS() {
+        return settings.optBoolean(SHOW_FPS, false);
+    }
+
+    @Override
+    public void setShowFPS(boolean showFPS) {
+        settings.put(SHOW_FPS, showFPS);
     }
 
     @Override
@@ -580,22 +630,22 @@ public class Settings implements IMinecraftOptionsHandler {
 
     @Override
     public ELegacyMinecraftRenderDistance getRenderDistance() {
-        return ELegacyMinecraftRenderDistance.values()[settings.optInt(RENDER_DISTANCE, 0)];
+        return settings.optEnum(ELegacyMinecraftRenderDistance.class, RENDER_DISTANCE, ELegacyMinecraftRenderDistance.FAR);
     }
 
     @Override
     public void setRenderDistance(ELegacyMinecraftRenderDistance renderDistance) {
-        settings.put(RENDER_DISTANCE, renderDistance.getIntValue());
+        settings.put(RENDER_DISTANCE, renderDistance);
     }
 
     @Override
     public EMinecraftGUIScale getGUIScale() {
-        return EMinecraftGUIScale.values()[settings.optInt(GUI_SCALE, 0)];
+        return settings.optEnum(EMinecraftGUIScale.class, GUI_SCALE, EMinecraftGUIScale.AUTO);
     }
 
     @Override
     public void setGUIScale(EMinecraftGUIScale guiScale) {
-        settings.put(GUI_SCALE, guiScale.getIntValue());
+        settings.put(GUI_SCALE, guiScale);
     }
 
     @Override
@@ -630,17 +680,17 @@ public class Settings implements IMinecraftOptionsHandler {
 
     @Override
     public EMinecraftPerformance getPerformance() {
-        return EMinecraftPerformance.values()[settings.optInt(PERFORMANCE, 0)];
+        return settings.optEnum(EMinecraftPerformance.class, PERFORMANCE, EMinecraftPerformance.BALANCED);
     }
 
     @Override
     public void setPerformance(EMinecraftPerformance performance) {
-        settings.put(PERFORMANCE, performance.getIntValue());
+        settings.put(PERFORMANCE, performance);
     }
 
     @Override
     public EMinecraftDifficulty getDifficulty() {
-        return EMinecraftDifficulty.values()[settings.optInt(DIFFICULTY, 0)];
+        return settings.optEnum(EMinecraftDifficulty.class, DIFFICULTY, EMinecraftDifficulty.NORMAL);
     }
 
     @Override
@@ -690,12 +740,12 @@ public class Settings implements IMinecraftOptionsHandler {
 
     @Override
     public EMinecraftMainHand getMainHand() {
-        return EMinecraftMainHand.fromString(settings.getString(MAIN_HAND));
+        return settings.optEnum(EMinecraftMainHand.class, MAIN_HAND, EMinecraftMainHand.RIGHT);
     }
 
     @Override
     public void setMainHand(EMinecraftMainHand mainHand) {
-        settings.put(MAIN_HAND, mainHand.getStringValue());
+        settings.put(MAIN_HAND, mainHand);
     }
 
     @Override
@@ -829,6 +879,21 @@ public class Settings implements IMinecraftOptionsHandler {
     }
 
     @Override
+    public int getSaveLocationKeyCode() {
+        return settings.optInt(KEY_CODE_SAVE_LOCATION, 0);
+    }
+
+    @Override
+    public int getLoadLocationKeyCode() {
+        return settings.optInt(KEY_CODE_LOAD_LOCATION, 0);
+    }
+
+    @Override
+    public int getBuildMenuKeyCode() {
+        return settings.optInt(KEY_CODE_BUILD_MENU, 0);
+    }
+
+    @Override
     public void setForwardKeyCode(int keyCode) {
         settings.put(KEY_CODE_FORWARD, keyCode);
     }
@@ -876,5 +941,20 @@ public class Settings implements IMinecraftOptionsHandler {
     @Override
     public void setFogKeyCode(int keyCode) {
         settings.put(KEY_CODE_FOG, keyCode);
+    }
+
+    @Override
+    public void setSaveLocationKeyCode(int keyCode) {
+        settings.put(KEY_CODE_SAVE_LOCATION, keyCode);
+    }
+
+    @Override
+    public void setLoadLocationKeyCode(int keyCode) {
+        settings.put(KEY_CODE_LOAD_LOCATION, keyCode);
+    }
+
+    @Override
+    public void setBuildMenuKeyCode(int keyCode) {
+        settings.put(KEY_CODE_BUILD_MENU, keyCode);
     }
 }

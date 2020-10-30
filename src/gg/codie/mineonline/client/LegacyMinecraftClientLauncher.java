@@ -114,8 +114,6 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
 
             DisplayManager.getFrame().setVisible(false);
 
-            Settings.singleton.saveMinecraftOptions();
-
             Process gameProcess = processBuilder.inheritIO().start();
 
             // for unix debugging, capture IO.
@@ -167,6 +165,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
             this.serverPort = "25565";
 
         minecraftVersion = MinecraftVersionRepository.getSingleton(true).getVersion(jarPath);
+        Settings.singleton.saveMinecraftOptions(minecraftVersion.optionsVersion);
     }
 
     boolean firstUpdate = true;
@@ -366,7 +365,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
 
         DisplayManager.getFrame().setTitle("Minecraft");
 
-        Settings.singleton.saveMinecraftOptions();
+        Settings.singleton.saveMinecraftOptions(minecraftVersion.optionsVersion);
 
         // Patches
         SocketPatch.watchSockets();

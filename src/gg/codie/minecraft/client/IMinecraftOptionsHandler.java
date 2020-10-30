@@ -7,6 +7,9 @@ public interface IMinecraftOptionsHandler {
     float getSoundVolume() throws NoSuchFieldException;
     void setSoundVolume(float volume);
 
+    boolean getShowFPS() throws NoSuchFieldException;
+    void setShowFPS(boolean showFPS);
+
     boolean getInvertYMouse() throws NoSuchFieldException;
     void setInvertYMouse(boolean invertYMouse);
 
@@ -84,6 +87,9 @@ public interface IMinecraftOptionsHandler {
     int getInventoryKeyCode() throws NoSuchFieldException;
     int getChatKeyCode() throws NoSuchFieldException;
     int getFogKeyCode() throws NoSuchFieldException;
+    int getSaveLocationKeyCode() throws NoSuchFieldException;
+    int getLoadLocationKeyCode() throws NoSuchFieldException;
+    int getBuildMenuKeyCode() throws NoSuchFieldException;
 
     void setForwardKeyCode(int keyCode);
     void setLeftKeyCode(int keyCode);
@@ -95,4 +101,7 @@ public interface IMinecraftOptionsHandler {
     void setInventoryKeyCode(int keyCode);
     void setChatKeyCode(int keyCode);
     void setFogKeyCode(int keyCode);
+    void setSaveLocationKeyCode(int keyCode);
+    void setLoadLocationKeyCode(int keyCode);
+    void setBuildMenuKeyCode(int keyCode);
 }
