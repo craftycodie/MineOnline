@@ -375,10 +375,10 @@ public class MinecraftVersion {
         }
 
         System.out.println("Launching jar " + jarPath + " MD5 " + MD5Checksum.getMD5ChecksumForFile(jarPath));
+        Settings.singleton.saveMinecraftOptions(minecraftVersion.optionsVersion);
+
 
         if(minecraftVersion != null) {
-            Settings.singleton.saveMinecraftOptions(minecraftVersion.optionsVersion);
-
             if (minecraftVersion.type.equals("rubydung")) {
                 RubyDungLauncher.startProcess(jarPath);
                 return;
@@ -395,8 +395,6 @@ public class MinecraftVersion {
                 MinecraftClientLauncher.startProcess(jarPath, serverIP, serverPort, minecraftVersion);
             }
         } else {
-            Settings.singleton.saveMinecraftOptions(EMinecraftOptionsVersion.DEFAULT);
-
             if (isLegacyJar(jarPath)) {
                 LegacyMinecraftClientLauncher.startProcess(jarPath, serverIP, serverPort, mpPass);
             } else {
