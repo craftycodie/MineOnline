@@ -209,7 +209,7 @@ public class Options implements IMinecraftOptionsHandler {
     @Override
     public void setGUIScale(EMinecraftGUIScale guiScale) {
         try {
-            setOption("viewDistance", "" + guiScale.getIntValue());
+            setOption("guiScale", "" + guiScale.getIntValue());
         } catch (IOException ex) {
             // ignore
         }
