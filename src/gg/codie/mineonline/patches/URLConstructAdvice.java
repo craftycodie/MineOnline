@@ -133,7 +133,10 @@ public class URLConstructAdvice {
                 Class skinUtilsClass = ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.utils.SkinUtils");
                 Method findCloakURLForUsername = skinUtilsClass.getMethod("findCloakURLForUsername", String.class);
 
-                url = (String)findCloakURLForUsername.invoke(null, username);
+                url = (String) findCloakURLForUsername.invoke(null, username);
+
+            } else if (url.contains("/game/getversion.jsp")) {
+                return;
             } else {
                 if (url.endsWith("/MinecraftResources/") || url.endsWith("/resources")|| url.endsWith("/resources/")) {
                     String resourcesVersion = (String) ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.FilePatch").getField("resourcesVersion").get(null);

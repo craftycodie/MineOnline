@@ -371,7 +371,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
         SocketPatch.watchSockets();
         URLPatch.redefineURL(null);
         FilePatch.relocateFiles(minecraftVersion != null ? minecraftVersion.resourcesVersion : "default");
-        URLConnectionPatch.convertModernSkins();
+        URLConnectionPatch.patchResponses();
 
         if (minecraftVersion != null && minecraftVersion.useFOVPatch) {
             LWJGLGLUPatch.useCustomFOV();
