@@ -362,7 +362,7 @@ public class Options implements IMinecraftOptionsHandler {
     @Override
     public String getLastServer() throws NoSuchFieldException {
         try {
-            return getOption("lastServer");
+            return getOption("lastServer").replace("_", ":");
         } catch (IOException ex) {
             return "";
         }
@@ -371,7 +371,7 @@ public class Options implements IMinecraftOptionsHandler {
     @Override
     public void setLastServer(String lastServer) {
         try {
-            setOption("lastServer", lastServer);
+            setOption("lastServer", lastServer.replace(":", "_"));
         } catch (IOException ex) {
             // ignore
         }
