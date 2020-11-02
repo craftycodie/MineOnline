@@ -7,6 +7,7 @@ import gg.codie.mineonline.discord.DiscordChatBridge;
 import gg.codie.mineonline.discord.MessageRecievedListener;
 import gg.codie.mineonline.utils.Logging;
 import gg.codie.utils.MD5Checksum;
+import org.lwjgl.Sys;
 
 import java.io.*;
 import java.util.Arrays;
@@ -35,6 +36,7 @@ public class MinecraftServerLauncher {
     String[] content;
     String username;
     String message;
+    String ver;
 
     public MinecraftServerLauncher(String[] args) throws Exception {
 
@@ -55,8 +57,20 @@ public class MinecraftServerLauncher {
             }
         }
 
-        if (serverProperties.discordToken() != null && serverProperties.discordChan() != null) { // Create the discord bot if token and channel are present
-            discord = new DiscordChatBridge(minecraftVersion.name, serverProperties.discordChan(), serverProperties.discordToken(), serverProperties.discordWebhookUrl(), new MessageRecievedListener() {
+        if (minecraftVersion != null)
+            ver = minecraftVersion.name;
+        else
+            ver = "";
+
+        if (serverProperties.discordToken() != null && serverProperties.discordChan() != null && serverProperties.discordWebhookUrl() != null) { // Create the discord bot if token and channel are present
+            discord = new DiscordChatBridge(ver, serverProperties.discordChan(), serverProperties.discordToken(), serverProperties.discordWebhookUrl(), new MessageRecievedListener() {
+                @Override
+                public void onMessageRecieved(String message) {
+                    serverCommand(message);
+                }
+            });
+        } else if (serverProperties.discordToken() != null && serverProperties.discordChan() != null && serverProperties.discordWebhookUrl() == null) { // Create the discord bot if token and channel are present
+            discord = new DiscordChatBridge(ver, serverProperties.discordChan(), serverProperties.discordToken(), "", new MessageRecievedListener() {
                 @Override
                 public void onMessageRecieved(String message) {
                     serverCommand(message);
@@ -71,6 +85,9 @@ public class MinecraftServerLauncher {
             System.out.println("Launching Server " + minecraftVersion.name);
         }
         else
+            if (serverProperties.discordToken() != null) {
+                discord.sendDiscordMessage("", "Launching " + this.jarPath + " server: **" + serverProperties.serverName() + "**");
+            }
             System.out.println("Launching Server " + this.jarPath);
 
 
@@ -236,18 +253,19 @@ public class MinecraftServerLauncher {
                             if (serverProperties.discordToken() != null && !nextLine.startsWith("say") && !nextLine.contains("[CONSOLE]")) {
                                 if (nextLine.length() > 15 && nextLine.contains(" says: ")) { // For classic
                                     line = nextLine.substring(15).replace("\u001B[0m", "").split(" says: ");
-                                    username = line[0];
-                                    message = line[1];
-                                    discord.sendDiscordMessage(username, message);
+                                    discord.sendDiscordMessage(line[0], line[1]);
                                 }
 
-                                if (nextLine.contains("[INFO] <")) { // For not classic
+                                if (nextLine.contains("INFO] <")) { // For not classic
                                     line = nextLine.replace("\u001B[0m", "").split("INFO] <");
-                                    System.out.println(line[1]);
                                     content = line[1].split("> ");
-                                    username = content[0];
-                                    message = content[1];
-                                    discord.sendDiscordMessage(username, message);
+                                    discord.sendDiscordMessage(content[0], content[1]);
+                                }
+
+                                if (nextLine.contains("INFO]: <")) { // For release
+                                    line = nextLine.replace("\u001B[0m", "").split("INFO]: <");
+                                    content = line[1].split("> ");
+                                    discord.sendDiscordMessage(content[0], content[1]);
                                 }
                             }
 

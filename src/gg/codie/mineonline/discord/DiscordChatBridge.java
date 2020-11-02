@@ -52,7 +52,10 @@ public class DiscordChatBridge extends ListenerAdapter {
                     @Override
                     public void onMessageReceived(MessageReceivedEvent event) {
                         if(event.getChannel().getId().equals(Channel) && !event.isWebhookMessage() && !event.getAuthor().getId().equals(event.getJDA().getSelfUser().getId())) { // stop listening to yourself
-                            message = ("say " + event.getAuthor().getName() + ": " + Vers + "f" + event.getMessage().getContentStripped().substring(0, 256));
+                            if(event.getMessage().getContentStripped().length() < 256)
+                                message = ("say " + event.getAuthor().getName() + ": " + Vers + "f" + event.getMessage().getContentStripped());
+                            else
+                                message = ("say " + event.getAuthor().getName() + ": " + Vers + "f" + event.getMessage().getContentStripped().substring(0, 256));
                             msgEvent.onMessageRecieved(message);
                         }
                     }
