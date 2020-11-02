@@ -3,11 +3,13 @@ package gg.codie.mineonline.patches;
 import gg.codie.mineonline.Globals;
 import net.bytebuddy.asm.Advice;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 public class HttpURLConnectionGetResponseCodeAdvice {
     @Advice.OnMethodExit
@@ -39,6 +41,28 @@ public class HttpURLConnectionGetResponseCodeAdvice {
                 inputStreamField.setAccessible(true);
 
                 inputStreamField.set(thisObj, convertModernSkin.invoke(null, new URL(url).openStream()));
+            } catch (Exception ex) {
+                if (Globals.DEV)
+                    ex.printStackTrace();
+
+                returnCode = 404;
+            }
+        }
+        else if(thisObj.getURL().toString().contains("/game/getversion.jsp")) {
+            try {
+                Class sessionClass = ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.Session");
+                Object session = sessionClass.getField("session").get(null);
+                String username = (String)sessionClass.getMethod("getUsername").invoke(session);
+                String accessToken = (String)sessionClass.getMethod("getAccessToken").invoke(session);
+
+                Field inputStreamField = thisObj.getClass().getDeclaredField("inputStream");
+                inputStreamField.setAccessible(true);
+
+                String res = "0:deprecated:" + username + ":" + accessToken;
+
+                inputStreamField.set(thisObj, new ByteArrayInputStream(res.getBytes(StandardCharsets.UTF_8)));
+
+                returnCode = 200;
             } catch (Exception ex) {
                 if (Globals.DEV)
                     ex.printStackTrace();

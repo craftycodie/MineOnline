@@ -1,6 +1,5 @@
 package gg.codie.mineonline.client;
 
-import gg.codie.minecraft.client.Options;
 import gg.codie.mineonline.*;
 import gg.codie.mineonline.gui.rendering.DisplayManager;
 import gg.codie.mineonline.gui.rendering.Renderer;
@@ -11,7 +10,7 @@ import gg.codie.mineonline.patches.StringPatch;
 import gg.codie.mineonline.patches.URLPatch;
 import gg.codie.mineonline.patches.lwjgl.LWJGLDisplayPatch;
 import gg.codie.mineonline.patches.lwjgl.LWJGLMouseSetNativeCursorAdvice;
-import gg.codie.mineonline.patches.lwjgl.LWJGLPerspectivePatch;
+import gg.codie.mineonline.patches.lwjgl.LWJGLGLUPatch;
 import gg.codie.mineonline.patches.minecraft.MousePatch;
 import gg.codie.mineonline.utils.JREUtils;
 import gg.codie.mineonline.utils.Logging;
@@ -63,8 +62,8 @@ public class RubyDungLauncher {
             launchArgs.add("-Dmineonline.username=" + Session.session.getUsername());
             launchArgs.add("-Dmineonline.token=" + Session.session.getAccessToken());
             launchArgs.add("-Dmineonline.uuid=" + Session.session.getUuid());
-            if (Settings.settings.has(Settings.CLIENT_LAUNCH_ARGS) && !Settings.settings.getString(Settings.CLIENT_LAUNCH_ARGS).isEmpty())
-                launchArgs.addAll(Arrays.asList(Settings.settings.getString(Settings.CLIENT_LAUNCH_ARGS).split(" ")));
+            if (!Settings.singleton.getClientLaunchArgs().isEmpty())
+                launchArgs.addAll(Arrays.asList(Settings.singleton.getClientLaunchArgs().split(" ")));
             launchArgs.add("-cp");
             launchArgs.add(LibraryManager.getClasspath(true, new String[] {
                     new File(RubyDungLauncher.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath(),
@@ -86,14 +85,6 @@ public class RubyDungLauncher {
 
             DisplayManager.getFrame().setVisible(false);
 
-            try {
-                Options options = new Options(LauncherFiles.MINEONLINE_OPTIONS_PATH);
-                options.setOption("guiScale", "" + Settings.settings.optInt(Settings.GUI_SCALE, 0));
-                options.setOption("skin", Settings.settings.optString(Settings.TEXTURE_PACK, ""));
-            } catch (Exception ex) {
-                System.err.println("Couldn't save guiScale to options.txt");
-            }
-
             processBuilder.inheritIO().start();
 
             Runtime.getRuntime().halt(0);
@@ -112,6 +103,7 @@ public class RubyDungLauncher {
     public RubyDungLauncher(String jarPath) {
         this.jarPath = jarPath;
         minecraftVersion = MinecraftVersionRepository.getSingleton(true).getVersion(jarPath);
+        Settings.singleton.saveMinecraftOptions(minecraftVersion.optionsVersion);
     }
 
     public void startRubyDung() throws Exception {
@@ -208,12 +200,12 @@ public class RubyDungLauncher {
             URLPatch.redefineURL();
             // Allow texture packs in versions before Alpha 1.2.2
             if (minecraftVersion != null && minecraftVersion.useTexturepackPatch)
-                ClassPatch.useTexturePacks(Settings.settings.optString(Settings.TEXTURE_PACK, ""));
+                ClassPatch.useTexturePacks(Settings.singleton.getTexturePack());
             if (minecraftVersion != null && minecraftVersion.useFOVPatch)
-                LWJGLPerspectivePatch.useCustomFOV();
+                LWJGLGLUPatch.useCustomFOV();
 
             // Hide version strings from the HUD
-            if (minecraftVersion != null && minecraftVersion.ingameVersionString != null && Settings.settings.optBoolean(Settings.HIDE_VERSION_STRING, false))
+            if (minecraftVersion != null && minecraftVersion.ingameVersionString != null && Settings.singleton.getHideVersionString())
                 StringPatch.hideVersionStrings(minecraftVersion.ingameVersionString);
 
             main.invoke(null, new Object[] {args.toArray(new String[0])});

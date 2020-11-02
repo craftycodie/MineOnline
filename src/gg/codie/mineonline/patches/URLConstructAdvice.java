@@ -77,7 +77,7 @@ public class URLConstructAdvice {
                 if (validJoin)
                     url = ClassLoader.getSystemResource("ok").toString();
                 else // Just something to make it error.
-                    url = "";
+                    url = ClassLoader.getSystemResource("bad login").toString();
             } else if (url.contains("/game/checkserver.jsp")) {
                 String username = null;
                 String serverId = null;
@@ -112,7 +112,7 @@ public class URLConstructAdvice {
                 if (validJoin)
                     url = ClassLoader.getSystemResource("YES").toString();
                 else // Just something to make it error.
-                    url = "";
+                    url = ClassLoader.getSystemResource("bad login").toString();
             } else if ((url.contains("/MinecraftSkins/") || url.contains("/skin/")) && url.contains(".png")) {
                 // Handled by UrlConnectionPatch
             } else if (url.contains("textures.minecraft.net")) {
@@ -133,7 +133,10 @@ public class URLConstructAdvice {
                 Class skinUtilsClass = ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.utils.SkinUtils");
                 Method findCloakURLForUsername = skinUtilsClass.getMethod("findCloakURLForUsername", String.class);
 
-                url = (String)findCloakURLForUsername.invoke(null, username);
+                url = (String) findCloakURLForUsername.invoke(null, username);
+
+            } else if (url.contains("/game/getversion.jsp")) {
+                return;
             } else {
                 if (url.endsWith("/MinecraftResources/") || url.endsWith("/resources")|| url.endsWith("/resources/")) {
                     String resourcesVersion = (String) ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.FilePatch").getField("resourcesVersion").get(null);

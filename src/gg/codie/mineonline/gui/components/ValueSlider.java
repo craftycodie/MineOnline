@@ -41,7 +41,7 @@ public class ValueSlider extends GUIObject {
 
         guiText = new GUIText(name, 1.5f, TextMaster.minecraftFont, new Vector2f(position.x, position.y - 32), 300f, true, true);
 
-        float sliderX = position.x + (float)(value / (max - min)) * (DisplayManager.scaledWidth(300) - DisplayManager.scaledWidth(16));
+        float sliderX = position.x + ((float)(value - min) / (max - min)) * (DisplayManager.scaledWidth(300) - DisplayManager.scaledWidth(16));
 
         sliderBar = new ValueSliderBar("slider bar", new Vector2f(sliderX, position.y));
         this.addChild(sliderBar);

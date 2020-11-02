@@ -11,7 +11,7 @@ import java.net.URLClassLoader;
 public class ScaledResolutionConstructorPatch {
     public static void useGUIScale(String scaledResolutionClassName) {
         try {
-            ScaledResolutionConstructorAdvice.guiScale = Settings.settings.optInt(Settings.GUI_SCALE, 0);
+            ScaledResolutionConstructorAdvice.guiScale = Settings.singleton.getGUIScale().getIntValue();
 
             new ByteBuddy()
                     .redefine(Class.forName(scaledResolutionClassName))

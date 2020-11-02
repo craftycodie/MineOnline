@@ -3,13 +3,13 @@ package gg.codie.mineonline.patches.lwjgl;
 import net.bytebuddy.asm.Advice;
 import org.lwjgl.opengl.Display;
 
-public class LWJGLOrthoAdvice {
+public class LWJGLGL11GLOrthoAdvice {
     public static int guiScale;
 
     @Advice.OnMethodEnter
     static void intercept(@Advice.Argument(value = 1, readOnly = false) double right, @Advice.Argument(value = 2, readOnly = false) double bottom) {
         try {
-            int guiScale = (int)ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.lwjgl.LWJGLOrthoAdvice").getField("guiScale").get(null);
+            int guiScale = (int)ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.lwjgl.LWJGLGL11GLOrthoAdvice").getField("guiScale").get(null);
 
             int scaledWidth;
             int scaledHeight;

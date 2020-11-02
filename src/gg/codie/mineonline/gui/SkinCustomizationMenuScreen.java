@@ -2,6 +2,7 @@ package gg.codie.mineonline.gui;
 
 import gg.codie.minecraft.client.Options;
 import gg.codie.mineonline.LauncherFiles;
+import gg.codie.mineonline.Settings;
 import gg.codie.mineonline.gui.components.LargeButton;
 import gg.codie.mineonline.gui.components.MediumButton;
 import gg.codie.mineonline.gui.events.IOnClickListener;
@@ -34,48 +35,12 @@ public class SkinCustomizationMenuScreen implements IMenuScreen {
     boolean rightPantsLeg = true;
 
     public SkinCustomizationMenuScreen() {
-        try {
-            Options minecraftOptions = new Options(LauncherFiles.MINEONLINE_OPTIONS_PATH);
-
-            try {
-                hat = "true".equals(minecraftOptions.getOption("modelPart_hat"));
-            } catch (NoSuchFieldException | IOException ex) {
-                //Ignore.
-            }
-
-            try {
-                jacket = "true".equals(minecraftOptions.getOption("modelPart_jacket"));
-            } catch (NoSuchFieldException | IOException ex) {
-                //Ignore.
-            }
-
-            try {
-                leftSleeve = "true".equals(minecraftOptions.getOption("modelPart_left_sleeve"));
-            } catch (NoSuchFieldException | IOException ex) {
-                //Ignore.
-            }
-
-            try {
-                rightSleeve = "true".equals(minecraftOptions.getOption("modelPart_right_sleeve"));
-            } catch (NoSuchFieldException | IOException ex) {
-                //Ignore.
-            }
-
-            try {
-                leftPantsLeg = "true".equals(minecraftOptions.getOption("modelPart_left_pants_leg"));
-            } catch (NoSuchFieldException | IOException ex) {
-                //Ignore.
-            }
-
-            try {
-                rightPantsLeg = "true".equals(minecraftOptions.getOption("modelPart_right_pants_leg"));
-            } catch (NoSuchFieldException | IOException ex) {
-                //Ignore.
-            }
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+        hat = Settings.singleton.getShowHat();
+        jacket = Settings.singleton.getShowJacket();
+        leftSleeve = Settings.singleton.getShowLeftSleeve();
+        rightSleeve = Settings.singleton.getShowRightSleeve();
+        leftPantsLeg = Settings.singleton.getShowLeftPantsLeg();
+        rightPantsLeg = Settings.singleton.getShowRightPantsLeg();
 
         hatButton = new MediumButton("Hat: " + (hat ? "ON" : "OFF"), new Vector2f((DisplayManager.getDefaultWidth() / 2) - 308, (DisplayManager.getDefaultHeight() / 2) - 40), new IOnClickListener() {
             @Override
@@ -128,16 +93,13 @@ public class SkinCustomizationMenuScreen implements IMenuScreen {
         doneButton = new LargeButton("Done", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 200, DisplayManager.getDefaultHeight() - 20), new IOnClickListener() {
             @Override
             public void onClick() {
-
-                try {
-                    Options minecraftOptions = new Options(LauncherFiles.MINEONLINE_OPTIONS_PATH);
-                    minecraftOptions.setOption("modelPart_hat", hat ? "true" : "false");
-                    minecraftOptions.setOption("modelPart_jacket", jacket ? "true" : "false");
-                    minecraftOptions.setOption("modelPart_left_sleeve", leftSleeve ? "true" : "false");
-                    minecraftOptions.setOption("modelPart_right_sleeve", rightSleeve ? "true" : "false");
-                    minecraftOptions.setOption("modelPart_left_pants_leg", leftPantsLeg ? "true" : "false");
-                    minecraftOptions.setOption("modelPart_right_pants_leg", rightPantsLeg ? "true" : "false");
-                } catch (IOException ex) { }
+                Settings.singleton.setShowHat(hat);
+                Settings.singleton.setShowJacket(jacket);
+                Settings.singleton.setShowRightSleeve(rightSleeve);
+                Settings.singleton.setShowLeftSleeve(leftSleeve);
+                Settings.singleton.setShowLeftPantsLeg(leftPantsLeg);
+                Settings.singleton.setShowRightPantsLeg(rightPantsLeg);
+                Settings.singleton.saveSettings();
 
                 PlayerGameObject.thePlayer.setSkinCustomization(hat, jacket, leftSleeve, rightSleeve, leftPantsLeg, rightPantsLeg);
                 MenuManager.setMenuScreen(new OptionsMenuScreen());

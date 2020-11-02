@@ -6,16 +6,13 @@ import net.bytebuddy.asm.Advice;
 import net.bytebuddy.dynamic.loading.ClassReloadingStrategy;
 import net.bytebuddy.matcher.ElementMatchers;
 
-public class LWJGLPerspectivePatch {
+public class LWJGLGLUPatch {
     public static void useCustomFOV() {
         try {
-            LWJGLPerspectiveAdvice.customFOV = Settings.settings.optFloat(Settings.FOV, 70);
-
-            if (LWJGLPerspectiveAdvice.customFOV == 70)
-                return;
+            LWJGLPerspectiveAdvice.customFOV = Settings.singleton.getFOV();
 
             new ByteBuddy()
-                    .redefine(LWJGLPerspectivePatch.class.getClassLoader().loadClass("org.lwjgl.util.glu.GLU"))
+                    .redefine(LWJGLGLUPatch.class.getClassLoader().loadClass("org.lwjgl.util.glu.GLU"))
                     .visit(Advice.to(LWJGLPerspectiveAdvice.class).on(ElementMatchers.named("gluPerspective")))
                     .make()
                     .load(Class.forName("org.lwjgl.util.glu.GLU").getClassLoader(), ClassReloadingStrategy.fromInstalledAgent());
@@ -23,6 +20,7 @@ public class LWJGLPerspectivePatch {
             ex.printStackTrace();
         }
     }
+
     public static void zoom(){
         try {
             LWJGLPerspectiveAdvice.customFOV = 20;
@@ -32,6 +30,6 @@ public class LWJGLPerspectivePatch {
     }
 
     public static void unZoom(){
-        LWJGLPerspectiveAdvice.customFOV = Settings.settings.optFloat(Settings.FOV, 70);
+        LWJGLPerspectiveAdvice.customFOV = Settings.singleton.getFOV();
     }
 }

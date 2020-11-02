@@ -7,5 +7,8 @@
   "baseVersion": "b1.1_01",
   "useFOVPatch": true,
   "ingameVersionString": "Minecraft Beta 1.1_01",
-  "resourcesVersion": "b1.3_01"
+  "resourcesVersion": "b1.3_01",
+  "entityRendererClass": "kr",
+  "viewModelFunction": "b",
+  "scaledResolutionClass": "lc"
 }

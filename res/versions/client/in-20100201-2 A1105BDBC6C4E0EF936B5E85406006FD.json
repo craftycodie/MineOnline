@@ -12,5 +12,6 @@
   "useTexturepackPatch": true,
   "ingameVersionString": "0.31",
   "enableCursorPatch": true,
-  "resourcesVersion": "a1.0.1_01"
+  "resourcesVersion": "a1.0.1_01",
+  "optionsVersion": "CLASSIC"
 }

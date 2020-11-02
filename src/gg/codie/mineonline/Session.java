@@ -82,7 +82,7 @@ public class Session {
     public void cacheSkin () {
         (new Thread() {
             public void run() {
-                Settings.loadSettings();
+                Settings.singleton.loadSettings();
 
                 String skinUrl = SkinUtils.findSkinURLForUuid(uuid);
 

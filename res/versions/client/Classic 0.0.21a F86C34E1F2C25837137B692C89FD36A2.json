@@ -11,5 +11,6 @@
   "useFOVPatch": true,
   "useTexturepackPatch": true,
   "ingameVersionString": "0.0.21a",
-  "resourcesVersion": "c0.0.22a_05"
+  "resourcesVersion": "c0.0.22a_05",
+  "optionsVersion": "CLASSIC"
 }

@@ -103,7 +103,7 @@ public class SelectableTexturePackList extends GUIObject {
         }
         texturePacks.clear();
 
-        addTexturePack("", "The default look of Minecraft", Loader.singleton.loadTexture(MenuManager.class.getResource("/img/pack.png")));
+        addTexturePack("Default", "The default look of Minecraft", Loader.singleton.loadTexture(MenuManager.class.getResource("/img/pack.png")));
 
         File texturePacksFolder = new File(LauncherFiles.MINECRAFT_TEXTURE_PACKS_PATH);
 
@@ -148,8 +148,8 @@ public class SelectableTexturePackList extends GUIObject {
             }
         }
 
-        Settings.loadSettings();
-        selectTexturePack(Settings.settings.optString(Settings.TEXTURE_PACK, ""));
+        Settings.singleton.loadSettings();
+        selectTexturePack(Settings.singleton.getTexturePack());
     }
 
     private LinkedList<SelectableTexturePack> texturePacks = new LinkedList<>();

@@ -30,8 +30,8 @@ public class TexturePacksMenuScreen implements IMenuScreen {
         doneButton = new MediumButton("Done", new Vector2f((DisplayManager.getDefaultWidth() / 2) + 8, DisplayManager.getDefaultHeight() - 20), new IOnClickListener() {
             @Override
             public void onClick() {
-                Settings.settings.put(Settings.TEXTURE_PACK, selectableTexturePackList.getSelected());
-                Settings.saveSettings();
+                Settings.singleton.setTexturePack(selectableTexturePackList.getSelected());
+                Settings.singleton.saveSettings();
                 MenuManager.setMenuScreen(new MainMenuScreen());
             }
         });
@@ -48,8 +48,8 @@ public class TexturePacksMenuScreen implements IMenuScreen {
         selectableTexturePackList = new SelectableTexturePackList("texture packs list", new Vector3f(), new Vector3f(), new Vector3f(1, 1, 1), new IOnClickListener() {
             @Override
             public void onClick() {
-                Settings.settings.put(Settings.TEXTURE_PACK, selectableTexturePackList.getSelected());
-                Settings.saveSettings();
+                Settings.singleton.setTexturePack(selectableTexturePackList.getSelected());
+                Settings.singleton.saveSettings();
                 MenuManager.setMenuScreen(new MainMenuScreen());
             }
         });

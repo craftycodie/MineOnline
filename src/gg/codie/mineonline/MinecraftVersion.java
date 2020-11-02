@@ -1,5 +1,6 @@
 package gg.codie.mineonline;
 
+import gg.codie.minecraft.client.EMinecraftOptionsVersion;
 import gg.codie.minecraft.client.Options;
 import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.mineonline.client.LegacyMinecraftClientLauncher;
@@ -52,6 +53,7 @@ public class MinecraftVersion {
     public final String resourcesVersion;
     public final boolean useUsernamesPatch;
     public final boolean useGreyScreenPatch;
+    public final EMinecraftOptionsVersion optionsVersion;
 
     public MinecraftVersion(
             String sha256,
@@ -81,7 +83,8 @@ public class MinecraftVersion {
             String ingameVersionString,
             String resourcesVersion,
             boolean useUsernamesPatch,
-            boolean useGreyScreenPatch
+            boolean useGreyScreenPatch,
+            EMinecraftOptionsVersion optionsVersion
     ) {
         this.sha256 = sha256;
         this.name = name;
@@ -111,6 +114,7 @@ public class MinecraftVersion {
         this.resourcesVersion = resourcesVersion;
         this.useUsernamesPatch = useUsernamesPatch;
         this.useGreyScreenPatch = useGreyScreenPatch;
+        this.optionsVersion = optionsVersion;
     }
 
     public MinecraftVersion(JSONObject object) {
@@ -142,6 +146,7 @@ public class MinecraftVersion {
         resourcesVersion = object.optString("resourcesVersion", "default");
         useUsernamesPatch = object.optBoolean("useUsernamesPatch", false);
         useGreyScreenPatch = object.optBoolean("useGreyScreenPatch", false);
+        optionsVersion = object.optEnum(EMinecraftOptionsVersion.class, "optionsVersion", EMinecraftOptionsVersion.DEFAULT);
     }
 
 
@@ -339,7 +344,8 @@ public class MinecraftVersion {
                     null,
                     "default",
                     false,
-                    false
+                    false,
+                    EMinecraftOptionsVersion.DEFAULT
             );
         } catch (Exception ex) {
             System.err.println("Bad launcher JSON for version " + jarFile);
@@ -350,7 +356,7 @@ public class MinecraftVersion {
 
     public static void launchMinecraft(String jarPath, String serverIP, String serverPort, String mpPass) throws Exception {
         try {
-            new Options(LauncherFiles.MINEONLINE_OPTIONS_PATH).setOption("lastServer", serverIP + "_" + serverPort);
+            Settings.singleton.setLastServer(serverIP != null && serverPort != null ? serverIP + ":" + serverPort : (serverIP != null ? serverIP : ""));
         } catch (Exception ex) {
             // ignore
         }
@@ -369,6 +375,8 @@ public class MinecraftVersion {
         }
 
         System.out.println("Launching jar " + jarPath + " MD5 " + MD5Checksum.getMD5ChecksumForFile(jarPath));
+        Settings.singleton.saveMinecraftOptions(minecraftVersion.optionsVersion);
+
 
         if(minecraftVersion != null) {
             if (minecraftVersion.type.equals("rubydung")) {

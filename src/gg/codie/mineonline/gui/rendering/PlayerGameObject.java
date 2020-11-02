@@ -2,6 +2,7 @@ package gg.codie.mineonline.gui.rendering;
 
 import gg.codie.minecraft.client.Options;
 import gg.codie.mineonline.LauncherFiles;
+import gg.codie.mineonline.Settings;
 import gg.codie.mineonline.gui.rendering.animation.IPlayerAnimation;
 import gg.codie.mineonline.gui.rendering.animation.IdlePlayerAnimation;
 import gg.codie.mineonline.gui.rendering.models.RawModel;
@@ -44,52 +45,20 @@ public class PlayerGameObject extends GameObject {
         this.playerAnimation.reset(this);
     }
 
+    public IPlayerAnimation getPlayerAnimation() {
+        return this.playerAnimation;
+    }
+
     public PlayerGameObject(String name, Loader loader, Vector3f localPosition, Vector3f rotation, Vector3f scale)
     {
         super(name);
 
-        try {
-            Options minecraftOptions = new Options(LauncherFiles.MINECRAFT_OPTIONS_PATH);
-
-            try {
-                hat = "true".equals(minecraftOptions.getOption("modelPart_hat"));
-            } catch (NoSuchFieldException | IOException ex) {
-                //Ignore.
-            }
-
-            try {
-                jacket = "true".equals(minecraftOptions.getOption("modelPart_jacket"));
-            } catch (NoSuchFieldException | IOException ex) {
-                //Ignore.
-            }
-
-            try {
-                leftSleeve = "true".equals(minecraftOptions.getOption("modelPart_left_sleeve"));
-            } catch (NoSuchFieldException | IOException ex) {
-                //Ignore.
-            }
-
-            try {
-                rightSleeve = "true".equals(minecraftOptions.getOption("modelPart_right_sleeve"));
-            } catch (NoSuchFieldException | IOException ex) {
-                //Ignore.
-            }
-
-            try {
-                leftPantsLeg = "true".equals(minecraftOptions.getOption("modelPart_left_pants_leg"));
-            } catch (NoSuchFieldException | IOException ex) {
-                //Ignore.
-            }
-
-            try {
-                rightPantsLeg = "true".equals(minecraftOptions.getOption("modelPart_right_pants_leg"));
-            } catch (NoSuchFieldException | IOException ex) {
-                //Ignore.
-            }
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+        hat = Settings.singleton.getShowHat();
+        jacket = Settings.singleton.getShowJacket();
+        leftSleeve = Settings.singleton.getShowLeftSleeve();
+        rightSleeve = Settings.singleton.getShowRightSleeve();
+        leftPantsLeg = Settings.singleton.getShowLeftPantsLeg();
+        rightPantsLeg = Settings.singleton.getShowRightPantsLeg();
 
         thePlayer = this;
 

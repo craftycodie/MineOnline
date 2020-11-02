@@ -9,7 +9,7 @@ import net.bytebuddy.matcher.ElementMatchers;
 public class GuiScreenPatch {
     public static void useGUIScale(String guiScreenClassName) {
         try {
-            GuiScreenOpenAdvice.guiScale = Settings.settings.optInt(Settings.GUI_SCALE, 0);
+            GuiScreenOpenAdvice.guiScale = Settings.singleton.getGUIScale().getIntValue();
 
             new ByteBuddy()
                     .redefine(Class.forName(guiScreenClassName))

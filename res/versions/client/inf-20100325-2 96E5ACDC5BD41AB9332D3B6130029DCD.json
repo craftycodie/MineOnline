@@ -10,5 +10,6 @@
   "useTexturepackPatch": true,
   "ingameVersionString": "Minecraft Infdev",
   "enableCursorPatch": true,
-  "resourcesVersion": "a1.0.1_01"
+  "resourcesVersion": "a1.0.1_01",
+  "optionsVersion": "CLASSIC"
 }

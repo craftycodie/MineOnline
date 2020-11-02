@@ -48,7 +48,7 @@ public class SelectableTexturePack extends GUIObject {
         this.info = info;
         this.doubleClickListener = doubleClickListener;
 
-        nameText = new GUIText(this.texturePackName.isEmpty() ? "Default" : this.texturePackName, 1.5f, TextMaster.minecraftFont, new Vector2f(currentPosition.x + 80, currentPosition.y - 70), 368, false, true);
+        nameText = new GUIText(this.texturePackName, 1.5f, TextMaster.minecraftFont, new Vector2f(currentPosition.x + 80, currentPosition.y - 70), 368, false, true);
         nameText.setYBounds(new Vector2f(69 , 69));
 
         if(this.info != null) {

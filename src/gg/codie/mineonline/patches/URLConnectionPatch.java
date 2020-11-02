@@ -11,7 +11,7 @@ import java.net.HttpURLConnection;
 import java.net.URLConnection;
 
 public class URLConnectionPatch {
-    public static void convertModernSkins() {
+    public static void patchResponses() {
         new ByteBuddy()
                 .with(Implementation.Context.Disabled.Factory.INSTANCE)
                 .redefine(HttpURLConnection.class)

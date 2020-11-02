@@ -14,11 +14,11 @@ public class LWJGLDisplayPatch {
     public static OnCreateListener createListener;
 
     public static void hijackLWJGLThreadPatch(boolean enableGreyScreenPatch) {
-        Settings.loadSettings();
+        Settings.singleton.loadSettings();
 
-        LWJGLDisplayCreateAdvice.sampleCount = Settings.settings.optInt(Settings.SAMPLE_COUNT, 0);
-        LWJGLDisplayCreateAdvice.coverageSampleCount = Settings.settings.optInt(Settings.COVERAGE_SAMPLE_COUNT, 0);
-        LWJGLDisplayCreateAdvice.stencilCount = Settings.settings.optInt(Settings.STENCIL_COUNT, 0);
+        LWJGLDisplayCreateAdvice.sampleCount = Settings.singleton.getSampleCount();
+        LWJGLDisplayCreateAdvice.coverageSampleCount = Settings.singleton.getCoverageSampleCount();
+        LWJGLDisplayCreateAdvice.stencilCount = Settings.singleton.getStencilCount();
 
         try {
             if(enableGreyScreenPatch) {
