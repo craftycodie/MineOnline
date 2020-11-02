@@ -16,5 +16,7 @@
     <orderEntry type="library" name="lwjgl" level="project" />
     <orderEntry type="library" name="byte-buddy-dep-1.10.14" level="project" />
     <orderEntry type="library" name="discord-rpc" level="project" />
+    <orderEntry type="library" name="JDA-4.2.0_168-withDependencies-min" level="project" />
+    <orderEntry type="library" name="discord-webhooks-0.5.0" level="project" />
   </component>
 </module>
