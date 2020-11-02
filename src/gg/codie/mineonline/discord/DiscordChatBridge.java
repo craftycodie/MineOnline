@@ -39,7 +39,7 @@ public class DiscordChatBridge extends ListenerAdapter {
                 builder = new WebhookClientBuilder(Webhook);
                 client = builder.build();
             } catch (Exception ex) {
-                System.out.println(ex);
+                ex.printStackTrace();
             }
         }
             try {
@@ -52,14 +52,14 @@ public class DiscordChatBridge extends ListenerAdapter {
                     @Override
                     public void onMessageReceived(MessageReceivedEvent event) {
                         if(event.getChannel().getId().equals(Channel) && !event.isWebhookMessage() && !event.getAuthor().getId().equals(event.getJDA().getSelfUser().getId())) { // stop listening to yourself
-                            message = ("say " + event.getAuthor().getName() + ": " + Vers + "f" + event.getMessage().getContentStripped());
+                            message = ("say " + event.getAuthor().getName() + ": " + Vers + "f" + event.getMessage().getContentStripped().substring(0, 256));
                             msgEvent.onMessageRecieved(message);
                         }
                     }
                 });
 
             } catch (Exception ex) {
-                System.out.println(ex);
+                ex.printStackTrace();
             }
     }
 
@@ -67,7 +67,7 @@ public class DiscordChatBridge extends ListenerAdapter {
         if (Webhook != null && !username.equals("")){ // Webhook player messages to discord
             webhookMessage = new WebhookMessageBuilder();
             webhookMessage.setUsername(username);
-            webhookMessage.setAvatarUrl("https://minotar.net/cube/" + username + "/100.png");
+            webhookMessage.setAvatarUrl("https://minotar.net/avatar/" + username + "/100.png");
             webhookMessage.setContent(message);
             client.send(webhookMessage.build());
         } else if (Token != null && !username.equals("")) { // Non-webhook player messages to discord
@@ -76,7 +76,7 @@ public class DiscordChatBridge extends ListenerAdapter {
                 channel = jda.getTextChannelById(chan);
                 channel.sendMessage("**" + username + "**: " + message).queue();
             } catch (Exception ex) {
-                System.out.println(ex);
+                ex.printStackTrace();
             }
         } else if (username.equals("")){ // Non webhook system messages to discord
             try {
@@ -84,7 +84,7 @@ public class DiscordChatBridge extends ListenerAdapter {
                 channel = jda.getTextChannelById(chan);
                 channel.sendMessage(message).queue();
             } catch (Exception ex) {
-                System.out.println(ex);
+                ex.printStackTrace();
             }
         }
     }
