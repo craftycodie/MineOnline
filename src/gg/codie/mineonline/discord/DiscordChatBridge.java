@@ -22,7 +22,6 @@ public class DiscordChatBridge extends ListenerAdapter {
     final String token;
     final JDA jda;
     final IAvatarProvider avatarProvider;
-    //IColorCodeProvider colorCodeProvider;
 
     public DiscordChatBridge(IAvatarProvider avatarProvider, String discordChannel, String discordToken, String webhookUrl, IMessageRecievedListener msgEvent) throws NumberFormatException, InterruptedException, LoginException {
         token = discordToken;
@@ -30,8 +29,6 @@ public class DiscordChatBridge extends ListenerAdapter {
         webhook = webhookUrl;
 
         this.avatarProvider = avatarProvider;
-
-        //this.colorCodeProvider = colorCodeProvider;
 
         if (webhook != null) {
             try {
