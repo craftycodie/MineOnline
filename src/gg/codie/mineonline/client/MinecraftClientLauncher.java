@@ -97,7 +97,7 @@ public class MinecraftClientLauncher {
         System.setProperty("java.util.Arrays.useLegacyMergeSort", "true");
 
         Logging.enableLogging();
-
+        System.setProperty("java.util.Arrays.useLegacyMergeSort", "true");
         String serverAddress = args.length > 3 ? args[3] : null;
         String serverPort = args.length > 4 ? args[4] : null;
         new MinecraftClientLauncher(args[0], args[1], args[2], serverAddress, serverPort).startMinecraft();

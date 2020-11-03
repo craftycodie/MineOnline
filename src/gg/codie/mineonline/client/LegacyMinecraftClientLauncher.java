@@ -136,7 +136,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
         System.setProperty("java.util.Arrays.useLegacyMergeSort", "true");
 
         Logging.enableLogging();
-
+        System.setProperty("java.util.Arrays.useLegacyMergeSort", "true");
         DiscordRPCHandler.initialize();
 
         String serverAddress = args.length > 3 ? args[3] : null;

@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="discord-webhooks-0.5.0">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/res/lib/discord-webhooks-0.5.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

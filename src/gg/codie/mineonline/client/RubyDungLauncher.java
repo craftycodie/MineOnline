@@ -97,7 +97,7 @@ public class RubyDungLauncher {
         System.setProperty("java.util.Arrays.useLegacyMergeSort", "true");
 
         Logging.enableLogging();
-
+        System.setProperty("java.util.Arrays.useLegacyMergeSort", "true");
         new RubyDungLauncher(args[0]).startRubyDung();
     }
 
