@@ -77,7 +77,6 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
             LinkedList<String> launchArgs = new LinkedList();
             launchArgs.add(JREUtils.getJavaExecutable());
             launchArgs.add("-javaagent:" + LauncherFiles.PATCH_AGENT_JAR);
-            launchArgs.add("-Djava.util.Arrays.useLegacyMergeSort=true");
             launchArgs.add("-Djava.net.preferIPv4Stack=true");
             launchArgs.add("-Dmineonline.username=" + Session.session.getUsername());
             launchArgs.add("-Dmineonline.token=" + Session.session.getAccessToken());
@@ -134,6 +133,8 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
 
     // [ jarPath, width, height, ip, port, mppass ]
     public static void main(String[] args) {
+        System.setProperty("java.util.Arrays.useLegacyMergeSort", "true");
+
         Logging.enableLogging();
 
         DiscordRPCHandler.initialize();
@@ -401,7 +402,9 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
             ClassPatch.useTexturePacks(Settings.singleton.getTexturePack());
         // Hide version strings from the HUD
         if (minecraftVersion != null && minecraftVersion.ingameVersionString != null && Settings.singleton.getHideVersionString())
-            StringPatch.hideVersionStrings(minecraftVersion.ingameVersionString);
+            StringPatch.enableStringPatch(minecraftVersion.ingameVersionString);
+        else
+            StringPatch.enableStringPatch(null);
 
         minecraftApplet.init();
 
