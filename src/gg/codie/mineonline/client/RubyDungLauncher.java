@@ -57,7 +57,6 @@ public class RubyDungLauncher {
             LinkedList<String> launchArgs = new LinkedList();
             launchArgs.add(JREUtils.getJavaExecutable());
             launchArgs.add("-javaagent:" + LauncherFiles.PATCH_AGENT_JAR);
-            launchArgs.add("-Djava.util.Arrays.useLegacyMergeSort=true");
             launchArgs.add("-Djava.net.preferIPv4Stack=true");
             launchArgs.add("-Dmineonline.username=" + Session.session.getUsername());
             launchArgs.add("-Dmineonline.token=" + Session.session.getAccessToken());
@@ -96,7 +95,7 @@ public class RubyDungLauncher {
 
     public static void main(String[] args) throws Exception {
         Logging.enableLogging();
-
+        System.setProperty("java.util.Arrays.useLegacyMergeSort", "true");
         new RubyDungLauncher(args[0]).startRubyDung();
     }
 

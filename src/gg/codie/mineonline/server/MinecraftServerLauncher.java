@@ -3,11 +3,9 @@ package gg.codie.mineonline.server;
 import gg.codie.mineonline.MinecraftVersion;
 import gg.codie.mineonline.MinecraftVersionRepository;
 import gg.codie.mineonline.api.MineOnlineAPI;
-import gg.codie.mineonline.discord.DiscordChatBridge;
 import gg.codie.mineonline.discord.MessageRecievedListener;
 import gg.codie.mineonline.utils.Logging;
 import gg.codie.utils.MD5Checksum;
-import org.lwjgl.Sys;
 
 import java.io.*;
 import java.util.Arrays;
@@ -26,12 +24,13 @@ public class MinecraftServerLauncher {
     int users = 0;
     static String[] playerNames = new String[0];
     protected String serverUUID;
+    String colorCode = "§";
     // If the player count was requested by MineOnline we remove that from stdout to avoid spamming logs.
     // Since the server might be responding slowly, we count the amount of times this has been requested,
     // to ensure each is removed.
     int playerCountRequested = 0;
     BufferedWriter writer;
-    DiscordChatBridge discord;
+    MinecraftServerDiscordChatBridge discord;
     String[] line;
     String[] content;
     String username;
@@ -57,20 +56,17 @@ public class MinecraftServerLauncher {
             }
         }
 
-        if (minecraftVersion != null)
-            ver = minecraftVersion.name;
-        else
-            ver = "";
+        colorCode = minecraftVersion.hasHeartbeat ? "ÿ&" : "§";
 
         if (serverProperties.discordToken() != null && serverProperties.discordChan() != null && serverProperties.discordWebhookUrl() != null) { // Create the discord bot if token and channel are present
-            discord = new DiscordChatBridge(ver, serverProperties.discordChan(), serverProperties.discordToken(), serverProperties.discordWebhookUrl(), new MessageRecievedListener() {
+            discord = new MinecraftServerDiscordChatBridge(colorCode, serverProperties.discordChan(), serverProperties.discordToken(), serverProperties.discordWebhookUrl(), new MessageRecievedListener() {
                 @Override
                 public void onMessageRecieved(String message) {
                     serverCommand(message);
                 }
             });
         } else if (serverProperties.discordToken() != null && serverProperties.discordChan() != null && serverProperties.discordWebhookUrl() == null) { // Create the discord bot if token and channel are present
-            discord = new DiscordChatBridge(ver, serverProperties.discordChan(), serverProperties.discordToken(), "", new MessageRecievedListener() {
+            discord = new MinecraftServerDiscordChatBridge(colorCode, serverProperties.discordChan(), serverProperties.discordToken(), "", new MessageRecievedListener() {
                 @Override
                 public void onMessageRecieved(String message) {
                     serverCommand(message);
@@ -86,7 +82,7 @@ public class MinecraftServerLauncher {
         }
         else
             if (serverProperties.discordToken() != null) {
-                discord.sendDiscordMessage("", "Launching " + this.jarPath + " server: **" + serverProperties.serverName() + "**");
+                discord.sendDiscordMessage("", "Launching server: **" + serverProperties.serverName() + "**");
             }
             System.out.println("Launching Server " + this.jarPath);
 
