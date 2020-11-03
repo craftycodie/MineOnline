@@ -1,17 +1,26 @@
 package gg.codie.mineonline.server;
 
+import gg.codie.minecraft.server.ClassicMinecraftColorCodeProvider;
+import gg.codie.minecraft.server.EChatColor;
+import gg.codie.minecraft.server.IColorCodeProvider;
+import gg.codie.minecraft.server.MinecraftColorCodeProvider;
 import gg.codie.mineonline.MinecraftVersion;
 import gg.codie.mineonline.MinecraftVersionRepository;
 import gg.codie.mineonline.api.MineOnlineAPI;
-import gg.codie.mineonline.discord.MessageRecievedListener;
+import gg.codie.mineonline.discord.DiscordChatBridge;
+import gg.codie.mineonline.discord.IMessageRecievedListener;
+import gg.codie.mineonline.discord.MinotarAvatarProvider;
 import gg.codie.mineonline.utils.Logging;
 import gg.codie.utils.MD5Checksum;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.io.*;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class MinecraftServerLauncher {
 
@@ -24,18 +33,12 @@ public class MinecraftServerLauncher {
     int users = 0;
     static String[] playerNames = new String[0];
     protected String serverUUID;
-    String colorCode = "§";
     // If the player count was requested by MineOnline we remove that from stdout to avoid spamming logs.
     // Since the server might be responding slowly, we count the amount of times this has been requested,
     // to ensure each is removed.
     int playerCountRequested = 0;
     BufferedWriter writer;
-    MinecraftServerDiscordChatBridge discord;
-    String[] line;
-    String[] content;
-    String username;
-    String message;
-    String ver;
+    DiscordChatBridge discord;
 
     public MinecraftServerLauncher(String[] args) throws Exception {
 
@@ -56,32 +59,80 @@ public class MinecraftServerLauncher {
             }
         }
 
-        colorCode = minecraftVersion.hasHeartbeat ? "ÿ&" : "§";
+        IColorCodeProvider colorCodeProvider = minecraftVersion != null && minecraftVersion.hasHeartbeat
+                ? new ClassicMinecraftColorCodeProvider()
+                : new MinecraftColorCodeProvider();
 
-        if (serverProperties.discordToken() != null && serverProperties.discordChan() != null && serverProperties.discordWebhookUrl() != null) { // Create the discord bot if token and channel are present
-            discord = new MinecraftServerDiscordChatBridge(colorCode, serverProperties.discordChan(), serverProperties.discordToken(), serverProperties.discordWebhookUrl(), new MessageRecievedListener() {
-                @Override
-                public void onMessageRecieved(String message) {
-                    serverCommand(message);
+        IMessageRecievedListener messageRecievedListener = new IMessageRecievedListener() {
+            @Override
+            public void onMessageRecieved(MessageReceivedEvent event) {
+                StringBuilder sb = new StringBuilder();
+                String message = event.getAuthor().getName() + ">" + event.getMessage().getContentStripped();
+
+                message = message.replace("\n", "") // Make emojis pretty
+                        .replace("\uD83D\uDE42", colorCodeProvider.getColorCode(EChatColor.Yellow) + ":smile:" + colorCodeProvider.getColorCode(EChatColor.White))
+                        .replace("\uD83D\uDE04", colorCodeProvider.getColorCode(EChatColor.Yellow) + ":smile:" + colorCodeProvider.getColorCode(EChatColor.White))
+                        .replace("❤️", colorCodeProvider.getColorCode(EChatColor.Pink) + ":heart:" + colorCodeProvider.getColorCode(EChatColor.White))
+                        .replace("\uD83C\uDFB5", colorCodeProvider.getColorCode(EChatColor.Blue) + ":musical_note:" + colorCodeProvider.getColorCode(EChatColor.White))
+                        .replace("♂️", colorCodeProvider.getColorCode(EChatColor.Teal) + ":male_sign:" + colorCodeProvider.getColorCode(EChatColor.White))
+                        .replace("♀️", colorCodeProvider.getColorCode(EChatColor.Pink) + ":female_sign:" + colorCodeProvider.getColorCode(EChatColor.White));
+
+
+                sb.delete(0, sb.length());  // Loop through the characters and make sure there isn't anything naughty in there
+                for (int i = 0; i < message.length(); i++) {
+                    char c = message.charAt(i);
+                    if ((int) c > 32 && (int) c < 128 || c == ' ') {
+                        sb.append(c);
+                    }
                 }
-            });
-        } else if (serverProperties.discordToken() != null && serverProperties.discordChan() != null && serverProperties.discordWebhookUrl() == null) { // Create the discord bot if token and channel are present
-            discord = new MinecraftServerDiscordChatBridge(colorCode, serverProperties.discordChan(), serverProperties.discordToken(), "", new MessageRecievedListener() {
-                @Override
-                public void onMessageRecieved(String message) {
-                    serverCommand(message);
+
+                if (event.getMessage().getContentStripped().startsWith("\n"))
+                    return;
+
+                String saneName = sb.toString().split(">")[0];
+                String saneMessage = sb.toString().split(">")[1];
+
+                if (saneMessage.endsWith("&f")) { // Prevent a crash in classic where if the message ends with this all connected clients crash lmao
+                    saneMessage = saneMessage.substring(0, saneMessage.length() - 2);
                 }
-            });
+
+                if (saneMessage.length() < 256) // Truncate messages that are overly long - TODO: split messages into multiple 30 char messages for classic
+                    message = (colorCodeProvider.getColorCode(EChatColor.Blue) + saneName + ": " + colorCodeProvider.getColorCode(EChatColor.White) + saneMessage);
+                else
+                    message = (colorCodeProvider.getColorCode(EChatColor.Blue) + saneName + ": " + colorCodeProvider.getColorCode(EChatColor.White) + saneMessage.substring(0, 256));
+
+                /*  According to the server changelog, the 15a server used /broadcast.
+                    But since we don't have that server and probably never will, it's set to /say. */
+
+                // If classic, limit to 30 characters per line.
+                if(minecraftVersion.hasHeartbeat) {
+                    int maxLength = 30;
+                    Pattern p = Pattern.compile("\\G\\s*(.{1," + maxLength + "})(?=\\s|$)", Pattern.DOTALL);
+                    Matcher m = p.matcher(message);
+                    while (m.find())
+                        serverCommand("say " + m.group(1));
+                } else
+                    serverCommand("say " + message);
+            }
+        };
+
+        if (serverProperties.discordToken() != null && serverProperties.discordChan() != null) { // Create the discord bot if token and channel are present
+            try {
+                discord = new DiscordChatBridge(new MinotarAvatarProvider(), serverProperties.discordChan(), serverProperties.discordToken(), serverProperties.discordWebhookUrl(), messageRecievedListener);
+            } catch (Exception ex) {
+                System.out.println("Failed to start discord bridge.");
+                ex.printStackTrace();
+            }
         }
 
         if (minecraftVersion != null){
-            if (serverProperties.discordToken() != null) {
+            if (discord != null) {
                 discord.sendDiscordMessage("", "Launching " + minecraftVersion.name + " server: **" + serverProperties.serverName() + "**");
             }
             System.out.println("Launching Server " + minecraftVersion.name);
         }
         else
-            if (serverProperties.discordToken() != null) {
+            if (discord != null) {
                 discord.sendDiscordMessage("", "Launching server: **" + serverProperties.serverName() + "**");
             }
             System.out.println("Launching Server " + this.jarPath);
@@ -246,26 +297,26 @@ public class MinecraftServerLauncher {
                             }
 
                             // Discord Chat Bridge ( mc chat listener )
-                            if (serverProperties.discordToken() != null && !nextLine.startsWith("say") && !nextLine.contains("[CONSOLE]")) {
+                            if (discord != null && !nextLine.startsWith("say") && !nextLine.contains("[CONSOLE]")) {
                                 if (nextLine.length() > 15 && nextLine.contains(" says: ")) { // For classic
-                                    line = nextLine.substring(15).replace("\u001B[0m", "").split(" says: ");
+                                    String[] line = nextLine.substring(15).replace("\u001B[0m", "").split(" says: ");
                                     discord.sendDiscordMessage(line[0], line[1]);
                                 }
 
                                 if (nextLine.contains("INFO] <")) { // For not classic
-                                    line = nextLine.replace("\u001B[0m", "").split("INFO] <");
-                                    content = line[1].split("> ");
+                                    String[] line = nextLine.replace("\u001B[0m", "").split("INFO] <");
+                                    String[] content = line[1].split("> ");
                                     discord.sendDiscordMessage(content[0], content[1]);
                                 }
 
                                 if (nextLine.contains("INFO]: <")) { // For release
-                                    line = nextLine.replace("\u001B[0m", "").split("INFO]: <");
-                                    content = line[1].split("> ");
+                                    String[] line = nextLine.replace("\u001B[0m", "").split("INFO]: <");
+                                    String[] content = line[1].split("> ");
                                     discord.sendDiscordMessage(content[0], content[1]);
                                 }
                             }
 
-                            if(serverProperties.discordToken() != null) { // Send discord message when player joins or leaves the server
+                            if(discord != null) { // Send discord message when player joins or leaves the server
                                 for (String names : playerNames) {
                                     boolean join = Arrays.stream(prevPlayers).anyMatch(names::equals);
                                     if (!join) {
