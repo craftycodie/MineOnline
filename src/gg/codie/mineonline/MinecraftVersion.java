@@ -54,6 +54,7 @@ public class MinecraftVersion {
     public final boolean useUsernamesPatch;
     public final boolean useGreyScreenPatch;
     public final EMinecraftOptionsVersion optionsVersion;
+    public final boolean enableClassicEmoji;
 
     public MinecraftVersion(
             String sha256,
@@ -84,7 +85,8 @@ public class MinecraftVersion {
             String resourcesVersion,
             boolean useUsernamesPatch,
             boolean useGreyScreenPatch,
-            EMinecraftOptionsVersion optionsVersion
+            EMinecraftOptionsVersion optionsVersion,
+            boolean enableClassicEmoji
     ) {
         this.sha256 = sha256;
         this.name = name;
@@ -115,6 +117,7 @@ public class MinecraftVersion {
         this.useUsernamesPatch = useUsernamesPatch;
         this.useGreyScreenPatch = useGreyScreenPatch;
         this.optionsVersion = optionsVersion;
+        this.enableClassicEmoji = enableClassicEmoji;
     }
 
     public MinecraftVersion(JSONObject object) {
@@ -147,6 +150,7 @@ public class MinecraftVersion {
         useUsernamesPatch = object.optBoolean("useUsernamesPatch", false);
         useGreyScreenPatch = object.optBoolean("useGreyScreenPatch", false);
         optionsVersion = object.optEnum(EMinecraftOptionsVersion.class, "optionsVersion", EMinecraftOptionsVersion.DEFAULT);
+        enableClassicEmoji = object.optBoolean("enableClassicEmoji", false);
     }
 
 
@@ -345,7 +349,8 @@ public class MinecraftVersion {
                     "default",
                     false,
                     false,
-                    EMinecraftOptionsVersion.DEFAULT
+                    EMinecraftOptionsVersion.DEFAULT,
+                    false
             );
         } catch (Exception ex) {
             System.err.println("Bad launcher JSON for version " + jarFile);

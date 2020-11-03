@@ -402,9 +402,9 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
             ClassPatch.useTexturePacks(Settings.singleton.getTexturePack());
         // Hide version strings from the HUD
         if (minecraftVersion != null && minecraftVersion.ingameVersionString != null && Settings.singleton.getHideVersionString())
-            StringPatch.enableStringPatch(minecraftVersion.ingameVersionString);
+            StringPatch.enableStringPatch(minecraftVersion.ingameVersionString, minecraftVersion.enableClassicEmoji);
         else
-            StringPatch.enableStringPatch(null);
+            StringPatch.enableStringPatch(null, minecraftVersion != null && minecraftVersion.enableClassicEmoji);
 
         minecraftApplet.init();
 

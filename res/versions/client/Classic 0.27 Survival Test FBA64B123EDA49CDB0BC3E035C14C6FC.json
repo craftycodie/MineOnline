@@ -12,5 +12,6 @@
   "ingameVersionString": "0.27 SURVIVAL TEST",
   "resourcesVersion": "a1.0.1_01",
   "guiClass": "com.mojang.minecraft.c.l",
-  "optionsVersion": "CLASSIC"
+  "optionsVersion": "CLASSIC",
+  "enableClassicEmoji": true
 }

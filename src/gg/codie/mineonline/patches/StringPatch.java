@@ -7,9 +7,10 @@ import net.bytebuddy.implementation.Implementation;
 import net.bytebuddy.matcher.ElementMatchers;
 
 public class StringPatch {
-    public static void enableStringPatch(String versionString) {
+    public static void enableStringPatch(String versionString, boolean enableClassicEmoji) {
         StringCharAtAdvice.versionString = versionString;
         StringToCharArrayAdvice.versionString = versionString;
+        StringToCharArrayAdvice.enableClassicEmoji = enableClassicEmoji;
         new ByteBuddy()
                 .with(Implementation.Context.Disabled.Factory.INSTANCE)
                 .redefine(String.class)
