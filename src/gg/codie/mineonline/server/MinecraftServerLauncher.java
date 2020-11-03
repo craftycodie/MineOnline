@@ -68,9 +68,10 @@ public class MinecraftServerLauncher {
                 String message = event.getMessage().getContentStripped();
 
                 message = message.replace("\n", "") // Make emojis pretty
-                        .replace(("\uD83D\uDE42"), ":)")
+                        .replace(("\uD83D\uDE41"), ":)")
+                        .replace(("\uD83D\uDE26"), ":(")
                         .replace(("\uD83D\uDE04"), ":D")
-                        .replace(("" + (char) 0x2764), "<3");
+                        .replace(("\u2764"), "<3");
 
                 for (int i = 0; i < message.length(); i++) {
                     char c = message.charAt(i);
