@@ -1,7 +1,7 @@
 package gg.codie.minecraft.server;
 
 public abstract class AbstractMinecraftColorCodeProvider implements IColorCodeProvider {
-    protected abstract String getPrefix();
+    public abstract String getPrefix();
 
     @Override
     public String getColorCode(EChatColor chatColor) {

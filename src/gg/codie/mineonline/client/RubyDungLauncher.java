@@ -207,7 +207,7 @@ public class RubyDungLauncher {
 
             // Hide version strings from the HUD
             if (minecraftVersion != null && minecraftVersion.ingameVersionString != null && Settings.singleton.getHideVersionString())
-                StringPatch.enableStringPatch(minecraftVersion.ingameVersionString, false);
+                StringPatch.hideVersionNames(minecraftVersion.ingameVersionString);
 
             main.invoke(null, new Object[] {args.toArray(new String[0])});
 

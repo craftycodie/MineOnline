@@ -1,14 +1,12 @@
 package gg.codie.mineonline.server;
 
-import gg.codie.minecraft.server.ClassicMinecraftColorCodeProvider;
-import gg.codie.minecraft.server.EChatColor;
-import gg.codie.minecraft.server.IColorCodeProvider;
-import gg.codie.minecraft.server.MinecraftColorCodeProvider;
+import gg.codie.minecraft.server.*;
 import gg.codie.mineonline.MinecraftVersion;
 import gg.codie.mineonline.MinecraftVersionRepository;
 import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.mineonline.discord.DiscordChatBridge;
 import gg.codie.mineonline.discord.IMessageRecievedListener;
+import gg.codie.mineonline.discord.IShutdownListener;
 import gg.codie.mineonline.discord.MinotarAvatarProvider;
 import gg.codie.mineonline.utils.Logging;
 import gg.codie.utils.MD5Checksum;
@@ -59,7 +57,7 @@ public class MinecraftServerLauncher {
             }
         }
 
-        IColorCodeProvider colorCodeProvider = minecraftVersion != null && minecraftVersion.hasHeartbeat
+        AbstractMinecraftColorCodeProvider colorCodeProvider = minecraftVersion != null && minecraftVersion.hasHeartbeat
                 ? new ClassicMinecraftColorCodeProvider()
                 : new MinecraftColorCodeProvider();
 
@@ -67,21 +65,16 @@ public class MinecraftServerLauncher {
             @Override
             public void onMessageRecieved(MessageReceivedEvent event) {
                 StringBuilder sb = new StringBuilder();
-                String message = event.getAuthor().getName() + ">" + event.getMessage().getContentStripped();
+                String message = event.getMessage().getContentStripped();
 
                 message = message.replace("\n", "") // Make emojis pretty
-                        .replace("\uD83D\uDE42", colorCodeProvider.getColorCode(EChatColor.Yellow) + ":smile:" + colorCodeProvider.getColorCode(EChatColor.White))
-                        .replace("\uD83D\uDE04", colorCodeProvider.getColorCode(EChatColor.Yellow) + ":smile:" + colorCodeProvider.getColorCode(EChatColor.White))
-                        .replace("❤️", colorCodeProvider.getColorCode(EChatColor.Pink) + ":heart:" + colorCodeProvider.getColorCode(EChatColor.White))
-                        .replace("\uD83C\uDFB5", colorCodeProvider.getColorCode(EChatColor.Blue) + ":musical_note:" + colorCodeProvider.getColorCode(EChatColor.White))
-                        .replace("♂️", colorCodeProvider.getColorCode(EChatColor.Teal) + ":male_sign:" + colorCodeProvider.getColorCode(EChatColor.White))
-                        .replace("♀️", colorCodeProvider.getColorCode(EChatColor.Pink) + ":female_sign:" + colorCodeProvider.getColorCode(EChatColor.White));
+                        .replace(("\uD83D\uDE42"), ":)")
+                        .replace(("\uD83D\uDE04"), ":D")
+                        .replace(("" + (char) 0x2764), "<3");
 
-
-                sb.delete(0, sb.length());  // Loop through the characters and make sure there isn't anything naughty in there
                 for (int i = 0; i < message.length(); i++) {
                     char c = message.charAt(i);
-                    if ((int) c > 32 && (int) c < 128 || c == ' ') {
+                    if ((int) c > 31 && (int) c < 128) {
                         sb.append(c);
                     }
                 }
@@ -89,36 +82,65 @@ public class MinecraftServerLauncher {
                 if (event.getMessage().getContentStripped().startsWith("\n"))
                     return;
 
-                String saneName = sb.toString().split(">")[0];
-                String saneMessage = sb.toString().split(">")[1];
+                String saneName = event.getAuthor().getName();
+                String saneMessage = sb.toString();
 
-                if (saneMessage.endsWith("&f")) { // Prevent a crash in classic where if the message ends with this all connected clients crash lmao
-                    saneMessage = saneMessage.substring(0, saneMessage.length() - 2);
+                if(saneMessage.trim().isEmpty())
+                    return;
+
+                Pattern trailingWhite = Pattern.compile(colorCodeProvider.getColorCode(EChatColor.White) + "\\s{0,}$");
+                Matcher whiteMatcher = trailingWhite.matcher(saneMessage);
+
+                if (whiteMatcher.find()) { // Prevent a crash in classic where if the message ends with this all connected clients crash
+                    saneMessage = saneMessage.substring(0, saneMessage.length() - whiteMatcher.group().length());
                 }
 
-                if (saneMessage.length() < 256) // Truncate messages that are overly long - TODO: split messages into multiple 30 char messages for classic
-                    message = (colorCodeProvider.getColorCode(EChatColor.Blue) + saneName + ": " + colorCodeProvider.getColorCode(EChatColor.White) + saneMessage);
-                else
-                    message = (colorCodeProvider.getColorCode(EChatColor.Blue) + saneName + ": " + colorCodeProvider.getColorCode(EChatColor.White) + saneMessage.substring(0, 256));
+                if (saneMessage.length() > 256) // Truncate messages that are overly long
+                    saneMessage = saneMessage.substring(0, 256);
+
+                message = (colorCodeProvider.getColorCode(EChatColor.Blue) + saneName + ": " + colorCodeProvider.getColorCode(EChatColor.White) + saneMessage);
+
+                // remove double color codes that occur with resetting.
+                message = message.replace(colorCodeProvider.getColorCode(EChatColor.White) + colorCodeProvider.getPrefix(), colorCodeProvider.getPrefix());
 
                 /*  According to the server changelog, the 15a server used /broadcast.
                     But since we don't have that server and probably never will, it's set to /say. */
 
                 // If classic, limit to 30 characters per line.
                 if(minecraftVersion.hasHeartbeat) {
-                    int maxLength = 30;
+                    int maxLength = 60 - colorCodeProvider.getColorCode(EChatColor.White).length();
                     Pattern p = Pattern.compile("\\G\\s*(.{1," + maxLength + "})(?=\\s|$)", Pattern.DOTALL);
                     Matcher m = p.matcher(message);
-                    while (m.find())
-                        serverCommand("say " + m.group(1));
+                    boolean first = true;
+                    while (m.find()) {
+                        if (first) {
+                            serverCommand("say " + m.group(1));
+                            first = false;
+                        }
+                        else
+                            serverCommand("say " + colorCodeProvider.getColorCode(EChatColor.White) + m.group(1));
+                    }
                 } else
                     serverCommand("say " + message);
             }
         };
 
+        IShutdownListener shutdownListener = new IShutdownListener() {
+            @Override
+            public void onShutdown() {
+                if (discord != null) {
+                    if (minecraftVersion != null) {
+                        discord.sendDiscordMessage("", "Launching " + minecraftVersion.name + " server: **" + serverProperties.serverName() + "**");
+                    } else {
+                        discord.sendDiscordMessage("", "Launching server: **" + serverProperties.serverName() + "**");
+                    }
+                }
+            }
+        };
+
         if (serverProperties.discordToken() != null && serverProperties.discordChan() != null) { // Create the discord bot if token and channel are present
             try {
-                discord = new DiscordChatBridge(new MinotarAvatarProvider(), serverProperties.discordChan(), serverProperties.discordToken(), serverProperties.discordWebhookUrl(), messageRecievedListener);
+                discord = new DiscordChatBridge(new MinotarAvatarProvider(), serverProperties.discordChan(), serverProperties.discordToken(), serverProperties.discordWebhookUrl(), messageRecievedListener, shutdownListener);
             } catch (Exception ex) {
                 System.out.println("Failed to start discord bridge.");
                 ex.printStackTrace();

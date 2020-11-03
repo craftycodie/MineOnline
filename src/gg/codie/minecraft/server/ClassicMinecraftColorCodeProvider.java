@@ -1,7 +1,7 @@
 package gg.codie.minecraft.server;
 
 public class ClassicMinecraftColorCodeProvider extends AbstractMinecraftColorCodeProvider {
-    protected String getPrefix() {
+    public String getPrefix() {
         return "ÿ&";
     }
 }

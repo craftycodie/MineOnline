@@ -2,12 +2,10 @@ package gg.codie.mineonline.patches;
 
 import net.bytebuddy.asm.Advice;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 public class StringToCharArrayAdvice {
     public static String versionString;
-    public static boolean enableClassicEmoji;
 
     @Advice.OnMethodExit
     public static void intercept(@Advice.This String thisObj, @Advice.Return(readOnly = false) char[] returnObj) {
@@ -21,24 +19,6 @@ public class StringToCharArrayAdvice {
                         returnObj = new char[]{' '};
                     }
                 }
-            }
-
-            if (thisObj.contains(":")) {
-                boolean enableClassicEmoji = (boolean) ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.StringToCharArrayAdvice").getField("enableClassicEmoji").get(null);
-                if(!enableClassicEmoji)
-                     return;
-
-                String replacedString = thisObj.replace(":heart:", "\u0003");
-                replacedString = replacedString.replace(":smile:", "\u0002");
-                replacedString = replacedString.replace(":male_sign:", "\u000B");
-                replacedString = replacedString.replace(":female_sign:", "\u000C");
-                replacedString = replacedString.replace(":musical_note:", "\u000E");
-                byte[] bytes = replacedString.getBytes(StandardCharsets.UTF_8);
-                char[] chars = new char[bytes.length];
-                for (int i = 0; i < bytes.length; i++)
-                    chars[i] = (char) bytes[i];
-
-                returnObj = chars;
             }
         } catch (Exception ex) {
             ex.printStackTrace();

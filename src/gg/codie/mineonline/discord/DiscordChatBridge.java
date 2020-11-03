@@ -6,9 +6,11 @@ import club.minnced.discord.webhook.send.WebhookMessageBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.events.ShutdownEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
+import javax.annotation.Nonnull;
 import javax.security.auth.login.LoginException;
 
 public class DiscordChatBridge extends ListenerAdapter {
@@ -23,7 +25,7 @@ public class DiscordChatBridge extends ListenerAdapter {
     final JDA jda;
     final IAvatarProvider avatarProvider;
 
-    public DiscordChatBridge(IAvatarProvider avatarProvider, String discordChannel, String discordToken, String webhookUrl, IMessageRecievedListener msgEvent) throws NumberFormatException, InterruptedException, LoginException {
+    public DiscordChatBridge(IAvatarProvider avatarProvider, String discordChannel, String discordToken, String webhookUrl, IMessageRecievedListener msgEvent, IShutdownListener shutdownListener) throws NumberFormatException, InterruptedException, LoginException {
         token = discordToken;
         channelID = Long.parseLong(discordChannel);
         webhook = webhookUrl;
@@ -45,9 +47,16 @@ public class DiscordChatBridge extends ListenerAdapter {
         jda.addEventListener(new ListenerAdapter() {
             @Override
             public void onMessageReceived(MessageReceivedEvent event) {
-            if (event.getChannel().getId().equals(channelID) && !event.isWebhookMessage() && !event.getAuthor().getId().equals(event.getJDA().getSelfUser().getId()) && !event.getMessage().getContentStripped().isEmpty()) { // stop listening to yourself
+            if (event.getChannel().getId().equals("" + channelID) && !event.isWebhookMessage() && !event.getAuthor().getId().equals(event.getJDA().getSelfUser().getId()) && !event.getMessage().getContentStripped().isEmpty()) { // stop listening to yourself
                 msgEvent.onMessageRecieved(event);
             }
+            }
+        });
+        jda.addEventListener(new ListenerAdapter() {
+            @Override
+            public void onShutdown(@Nonnull ShutdownEvent event) {
+                shutdownListener.onShutdown();
+                super.onShutdown(event);
             }
         });
     }
