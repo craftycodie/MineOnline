@@ -52,7 +52,6 @@ public class MinecraftClientLauncher {
             LinkedList<String> launchArgs = new LinkedList();
             launchArgs.add(JREUtils.getJavaExecutable());
             launchArgs.add("-javaagent:" + LauncherFiles.PATCH_AGENT_JAR);
-            launchArgs.add("-Djava.util.Arrays.useLegacyMergeSort=true");
             launchArgs.add("-Djava.net.preferIPv4Stack=true");
             if(OSUtils.isMac())
                 launchArgs.add("-XstartOnFirstThread");
@@ -96,7 +95,7 @@ public class MinecraftClientLauncher {
 
     public static void main(String[] args) throws Exception {
         Logging.enableLogging();
-
+        System.setProperty("java.util.Arrays.useLegacyMergeSort", "true");
         String serverAddress = args.length > 3 ? args[3] : null;
         String serverPort = args.length > 4 ? args[4] : null;
         new MinecraftClientLauncher(args[0], args[1], args[2], serverAddress, serverPort).startMinecraft();
