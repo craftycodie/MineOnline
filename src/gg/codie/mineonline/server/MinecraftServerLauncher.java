@@ -1,5 +1,6 @@
 package gg.codie.mineonline.server;
 
+import gg.codie.common.input.EColorCodeColor;
 import gg.codie.minecraft.server.*;
 import gg.codie.mineonline.MinecraftVersion;
 import gg.codie.mineonline.MinecraftVersionRepository;
@@ -9,7 +10,7 @@ import gg.codie.mineonline.discord.IMessageRecievedListener;
 import gg.codie.mineonline.discord.IShutdownListener;
 import gg.codie.mineonline.discord.MinotarAvatarProvider;
 import gg.codie.mineonline.utils.Logging;
-import gg.codie.utils.MD5Checksum;
+import gg.codie.common.utils.MD5Checksum;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.io.*;
@@ -37,6 +38,7 @@ public class MinecraftServerLauncher {
     int playerCountRequested = 0;
     BufferedWriter writer;
     DiscordChatBridge discord;
+    AbstractMinecraftColorCodeProvider colorCodeProvider;
 
     public MinecraftServerLauncher(String[] args) throws Exception {
 
@@ -57,7 +59,7 @@ public class MinecraftServerLauncher {
             }
         }
 
-        AbstractMinecraftColorCodeProvider colorCodeProvider = minecraftVersion != null && minecraftVersion.hasHeartbeat
+        colorCodeProvider = minecraftVersion != null && minecraftVersion.hasHeartbeat
                 ? new ClassicMinecraftColorCodeProvider()
                 : new MinecraftColorCodeProvider();
 
@@ -89,7 +91,7 @@ public class MinecraftServerLauncher {
                 if(saneMessage.trim().isEmpty())
                     return;
 
-                Pattern trailingWhite = Pattern.compile(colorCodeProvider.getColorCode(EChatColor.White) + "\\s{0,}$");
+                Pattern trailingWhite = Pattern.compile(colorCodeProvider.getColorCode(EColorCodeColor.White) + "\\s{0,}$");
                 Matcher whiteMatcher = trailingWhite.matcher(saneMessage);
 
                 if (whiteMatcher.find()) { // Prevent a crash in classic where if the message ends with this all connected clients crash
@@ -99,17 +101,17 @@ public class MinecraftServerLauncher {
                 if (saneMessage.length() > 256) // Truncate messages that are overly long
                     saneMessage = saneMessage.substring(0, 256);
 
-                message = (colorCodeProvider.getColorCode(EChatColor.Blue) + saneName + ": " + colorCodeProvider.getColorCode(EChatColor.White) + saneMessage);
+                message = (colorCodeProvider.getColorCode(EColorCodeColor.Blue) + saneName + ": " + colorCodeProvider.getColorCode(EColorCodeColor.White) + saneMessage);
 
                 // remove double color codes that occur with resetting.
-                message = message.replace(colorCodeProvider.getColorCode(EChatColor.White) + colorCodeProvider.getPrefix(), colorCodeProvider.getPrefix());
+                message = message.replace(colorCodeProvider.getColorCode(EColorCodeColor.White) + colorCodeProvider.getPrefix(), colorCodeProvider.getPrefix());
 
                 /*  According to the server changelog, the 15a server used /broadcast.
                     But since we don't have that server and probably never will, it's set to /say. */
 
                 // If classic, limit to 30 characters per line.
                 if(minecraftVersion.hasHeartbeat) {
-                    int maxLength = 60 - colorCodeProvider.getColorCode(EChatColor.White).length();
+                    int maxLength = 60 - colorCodeProvider.getColorCode(EColorCodeColor.White).length();
                     Pattern p = Pattern.compile("\\G\\s*(.{1," + maxLength + "})(?=\\s|$)", Pattern.DOTALL);
                     Matcher m = p.matcher(message);
                     boolean first = true;
@@ -119,7 +121,7 @@ public class MinecraftServerLauncher {
                             first = false;
                         }
                         else
-                            serverCommand("say " + colorCodeProvider.getColorCode(EChatColor.White) + m.group(1));
+                            serverCommand("say " + colorCodeProvider.getColorCode(EColorCodeColor.White) + m.group(1));
                     }
                 } else
                     serverCommand("say " + message);
@@ -154,11 +156,12 @@ public class MinecraftServerLauncher {
             }
             System.out.println("Launching Server " + minecraftVersion.name);
         }
-        else
+        else {
             if (discord != null) {
                 discord.sendDiscordMessage("", "Launching server: **" + serverProperties.serverName() + "**");
             }
             System.out.println("Launching Server " + this.jarPath);
+        }
 
 
 
@@ -323,19 +326,19 @@ public class MinecraftServerLauncher {
                             if (discord != null && !nextLine.startsWith("say") && !nextLine.contains("[CONSOLE]")) {
                                 if (nextLine.length() > 15 && nextLine.contains(" says: ")) { // For classic
                                     String[] line = nextLine.substring(15).replace("\u001B[0m", "").split(" says: ");
-                                    discord.sendDiscordMessage(line[0], line[1]);
+                                    discord.sendDiscordMessage(colorCodeProvider.removeColorCodes(line[0]), colorCodeProvider.removeColorCodes(line[1]));
                                 }
 
                                 if (nextLine.contains("INFO] <")) { // For not classic
                                     String[] line = nextLine.replace("\u001B[0m", "").split("INFO] <");
                                     String[] content = line[1].split("> ");
-                                    discord.sendDiscordMessage(content[0], content[1]);
+                                    discord.sendDiscordMessage(colorCodeProvider.removeColorCodes(content[0]), colorCodeProvider.removeColorCodes(content[1]));
                                 }
 
                                 if (nextLine.contains("INFO]: <")) { // For release
                                     String[] line = nextLine.replace("\u001B[0m", "").split("INFO]: <");
                                     String[] content = line[1].split("> ");
-                                    discord.sendDiscordMessage(content[0], content[1]);
+                                    discord.sendDiscordMessage(colorCodeProvider.removeColorCodes(content[0]), colorCodeProvider.removeColorCodes(content[1]));
                                 }
                             }
 
@@ -349,7 +352,7 @@ public class MinecraftServerLauncher {
                                 for (String names : prevPlayers) {
                                     boolean left = Arrays.stream(playerNames).anyMatch(names::equals);
                                     if (!left) {
-                                        discord.sendDiscordMessage("","**" + names + "** left **" + serverProperties.serverName() + "**");
+                                        discord.sendDiscordMessage("","**" + colorCodeProvider.removeColorCodes(names) + "** left **" + serverProperties.serverName() + "**");
                                     }
                                 }
                             }

@@ -4,7 +4,6 @@ import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.LibraryManager;
 import gg.codie.mineonline.utils.JREUtils;
 import gg.codie.mineonline.utils.Logging;
-import gg.codie.utils.OSUtils;
 
 import java.io.File;
 import java.util.Arrays;

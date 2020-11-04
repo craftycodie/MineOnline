@@ -1,4 +1,4 @@
-package gg.codie.utils;
+package gg.codie.common.utils;
 
 import org.json.JSONArray;
 import org.json.JSONObject;

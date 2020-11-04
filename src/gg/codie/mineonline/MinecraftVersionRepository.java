@@ -2,9 +2,9 @@ package gg.codie.mineonline;
 
 import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.mineonline.gui.ProgressDialog;
-import gg.codie.utils.ArrayUtils;
-import gg.codie.utils.JSONUtils;
-import gg.codie.utils.MD5Checksum;
+import gg.codie.common.utils.ArrayUtils;
+import gg.codie.common.utils.JSONUtils;
+import gg.codie.common.utils.MD5Checksum;
 import org.json.JSONArray;
 import org.json.JSONObject;
 

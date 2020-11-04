@@ -1,6 +1,4 @@
-package gg.codie.utils;
-
-import java.io.File;
+package gg.codie.common.utils;
 
 public class OSUtils {
     public enum OS {

@@ -1,10 +1,13 @@
 package gg.codie.minecraft.server;
 
-public abstract class AbstractMinecraftColorCodeProvider implements IColorCodeProvider {
+import gg.codie.common.input.AbstractColorCodeProvider;
+import gg.codie.common.input.EColorCodeColor;
+
+public abstract class AbstractMinecraftColorCodeProvider extends AbstractColorCodeProvider {
     public abstract String getPrefix();
 
     @Override
-    public String getColorCode(EChatColor chatColor) {
+    public String getColorCode(EColorCodeColor chatColor) {
         switch (chatColor) {
             case Black:
                 return getPrefix() + '0';

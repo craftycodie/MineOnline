@@ -1,6 +1,6 @@
-package gg.codie.minecraft.server;
+package gg.codie.common.input;
 
-public enum EChatColor {
+public enum EColorCodeColor {
     Black,
     DarkBlue,
     DarkGreen,

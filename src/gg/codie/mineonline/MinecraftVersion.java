@@ -1,15 +1,14 @@
 package gg.codie.mineonline;
 
 import gg.codie.minecraft.client.EMinecraftOptionsVersion;
-import gg.codie.minecraft.client.Options;
 import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.mineonline.client.LegacyMinecraftClientLauncher;
 import gg.codie.mineonline.client.LegacyMinecraftLauncherLauncher;
 import gg.codie.mineonline.client.MinecraftClientLauncher;
 import gg.codie.mineonline.client.RubyDungLauncher;
-import gg.codie.utils.JSONUtils;
-import gg.codie.utils.MD5Checksum;
-import gg.codie.utils.OSUtils;
+import gg.codie.common.utils.JSONUtils;
+import gg.codie.common.utils.MD5Checksum;
+import gg.codie.common.utils.OSUtils;
 import org.json.JSONObject;
 
 import java.io.File;

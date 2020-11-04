@@ -1,7 +1,7 @@
 package gg.codie.mineonline.utils;
 
 import gg.codie.mineonline.Settings;
-import gg.codie.utils.OSUtils;
+import gg.codie.common.utils.OSUtils;
 
 import java.io.File;
 

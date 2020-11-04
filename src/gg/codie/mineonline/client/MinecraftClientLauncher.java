@@ -1,15 +1,13 @@
 package gg.codie.mineonline.client;
 
-import gg.codie.minecraft.client.Options;
 import gg.codie.mineonline.*;
-import gg.codie.mineonline.gui.rendering.DisplayManager;
 import gg.codie.mineonline.patches.SocketPatch;
 import gg.codie.mineonline.patches.URLPatch;
 import gg.codie.mineonline.patches.minecraft.PropertiesSignaturePatch;
 import gg.codie.mineonline.patches.minecraft.YggdrasilMinecraftSessionServicePatch;
 import gg.codie.mineonline.utils.JREUtils;
 import gg.codie.mineonline.utils.Logging;
-import gg.codie.utils.OSUtils;
+import gg.codie.common.utils.OSUtils;
 
 import javax.swing.*;
 import java.io.File;

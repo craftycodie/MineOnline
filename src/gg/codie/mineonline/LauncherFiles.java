@@ -1,6 +1,6 @@
 package gg.codie.mineonline;
 
-import gg.codie.utils.OSUtils;
+import gg.codie.common.utils.OSUtils;
 
 import java.io.File;
 import java.net.URL;

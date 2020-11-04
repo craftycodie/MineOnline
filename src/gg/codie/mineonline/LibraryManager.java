@@ -2,17 +2,13 @@ package gg.codie.mineonline;
 
 import gg.codie.mineonline.gui.ProgressDialog;
 import gg.codie.mineonline.gui.rendering.utils.MathUtils;
-import gg.codie.utils.OSUtils;
+import gg.codie.common.utils.OSUtils;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;

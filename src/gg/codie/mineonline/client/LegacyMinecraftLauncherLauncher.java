@@ -7,7 +7,7 @@ import gg.codie.mineonline.MinecraftVersionRepository;
 import gg.codie.mineonline.Settings;
 import gg.codie.mineonline.gui.rendering.DisplayManager;
 import gg.codie.mineonline.patches.*;
-import gg.codie.utils.FileUtils;
+import gg.codie.common.utils.FileUtils;
 
 import javax.swing.*;
 import java.io.File;

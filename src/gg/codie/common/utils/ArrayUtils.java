@@ -1,4 +1,4 @@
-package gg.codie.utils;
+package gg.codie.common.utils;
 
 import java.lang.reflect.Array;
 

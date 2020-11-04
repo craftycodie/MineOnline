@@ -5,7 +5,7 @@ import gg.codie.mineonline.gui.rendering.DisplayManager;
 import gg.codie.mineonline.gui.rendering.PlayerGameObject;
 import gg.codie.mineonline.gui.rendering.Renderer;
 import gg.codie.mineonline.gui.rendering.animation.WalkPlayerAnimation;
-import gg.codie.utils.FileChangeListener;
+import gg.codie.common.utils.FileChangeListener;
 
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
