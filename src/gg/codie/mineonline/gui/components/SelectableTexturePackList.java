@@ -141,7 +141,7 @@ public class SelectableTexturePackList extends GUIObject {
             }
         } else {
             try {
-                texturePacksFolder.createNewFile();
+                texturePacksFolder.mkdirs();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

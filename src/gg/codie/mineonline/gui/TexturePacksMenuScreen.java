@@ -1,5 +1,6 @@
 package gg.codie.mineonline.gui;
 
+import gg.codie.common.utils.OSUtils;
 import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.Settings;
 import gg.codie.mineonline.gui.components.MediumButton;
@@ -15,6 +16,9 @@ import gg.codie.mineonline.gui.rendering.shaders.GUIShader;
 import org.lwjgl.Sys;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
+
+import java.awt.*;
+import java.io.File;
 
 public class TexturePacksMenuScreen implements IMenuScreen {
     MediumButton doneButton;
@@ -39,7 +43,12 @@ public class TexturePacksMenuScreen implements IMenuScreen {
         IOnClickListener browseListener = new IOnClickListener() {
             @Override
             public void onClick() {
-                Sys.openURL((new StringBuilder()).append("file://").append(LauncherFiles.MINECRAFT_TEXTURE_PACKS_PATH).toString());
+                if (OSUtils.isWindows())
+                    Sys.openURL((new StringBuilder()).append("file://").append(LauncherFiles.MINECRAFT_TEXTURE_PACKS_PATH).toString());
+                else
+                    try {
+                        Desktop.getDesktop().open(new File(LauncherFiles.MINECRAFT_TEXTURE_PACKS_PATH));
+                    } catch (Exception ex) { }
             }
         };
 
