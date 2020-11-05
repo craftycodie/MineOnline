@@ -13,7 +13,7 @@ public class LauncherFiles {
 
     public static final String MINEONLINE_LIBRARY_FOLDER = MINEONLINE_FOLDER + "lib" + File.separator;
   
-    public static final String LWJGL_JAR = MINEONLINE_LIBRARY_FOLDER + "lwjgl.jar";
+    public static final String LWJGL_JAR = MINEONLINE_LIBRARY_FOLDER + (OSUtils.isMac() ? "lwjgl-mac.jar" : "lwjgl.jar");
     public static final String LWJGL_UTIL_JAR = MINEONLINE_LIBRARY_FOLDER + "lwjgl_util.jar";
     public static final String SLICK_UTIL_JAR = MINEONLINE_LIBRARY_FOLDER + "slick-util.jar";
     public static final String JINPUT_JAR = MINEONLINE_LIBRARY_FOLDER + "jinput.jar";
