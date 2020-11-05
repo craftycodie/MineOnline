@@ -272,7 +272,7 @@ public class Options implements IMinecraftOptionsHandler {
     @Override
     public EMinecraftPerformance getPerformance() throws NoSuchFieldException {
         try {
-            return EMinecraftPerformance.values()[Integer.parseInt(getOption("difficulty"))];
+            return EMinecraftPerformance.values()[Integer.parseInt(getOption("fpsLimit"))];
         } catch (IOException | NumberFormatException ex) {
             return EMinecraftPerformance.BALANCED;
         }
