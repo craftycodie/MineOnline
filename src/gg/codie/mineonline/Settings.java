@@ -347,7 +347,7 @@ public class Settings implements IMinecraftOptionsHandler {
             } catch (NoSuchFieldException ex) {
                 // ignore.
             }
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             // ignore
         }
     }
