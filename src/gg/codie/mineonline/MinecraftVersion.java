@@ -285,6 +285,8 @@ public class MinecraftVersion {
                 versionNumber = versionNumber.substring(3);
             }
 
+            boolean isLegacy = versionManifest.getString("type").startsWith("old_");
+
             LinkedList<String> libraries = new LinkedList<>();
             LinkedList<String> natives = new LinkedList<>();
 
@@ -328,7 +330,7 @@ public class MinecraftVersion {
                     null,
                     new String[] { versionManifest.getString("id")},
                     false,
-                    false,
+                    isLegacy,
                     versionManifest.getString("assets"),
                     libraries.toArray(new String[0]),
                     natives.toArray(new String[0]),
