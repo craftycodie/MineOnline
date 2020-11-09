@@ -104,4 +104,9 @@ public interface IMinecraftOptionsHandler {
     void setSaveLocationKeyCode(int keyCode);
     void setLoadLocationKeyCode(int keyCode);
     void setBuildMenuKeyCode(int keyCode);
+
+    // RELEASE
+
+    boolean getAutoJump() throws NoSuchFieldException;
+    void setAutoJump(boolean autoJump);
 }

@@ -1,6 +1,7 @@
 package gg.codie.mineonline.client;
 
 import gg.codie.mineonline.*;
+import gg.codie.mineonline.discord.DiscordRPCHandler;
 import gg.codie.mineonline.gui.rendering.DisplayManager;
 import gg.codie.mineonline.gui.rendering.Renderer;
 import gg.codie.mineonline.lwjgl.OnCreateListener;
@@ -97,7 +98,7 @@ public class RubyDungLauncher {
         System.setProperty("java.util.Arrays.useLegacyMergeSort", "true");
 
         Logging.enableLogging();
-        System.setProperty("java.util.Arrays.useLegacyMergeSort", "true");
+        DiscordRPCHandler.initialize();
         new RubyDungLauncher(args[0]).startRubyDung();
     }
 

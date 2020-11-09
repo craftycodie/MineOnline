@@ -136,7 +136,6 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
         System.setProperty("java.util.Arrays.useLegacyMergeSort", "true");
 
         Logging.enableLogging();
-        System.setProperty("java.util.Arrays.useLegacyMergeSort", "true");
         DiscordRPCHandler.initialize();
 
         String serverAddress = args.length > 3 ? args[3] : null;
@@ -636,7 +635,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
             int width = Display.getWidth();
             int height = Display.getHeight();
 
-            if (fullscreen) {
+            if (Display.isFullscreen() || fullscreen) {
                 width = Display.getDisplayMode().getWidth();
                 height = Display.getDisplayMode().getHeight();
             } else if (minecraftApplet != null) {

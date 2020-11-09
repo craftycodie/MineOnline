@@ -117,30 +117,30 @@ public class MinecraftVersion {
     }
 
     public MinecraftVersion(JSONObject object) {
-        sha256 = (object.has("sha256") ? object.getString("sha256") : null);
+        sha256 = object.optString("sha256", null);
         name = object.getString("name");
         baseVersion = object.getString("baseVersion");
         md5 = object.getString("md5");
         type = object.getString("type");
-        baseURLHasNoPort = (object.has("baseURLHasNoPort") && object.getBoolean("baseURLHasNoPort"));
-        enableScreenshotPatch = (object.has("enableScreenshotPatch") && object.getBoolean("enableScreenshotPatch"));
-        hasHeartbeat = (object.has("hasHeartbeat") && object.getBoolean("hasHeartbeat"));
-        enableFullscreenPatch = (object.has("enableFullscreenPatch") && object.getBoolean("enableFullscreenPatch"));
+        baseURLHasNoPort = object.optBoolean("baseURLHasNoPort", false);
+        enableScreenshotPatch = object.optBoolean("enableScreenshotPatch", false);
+        hasHeartbeat = object.optBoolean("hasHeartbeat", false);
+        enableFullscreenPatch = object.optBoolean("enableFullscreenPatch", false);
         info = (object.has("info") ? object.getString("info") : null);
         clientVersions = (object.has("clientVersions") ? JSONUtils.getStringArray(object.getJSONArray("clientVersions")) : new String[] { object.getString("baseVersion")});
-        enableCursorPatch = (object.has("enableCursorPatch") && object.getBoolean("enableCursorPatch"));
-        legacy = (object.has("legacy") && object.getBoolean("legacy"));
+        enableCursorPatch = object.optBoolean("enableCursorPatch", false);
+        legacy = object.optBoolean("legacy", false);
         assetIndex = (object.has("assetIndex") ? object.getString("assetIndex") : object.has("baseVersion") ? object.getString("baseVersion") : null);
         libraries = (object.has("libraries") ? JSONUtils.getStringArray(object.getJSONArray("libraries")) : new String[0]);
         natives = (object.has("natives") && object.getJSONObject("natives").has(OSUtils.getPlatform().name()) ? JSONUtils.getStringArray(object.getJSONObject("natives").getJSONArray(OSUtils.getPlatform().name())) : new String[0]);
-        clientName = (object.has("clientName") ? object.getString("clientName") : object.getString("name"));
-        guiClass = (object.has("guiClass") ? object.getString("guiClass") : null);
-        guiScreenClass = (object.has("guiScreenClass") ? object.getString("guiScreenClass") : null);
-        scaledResolutionClass = (object.has("scaledResolutionClass") ? object.getString("scaledResolutionClass") : null);
-        entityRendererClass = (object.has("entityRendererClass") ? object.getString("entityRendererClass") : null);
-        viewModelFunction = (object.has("viewModelFunction") ? object.getString("viewModelFunction") : null);
-        useFOVPatch = (object.has("useFOVPatch") && object.getBoolean("useFOVPatch"));
-        useTexturepackPatch = (object.has("useTexturepackPatch") && object.getBoolean("useTexturepackPatch"));
+        clientName = object.optString("clientName", object.getString("name"));
+        guiClass = object.optString("guiClass", null);
+        guiScreenClass = object.optString("guiScreenClass", null);
+        scaledResolutionClass = object.optString("scaledResolutionClass", null);
+        entityRendererClass = object.optString("entityRendererClass", null);
+        viewModelFunction = object.optString("viewModelFunction", null);
+        useFOVPatch = object.optBoolean("useFOVPatch", false);
+        useTexturepackPatch = object.optBoolean("useTexturepackPatch", false);
         ingameVersionString = object.optString("ingameVersionString", null);
         resourcesVersion = object.optString("resourcesVersion", "default");
         useUsernamesPatch = object.optBoolean("useUsernamesPatch", false);

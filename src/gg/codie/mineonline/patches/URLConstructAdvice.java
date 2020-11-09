@@ -24,6 +24,10 @@ public class URLConstructAdvice {
                 return;
             }
 
+            // Release URLS that don't need moving.
+            if (url.contains("pc.realms."))
+                return;
+
             boolean DEV = (boolean)ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.Globals").getField("DEV").get(null);
 
             if(DEV) {

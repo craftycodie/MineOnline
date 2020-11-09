@@ -5,6 +5,7 @@ import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.MinecraftVersion;
 import gg.codie.mineonline.MinecraftVersionRepository;
 import gg.codie.mineonline.Settings;
+import gg.codie.mineonline.discord.DiscordRPCHandler;
 import gg.codie.mineonline.gui.rendering.DisplayManager;
 import gg.codie.mineonline.patches.*;
 import gg.codie.common.utils.FileUtils;
@@ -54,6 +55,11 @@ public class LegacyMinecraftLauncherLauncher {
             // Allow texture packs in versions before Alpha 1.2.2
             if (minecraftVersion != null && minecraftVersion.useTexturepackPatch)
                 ClassPatch.useTexturePacks(Settings.singleton.getTexturePack());
+
+            if(minecraftVersion != null)
+                DiscordRPCHandler.play(minecraftVersion.name, null, null);
+            else
+                DiscordRPCHandler.play("Alpha Launcher", null, null);
 
             try {
                 Class launcherClass = urlClassLoader.loadClass("net.minecraft.LauncherFrame");

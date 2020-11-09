@@ -65,6 +65,7 @@ public class Settings implements IMinecraftOptionsHandler {
     public static final String SKIN_LAYER_RIGHT_ARM = "skinLayerRightArm";
     public static final String SKIN_LAYER_LEFT_LEG = "skinLayerLeftLeg";
     public static final String SKIN_LAYER_RIGHT_LEG = "skinLayerRightLeg";
+    public static final String AUTO_JUMP = "autoJump";
 
 
     private static final int SETTINGS_VERSION_NUMBER = 10;
@@ -146,6 +147,7 @@ public class Settings implements IMinecraftOptionsHandler {
         settings.put(SKIN_LAYER_HEAD, true);
         settings.put(KEY_CODE_ZOOM, 0);
         settings.put(LAST_LAUNCHED_OPTIONS_VERSION, "DEFAULT");
+        settings.put(AUTO_JUMP, false);
 
         saveSettings();
         loadSettings();
@@ -347,6 +349,36 @@ public class Settings implements IMinecraftOptionsHandler {
             } catch (NoSuchFieldException ex) {
                 // ignore.
             }
+
+            try {
+                setShowFPS(options.getShowFPS());
+            } catch (NoSuchFieldException ex) {
+                // ignore.
+            }
+
+            try {
+                setBuildMenuKeyCode(options.getBuildMenuKeyCode());
+            } catch (NoSuchFieldException ex) {
+                // ignore.
+            }
+
+            try {
+                setLoadLocationKeyCode(options.getLoadLocationKeyCode());
+            } catch (NoSuchFieldException ex) {
+                // ignore.
+            }
+
+            try {
+                setSaveLocationKeyCode(options.getSaveLocationKeyCode());
+            } catch (NoSuchFieldException ex) {
+                // ignore.
+            }
+
+            try {
+                setAutoJump(options.getAutoJump());
+            } catch (NoSuchFieldException ex) {
+                // ignore.
+            }
         } catch (Exception ex) {
             // ignore
         }
@@ -397,6 +429,7 @@ public class Settings implements IMinecraftOptionsHandler {
             options.setShowRightSleeve(getShowRightSleeve());
             options.setShowLeftPantsLeg(getShowLeftPantsLeg());
             options.setShowRightPantsLeg(getShowRightPantsLeg());
+            options.setAutoJump(getAutoJump());
         } catch (Exception ex) {
             // ignore
         }
@@ -483,6 +516,8 @@ public class Settings implements IMinecraftOptionsHandler {
                         settings.put(SKIN_LAYER_HEAD, true);
                         settings.put(KEY_CODE_ZOOM, 0);
                         settings.put(LAST_LAUNCHED_OPTIONS_VERSION, EMinecraftOptionsVersion.DEFAULT);
+                    case 10:
+                        settings.put(AUTO_JUMP, false);
                 }
                 settings.put(SETTINGS_VERSION, SETTINGS_VERSION_NUMBER);
             }
@@ -835,52 +870,52 @@ public class Settings implements IMinecraftOptionsHandler {
 
     @Override
     public int getForwardKeyCode() {
-        return settings.optInt(KEY_CODE_FORWARD, 0);
+        return settings.optInt(KEY_CODE_FORWARD, 17);
     }
 
     @Override
     public int getLeftKeyCode() {
-        return settings.optInt(KEY_CODE_LEFT, 0);
+        return settings.optInt(KEY_CODE_LEFT, 30);
     }
 
     @Override
     public int getBackKeyCode() {
-        return settings.optInt(KEY_CODE_BACK, 0);
+        return settings.optInt(KEY_CODE_BACK, 31);
     }
 
     @Override
     public int getRightKeyCode() {
-        return settings.optInt(KEY_CODE_RIGHT, 0);
+        return settings.optInt(KEY_CODE_RIGHT, 32);
     }
 
     @Override
     public int getJumpKeyCode() {
-        return settings.optInt(KEY_CODE_JUMP, 0);
+        return settings.optInt(KEY_CODE_JUMP, 57);
     }
 
     @Override
     public int getSneakKeyCode() {
-        return settings.optInt(KEY_CODE_SNEAK, 0);
+        return settings.optInt(KEY_CODE_SNEAK, 42);
     }
 
     @Override
     public int getDropKeyCode() {
-        return settings.optInt(KEY_CODE_DROP, 0);
+        return settings.optInt(KEY_CODE_DROP, 16);
     }
 
     @Override
     public int getInventoryKeyCode() {
-        return settings.optInt(KEY_CODE_INVENTORY, 0);
+        return settings.optInt(KEY_CODE_INVENTORY, 18);
     }
 
     @Override
     public int getChatKeyCode() {
-        return settings.optInt(KEY_CODE_CHAT, 0);
+        return settings.optInt(KEY_CODE_CHAT, 20);
     }
 
     @Override
     public int getFogKeyCode() {
-        return settings.optInt(KEY_CODE_FOG, 0);
+        return settings.optInt(KEY_CODE_FOG, 33);
     }
 
     @Override
@@ -895,7 +930,7 @@ public class Settings implements IMinecraftOptionsHandler {
 
     @Override
     public int getBuildMenuKeyCode() {
-        return settings.optInt(KEY_CODE_BUILD_MENU, 0);
+        return settings.optInt(KEY_CODE_BUILD_MENU, 48);
     }
 
     @Override
@@ -961,5 +996,15 @@ public class Settings implements IMinecraftOptionsHandler {
     @Override
     public void setBuildMenuKeyCode(int keyCode) {
         settings.put(KEY_CODE_BUILD_MENU, keyCode);
+    }
+
+    @Override
+    public boolean getAutoJump() {
+        return settings.optBoolean(AUTO_JUMP, false);
+    }
+
+    @Override
+    public void setAutoJump(boolean autoJump) {
+        settings.put(AUTO_JUMP, autoJump);
     }
 }

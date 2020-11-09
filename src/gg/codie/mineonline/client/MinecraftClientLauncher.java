@@ -1,6 +1,7 @@
 package gg.codie.mineonline.client;
 
 import gg.codie.mineonline.*;
+import gg.codie.mineonline.discord.DiscordRPCHandler;
 import gg.codie.mineonline.patches.SocketPatch;
 import gg.codie.mineonline.patches.URLPatch;
 import gg.codie.mineonline.patches.minecraft.PropertiesSignaturePatch;
@@ -95,7 +96,7 @@ public class MinecraftClientLauncher {
         System.setProperty("java.util.Arrays.useLegacyMergeSort", "true");
 
         Logging.enableLogging();
-        System.setProperty("java.util.Arrays.useLegacyMergeSort", "true");
+        DiscordRPCHandler.initialize();
         String serverAddress = args.length > 3 ? args[3] : null;
         String serverPort = args.length > 4 ? args[4] : null;
         new MinecraftClientLauncher(args[0], args[1], args[2], serverAddress, serverPort).startMinecraft();
@@ -119,6 +120,11 @@ public class MinecraftClientLauncher {
 
     public void startMinecraft() throws Exception {
         URLClassLoader classLoader = new URLClassLoader(new URL[] { Paths.get(jarPath).toUri().toURL() });
+
+        if(minecraftVersion != null)
+            DiscordRPCHandler.play(minecraftVersion.name, serverAddress, serverPort);
+        else
+            DiscordRPCHandler.play(Paths.get(jarPath).getFileName().toString(), serverAddress, serverPort);
 
         try {
             LinkedList<String> args = new LinkedList<>();
