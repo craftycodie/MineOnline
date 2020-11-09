@@ -309,80 +309,34 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
                 }
 
                 if (renderer != null) {
-                    int width = Display.getWidth();
-                    int height = Display.getHeight();
-
-                    if (Display.isFullscreen() || fullscreen) {
-                        width = Display.getDisplayMode().getWidth();
-                        height = Display.getDisplayMode().getHeight();
-                    } else if (minecraftApplet != null) {
-                        width = minecraftApplet.getWidth();
-                        height = minecraftApplet.getHeight();
-                    }
-
-                    if(buffer == null || buffer.capacity() != width * height)
-                    {
-                        buffer = BufferUtils.createByteBuffer(width * height * 3);
-                    }
-                    if(imageData == null || imageData.length < width * height * 3)
-                    {
-                        pixelData = new byte[width * height * 3];
-                        imageData = new int[width * height];
-                    }
-                    GL11.glPixelStorei(3333 /*GL_PACK_ALIGNMENT*/, 1);
-                    GL11.glPixelStorei(3317 /*GL_UNPACK_ALIGNMENT*/, 1);
-                    buffer.clear();
-                    GL11.glReadPixels(0, 0, width, height, 6407 /*GL_RGB*/, 5121 /*GL_UNSIGNED_BYTE*/, buffer);
-
-
-                    buffer.clear();
-
-                    buffer.get(pixelData);
-                    for(int l = 0; l < width; l++)
-                    {
-                        for(int i1 = 0; i1 < height; i1++)
-                        {
-                            int j1 = l + (height - i1 - 1) * width;
-                            int k1 = pixelData[j1 * 3 + 0] & 0xff;
-                            int l1 = pixelData[j1 * 3 + 1] & 0xff;
-                            int i2 = pixelData[j1 * 3 + 2] & 0xff;
-                            int j2 = 0xff000000 | k1 << 16 | l1 << 8 | i2;
-                            imageData[l + i1 * width] = j2;
-                        }
-
-                    }
-
-                    BufferedImage bufferedimage = new BufferedImage(width, height, 1);
-                    bufferedimage.setRGB(0, 0, width, height, imageData, 0, width);
-
-                    int color1 = 0xFFFFFFFF;
-                    int color2 = 0xFFFFFFFF;
-                    float f = (float)(color1 >> 24 & 0xff) / 255F;
-                    float f1 = (float)(color1 >> 16 & 0xff) / 255F;
-                    float f2 = (float)(color1 >> 8 & 0xff) / 255F;
-                    float f3 = (float)(color1 & 0xff) / 255F;
-                    float f4 = (float)(color2 >> 24 & 0xff) / 255F;
-                    float f5 = (float)(color2 >> 16 & 0xff) / 255F;
-                    float f6 = (float)(color2 >> 8 & 0xff) / 255F;
-                    float f7 = (float)(color2 & 0xff) / 255F;
-                    GL11.glDisable(3553 /*GL_TEXTURE_2D*/);
-                    GL11.glEnable(3042 /*GL_BLEND*/);
-                    GL11.glDisable(3008 /*GL_ALPHA_TEST*/);
-                    GL11.glBlendFunc(GL11.GL_DST_COLOR, GL11.GL_ONE);
-                    GL11.glShadeModel(7425 /*GL_SMOOTH*/);
-                    Tessellator tessellator = Tessellator.instance;
-                    tessellator.startDrawingQuads();
-                    tessellator.setColorRGBA_F(f1, f2, f3, f);
-                    tessellator.addVertex(Display.getWidth(), 0, 0.0D);
-                    tessellator.addVertex(0, 0, 0.0D);
-                    tessellator.setColorRGBA_F(f5, f6, f7, f4);
-                    tessellator.addVertex(0, Display.getHeight(), 0.0D);
-                    tessellator.addVertex(Display.getWidth(), Display.getHeight(), 0.0D);
-                    tessellator.draw();
-                    GL11.glShadeModel(7424 /*GL_FLAT*/);
-                    GL11.glDisable(3042 /*GL_BLEND*/);
-                    GL11.glEnable(3008 /*GL_ALPHA_TEST*/);
-                    GL11.glEnable(3553 /*GL_TEXTURE_2D*/);
+//                    int color1 = 0xFFFFFFFF;
+//                    int color2 = 0xFFFFFFFF;
+//                    float f = (float)(color1 >> 24 & 0xff) / 255F;
+//                    float f1 = (float)(color1 >> 16 & 0xff) / 255F;
+//                    float f2 = (float)(color1 >> 8 & 0xff) / 255F;
+//                    float f3 = (float)(color1 & 0xff) / 255F;
+//                    float f4 = (float)(color2 >> 24 & 0xff) / 255F;
+//                    float f5 = (float)(color2 >> 16 & 0xff) / 255F;
+//                    float f6 = (float)(color2 >> 8 & 0xff) / 255F;
+//                    float f7 = (float)(color2 & 0xff) / 255F;
+//                    GL11.glDisable(3553 /*GL_TEXTURE_2D*/);
+//                    GL11.glEnable(3042 /*GL_BLEND*/);
+//                    GL11.glDisable(3008 /*GL_ALPHA_TEST*/);
+//                    GL11.glBlendFunc(GL11.GL_DST_COLOR, GL11.GL_ONE);
+//                    GL11.glShadeModel(7425 /*GL_SMOOTH*/);
+//                    Tessellator tessellator = Tessellator.instance;
+//                    tessellator.startDrawingQuads();
+//                    tessellator.setColorRGBA_F(f1, f2, f3, f);
+//                    tessellator.addVertex(Display.getWidth(), 0, 0.0D);
+//                    tessellator.addVertex(0, 0, 0.0D);
+//                    tessellator.setColorRGBA_F(f5, f6, f7, f4);
+//                    tessellator.addVertex(0, Display.getHeight(), 0.0D);
+//                    tessellator.addVertex(Display.getWidth(), Display.getHeight(), 0.0D);
+//                    tessellator.draw();
+//                    GL11.glShadeModel(7424 /*GL_FLAT*/);
+//                    GL11.glDisable(3042 /*GL_BLEND*/);
+//                    GL11.glEnable(3008 /*GL_ALPHA_TEST*/);
+//                    GL11.glEnable(3553 /*GL_TEXTURE_2D*/);
 
                     if (Globals.DEV) {
                         FontRenderer.minecraftFontRenderer.drawStringWithShadow("MineOnline Dev " + Globals.LAUNCHER_VERSION, 2, 2, 0xffffff);
@@ -521,8 +475,10 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
         if (minecraftVersion != null && minecraftVersion.useUsernamesPatch)
             ByteBufferPatch.enableC0015aUsernames(Session.session.getUsername());
         // Allow texture packs in versions before Alpha 1.2.2
-        if (minecraftVersion != null && minecraftVersion.useTexturepackPatch)
+        if (minecraftVersion != null && minecraftVersion.useTexturepackPatch) {
             ClassPatch.useTexturePacks(Settings.singleton.getTexturePack());
+            HashMapPatch.storeMinecraftTextureIDs();
+        }
         // Hide version strings from the HUD
         if (minecraftVersion != null && minecraftVersion.ingameVersionString != null && Settings.singleton.getHideVersionString())
             StringPatch.hideVersionNames(minecraftVersion.ingameVersionString);

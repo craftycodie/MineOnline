@@ -21,6 +21,7 @@ public class GuiMultiplayer extends GuiScreen
     public GuiMultiplayer(GuiScreen guiscreen)
     {
         parentScreen = guiscreen;
+        initGui();
     }
 
     public void updateScreen()
@@ -128,9 +129,6 @@ public class GuiMultiplayer extends GuiScreen
     @Override
     public void drawScreen(int i, int j)
     {
-        controlList.clear();
-        initGui();
-
         drawDefaultBackground();
         drawCenteredString("Play Multiplayer", getWidth() / 2, (getHeight() / 4 - 60) + 20, 0xffffff);
         drawString("Minecraft Multiplayer is currently not finished, but there", getWidth() / 2 - 140, (getHeight() / 4 - 60) + 60 + 0, 0xa0a0a0);

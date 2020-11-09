@@ -5,7 +5,8 @@ public enum  EGUITexture {
     GUI("/gui/gui.png"),
     FONT("/font/default.png"),
     UNKNOWN_PACK("/gui/unknown_pack.png"),
-    PACK("/pack.png");
+    PACK("/pack.png"),
+    BACKGROUND("/gui/background.png");
 
     public final String textureName;
     EGUITexture(String textureName) {

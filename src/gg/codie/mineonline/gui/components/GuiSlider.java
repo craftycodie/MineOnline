@@ -1,6 +1,7 @@
 package gg.codie.mineonline.gui.components;
 
 import gg.codie.mineonline.gui.screens.EnumOptions;
+import gg.codie.mineonline.patches.lwjgl.LWJGLPerspectiveAdvice;
 import org.lwjgl.opengl.GL11;
 
 public class GuiSlider extends GuiButton
@@ -39,6 +40,8 @@ public class GuiSlider extends GuiButton
                 sliderValue = 1.0F;
             }
             // TODO: Save Change
+//            LWJGLPerspectiveAdvice.customFOV = 40 + (sliderValue * 70);
+
 //            minecraft.gameSettings.setOptionFloatValue(idFloat, sliderValue);
             displayString = "" + sliderValue;
         }

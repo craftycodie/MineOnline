@@ -2,6 +2,7 @@ package gg.codie.mineonline.gui.rendering;
 
 import gg.codie.minecraft.client.gui.GLAllocation;
 import gg.codie.minecraft.client.gui.Tessellator;
+import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.Settings;
 import gg.codie.mineonline.gui.input.InputSanitization;
 import gg.codie.mineonline.gui.rendering.textures.EGUITexture;
@@ -13,12 +14,19 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.IntBuffer;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 public class FontRenderer
 {
-    public static FontRenderer minecraftFontRenderer = new FontRenderer(EGUITexture.FONT.textureName);
+    public static void reloadFont() {
+        Settings.singleton.loadSettings();
+        minecraftFontRenderer = new FontRenderer();
+    }
 
-    private FontRenderer(String s)
+    public static FontRenderer minecraftFontRenderer = new FontRenderer();
+
+    private FontRenderer()
     {
         Settings.singleton.loadSettings();
 
@@ -28,7 +36,21 @@ public class FontRenderer
         BufferedImage bufferedimage;
         try
         {
-            bufferedimage = ImageIO.read(FontRenderer.class.getResourceAsStream(s));
+            if (Settings.singleton.getTexturePack().isEmpty()) {
+                bufferedimage = ImageIO.read(FontRenderer.class.getResourceAsStream(EGUITexture.FONT.textureName));
+            } else {
+                try {
+                    ZipFile texturesZip = new ZipFile(LauncherFiles.MINECRAFT_TEXTURE_PACKS_PATH + Settings.singleton.getTexturePack());
+                    ZipEntry texture = texturesZip.getEntry(EGUITexture.FONT.textureName.substring(1));
+                    if (texture != null) {
+                        bufferedimage = ImageIO.read(texturesZip.getInputStream(texture));
+                    } else {
+                        bufferedimage = ImageIO.read(FontRenderer.class.getResourceAsStream(EGUITexture.FONT.textureName));
+                    }
+                } catch (Exception ex) {
+                    bufferedimage = ImageIO.read(FontRenderer.class.getResourceAsStream(EGUITexture.FONT.textureName));
+                }
+            }
         }
         catch(IOException ioexception)
         {
@@ -74,7 +96,7 @@ public class FontRenderer
             charWidth[k] = j2 + 2;
         }
 
-        fontTextureName = Loader.singleton.loadTexture(s, FontRenderer.class.getResourceAsStream(s));
+        fontTextureName = Loader.singleton.getGuiTexture(EGUITexture.FONT);
         fontDisplayLists = GLAllocation.generateDisplayLists(288);
         Tessellator tessellator = Tessellator.instance;
         for(int i1 = 0; i1 < 256; i1++)

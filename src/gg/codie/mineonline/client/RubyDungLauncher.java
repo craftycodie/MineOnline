@@ -8,6 +8,7 @@ import gg.codie.mineonline.gui.rendering.Renderer;
 import gg.codie.mineonline.lwjgl.OnCreateListener;
 import gg.codie.mineonline.lwjgl.OnUpdateListener;
 import gg.codie.mineonline.patches.ClassPatch;
+import gg.codie.mineonline.patches.HashMapPatch;
 import gg.codie.mineonline.patches.StringPatch;
 import gg.codie.mineonline.patches.URLPatch;
 import gg.codie.mineonline.patches.lwjgl.LWJGLDisplayPatch;
@@ -202,9 +203,10 @@ public class RubyDungLauncher {
 
             URLPatch.redefineURL();
             // Allow texture packs in versions before Alpha 1.2.2
-            if (minecraftVersion != null && minecraftVersion.useTexturepackPatch)
+            if (minecraftVersion != null && minecraftVersion.useTexturepackPatch) {
                 ClassPatch.useTexturePacks(Settings.singleton.getTexturePack());
-            if (minecraftVersion != null && minecraftVersion.useFOVPatch)
+                HashMapPatch.storeMinecraftTextureIDs();
+            } if (minecraftVersion != null && minecraftVersion.useFOVPatch)
                 LWJGLGLUPatch.useCustomFOV();
 
             // Hide version strings from the HUD

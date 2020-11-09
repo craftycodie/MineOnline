@@ -1,24 +1,32 @@
 package gg.codie.mineonline.gui.rendering;
 
 import gg.codie.mineonline.LauncherFiles;
+import gg.codie.mineonline.Settings;
 import gg.codie.mineonline.gui.rendering.models.RawModel;
 import gg.codie.mineonline.gui.rendering.textures.EGUITexture;
 import gg.codie.mineonline.gui.rendering.utils.MathUtils;
+import gg.codie.mineonline.patches.HashMapPutAdvice;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.*;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
-import org.newdawn.slick.opengl.Texture;
-import org.newdawn.slick.opengl.TextureLoader;
+import org.newdawn.slick.opengl.*;
+import org.newdawn.slick.opengl.renderer.Renderer;
+import org.newdawn.slick.opengl.renderer.SGL;
 
+import java.io.BufferedInputStream;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 public class Loader {
 
@@ -170,10 +178,88 @@ public class Loader {
         return textureID;
     }
 
+    public void overwriteTexture(int textureID, InputStream in, String resourceName) throws IOException {
+        SGL GL = Renderer.get();
+        LoadableImageData imageData = ImageDataFactory.getImageDataFor(resourceName);
+        ByteBuffer textureBuffer = imageData.loadImage(new BufferedInputStream(in), false, null);
+//        int textureID = createTextureID();
+        TextureImpl texture = new TextureImpl(resourceName, GL11.GL_TEXTURE_2D, textureID);
+        GL.glBindTexture(GL11.GL_TEXTURE_2D, textureID);
+        int width = imageData.getWidth();
+        int height = imageData.getHeight();
+        boolean hasAlpha = imageData.getDepth() == 32;
+        texture.setTextureWidth(imageData.getTexWidth());
+        texture.setTextureHeight(imageData.getTexHeight());
+        int texWidth = texture.getTextureWidth();
+        int texHeight = texture.getTextureHeight();
+        IntBuffer temp = BufferUtils.createIntBuffer(16);
+        GL.glGetInteger(3379, temp);
+        int max = temp.get(0);
+        if (texWidth <= max && texHeight <= max) {
+            int srcPixelFormat = hasAlpha ? 6408 : 6407;
+            int componentCount = hasAlpha ? 4 : 3;
+            texture.setWidth(width);
+            texture.setHeight(height);
+            texture.setAlpha(hasAlpha);
+            //if (TextureLoader.holdTextureData) {
+                texture.setTextureData(srcPixelFormat, componentCount, 9729, 9729, textureBuffer);
+            //}
+
+            GL.glTexParameteri(GL11.GL_TEXTURE_2D, 10241, GL11.GL_NEAREST);
+            GL.glTexParameteri(GL11.GL_TEXTURE_2D, 10240, GL11.GL_NEAREST);
+            GL.glTexImage2D(GL11.GL_TEXTURE_2D, 0, 6408, get2Fold(width), get2Fold(height), 0, srcPixelFormat, 5121, textureBuffer);
+        } else {
+            throw new IOException("Attempt to allocate a texture to big for the current hardware");
+        }
+    }
+
+    public static void reloadMinecraftTextures() {
+        String[] textureNames = new String[] {
+                "/terrain.png",
+                "/gui/gui.png",
+                "/gui/icons.png",
+                "/default.png"
+        };
+
+        try {
+            ZipFile texturesZip = new ZipFile(LauncherFiles.MINECRAFT_TEXTURE_PACKS_PATH + Settings.singleton.getTexturePack());
+            for (String textureName : textureNames) {
+                ZipEntry texture = texturesZip.getEntry(textureName.substring(1));
+                if (texture != null) {
+//                    return loadTexture(eguiTexture.textureName, texturesZip.getInputStream(texture));
+                    Loader.singleton.overwriteTexture(HashMapPutAdvice.textures.get(textureName), texturesZip.getInputStream(texture), textureName);
+                }
+            }
+        } catch (Exception ex) {
+
+        }
+
+//        Loader.singleton.overwriteTexture(HashMapPutAdvice.textures.get("/terrain.png"), , "/terrain.png");
+    }
+
+    public static int get2Fold(int fold) {
+        int ret;
+        for(ret = 2; ret < fold; ret *= 2) {
+        }
+
+        return ret;
+    }
+
     public int getGuiTexture(EGUITexture eguiTexture) {
-        if (!textures.containsKey(eguiTexture.textureName))
+        if (!textures.containsKey(eguiTexture.textureName)) {
+            Settings.singleton.loadSettings();
+            try {
+                ZipFile texturesZip = new ZipFile(LauncherFiles.MINECRAFT_TEXTURE_PACKS_PATH + Settings.singleton.getTexturePack());
+                ZipEntry texture = texturesZip.getEntry(eguiTexture.textureName.substring(1));
+                if (texture != null) {
+                    return loadTexture(eguiTexture.textureName, texturesZip.getInputStream(texture));
+                }
+            } catch (Exception ex) {
+
+            }
+
             return loadTexture(eguiTexture.textureName, Loader.class.getResource(eguiTexture.textureName));
-        else
+        } else
             return textures.get(eguiTexture.textureName);
     }
 

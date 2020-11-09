@@ -24,7 +24,7 @@ public class FileConstructAdvice {
             String resourcesVersion = (String) ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.FilePatch").getField("resourcesVersion").get(null);
 
             if(DEV) {
-                System.out.println("Old Path: " + path);
+                //System.out.println("Old Path: " + path);
             }
 
             if (path.startsWith(MINECRAFT_RESOURCES_PATH) || path.substring(1).startsWith(MINECRAFT_RESOURCES_PATH)) {
@@ -35,7 +35,7 @@ public class FileConstructAdvice {
             }
 
             if(DEV) {
-                System.out.println("New Path: " + path);
+                //System.out.println("New Path: " + path);
             }
         } catch (Exception ex) {
             ex.printStackTrace();

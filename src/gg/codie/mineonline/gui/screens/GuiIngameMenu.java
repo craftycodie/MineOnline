@@ -11,7 +11,11 @@ package gg.codie.mineonline.gui.screens;
 
 import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.gui.components.GuiButton;
+import gg.codie.mineonline.patches.lwjgl.LWJGLPerspectiveAdvice;
 import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.util.glu.GLU;
 
 public class GuiIngameMenu extends GuiScreen
 {
@@ -55,11 +59,15 @@ public class GuiIngameMenu extends GuiScreen
             MenuManager.setGUIScreen(null);
             Mouse.setGrabbed(true);
 
+            //GLU.gluPerspective(LWJGLPerspectiveAdvice.originalFOV, (float) Display.getWidth() / (float)Display.getHeight(), 0.05F, LWJGLPerspectiveAdvice.zFar);
+
+
             //mc.displayGuiScreen(null);
 //            mc.setIngameFocus();
         }
         if(guibutton.id == 1)
         {
+            MenuManager.setGUIScreen(new GuiTexturePacks(this));
             //mc.displayGuiScreen(new GuiTexturePacks(this));
         }
     }

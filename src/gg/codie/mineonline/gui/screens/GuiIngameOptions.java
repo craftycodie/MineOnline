@@ -14,6 +14,7 @@ import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.gui.components.GuiButton;
 import gg.codie.mineonline.gui.components.GuiSlider;
 import gg.codie.mineonline.gui.components.GuiSmallButton;
+import gg.codie.mineonline.patches.lwjgl.LWJGLPerspectiveAdvice;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 
@@ -24,6 +25,7 @@ public class GuiIngameOptions extends GuiScreen
     {
         field_22107_a = "Options";
         parent = guiscreen;
+        initGui();
     }
 
     public void initGui()
@@ -62,6 +64,12 @@ public class GuiIngameOptions extends GuiScreen
             //guiGameSettings.setOptionValue(((GuiSmallButton)guibutton).returnEnumOptions(), 1);
             //guibutton.displayString = guiGameSettings.getKeyBinding(EnumOptions.getEnumOptions(guibutton.id));
         }
+        if(guibutton.id < 100 && (guibutton instanceof GuiSlider))
+        {
+            // TODO: Set Value
+            //guiGameSettings.setOptionValue(((GuiSmallButton)guibutton).returnEnumOptions(), 1);
+            //guibutton.displayString = guiGameSettings.getKeyBinding(EnumOptions.getEnumOptions(guibutton.id));
+        }
         if(guibutton.id == 100)
         {
             MenuManager.setGUIScreen(new GuiControls(this));
@@ -84,8 +92,7 @@ public class GuiIngameOptions extends GuiScreen
     @Override
     public void drawScreen(int i, int j)
     {
-        controlList.clear();
-        initGui();
+        //controlList.clear();
 
         drawDefaultBackground();
         drawCenteredString(field_22107_a, getWidth() / 2, 20, 0xffffff);
