@@ -118,7 +118,7 @@ public class Renderer {
         GL20.glDisableVertexAttribArray(1);
         GL30.glBindVertexArray(0);
 
-        //renderString(new Vector2f(MathUtils.getPosition(Matrix4f.mul(Matrix4f.mul(gameObject.localMatrix, MathUtils.createViewMatrix(Camera.singleton), null), projectionMatrix, null))), gameObject.name, org.newdawn.slick.Color.white);
+        //renderString(new Vector2f(MathUtils.getPosition(Matrix4f.mul(Matrix4f.mul(gameObject.localMatrix, MathUtils.createViewMatrix(Camera.minecraftFontRenderer), null), projectionMatrix, null))), gameObject.name, org.newdawn.slick.Color.white);
 
         shader.stop();
     }
@@ -170,20 +170,6 @@ public class Renderer {
         for(GUIObject child : guiObject.getGUIChildren()) {
             renderGUI(child, shader);
         }
-    }
-
-    public void renderStringIngame(Vector2f position, float size, String text, org.newdawn.slick.Color color) {
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        //TODO: This is very slow and needs to be replaced.
-        font = new TrueTypeFont(awtFont.deriveFont(size), false);
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
-        GL11.glPushMatrix();
-        font.drawString(position.x + 1, position.y + 1, text, new org.newdawn.slick.Color(0, 0, 0, 0.7f * color.a)); //x, y, string to draw, color
-        font.drawString(position.x, position.y, text, color); //x, y, string to draw, color
-        GL11.glPopMatrix();
-        GL11.glDisable(GL11.GL_BLEND);
     }
 
     private void createProjectionMatrix() {

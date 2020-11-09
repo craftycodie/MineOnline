@@ -1,14 +1,7 @@
-// Decompiled by Jad v1.5.8g. Copyright 2001 Pavel Kouznetsov.
-// Jad home page: http://www.kpdus.com/jad.html
-// Decompiler options: packimports(3) braces deadcode 
+package gg.codie.mineonline.gui.components;
 
-package net.minecraft.src;
-
-import net.minecraft.client.Minecraft;
+import gg.codie.mineonline.gui.screens.EnumOptions;
 import org.lwjgl.opengl.GL11;
-
-// Referenced classes of package net.minecraft.src:
-//            GuiButton, GameSettings, EnumOptions
 
 public class GuiSlider extends GuiButton
 {
@@ -28,12 +21,12 @@ public class GuiSlider extends GuiButton
         return 0;
     }
 
-    protected void mouseDragged(Minecraft minecraft, int i, int j)
+    protected void mouseDragged(int i, int j)
     {
-        if(!enabled2)
-        {
-            return;
-        }
+//        if(!enabled2)
+//        {
+//            return;
+//        }
         if(dragging)
         {
             sliderValue = (float)(i - (xPosition + 4)) / (float)(width - 8);
@@ -45,17 +38,18 @@ public class GuiSlider extends GuiButton
             {
                 sliderValue = 1.0F;
             }
-            minecraft.gameSettings.setOptionFloatValue(idFloat, sliderValue);
-            displayString = minecraft.gameSettings.getKeyBinding(idFloat);
+            // TODO: Save Change
+//            minecraft.gameSettings.setOptionFloatValue(idFloat, sliderValue);
+            displayString = "" + sliderValue;
         }
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         drawTexturedModalRect(xPosition + (int)(sliderValue * (float)(width - 8)), yPosition, 0, 66, 4, 20);
         drawTexturedModalRect(xPosition + (int)(sliderValue * (float)(width - 8)) + 4, yPosition, 196, 66, 4, 20);
     }
 
-    public boolean mousePressed(Minecraft minecraft, int i, int j)
+    public boolean mousePressed(int i, int j)
     {
-        if(super.mousePressed(minecraft, i, j))
+        if(super.mousePressed(i, j))
         {
             sliderValue = (float)(i - (xPosition + 4)) / (float)(width - 8);
             if(sliderValue < 0.0F)
@@ -66,8 +60,9 @@ public class GuiSlider extends GuiButton
             {
                 sliderValue = 1.0F;
             }
-            minecraft.gameSettings.setOptionFloatValue(idFloat, sliderValue);
-            displayString = minecraft.gameSettings.getKeyBinding(idFloat);
+            // TODO: Save Change
+            //minecraft.gameSettings.setOptionFloatValue(idFloat, sliderValue);
+            displayString = "" + sliderValue;
             dragging = true;
             return true;
         } else

@@ -30,7 +30,7 @@ public class FileConstructWithParentAdvice {
             String NEW_MINECRAFT_FOLDER = (String)ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.LauncherFiles").getField("NEW_MINECRAFT_FOLDER").get(null);
 
             if(DEV) {
-                System.out.println("Old Path: " + path);
+                //System.out.println("Old Path: " + path);
             }
 
             if (path.startsWith(MINECRAFT_RESOURCES_PATH) || path.substring(1).startsWith(MINECRAFT_RESOURCES_PATH)) {
@@ -40,7 +40,7 @@ public class FileConstructWithParentAdvice {
             }
 
             if(DEV) {
-                System.out.println("New Path: " + path);
+                //System.out.println("New Path: " + path);
             }
         } catch (Exception ex) {
             ex.printStackTrace();

@@ -9,6 +9,7 @@ import gg.codie.mineonline.gui.rendering.font.TextMaster;
 import gg.codie.mineonline.gui.rendering.models.RawModel;
 import gg.codie.mineonline.gui.rendering.models.TexturedModel;
 import gg.codie.mineonline.gui.rendering.shaders.GUIShader;
+import gg.codie.mineonline.gui.rendering.textures.EGUITexture;
 import gg.codie.mineonline.gui.rendering.textures.ModelTexture;
 import gg.codie.mineonline.gui.rendering.utils.MathUtils;
 import gg.codie.mineonline.gui.sound.ClickSound;
@@ -29,7 +30,7 @@ public class ValueSlider extends GUIObject {
 
     public ValueSlider(String name, Vector2f position, IOnClickListener clickListener, int value, int min, int max) {
         super(name,
-                new TexturedModel(Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth(position.x) + DisplayManager.getXBuffer(), DisplayManager.scaledHeight(DisplayManager.getDefaultHeight() - position.y) + DisplayManager.getYBuffer()), new Vector2f(DisplayManager.scaledWidth(300), DisplayManager.scaledHeight(40)), TextureHelper.getYFlippedPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(300, 89), new Vector2f(150, 20))), new ModelTexture(Loader.singleton.loadTexture(MenuManager.class.getResource("/img/gui.png")))),
+                new TexturedModel(Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth(position.x) + DisplayManager.getXBuffer(), DisplayManager.scaledHeight(DisplayManager.getDefaultHeight() - position.y) + DisplayManager.getYBuffer()), new Vector2f(DisplayManager.scaledWidth(300), DisplayManager.scaledHeight(40)), TextureHelper.getYFlippedPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(300, 89), new Vector2f(150, 20))), new ModelTexture(Loader.singleton.getGuiTexture(EGUITexture.OLD_GUI))),
                 new Vector3f(0, 0, 0), new Vector3f(), new Vector3f(1, 1, 1)
         );
 
@@ -121,7 +122,7 @@ public class ValueSlider extends GUIObject {
 
         public ValueSliderBar(String name, Vector2f position) {
             super(name,
-                    new TexturedModel(Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth(position.x) + DisplayManager.getXBuffer(), DisplayManager.scaledHeight(DisplayManager.getDefaultHeight() - position.y) + DisplayManager.getYBuffer()), new Vector2f(DisplayManager.scaledWidth(16), DisplayManager.scaledHeight(40)), TextureHelper.getYFlippedPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(500, 0), new Vector2f(8, 20))), new ModelTexture(Loader.singleton.loadTexture(MenuManager.class.getResource("/img/gui.png")))),
+                    new TexturedModel(Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth(position.x) + DisplayManager.getXBuffer(), DisplayManager.scaledHeight(DisplayManager.getDefaultHeight() - position.y) + DisplayManager.getYBuffer()), new Vector2f(DisplayManager.scaledWidth(16), DisplayManager.scaledHeight(40)), TextureHelper.getYFlippedPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(500, 0), new Vector2f(8, 20))), new ModelTexture(Loader.singleton.getGuiTexture(EGUITexture.OLD_GUI))),
                     new Vector3f(0, 0, 0), new Vector3f(), new Vector3f(1, 1, 1)
             );
 

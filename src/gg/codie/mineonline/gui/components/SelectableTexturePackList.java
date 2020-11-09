@@ -9,6 +9,7 @@ import gg.codie.mineonline.gui.rendering.*;
 import gg.codie.mineonline.gui.rendering.models.RawModel;
 import gg.codie.mineonline.gui.rendering.models.TexturedModel;
 import gg.codie.mineonline.gui.rendering.shaders.GUIShader;
+import gg.codie.mineonline.gui.rendering.textures.EGUITexture;
 import gg.codie.mineonline.gui.rendering.textures.ModelTexture;
 import gg.codie.common.utils.FolderChangeListener;
 import org.lwjgl.input.Mouse;
@@ -43,17 +44,17 @@ public class SelectableTexturePackList extends GUIObject {
         this.doubleClickListener = doubleClickListener;
 
         RawModel scrollBackgroundModel = Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth((DisplayManager.getDefaultWidth() / 2) + 240), DisplayManager.scaledHeight(69) + DisplayManager.getYBuffer()), new Vector2f(DisplayManager.scaledWidth(10), viewportHeight), TextureHelper.getPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(0, 129), new Vector2f(1, 1)));
-        ModelTexture scrollBackgroundTexture = new ModelTexture(Loader.singleton.loadTexture(MenuManager.class.getResource("/img/gui.png")));
+        ModelTexture scrollBackgroundTexture = new ModelTexture(Loader.singleton.getGuiTexture(EGUITexture.OLD_GUI));
         TexturedModel texuredScrollBackgroundModel =  new TexturedModel(scrollBackgroundModel, scrollBackgroundTexture);
         scrollBarBackground = new GUIObject("scroll", texuredScrollBackgroundModel, new Vector3f(), new Vector3f(), new Vector3f(1, 1, 1));
 
         RawModel scrollModel = Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth((DisplayManager.getDefaultWidth() / 2) + 240) + DisplayManager.getXBuffer(), DisplayManager.scaledHeight(69) + DisplayManager.getYBuffer()), new Vector2f(DisplayManager.scaledWidth(10), 0), TextureHelper.getPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(1, 129), new Vector2f(1, 1)));
-        ModelTexture scrollTexture = new ModelTexture(Loader.singleton.loadTexture(MenuManager.class.getResource("/img/gui.png")));
+        ModelTexture scrollTexture = new ModelTexture(Loader.singleton.getGuiTexture(EGUITexture.OLD_GUI));
         TexturedModel texuredScrollModel =  new TexturedModel(scrollModel, scrollTexture);
         scrollBar = new GUIObject("scroll", texuredScrollModel, new Vector3f(), new Vector3f(), new Vector3f(1, 1, 1));
 
         RawModel backgroundModel = Loader.singleton.loadGUIToVAO(new Vector2f(0, DisplayManager.scaledHeight(69) + DisplayManager.getYBuffer()), new Vector2f(Display.getWidth(), DisplayManager.scaledHeight(DisplayManager.getDefaultHeight() - (69 * 2))), TextureHelper.getYFlippedPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(0, 129), new Vector2f(1, 1)));
-        ModelTexture backgroundTexture = new ModelTexture(Loader.singleton.loadTexture(MenuManager.class.getResource("/img/gui.png")));
+        ModelTexture backgroundTexture = new ModelTexture(Loader.singleton.getGuiTexture(EGUITexture.OLD_GUI));
         TexturedModel texuredBackgroundModel =  new TexturedModel(backgroundModel, backgroundTexture);
         background = new GUIObject("background", texuredBackgroundModel, new Vector3f(), new Vector3f(), new Vector3f(1, 1, 1));
 
@@ -102,7 +103,7 @@ public class SelectableTexturePackList extends GUIObject {
         }
         texturePacks.clear();
 
-        addTexturePack("Default", "The default look of Minecraft", Loader.singleton.loadTexture(MenuManager.class.getResource("/img/pack.png")));
+        addTexturePack("Default", "The default look of Minecraft", Loader.singleton.getGuiTexture(EGUITexture.PACK));
 
         File texturePacksFolder = new File(LauncherFiles.MINECRAFT_TEXTURE_PACKS_PATH);
 
@@ -129,7 +130,7 @@ public class SelectableTexturePackList extends GUIObject {
                     ZipFile texturePackZip = new ZipFile(texturePack.getPath());
                     ZipEntry packPng = texturePackZip.getEntry("pack.png");
                     if (packPng != null) {
-                        packIcon = Loader.singleton.loadTexture(texturePackZip.getInputStream(packPng));
+                        packIcon = Loader.singleton.loadTexture("/texturepacks/" + texturePackZip.getName() + "/pack.png", texturePackZip.getInputStream(packPng));
                     }
                 } catch (Exception ex) {
                     System.err.println("Failed to load pack png for texture pack " + texturePack);

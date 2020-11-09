@@ -8,37 +8,46 @@ package gg.codie.mineonline.gui.screens;
 //            GuiScreen, StringTranslate, EnumOptions, GuiSmallButton, 
 //            GameSettings, GuiSlider, GuiButton, ScaledResolution
 
-public class GuiVideoSettings extends GuiScreen
+import gg.codie.mineonline.Settings;
+import gg.codie.mineonline.gui.GUIScale;
+import gg.codie.mineonline.gui.MenuManager;
+import gg.codie.mineonline.gui.components.GuiButton;
+import gg.codie.mineonline.gui.components.GuiSlider;
+import gg.codie.mineonline.gui.components.GuiSmallButton;
+import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.Display;
+
+public class GuiIngameOptions extends GuiScreen
 {
 
-    public GuiVideoSettings(GuiScreen guiscreen, GameSettings gamesettings)
+    public GuiIngameOptions(GuiScreen guiscreen)
     {
-        field_22107_a = "Video Settings";
-        field_22110_h = guiscreen;
-        guiGameSettings = gamesettings;
+        field_22107_a = "Options";
+        parent = guiscreen;
     }
 
     public void initGui()
     {
-        StringTranslate stringtranslate = StringTranslate.getInstance();
-        field_22107_a = "MineOnline Options";
+        field_22107_a = "Options";
         int i = 0;
-        EnumOptions aenumoptions[] = field_22108_k;
+        EnumOptions aenumoptions[] = EnumOptions.values();
         int j = aenumoptions.length;
         for(int k = 0; k < j; k++)
         {
             EnumOptions enumoptions = aenumoptions[k];
             if(!enumoptions.getEnumFloat())
             {
-                controlList.add(new GuiSmallButton(enumoptions.returnEnumOrdinal(), (width / 2 - 155) + (i % 2) * 160, height / 6 + 24 * (i >> 1), enumoptions, guiGameSettings.getKeyBinding(enumoptions)));
+                controlList.add(new GuiSmallButton(enumoptions.ordinal(), (getWidth() / 2 - 155) + (i % 2) * 160, getHeight() / 6 + 24 * (i >> 1), enumoptions, enumoptions.name()));
             } else
             {
-                controlList.add(new GuiSlider(enumoptions.returnEnumOrdinal(), (width / 2 - 155) + (i % 2) * 160, height / 6 + 24 * (i >> 1), enumoptions, guiGameSettings.getKeyBinding(enumoptions), guiGameSettings.getOptionFloatValue(enumoptions)));
+                controlList.add(new GuiSlider(enumoptions.ordinal(), (getWidth() / 2 - 155) + (i % 2) * 160, getHeight() / 6 + 24 * (i >> 1), enumoptions, enumoptions.name(), 0));
             }
             i++;
         }
 
-        controlList.add(new GuiButton(200, width / 2 - 100, height / 6 + 168, stringtranslate.translateKey("gui.done")));
+        controlList.add(new GuiButton(200, getWidth() / 2 - 100, getHeight() / 6 + 168, "Done"));
+        controlList.add(new GuiButton(100, getWidth() / 2 - 100, getHeight() / 6 + 120 + 12, "Controls"));
+
     }
 
     protected void actionPerformed(GuiButton guibutton)
@@ -49,36 +58,40 @@ public class GuiVideoSettings extends GuiScreen
         }
         if(guibutton.id < 100 && (guibutton instanceof GuiSmallButton))
         {
-            guiGameSettings.setOptionValue(((GuiSmallButton)guibutton).returnEnumOptions(), 1);
-            guibutton.displayString = guiGameSettings.getKeyBinding(EnumOptions.getEnumOptions(guibutton.id));
+            // TODO: Set Value
+            //guiGameSettings.setOptionValue(((GuiSmallButton)guibutton).returnEnumOptions(), 1);
+            //guibutton.displayString = guiGameSettings.getKeyBinding(EnumOptions.getEnumOptions(guibutton.id));
+        }
+        if(guibutton.id == 100)
+        {
+            MenuManager.setGUIScreen(new GuiControls(this));
         }
         if(guibutton.id == 200)
         {
-            mc.gameSettings.saveOptions();
-            mc.displayGuiScreen(field_22110_h);
+            Settings.singleton.saveSettings();
+            MenuManager.setGUIScreen(parent);
+            if (parent == null)
+                Mouse.setGrabbed(true);
+
+            //mc.displayGuiScreen(null);
+//            mc.setIngameFocus();
         }
-        ScaledResolution scaledresolution = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
-        int i = scaledresolution.getScaledWidth();
-        int j = scaledresolution.getScaledHeight();
-        setWorldAndResolution(mc, i, j);
+        GUIScale scaledresolution = new GUIScale(Display.getWidth(), Display.getHeight());
+        int i = (int)scaledresolution.getScaledWidth();
+        int j = (int)scaledresolution.getScaledHeight();
     }
 
-    public void drawScreen(int i, int j, float f)
+    @Override
+    public void drawScreen(int i, int j)
     {
+        controlList.clear();
+        initGui();
+
         drawDefaultBackground();
-        drawCenteredString(fontRenderer, field_22107_a, width / 2, 20, 0xffffff);
-        super.drawScreen(i, j, f);
+        drawCenteredString(field_22107_a, getWidth() / 2, 20, 0xffffff);
+        super.drawScreen(i, j);
     }
 
-    private GuiScreen field_22110_h;
+    private GuiScreen parent;
     protected String field_22107_a;
-    private GameSettings guiGameSettings;
-    private static EnumOptions field_22108_k[];
-
-    static 
-    {
-        field_22108_k = (new EnumOptions[] {
-            EnumOptions.GRAPHICS, EnumOptions.RENDER_DISTANCE, EnumOptions.AMBIENT_OCCLUSION, EnumOptions.FRAMERATE_LIMIT, EnumOptions.ANAGLYPH, EnumOptions.VIEW_BOBBING, EnumOptions.GUI_SCALE, EnumOptions.ADVANCED_OPENGL
-        });
-    }
 }

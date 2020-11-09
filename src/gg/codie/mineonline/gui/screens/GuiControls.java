@@ -1,59 +1,53 @@
-// Decompiled by Jad v1.5.8g. Copyright 2001 Pavel Kouznetsov.
-// Jad home page: http://www.kpdus.com/jad.html
-// Decompiler options: packimports(3) braces deadcode 
+package gg.codie.mineonline.gui.screens;
 
-package net.minecraft.src;
-
-import java.util.List;
-import net.minecraft.client.Minecraft;
-
-// Referenced classes of package net.minecraft.src:
-//            GuiScreen, StringTranslate, GameSettings, GuiSmallButton, 
-//            GuiButton
+import gg.codie.mineonline.gui.MenuManager;
+import gg.codie.mineonline.gui.components.GuiButton;
+import gg.codie.mineonline.gui.components.GuiSmallButton;
+import org.lwjgl.input.Mouse;
 
 public class GuiControls extends GuiScreen
 {
 
-    public GuiControls(GuiScreen guiscreen, GameSettings gamesettings)
+    public GuiControls(GuiScreen guiscreen)
     {
         screenTitle = "Controls";
         buttonId = -1;
         parentScreen = guiscreen;
-        options = gamesettings;
     }
 
     private int func_20080_j()
     {
-        return width / 2 - 155;
+        return getWidth() / 2 - 155;
     }
 
     public void initGui()
     {
-        StringTranslate stringtranslate = StringTranslate.getInstance();
         int i = func_20080_j();
-        for(int j = 0; j < options.keyBindings.length; j++)
-        {
-            controlList.add(new GuiSmallButton(j, i + (j % 2) * 160, height / 6 + 24 * (j >> 1), 70, 20, options.getOptionDisplayString(j)));
-        }
+//        for(int j = 0; j < options.keyBindings.length; j++)
+//        {
+//            controlList.add(new GuiSmallButton(j, i + (j % 2) * 160, getHeight() / 6 + 24 * (j >> 1), 70, 20, options.getOptionDisplayString(j)));
+//        }
 
-        controlList.add(new GuiButton(200, width / 2 - 100, height / 6 + 168, stringtranslate.translateKey("gui.done")));
-        screenTitle = stringtranslate.translateKey("controls.title");
+        controlList.add(new GuiButton(200, getWidth() / 2 - 100, getHeight() / 6 + 168, "Done"));
+        screenTitle = "Controls";
     }
 
     protected void actionPerformed(GuiButton guibutton)
     {
-        for(int i = 0; i < options.keyBindings.length; i++)
-        {
-            ((GuiButton)controlList.get(i)).displayString = options.getOptionDisplayString(i);
-        }
+//        for(int i = 0; i < options.keyBindings.length; i++)
+//        {
+//            ((GuiButton)controlList.get(i)).displayString = options.getOptionDisplayString(i);
+//        }
 
         if(guibutton.id == 200)
         {
-            mc.displayGuiScreen(parentScreen);
+            MenuManager.setGUIScreen(parentScreen);
+            if(parentScreen == null)
+                Mouse.setGrabbed(true);
         } else
         {
             buttonId = guibutton.id;
-            guibutton.displayString = (new StringBuilder()).append("> ").append(options.getOptionDisplayString(guibutton.id)).append(" <").toString();
+//            guibutton.displayString = (new StringBuilder()).append("> ").append(options.getOptionDisplayString(guibutton.id)).append(" <").toString();
         }
     }
 
@@ -61,8 +55,8 @@ public class GuiControls extends GuiScreen
     {
         if(buttonId >= 0)
         {
-            options.setKeyBinding(buttonId, i);
-            ((GuiButton)controlList.get(buttonId)).displayString = options.getOptionDisplayString(buttonId);
+//            options.setKeyBinding(buttonId, i);
+//            ((GuiButton)controlList.get(buttonId)).displayString = options.getOptionDisplayString(buttonId);
             buttonId = -1;
         } else
         {
@@ -70,21 +64,23 @@ public class GuiControls extends GuiScreen
         }
     }
 
-    public void drawScreen(int i, int j, float f)
+    public void drawScreen(int i, int j)
     {
-        drawDefaultBackground();
-        drawCenteredString(fontRenderer, screenTitle, width / 2, 20, 0xffffff);
-        int k = func_20080_j();
-        for(int l = 0; l < options.keyBindings.length; l++)
-        {
-            drawString(fontRenderer, options.getKeyBindingDescription(l), k + (l % 2) * 160 + 70 + 6, height / 6 + 24 * (l >> 1) + 7, -1);
-        }
+        controlList.clear();
+        initGui();
 
-        super.drawScreen(i, j, f);
+        drawDefaultBackground();
+        drawCenteredString(screenTitle, getWidth() / 2, 20, 0xffffff);
+        int k = func_20080_j();
+//        for(int l = 0; l < options.keyBindings.length; l++)
+//        {
+//            drawString(options.getKeyBindingDescription(l), k + (l % 2) * 160 + 70 + 6, getHeight() / 6 + 24 * (l >> 1) + 7, -1);
+//        }
+
+        super.drawScreen(i, j);
     }
 
     private GuiScreen parentScreen;
     protected String screenTitle;
-    private GameSettings options;
     private int buttonId;
 }

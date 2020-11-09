@@ -16,6 +16,7 @@ import gg.codie.mineonline.gui.rendering.models.RawModel;
 import gg.codie.mineonline.gui.rendering.models.TexturedModel;
 import gg.codie.mineonline.gui.rendering.shaders.StaticShader;
 import gg.codie.mineonline.gui.rendering.textures.ModelTexture;
+import gg.codie.mineonline.gui.screens.GuiScreen;
 import gg.codie.mineonline.utils.LastLogin;
 import gg.codie.mineonline.utils.Logging;
 import org.json.JSONObject;
@@ -37,6 +38,17 @@ public class MenuManager {
     public static boolean formopen = false;
 
     private static GUIText playerName;
+
+    private static GuiScreen guiScreen;
+    public static void setGUIScreen(GuiScreen guiScreen) {
+        MenuManager.guiScreen = guiScreen;
+    }
+
+    public static GuiScreen getGuiScreen() {
+        return guiScreen;
+    }
+
+    @Deprecated
     public static void setMenuScreen(IMenuScreen menuScreen) {
 
         if(MenuManager.menuScreen != null)
@@ -301,7 +313,8 @@ public class MenuManager {
                 new Vector2f(0, 1387), new Vector2f(1387, 1387),
                 new Vector2f(1387, 1387), new Vector2f(1387, 1387)
         ));
-        ModelTexture modelTexture = new ModelTexture(loader.loadTexture(MenuManager.class.getResource("/img/panorama_" + panoramaNames[new Random().nextInt(panoramaNames.length)] + ".png")));
+        String panoramaName = panoramaNames[new Random().nextInt(panoramaNames.length)];
+        ModelTexture modelTexture = new ModelTexture(loader.loadTexture("/img/panorama_" + panoramaName+ ".png", MenuManager.class.getResource("/img/panorama_" + panoramaName + ".png")));
         TexturedModel texturedModel =  new TexturedModel(model, modelTexture);
         GameObject backgroundImage = new GUIObject("Background", texturedModel, new Vector3f(), new Vector3f(0, 180, 0), new Vector3f(75f, 75f, 75f));
 

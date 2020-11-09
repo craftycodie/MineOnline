@@ -2,6 +2,7 @@ package gg.codie.mineonline.gui.rendering;
 
 import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.gui.rendering.models.RawModel;
+import gg.codie.mineonline.gui.rendering.textures.EGUITexture;
 import gg.codie.mineonline.gui.rendering.utils.MathUtils;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.*;
@@ -16,20 +17,21 @@ import java.net.URL;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Loader {
 
     private List<Integer> vaos = new ArrayList<Integer>();
     private List<Integer> vbos = new ArrayList<Integer>();
-    private List<Integer> textures = new ArrayList<Integer>();
+    private HashMap<String, Integer> textures = new HashMap<>();
 
     public final int MISSING_TEXTURE_ID;
 
     public static Loader singleton;
 
     public Loader() {
-        MISSING_TEXTURE_ID = loadTexture(LauncherFiles.MISSING_TEXTURE);
+        MISSING_TEXTURE_ID = loadTexture("missingno.", LauncherFiles.MISSING_TEXTURE);
         singleton = this;
     }
 
@@ -103,7 +105,17 @@ public class Loader {
         return new RawModel(vaoID, 36);
     }
 
-    public int loadTexture(URL url) {
+    public void unloadTexture(String name) {
+        if (textures.containsKey(name)) {
+            GL11.glDeleteTextures(textures.get(name));
+            textures.remove(name);
+        }
+    }
+
+    public int loadTexture(String name, URL url) {
+        if (textures.containsKey(name))
+            return textures.get(name);
+
         Texture texture;
         try {
             texture = TextureLoader.getTexture("PNG", url.openStream());
@@ -113,10 +125,15 @@ public class Loader {
 
         int textureID = texture.getTextureID();
 
+        textures.put(name, textureID);
+
         return textureID;
     }
 
-    public int loadTexture(String path) {
+    public int loadTexture(String name, String path) {
+        if (textures.containsKey(name))
+            return textures.get(name);
+
         Texture texture;
         try {
             if(path.startsWith("http")) {
@@ -130,10 +147,15 @@ public class Loader {
 
         int textureID = texture.getTextureID();
 
+        textures.put(name, textureID);
+
         return textureID;
     }
 
-    public int loadTexture(InputStream stream) {
+    public int loadTexture(String name, InputStream stream) {
+        if (textures.containsKey(name))
+            return textures.get(name);
+
         Texture texture;
         try {
             texture = TextureLoader.getTexture("PNG", stream);
@@ -143,7 +165,16 @@ public class Loader {
 
         int textureID = texture.getTextureID();
 
+        textures.put(name, textureID);
+
         return textureID;
+    }
+
+    public int getGuiTexture(EGUITexture eguiTexture) {
+        if (!textures.containsKey(eguiTexture.textureName))
+            return loadTexture(eguiTexture.textureName, Loader.class.getResource(eguiTexture.textureName));
+        else
+            return textures.get(eguiTexture.textureName);
     }
 
     private int createVAO() {
@@ -198,8 +229,9 @@ public class Loader {
             GL15.glDeleteBuffers(vbo);
         }
 
-        for (int texture : textures) {
+        for (int texture : textures.values()) {
             GL11.glDeleteTextures(texture);
+            textures.clear();
         }
     }
 

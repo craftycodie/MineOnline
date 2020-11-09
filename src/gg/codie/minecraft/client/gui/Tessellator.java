@@ -2,11 +2,16 @@
 // Jad home page: http://www.kpdus.com/jad.html
 // Decompiler options: packimports(3) braces deadcode 
 
-package net.minecraft.src;
+package gg.codie.minecraft.client.gui;
 
-import java.io.PrintStream;
-import java.nio.*;
-import org.lwjgl.opengl.*;
+import org.lwjgl.opengl.ARBVertexBufferObject;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GLContext;
+
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 
 // Referenced classes of package net.minecraft.src:
 //            GLAllocation

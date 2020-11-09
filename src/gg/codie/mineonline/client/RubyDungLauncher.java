@@ -3,6 +3,7 @@ package gg.codie.mineonline.client;
 import gg.codie.mineonline.*;
 import gg.codie.mineonline.discord.DiscordRPCHandler;
 import gg.codie.mineonline.gui.rendering.DisplayManager;
+import gg.codie.mineonline.gui.rendering.FontRenderer;
 import gg.codie.mineonline.gui.rendering.Renderer;
 import gg.codie.mineonline.lwjgl.OnCreateListener;
 import gg.codie.mineonline.lwjgl.OnUpdateListener;
@@ -159,7 +160,7 @@ public class RubyDungLauncher {
 
                     if (renderer != null) {
                         if (Globals.DEV) {
-                            //renderer.renderStringIngame(new Vector2f(1, 1), 8, "MineOnline Dev " + Globals.LAUNCHER_VERSION, org.newdawn.slick.Color.white);
+                            FontRenderer.minecraftFontRenderer.drawStringWithShadow("MineOnline Dev " + Globals.LAUNCHER_VERSION, 2, 2, 0xffffff);
                         }
 
                         if (minecraftVersion != null) {
@@ -175,7 +176,7 @@ public class RubyDungLauncher {
                                     }
 
                                     if (opacityMultiplier > 0) {
-                                        renderer.renderStringIngame(new Vector2f(2, 190), 8, "Saved screenshot as " + lastScreenshotName, new org.newdawn.slick.Color(1, 1, 1, 1 * opacityMultiplier));
+                                        FontRenderer.minecraftFontRenderer.drawStringWithShadow("Saved screenshot as " + lastScreenshotName, 2, 190, 0xffffff + ((int)(0xff * opacityMultiplier) << 24));
                                     }
                                 } catch (Exception e) {
                                     e.printStackTrace();

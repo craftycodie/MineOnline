@@ -9,6 +9,7 @@ import gg.codie.mineonline.gui.rendering.font.TextMaster;
 import gg.codie.mineonline.gui.rendering.models.RawModel;
 import gg.codie.mineonline.gui.rendering.models.TexturedModel;
 import gg.codie.mineonline.gui.rendering.shaders.SelectableVersionShader;
+import gg.codie.mineonline.gui.rendering.textures.EGUITexture;
 import gg.codie.mineonline.gui.rendering.textures.ModelTexture;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
@@ -32,12 +33,12 @@ public class SelectableTexturePack extends GUIObject {
 
     public SelectableTexturePack(String name, Vector2f position, String texturePackName, String info, SelectableTexturePackList parent, int packIcon, IOnClickListener doubleClickListener) {
         super(name,
-                new TexturedModel(Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth(position.x) + DisplayManager.getXBuffer(), DisplayManager.scaledHeight(DisplayManager.getDefaultHeight() - position.y) + DisplayManager.getYBuffer()), new Vector2f(DisplayManager.scaledWidth(440), DisplayManager.scaledHeight(72)), TextureHelper.getPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(0, 130), new Vector2f(220, 36))), new ModelTexture(Loader.singleton.loadTexture(MenuManager.class.getResource("/img/gui.png")))),
+                new TexturedModel(Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth(position.x) + DisplayManager.getXBuffer(), DisplayManager.scaledHeight(DisplayManager.getDefaultHeight() - position.y) + DisplayManager.getYBuffer()), new Vector2f(DisplayManager.scaledWidth(440), DisplayManager.scaledHeight(72)), TextureHelper.getPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(0, 130), new Vector2f(220, 36))), new ModelTexture(Loader.singleton.getGuiTexture(EGUITexture.OLD_GUI))),
                 new Vector3f(0, 0, 0), new Vector3f(), new Vector3f(1, 1, 1)
         );
 
         RawModel logoModel = Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth(position.x + 4) + DisplayManager.getXBuffer(), DisplayManager.scaledHeight(DisplayManager.getDefaultHeight() - (position.y - 4)) + DisplayManager.getYBuffer()), new Vector2f(DisplayManager.scaledWidth(64), DisplayManager.scaledHeight(64)), TextureHelper.getYFlippedPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(0, 0), new Vector2f(512, 512)));
-        ModelTexture iconTexture = new ModelTexture(packIcon == -1 ? Loader.singleton.loadTexture(MenuManager.class.getResource("/img/unknown_pack.png")) : packIcon);
+        ModelTexture iconTexture = new ModelTexture(packIcon == -1 ? Loader.singleton.getGuiTexture(EGUITexture.UNKNOWN_PACK) : packIcon);
         TexturedModel texuredLogoModel =  new TexturedModel(logoModel, iconTexture);
         icon = new GUIObject(name + " icon", texuredLogoModel, new Vector3f(), new Vector3f(), new Vector3f(1, 1, 1));
 

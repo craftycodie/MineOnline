@@ -1,31 +1,34 @@
-// Decompiled by Jad v1.5.8g. Copyright 2001 Pavel Kouznetsov.
-// Jad home page: http://www.kpdus.com/jad.html
-// Decompiler options: packimports(3) braces deadcode 
+package gg.codie.mineonline.gui.rendering;
 
-package net.minecraft.src;
+import gg.codie.minecraft.client.gui.GLAllocation;
+import gg.codie.minecraft.client.gui.Tessellator;
+import gg.codie.mineonline.Settings;
+import gg.codie.mineonline.gui.input.InputSanitization;
+import gg.codie.mineonline.gui.rendering.textures.EGUITexture;
+import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.GL11;
+import org.newdawn.slick.opengl.TextureLoader;
 
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.IntBuffer;
-import javax.imageio.ImageIO;
-import org.lwjgl.opengl.GL11;
-
-// Referenced classes of package net.minecraft.src:
-//            GLAllocation, RenderEngine, Tessellator, GameSettings, 
-//            ChatAllowedCharacters
 
 public class FontRenderer
 {
+    public static FontRenderer minecraftFontRenderer = new FontRenderer(EGUITexture.FONT.textureName);
 
-    public FontRenderer(GameSettings gamesettings, String s, RenderEngine renderengine)
+    private FontRenderer(String s)
     {
+        Settings.singleton.loadSettings();
+
         charWidth = new int[256];
         fontTextureName = 0;
-        buffer = GLAllocation.createDirectIntBuffer(1024 /*GL_FRONT_LEFT*/);
+        buffer = BufferUtils.createIntBuffer(1024);
         BufferedImage bufferedimage;
         try
         {
-            bufferedimage = ImageIO.read((net.minecraft.src.RenderEngine.class).getResourceAsStream(s));
+            bufferedimage = ImageIO.read(FontRenderer.class.getResourceAsStream(s));
         }
         catch(IOException ioexception)
         {
@@ -71,7 +74,7 @@ public class FontRenderer
             charWidth[k] = j2 + 2;
         }
 
-        fontTextureName = renderengine.allocateAndSetupTexture(bufferedimage);
+        fontTextureName = Loader.singleton.loadTexture(s, FontRenderer.class.getResourceAsStream(s));
         fontDisplayLists = GLAllocation.generateDisplayLists(288);
         Tessellator tessellator = Tessellator.instance;
         for(int i1 = 0; i1 < 256; i1++)
@@ -103,7 +106,7 @@ public class FontRenderer
                 l2 += 85;
             }
             boolean flag1 = j1 >= 16;
-            if(gamesettings.anaglyph)
+            if(Settings.singleton.get3DAnaglyph())
             {
                 int j4 = (l2 * 30 + j3 * 59 + k3 * 11) / 100;
                 int l4 = (l2 * 30 + j3 * 70) / 100;
@@ -125,10 +128,10 @@ public class FontRenderer
 
     }
 
-    public void drawStringWithShadow(String s, int i, int j, int k)
+    public void drawStringWithShadow(String s, int xPos, int yPos, int color)
     {
-        renderString(s, i + 1, j + 1, k, true);
-        drawString(s, i, j, k);
+        renderString(s, xPos + 1, yPos + 1, color, true);
+        drawString(s, xPos, yPos, color);
     }
 
     public void drawString(String s, int i, int j, int k)
@@ -149,6 +152,8 @@ public class FontRenderer
             k += l;
         }
         GL11.glBindTexture(3553 /*GL_TEXTURE_2D*/, fontTextureName);
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
         float f = (float)(k >> 16 & 0xff) / 255F;
         float f1 = (float)(k >> 8 & 0xff) / 255F;
         float f2 = (float)(k & 0xff) / 255F;
@@ -181,7 +186,7 @@ public class FontRenderer
 
             if(i1 < s.length())
             {
-                int k1 = ChatAllowedCharacters.allowedCharacters.indexOf(s.charAt(i1));
+                int k1 = InputSanitization.allowedCharacters.indexOf(s.charAt(i1));
                 if(k1 >= 0)
                 {
                     buffer.put(fontDisplayLists + k1 + 32);
@@ -214,7 +219,7 @@ public class FontRenderer
                 j++;
                 continue;
             }
-            int k = ChatAllowedCharacters.allowedCharacters.indexOf(s.charAt(j));
+            int k = InputSanitization.allowedCharacters.indexOf(s.charAt(j));
             if(k >= 0)
             {
                 i += charWidth[k + 32];

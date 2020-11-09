@@ -101,7 +101,8 @@ public class SkinRenderer {
                 new Vector2f(0, 1387), new Vector2f(1387, 1387),
                 new Vector2f(1387, 1387), new Vector2f(1387, 1387)
         ));
-        ModelTexture modelTexture = new ModelTexture(loader.loadTexture(SkinRenderer.class.getResource("/img/panorama_" + panoramaNames[new Random().nextInt(panoramaNames.length)] + ".png")));
+        String panoramaName = panoramaNames[new Random().nextInt(panoramaNames.length)];
+        ModelTexture modelTexture = new ModelTexture(loader.loadTexture("/img/panorama_" + panoramaName + ".png", SkinRenderer.class.getResource("/img/panorama_" + panoramaName + ".png")));
         TexturedModel texturedModel =  new TexturedModel(model, modelTexture);
         GameObject backgroundImage = new GUIObject("Background", texturedModel, new Vector3f(0, 0, 0), new Vector3f(), new Vector3f(75f, 75f, 75f));
 

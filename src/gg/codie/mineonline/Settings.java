@@ -2,6 +2,7 @@ package gg.codie.mineonline;
 
 import gg.codie.minecraft.client.*;
 import org.json.JSONObject;
+import org.lwjgl.input.Keyboard;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -66,6 +67,7 @@ public class Settings implements IMinecraftOptionsHandler {
     public static final String SKIN_LAYER_LEFT_LEG = "skinLayerLeftLeg";
     public static final String SKIN_LAYER_RIGHT_LEG = "skinLayerRightLeg";
     public static final String AUTO_JUMP = "autoJump";
+    public static final String KEY_CODE_INGAME_MENU = "keyCodeIngameMenu";
 
 
     private static final int SETTINGS_VERSION_NUMBER = 10;
@@ -148,6 +150,7 @@ public class Settings implements IMinecraftOptionsHandler {
         settings.put(KEY_CODE_ZOOM, 0);
         settings.put(LAST_LAUNCHED_OPTIONS_VERSION, "DEFAULT");
         settings.put(AUTO_JUMP, false);
+        settings.put(KEY_CODE_INGAME_MENU, 19);
 
         saveSettings();
         loadSettings();
@@ -518,6 +521,8 @@ public class Settings implements IMinecraftOptionsHandler {
                         settings.put(LAST_LAUNCHED_OPTIONS_VERSION, EMinecraftOptionsVersion.DEFAULT);
                     case 10:
                         settings.put(AUTO_JUMP, false);
+                    case 11:
+                        settings.put(KEY_CODE_INGAME_MENU, 19);
                 }
                 settings.put(SETTINGS_VERSION, SETTINGS_VERSION_NUMBER);
             }
@@ -608,6 +613,10 @@ public class Settings implements IMinecraftOptionsHandler {
 
     public int getZoomKeyCode() {
         return settings.optInt(KEY_CODE_ZOOM, 0);
+    }
+
+    public int getMineonlineMenuKeyCode() {
+        return settings.optInt(KEY_CODE_INGAME_MENU, 19);
     }
 
     public EMinecraftOptionsVersion getLastLaunchedOptionsVersion() {

@@ -925,4 +925,22 @@ public class Options implements IMinecraftOptionsHandler {
             // ignore
         }
     }
+
+    @Override
+    public boolean getAutoJump() throws NoSuchFieldException {
+        try {
+            return Boolean.parseBoolean(getOption("autoJump"));
+        } catch (IOException | NumberFormatException ex) {
+            return false;
+        }
+    }
+
+    @Override
+    public void setAutoJump(boolean autoJump) {
+        try {
+            setOption("autoJump", autoJump ? "true": "false");
+        } catch (IOException | NumberFormatException ex) {
+            // ignore
+        }
+    }
 }

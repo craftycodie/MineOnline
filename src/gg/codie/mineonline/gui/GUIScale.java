@@ -1,46 +1,49 @@
-// Decompiled by Jad v1.5.8g. Copyright 2001 Pavel Kouznetsov.
-// Jad home page: http://www.kpdus.com/jad.html
-// Decompiler options: packimports(3) braces deadcode 
+package gg.codie.mineonline.gui;
 
-package net.minecraft.src;
+import gg.codie.mineonline.Settings;
 
-
-// Referenced classes of package net.minecraft.src:
-//            GameSettings
-
-public class ScaledResolution
+public class GUIScale
 {
+    private static GUIScale singleton;
 
-    public ScaledResolution(GameSettings gamesettings, int i, int j)
+    private static final int MIN_WIDTH = 320;
+    private static final int MIN_HEIGHT = 240;
+
+    public GUIScale(int displayWidth, int displayHeight)
     {
-        scaledWidth = i;
-        scaledHeight = j;
+        scaledWidth = displayWidth;
+        scaledHeight = displayHeight;
         scaleFactor = 1;
-        int k = gamesettings.guiScale;
-        if(k == 0)
+        int guiScale = Settings.singleton.getGUIScale().getIntValue();
+        if(guiScale == 0) // if the scale is set to auto, set the limit really high.
         {
-            k = 1000;
+            guiScale = 1000;
         }
-        for(; scaleFactor < k && scaledWidth / (scaleFactor + 1) >= 320 && scaledHeight / (scaleFactor + 1) >= 240; scaleFactor++) { }
-        field_25121_a = (double)scaledWidth / (double)scaleFactor;
-        field_25120_b = (double)scaledHeight / (double)scaleFactor;
-        scaledWidth = (int)Math.ceil(field_25121_a);
-        scaledHeight = (int)Math.ceil(field_25120_b);
+        for(; scaleFactor < guiScale && scaledWidth / (scaleFactor + 1) >= MIN_WIDTH && scaledHeight / (scaleFactor + 1) >= MIN_HEIGHT; scaleFactor++) { }
+        scaledWidth =  scaledWidth / (double)scaleFactor;
+        scaledHeight = scaledHeight / (double)scaleFactor;
+        singleton = this;
     }
 
-    public int getScaledWidth()
+    public double getScaledWidth()
     {
         return scaledWidth;
     }
 
-    public int getScaledHeight()
+    public double getScaledHeight()
     {
         return scaledHeight;
     }
 
-    private int scaledWidth;
-    private int scaledHeight;
-    public double field_25121_a;
-    public double field_25120_b;
+    public double scaledWidth;
+    public double scaledHeight;
     public int scaleFactor;
+
+    public static int lastScaledWidth() {
+        return (int)singleton.getScaledWidth();
+    }
+
+    public static int lastScaledHeight() {
+        return (int)singleton.getScaledHeight();
+    }
 }

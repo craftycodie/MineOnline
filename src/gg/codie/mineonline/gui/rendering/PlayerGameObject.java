@@ -2,6 +2,7 @@ package gg.codie.mineonline.gui.rendering;
 
 import gg.codie.minecraft.client.Options;
 import gg.codie.mineonline.LauncherFiles;
+import gg.codie.mineonline.Session;
 import gg.codie.mineonline.Settings;
 import gg.codie.mineonline.gui.rendering.animation.IPlayerAnimation;
 import gg.codie.mineonline.gui.rendering.animation.IdlePlayerAnimation;
@@ -429,10 +430,10 @@ public class PlayerGameObject extends GameObject {
             bufferedImage = TextureHelper.convertSkin(bufferedImage);
             ByteArrayOutputStream os = new ByteArrayOutputStream();
             ImageIO.write(bufferedImage, "png", os);
-            skin = new ModelTexture(loader.loadTexture(new ByteArrayInputStream(os.toByteArray())));
+            skin = new ModelTexture(loader.loadTexture("#myskin", new ByteArrayInputStream(os.toByteArray())));
         } catch(Exception ex) {
             // The texture loader can handle this error and return the missing texture ID.
-            skin = new ModelTexture(loader.loadTexture(""));
+            skin = new ModelTexture(loader.MISSING_TEXTURE_ID);
         }
 
         return skin;
@@ -446,17 +447,17 @@ public class PlayerGameObject extends GameObject {
             bufferedImage = TextureHelper.cropImage(bufferedImage,0, 0, 64, 32);
             ByteArrayOutputStream os = new ByteArrayOutputStream();
             ImageIO.write(bufferedImage, "png", os);
-            cloak = new ModelTexture(loader.loadTexture(new ByteArrayInputStream(os.toByteArray())));
+            cloak = new ModelTexture(loader.loadTexture("#mycloak", new ByteArrayInputStream(os.toByteArray())));
         } catch(Exception ex) {
             // The texture loader can handle this error and return the missing texture ID.
-            cloak = new ModelTexture(loader.loadTexture(""));
+            cloak = new ModelTexture(loader.MISSING_TEXTURE_ID);
         }
 
         return cloak;
     }
 
     private void loadSkin() {
-        int oldTextureID = playerHead.getChildren().getFirst().getModel().getTexture().getTextureID();
+        Loader.singleton.unloadTexture("#myskin");
 
         ModelTexture skin = getSkinModelTexture();
 
@@ -472,18 +473,14 @@ public class PlayerGameObject extends GameObject {
         playerRightPantsLeg.getModel().setTexture(skin);
         playerLeftLeg.getChildren().getFirst().getModel().setTexture(skin);
         playerLeftPantsLeg.getModel().setTexture(skin);
-
-        GL11.glDeleteTextures(oldTextureID);
     }
 
     private void loadCloak() {
-        int oldTextureID = playerCloak.getChildren().getFirst().getModel().getTexture().getTextureID();
+        Loader.singleton.unloadTexture("#mycloak");
 
         ModelTexture cloak = getCloakModelTexture();
 
         playerCloak.getChildren().getFirst().getModel().setTexture(cloak);
-
-        GL11.glDeleteTextures(oldTextureID);
     }
 
     public GameObject playerHead;

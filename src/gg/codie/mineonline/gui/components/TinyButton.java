@@ -9,6 +9,7 @@ import gg.codie.mineonline.gui.rendering.font.TextMaster;
 import gg.codie.mineonline.gui.rendering.models.RawModel;
 import gg.codie.mineonline.gui.rendering.models.TexturedModel;
 import gg.codie.mineonline.gui.rendering.shaders.GUIShader;
+import gg.codie.mineonline.gui.rendering.textures.EGUITexture;
 import gg.codie.mineonline.gui.rendering.textures.ModelTexture;
 import gg.codie.mineonline.gui.sound.ClickSound;
 import org.lwjgl.input.Mouse;
@@ -25,7 +26,7 @@ public class TinyButton extends GUIObject {
 
     public TinyButton(String name, Vector2f position, IOnClickListener clickListener) {
         super(name,
-                new TexturedModel(Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth(position.x) + DisplayManager.getXBuffer(), DisplayManager.scaledHeight(DisplayManager.getDefaultHeight() - position.y) + DisplayManager.getYBuffer()), new Vector2f(DisplayManager.scaledWidth(142), DisplayManager.scaledHeight(40)), TextureHelper.getYFlippedPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(0, 109), new Vector2f(71, 20))), new ModelTexture(Loader.singleton.loadTexture(MenuManager.class.getResource("/img/gui.png")))),
+                new TexturedModel(Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth(position.x) + DisplayManager.getXBuffer(), DisplayManager.scaledHeight(DisplayManager.getDefaultHeight() - position.y) + DisplayManager.getYBuffer()), new Vector2f(DisplayManager.scaledWidth(142), DisplayManager.scaledHeight(40)), TextureHelper.getYFlippedPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(0, 109), new Vector2f(71, 20))), new ModelTexture(Loader.singleton.getGuiTexture(EGUITexture.OLD_GUI))),
                 new Vector3f(0, 0, 0), new Vector3f(), new Vector3f(1, 1, 1)
         );
 
@@ -78,14 +79,14 @@ public class TinyButton extends GUIObject {
             mouseWasOver = true;
 
             RawModel model = Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth(position.x) + DisplayManager.getXBuffer(), DisplayManager.scaledHeight(DisplayManager.getDefaultHeight() - position.y) + DisplayManager.getYBuffer()), new Vector2f(DisplayManager.scaledWidth(142), DisplayManager.scaledHeight(40)), TextureHelper.getYFlippedPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(71, 109), new Vector2f(71, 20)));
-            ModelTexture texture = new ModelTexture(Loader.singleton.loadTexture(MenuManager.class.getResource("/img/gui.png")));
+            ModelTexture texture = new ModelTexture(Loader.singleton.getGuiTexture(EGUITexture.OLD_GUI));
             this.model = new TexturedModel(model, texture);
 
         } else if(!mouseIsOver && mouseWasOver) {
             mouseWasOver = false;
 
             RawModel model = Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth(position.x) + DisplayManager.getXBuffer(), DisplayManager.scaledHeight(DisplayManager.getDefaultHeight() - position.y) + DisplayManager.getYBuffer()), new Vector2f(DisplayManager.scaledWidth(142), DisplayManager.scaledHeight(40)), TextureHelper.getYFlippedPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(0, 109), new Vector2f(71, 20)));
-            ModelTexture texture = new ModelTexture(Loader.singleton.loadTexture(MenuManager.class.getResource("/img/gui.png")));
+            ModelTexture texture = new ModelTexture(Loader.singleton.getGuiTexture(EGUITexture.OLD_GUI));
             this.model = new TexturedModel(model, texture);
         }
 

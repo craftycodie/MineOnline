@@ -11,6 +11,7 @@ import gg.codie.mineonline.gui.rendering.font.TextMaster;
 import gg.codie.mineonline.gui.rendering.models.RawModel;
 import gg.codie.mineonline.gui.rendering.models.TexturedModel;
 import gg.codie.mineonline.gui.rendering.shaders.GUIShader;
+import gg.codie.mineonline.gui.rendering.textures.EGUITexture;
 import gg.codie.mineonline.gui.rendering.textures.ModelTexture;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
@@ -37,7 +38,7 @@ public class MainMenuScreen implements IMenuScreen {
 
     public MainMenuScreen() {
         RawModel logoModel = Loader.singleton.loadGUIToVAO(new Vector2f(DisplayManager.scaledWidth((DisplayManager.getDefaultWidth() / 2) -200) + DisplayManager.getXBuffer(), Display.getHeight() - DisplayManager.scaledHeight(69)), new Vector2f(DisplayManager.scaledWidth(400), DisplayManager.scaledHeight(49)), TextureHelper.getYFlippedPlaneTextureCoords(new Vector2f(512, 512), new Vector2f(0, 40), new Vector2f(400, 49)));
-        ModelTexture logoTexture = new ModelTexture(Loader.singleton.loadTexture(MenuManager.class.getResource("/img/gui.png")));
+        ModelTexture logoTexture = new ModelTexture(Loader.singleton.getGuiTexture(EGUITexture.OLD_GUI));
         TexturedModel texuredLogoModel =  new TexturedModel(logoModel, logoTexture);
         logo = new GUIObject("logo", texuredLogoModel, new Vector3f(), new Vector3f(), new Vector3f(1, 1, 1));
 
@@ -165,7 +166,7 @@ public class MainMenuScreen implements IMenuScreen {
         versionButton.render(renderer, GUIShader.singleton);
         texturePacksButton.render(renderer, GUIShader.singleton);
         optionsButton.render(renderer, GUIShader.singleton);
-//        skinButton.render(renderer, GUIShader.singleton);
+//        skinButton.render(renderer, GUIShader.minecraftFontRenderer);
         GUIShader.singleton.stop();
     }
 

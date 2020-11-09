@@ -1,22 +1,19 @@
-// Decompiled by Jad v1.5.8g. Copyright 2001 Pavel Kouznetsov.
-// Jad home page: http://www.kpdus.com/jad.html
-// Decompiler options: packimports(3) braces deadcode 
 
-package net.minecraft.src;
+package gg.codie.mineonline.gui.components;
 
 
-// Referenced classes of package net.minecraft.src:
-//            Gui, GuiScreen, ChatAllowedCharacters, FontRenderer
+import gg.codie.mineonline.gui.input.InputSanitization;
+import gg.codie.mineonline.gui.rendering.FontRenderer;
+import gg.codie.mineonline.gui.screens.GuiScreen;
 
-public class GuiTextField extends Gui
+public class GuiTextField extends GuiComponent
 {
 
-    public GuiTextField(GuiScreen guiscreen, FontRenderer fontrenderer, int i, int j, int k, int l, String s)
+    public GuiTextField(GuiScreen guiscreen, int i, int j, int k, int l, String s)
     {
         isFocused = false;
         isEnabled = true;
         parentGuiScreen = guiscreen;
-        fontRenderer = fontrenderer;
         xPos = i;
         yPos = j;
         width = k;
@@ -72,7 +69,7 @@ public class GuiTextField extends Gui
         {
             text = text.substring(0, text.length() - 1);
         }
-        if(ChatAllowedCharacters.allowedCharacters.indexOf(c) >= 0 && (text.length() < maxStringLength || maxStringLength == 0))
+        if(InputSanitization.allowedCharacters.indexOf(c) >= 0 && (text.length() < maxStringLength || maxStringLength == 0))
         {
             text += c;
         }
@@ -100,10 +97,10 @@ public class GuiTextField extends Gui
         if(isEnabled)
         {
             boolean flag = isFocused && (cursorCounter / 6) % 2 == 0;
-            drawString(fontRenderer, (new StringBuilder()).append(text).append(flag ? "_" : "").toString(), xPos + 4, yPos + (height - 8) / 2, 0xe0e0e0);
+            drawString((new StringBuilder()).append(text).append(flag ? "_" : "").toString(), xPos + 4, yPos + (height - 8) / 2, 0xe0e0e0);
         } else
         {
-            drawString(fontRenderer, text, xPos + 4, yPos + (height - 8) / 2, 0x707070);
+            drawString(text, xPos + 4, yPos + (height - 8) / 2, 0x707070);
         }
     }
 
@@ -112,7 +109,6 @@ public class GuiTextField extends Gui
         maxStringLength = i;
     }
 
-    private final FontRenderer fontRenderer;
     private final int xPos;
     private final int yPos;
     private final int width;

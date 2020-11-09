@@ -19,7 +19,7 @@ public class TextMaster {
 
 
     public static void init(Loader theLoader){
-        minecraftFont = new FontType(theLoader.loadTexture(TextMaster.class.getResource("/font/font.png")), TextMaster.class.getResourceAsStream("/font/font.fnt"));
+        minecraftFont = new FontType(theLoader.loadTexture("/font/font.png", TextMaster.class.getResource("/font/font.png")), TextMaster.class.getResourceAsStream("/font/font.fnt"));
         renderer = new FontRenderer();
         loader = theLoader;
     }
