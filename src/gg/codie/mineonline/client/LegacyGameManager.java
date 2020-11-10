@@ -5,6 +5,7 @@ import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.MinecraftVersion;
 import gg.codie.mineonline.Settings;
 import gg.codie.mineonline.gui.rendering.Loader;
+import gg.codie.mineonline.patches.ClassGetResourceAdvice;
 import gg.codie.mineonline.patches.lwjgl.LWJGLPerspectiveAdvice;
 
 import java.io.IOException;
@@ -55,6 +56,7 @@ public class LegacyGameManager {
     public static void setTexturePack(String texturePack) {
         Settings.singleton.setTexturePack(texturePack);
         Settings.singleton.saveSettings();
+        ClassGetResourceAdvice.texturePack = texturePack;
         Loader.reloadMinecraftTextures(getAppletWrapper().getMinecraftAppletClass(), texturePack);
     }
 
