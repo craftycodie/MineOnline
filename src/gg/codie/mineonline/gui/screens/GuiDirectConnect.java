@@ -4,12 +4,20 @@
 
 package gg.codie.mineonline.gui.screens;
 
+import gg.codie.mineonline.LauncherFiles;
+import gg.codie.mineonline.LibraryManager;
 import gg.codie.mineonline.Settings;
+import gg.codie.mineonline.client.LegacyGameManager;
 import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.gui.components.GuiButton;
 import gg.codie.mineonline.gui.components.GuiTextField;
+import gg.codie.mineonline.utils.JREUtils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
+
+import java.io.File;
+import java.util.LinkedList;
+import java.util.Map;
 
 // Referenced classes of package net.minecraft.src:
 //            GuiScreen, GuiTextField, StringTranslate, GuiButton, 
@@ -64,10 +72,8 @@ public class GuiDirectConnect extends GuiScreen
         if(guibutton.id == 0)
         {
             String s = textField.getText().trim();
-//            Settings.singleton.setLastServer(s.replaceAll(":", "_"));
-//            Settings.singleton.saveSettings();
-            //mc.gameSettings.lastServer = s.replaceAll(":", "_");
-            //mc.gameSettings.saveOptions();
+            Settings.singleton.setLastServer(s.replaceAll(":", "_"));
+            Settings.singleton.saveSettings();
             String as[] = s.split(":");
             if(s.startsWith("["))
             {
@@ -94,7 +100,36 @@ public class GuiDirectConnect extends GuiScreen
                 as = new String[1];
                 as[0] = s;
             }
-            //mc.displayGuiScreen(new GuiConnecting(mc, as[0], as.length <= 1 ? 25565 : parseIntWithDefault(as[1], 25565)));
+
+            try {
+                LinkedList<String> launchArgs = new LinkedList();
+                launchArgs.add(JREUtils.getRunningJavaExecutable());
+                launchArgs.add("-javaagent:" + LauncherFiles.PATCH_AGENT_JAR);
+                launchArgs.add("-Djava.util.Arrays.useLegacyMergeSort=true");
+                launchArgs.add("-cp");
+                launchArgs.add(LibraryManager.getClasspath(true, new String[]{new File(MenuManager.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath(), LauncherFiles.DISCORD_RPC_JAR}));
+                launchArgs.add(MenuManager.class.getCanonicalName());
+                launchArgs.add("-quicklaunch");
+                launchArgs.add("-joinserver");
+                launchArgs.add(as[0] + ":" + (as.length <= 1 ? 25565 : parseIntWithDefault(as[1], 25565)));
+                launchArgs.add("-skipupdates");
+
+                java.util.Properties props = System.getProperties();
+                ProcessBuilder processBuilder = new ProcessBuilder(launchArgs);
+
+                Map<String, String> env = processBuilder.environment();
+                for (String prop : props.stringPropertyNames()) {
+                    env.put(prop, props.getProperty(prop));
+                }
+                processBuilder.directory(new File(System.getProperty("user.dir")));
+
+                Process launcherProcess = processBuilder.inheritIO().start();
+
+                LegacyGameManager.closeGame();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                // ignore for now
+            }
         }
     }
 

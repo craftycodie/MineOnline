@@ -13,18 +13,18 @@ import java.util.List;
 public abstract class GuiSlot
 {
 
-    public GuiSlot(int i, int j, int k, int l, int i1)
+    public GuiSlot(int width, int height, int top, int bottom, int i1)
     {
         initialClickY = -2F;
         selectedElement = -1;
         lastClicked = 0L;
         field_25123_p = true;
-        width = i;
-        height = j;
-        top = k;
-        bottom = l;
+        this.width = width;
+        this.height = height;
+        this.top = top;
+        this.bottom = bottom;
         posZ = i1;
-        right = i;
+        right = width;
     }
 
     public void func_27258_a(boolean flag)
@@ -129,6 +129,8 @@ public abstract class GuiSlot
 
     public void drawScreen(int i, int j)
     {
+        field_35409_k = i;
+        field_35408_l = j;
         drawBackground();
         int k = getSize();
         int l = width / 2 + 124;
@@ -199,7 +201,7 @@ public abstract class GuiSlot
         {
             initialClickY = -1F;
         }
-//        bindAmountScrolled();
+        bindAmountScrolled();
 //        GL11.glDisable(2896 /*GL_LIGHTING*/);
 //        GL11.glDisable(2912 /*GL_FOG*/);
         Tessellator tessellator = Tessellator.instance;
@@ -350,6 +352,8 @@ public abstract class GuiSlot
     protected final int posZ;
     private int scrollUpButtonID;
     private int scrollDownButtonID;
+    protected int field_35409_k;
+    protected int field_35408_l;
     private float initialClickY;
     private float scrollMultiplier;
     private float amountScrolled;

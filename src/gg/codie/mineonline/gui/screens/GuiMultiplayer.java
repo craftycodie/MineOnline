@@ -1,29 +1,26 @@
 package gg.codie.mineonline.gui.screens;
 
-import gg.codie.mineonline.Globals;
 import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.LibraryManager;
 import gg.codie.mineonline.api.MineOnlineServer;
 import gg.codie.mineonline.api.MineOnlineServerRepository;
+import gg.codie.mineonline.client.LegacyGameManager;
+import gg.codie.mineonline.client.ThreadPollServers;
 import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.gui.components.GuiButton;
-import gg.codie.mineonline.gui.rendering.DisplayManager;
 import gg.codie.mineonline.gui.rendering.FontRenderer;
 import gg.codie.mineonline.utils.JREUtils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.Display;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 public class GuiMultiplayer extends GuiScreen
 {
-
     public GuiMultiplayer(GuiScreen guiscreen)
     {
         field_35341_g = -1;
@@ -31,9 +28,10 @@ public class GuiMultiplayer extends GuiScreen
         field_35353_s = false;
         field_35352_t = false;
         field_35351_u = false;
-        field_35350_v = null;
+        tooltip = null;
         parentScreen = guiscreen;
 
+        serverRepository.onGotServers(gotServersListener);
         serverRepository.loadServers();
 
         initGui();
@@ -42,6 +40,16 @@ public class GuiMultiplayer extends GuiScreen
     public void updateScreen()
     {
     }
+
+    static MineOnlineServerRepository.GotServersListener gotServersListener = new MineOnlineServerRepository.GotServersListener() {
+        @Override
+        public void GotServers(LinkedList<MineOnlineServer> servers) {
+            for(MineOnlineServer server : servers) {
+                if(!ThreadPollServers.serverLatencies.containsKey(server.connectAddress + ":" + server.port))
+                    ThreadPollServers.pollServer(server);
+            }
+        }
+    };
 
     public void initGui()
     {
@@ -55,9 +63,9 @@ public class GuiMultiplayer extends GuiScreen
     {
 //        controlList.add(field_35347_h = new GuiButton(7, width / 2 - 154, height - 28, 70, 20, "Edit"));
 //        controlList.add(field_35345_j = new GuiButton(2, width / 2 - 74, height - 28, 70, 20, "Delete"));
-        controlList.add(connectButton = new GuiButton(1, getWidth() / 2 - 154, getHeight() - 52, 100, 20, "Join Server"));
-        controlList.add(new GuiButton(4, getWidth() / 2 - 50, getHeight() - 52, 100, 20, "Direct Connect"));
-        controlList.add(new GuiButton(3, getWidth() / 2 + 4 + 50, getHeight() - 52, 100, 20, "Cancel"));
+        controlList.add(connectButton = new GuiButton(1, getWidth() / 2 - 154, getHeight() - 48, 100, 20, "Join Server"));
+        controlList.add(new GuiButton(4, getWidth() / 2 - 50, getHeight() - 48, 100, 20, "Direct Connect"));
+        controlList.add(new GuiButton(3, getWidth() / 2 + 4 + 50, getHeight() - 48, 100, 20, "Cancel"));
 //        controlList.add(new GuiButton(8, width / 2 + 4, height - 28, 70, 20, stringtranslate.translateKey("selectServer.refreshList")));
 //        controlList.add(new GuiButton(0, width / 2 + 4 + 76, height - 28, 75, 20, stringtranslate.translateKey("gui.cancel")));
         boolean flag = field_35341_g >= 0 && field_35341_g < guiSlotServer.getSize();
@@ -69,6 +77,7 @@ public class GuiMultiplayer extends GuiScreen
     public void onGuiClosed()
     {
         Keyboard.enableRepeatEvents(false);
+        serverRepository.offGotServers(gotServersListener);
     }
 
     protected void actionPerformed(GuiButton guibutton)
@@ -144,23 +153,23 @@ public class GuiMultiplayer extends GuiScreen
 
     public void drawScreen(int i, int j)
     {
-        field_35350_v = null;
+        tooltip = null;
         drawDefaultBackground();
         guiSlotServer.drawScreen(i, j);
         drawCenteredString("Play Multiplayer", getWidth() / 2, 20, 0xffffff);
         super.drawScreen(i, j);
-        if(field_35350_v != null)
+        if(tooltip != null)
         {
-            func_35325_a(field_35350_v, i, j);
+            renderTooltip(tooltip, i, j);
         }
     }
 
     private void func_35322_a(int i)
     {
-        connect_probably(serverRepository.getServers().get(i));
+        joinServer(serverRepository.getServers().get(i));
     }
 
-    private void connect_probably(MineOnlineServer server)
+    private void joinServer(MineOnlineServer server)
     {
         try {
             LinkedList<String> launchArgs = new LinkedList();
@@ -186,54 +195,11 @@ public class GuiMultiplayer extends GuiScreen
 
             Process launcherProcess = processBuilder.inheritIO().start();
 
-            Thread.currentThread().interrupt();
-            Display.destroy();
-            DisplayManager.getFrame().dispose();
-            System.exit(0);
-
-//            // for unix debugging, capture IO.
-//            if (Globals.DEV) {
-//                int exitCode = 1;
-//                try {
-//                    exitCode = launcherProcess.waitFor();
-//                    System.exit(exitCode);
-//                } catch (Exception ex) {
-//                    // ignore.
-//                }
-//            }
+            LegacyGameManager.closeGame();
         } catch (Exception ex) {
             ex.printStackTrace();
             // ignore for now
         }
-        //TODO: connect probably
-//        String s = servernbtstorage.field_35793_b;
-//        String as[] = s.split(":");
-//        if(s.startsWith("["))
-//        {
-//            int i = s.indexOf("]");
-//            if(i > 0)
-//            {
-//                String s1 = s.substring(1, i);
-//                String s2 = s.substring(i + 1).trim();
-//                if(s2.startsWith(":") && s2.length() > 0)
-//                {
-//                    s2 = s2.substring(1);
-//                    as = new String[2];
-//                    as[0] = s1;
-//                    as[1] = s2;
-//                } else
-//                {
-//                    as = new String[1];
-//                    as[0] = s1;
-//                }
-//            }
-//        }
-//        if(as.length > 2)
-//        {
-//            as = new String[1];
-//            as[0] = s;
-//        }
-//        mc.displayGuiScreen(new GuiConnecting(mc, as[0], as.length <= 1 ? 25565 : parseIntWithDefault(as[1], 25565)));
     }
 
     private void func_35328_b()
@@ -344,7 +310,7 @@ public class GuiMultiplayer extends GuiScreen
 //        }
     }
 
-    protected void func_35325_a(String s, int i, int j)
+    protected void renderTooltip(String s, int i, int j)
     {
         if(s == null)
         {
@@ -400,7 +366,7 @@ public class GuiMultiplayer extends GuiScreen
         return field_35344_a++;
     }
 
-    static void func_35336_a(GuiMultiplayer guimultiplayer)
+    public static void func_35336_a(GuiMultiplayer guimultiplayer)
         throws IOException
     {
         guimultiplayer.func_35328_b();
@@ -411,9 +377,9 @@ public class GuiMultiplayer extends GuiScreen
         return field_35344_a--;
     }
 
-    static String func_35327_a(GuiMultiplayer guimultiplayer, String s)
+    public String setTooltip(String s)
     {
-        return guimultiplayer.field_35350_v = s;
+        return tooltip = s;
     }
 
     private static int field_35344_a = 0;
@@ -426,6 +392,6 @@ public class GuiMultiplayer extends GuiScreen
     private boolean field_35353_s;
     private boolean field_35352_t;
     private boolean field_35351_u;
-    private String field_35350_v;
+    private String tooltip;
     private MineOnlineServerRepository serverRepository = new MineOnlineServerRepository();
 }

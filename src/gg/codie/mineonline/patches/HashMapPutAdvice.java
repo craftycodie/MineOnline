@@ -33,7 +33,6 @@ public class HashMapPutAdvice {
 
             HashMap<String, Integer> textures = (HashMap<String, Integer>) ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.HashMapPutAdvice").getField("textures").get(null);
 
-            // TODO: MO and MC textures clash currently. To solve this, MO texture names should be prefixed with something.
             textures.put((String)key, (Integer) value);
 
             ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.HashMapPutAdvice").getField("ignore").set(null, false);

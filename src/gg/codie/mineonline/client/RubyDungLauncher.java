@@ -44,13 +44,14 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.Map;
 
-public class RubyDungLauncher {
+public class RubyDungLauncher implements IMinecraftAppletWrapper {
 
     private final String jarPath;
     private final MinecraftVersion minecraftVersion;
 
     boolean f2wasDown = false;
     Renderer renderer;
+    Class rubyDungClass;
 
     public static void startProcess(String jarPath) {
         try {
@@ -113,6 +114,8 @@ public class RubyDungLauncher {
     public void startRubyDung() throws Exception {
         URLClassLoader classLoader = new URLClassLoader(new URL[] { Paths.get(jarPath).toUri().toURL() });
 
+        LegacyGameManager.createGameManager(minecraftVersion, this);
+
         try {
             LinkedList<String> args = new LinkedList<>();
 
@@ -123,7 +126,6 @@ public class RubyDungLauncher {
             if (minecraftVersion != null && minecraftVersion.enableCursorPatch && OSUtils.isMac())
                 MousePatch.fixMouseIssues();
 
-            Class rubyDungClass;
             try {
                 rubyDungClass = classLoader.loadClass("com.mojang.rubydung.RubyDung");
             } catch (ClassNotFoundException ex) {
@@ -299,5 +301,21 @@ public class RubyDungLauncher {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void closeApplet() {
+        try {
+            DisplayManager.closeDisplay();
+        } catch (IllegalStateException e) {
+
+        }
+        DisplayManager.getFrame().dispose();
+        System.exit(0);
+    }
+
+    @Override
+    public Class getMinecraftAppletClass() {
+        return rubyDungClass;
     }
 }

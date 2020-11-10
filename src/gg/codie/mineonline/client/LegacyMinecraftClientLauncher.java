@@ -19,10 +19,7 @@ import gg.codie.mineonline.gui.screens.GuiScreen;
 import gg.codie.mineonline.lwjgl.OnCreateListener;
 import gg.codie.mineonline.lwjgl.OnUpdateListener;
 import gg.codie.mineonline.patches.*;
-import gg.codie.mineonline.patches.lwjgl.LWJGLDisplayPatch;
-import gg.codie.mineonline.patches.lwjgl.LWJGLMouseSetNativeCursorAdvice;
-import gg.codie.mineonline.patches.lwjgl.LWJGLGL11Patch;
-import gg.codie.mineonline.patches.lwjgl.LWJGLGLUPatch;
+import gg.codie.mineonline.patches.lwjgl.*;
 import gg.codie.mineonline.patches.minecraft.FOVViewmodelPatch;
 import gg.codie.mineonline.patches.minecraft.GuiScreenPatch;
 import gg.codie.mineonline.patches.minecraft.MousePatch;
@@ -62,7 +59,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.Map;
 
-public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
+public class LegacyMinecraftClientLauncher extends Applet implements AppletStub, IMinecraftAppletWrapper {
     Applet minecraftApplet;
 
     String jarPath;
@@ -76,6 +73,8 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
 
     int startWidth;
     int startHeight;
+
+    GuiIngameMenu ingameMenu = new GuiIngameMenu();
 
 
     public static void startProcess(String jarPath, String serverIP, String serverPort, String mpPass) {
@@ -182,6 +181,8 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
     public void startMinecraft() throws Exception {
         LibraryManager.updateNativesPath();
 
+        LegacyGameManager.createGameManager(minecraftVersion, this);
+
         LWJGLDisplayPatch.hijackLWJGLThreadPatch(minecraftVersion != null && minecraftVersion.useGreyScreenPatch);
 
         if (minecraftVersion != null && minecraftVersion.enableCursorPatch && OSUtils.isMac())
@@ -259,12 +260,6 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
 
         DisplayManager.getCanvas().setVisible(false);
 
-
-        frame.addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent e) {
-                closeApplet();
-            }
-        });
         frame.addComponentListener(new ComponentListener() {
             @Override
             public void componentResized(ComponentEvent e) {
@@ -288,12 +283,19 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
 
         MenuManager.formopen = false;
 
-        //new GUIScale(Display.getWidth(), Display.getHeight());
-//        GuiScreen ingameOptions = new GuiIngameMenu();
-
         LWJGLDisplayPatch.updateListener = new OnUpdateListener() {
             @Override
             public void onUpdateEvent() {
+//                if (closeNextUpdate) {
+//                    LWJGLDisplayIsCloseRequestedAdvice.requestClose = true;
+//                    //Display.destroy();
+//                    closing = true;
+//                    closeNextUpdate = false;
+//                }
+
+//                if(closing)
+//                    return;
+
                 MouseHandler.update();
 
                 if (firstUpdate) {
@@ -413,7 +415,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
 
                         if (Keyboard.getEventKey() == mineonlineMenuKey && !Keyboard.isRepeatEvent() && Keyboard.getEventKeyState() && !menuWasDown) {
                             if (MenuManager.getGuiScreen() == null) {
-                                MenuManager.setGUIScreen(new GuiIngameMenu(appletClass));
+                                MenuManager.setGUIScreen(ingameMenu);
                                 Mouse.setGrabbed(false);
                             }
 
@@ -490,6 +492,16 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
         fullscreen = Settings.singleton.getFullscreen();
 
         minecraftApplet.start();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (minecraftApplet.isActive()) {
+
+                }
+                Runtime.getRuntime().halt(0);
+            }
+        }).run();
     }
 
     boolean f2wasDown = false;
@@ -499,18 +511,15 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
     int zoomKeyCode = Settings.singleton.getZoomKeyCode();
     int mineonlineMenuKey = Settings.singleton.getMineonlineMenuKeyCode();
 
-    void closeApplet(){
-        if(minecraftApplet != null) {
-            minecraftApplet.stop();
-            minecraftApplet.destroy();
-        }
-        try {
-            DisplayManager.closeDisplay();
-        } catch (IllegalStateException e) {
+    // TODO: Classic needs System.exiting, probably ind/inf too.
+    @Override
+    public void closeApplet(){
+        DisplayManager.getFrame().dispatchEvent(new WindowEvent(DisplayManager.getFrame(), WindowEvent.WINDOW_CLOSING));
+    }
 
-        }
-        DisplayManager.getFrame().dispose();
-        System.exit(0);
+    @Override
+    public Class getMinecraftAppletClass() {
+        return minecraftApplet.getClass();
     }
 
 

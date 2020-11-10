@@ -4,6 +4,7 @@ import gg.codie.minecraft.client.gui.Tessellator;
 import gg.codie.mineonline.MinecraftVersion;
 import gg.codie.mineonline.MinecraftVersionRepository;
 import gg.codie.mineonline.api.MineOnlineServer;
+import gg.codie.mineonline.client.ThreadPollServers;
 import gg.codie.mineonline.gui.rendering.FontRenderer;
 import gg.codie.mineonline.gui.rendering.Loader;
 import gg.codie.mineonline.gui.rendering.textures.EGUITexture;
@@ -11,12 +12,12 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.Arrays;
 
-class GuiSlotServer extends GuiSlot
+public class GuiSlotServer extends GuiSlot
 {
 
     public GuiSlotServer(GuiMultiplayer guimultiplayer)
     {
-        super(guimultiplayer.getWidth(), guimultiplayer.getHeight(), 32, guimultiplayer.getHeight() - 64, 36);
+        super(guimultiplayer.getWidth(), guimultiplayer.getHeight(), 32, guimultiplayer.getHeight() - 55, 36);
         guiMultiplayer = guimultiplayer;
     }
 
@@ -99,52 +100,54 @@ class GuiSlotServer extends GuiSlot
 
         guiMultiplayer.drawString(server.name, j + 2, k + 1, 0xffffff);
         guiMultiplayer.drawString(versionName, j + 2, k + 12, 0x808080);
-        guiMultiplayer.drawString(server.users + "/" + server.maxUsers, (j + 215) - FontRenderer.minecraftFontRenderer.getStringWidth("String 3"), k + 12, 0x808080);
+        String users = server.isMineOnline ? "" + server.users : "?";
+        guiMultiplayer.drawString(users + "/" + server.maxUsers, (j + 215) - FontRenderer.minecraftFontRenderer.getStringWidth(users + "/" + server.maxUsers), k + 12, 0x808080);
         guiMultiplayer.drawString(server.onlineMode ? "Online Mode" : "", j + 2, k + 12 + 11, 0x55FF55);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, Loader.singleton.getGuiTexture(EGUITexture.GUI_ICONS));
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
 
-        int i1 = 0;
-        int j1 = 0;
-        String s = "";
-//        if(servernbtstorage.field_35790_f && servernbtstorage.field_35792_e != -2L)
-//        {
-//            i1 = 0;
-//            j1 = 0;
-//            if(servernbtstorage.field_35792_e < 0L)
-//            {
-//                j1 = 5;
-//            } else
-//            if(servernbtstorage.field_35792_e < 150L)
-//            {
-//                j1 = 0;
-//            } else
-//            if(servernbtstorage.field_35792_e < 300L)
-//            {
-//                j1 = 1;
-//            } else
-//            if(servernbtstorage.field_35792_e < 600L)
-//            {
-//                j1 = 2;
-//            } else
-//            if(servernbtstorage.field_35792_e < 1000L)
-//            {
-//                j1 = 3;
-//            } else
-//            {
-//                j1 = 4;
-//            }
-//            if(servernbtstorage.field_35792_e < 0L)
-//            {
-//                s = "(no connection)";
-//            } else
-//            {
-//                s = (new StringBuilder()).append(servernbtstorage.field_35792_e).append("ms").toString();
-//            }
-//        } else
-//        {
+        int i1;
+        int j1;
+        String s;
+        Long latency;
+        if(ThreadPollServers.serverLatencies.containsKey(server.connectAddress + ":" + server.port) && (latency = ThreadPollServers.serverLatencies.get(server.connectAddress + ":" + server.port)) != -2L)
+        {
+            i1 = 0;
+            j1 = 0;
+            if(latency < 0L)
+            {
+                j1 = 5;
+            } else
+            if(latency < 150L)
+            {
+                j1 = 0;
+            } else
+            if(latency< 300L)
+            {
+                j1 = 1;
+            } else
+            if(latency < 600L)
+            {
+                j1 = 2;
+            } else
+            if(latency < 1000L)
+            {
+                j1 = 3;
+            } else
+            {
+                j1 = 4;
+            }
+            if(latency < 0L)
+            {
+                s = "(no connection)";
+            } else
+            {
+                s = (new StringBuilder()).append(latency).append("ms").toString();
+            }
+        } else
+        {
             i1 = 1;
             j1 = (int)(System.currentTimeMillis() / 100L + (long)(i * 2) & 7L);
             if(j1 > 4)
@@ -152,12 +155,17 @@ class GuiSlotServer extends GuiSlot
                 j1 = 8 - j1;
             }
             s = "Polling..";
-//        }
+        }
         guiMultiplayer.drawTexturedModalRect(j + 205, k, 0 + i1 * 10, 176 + j1 * 8, 10, 8);
         byte byte0 = 4;
-//        if(field_35409_k >= (j + 205) - byte0 && field_35408_l >= k - byte0 && field_35409_k <= j + 205 + 10 + byte0 && field_35408_l <= k + 8 + byte0)
+        if(field_35409_k >= (j + 205) - byte0 && field_35408_l >= k - byte0 && field_35409_k <= j + 205 + 10 + byte0 && field_35408_l <= k + 8 + byte0)
+        {
+            guiMultiplayer.setTooltip(s);
+        }
+        // TODO: Players Tooltip
+//        if(field_35409_k >= (j + 205) - byte0 && field_35408_l >= k && field_35409_k <= j + 205 + 10 + byte0 && field_35408_l <= k + 12 + byte0)
 //        {
-//            GuiMultiplayer.func_35327_a(guiMultiplayer, s);
+//            guiMultiplayer.setTooltip(Arrays.toString(server.players).replace("[", "").replace("]", "").replace(",", "\n"));
 //        }
     }
 
