@@ -1,7 +1,3 @@
-// Decompiled by Jad v1.5.8g. Copyright 2001 Pavel Kouznetsov.
-// Jad home page: http://www.kpdus.com/jad.html
-// Decompiler options: packimports(3) braces deadcode 
-
 package gg.codie.mineonline.gui.screens;
 
 import gg.codie.mineonline.Settings;
@@ -16,10 +12,6 @@ import gg.codie.mineonline.patches.HashMapPutAdvice;
 import org.lwjgl.opengl.GL11;
 
 import java.util.List;
-
-// Referenced classes of package net.minecraft.src:
-//            GuiSlot, GuiTexturePacks, TexturePackList, TexturePackBase, 
-//            RenderEngine, Tessellator
 
 class GuiTexturePackSlot extends GuiSlot
 {
@@ -45,8 +37,6 @@ class GuiTexturePackSlot extends GuiSlot
         Loader.singleton.unloadTexture(EGUITexture.GUI_ICONS);
         Loader.singleton.unloadTexture(EGUITexture.UNKNOWN_PACK);
         Loader.singleton.unloadTexture(EGUITexture.FONT);
-        //System.out.println(HashMapPutAdvice.textures);
-        //GL11.glDeleteTextures(HashMapPutAdvice.textures.get("/terrain.png"));
 
         if (LegacyGameManager.isInGame()) {
             LegacyGameManager.setTexturePack(((TexturePackBase)list.get(i)).texturePackFileName);

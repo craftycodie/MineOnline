@@ -27,21 +27,6 @@ public abstract class GuiSlot
         right = width;
     }
 
-    public void func_27258_a(boolean flag)
-    {
-        field_25123_p = flag;
-    }
-
-    protected void func_27259_a(boolean flag, int i)
-    {
-        field_27262_q = flag;
-        field_27261_r = i;
-        if(!flag)
-        {
-            field_27261_r = 0;
-        }
-    }
-
     protected abstract int getSize();
 
     protected abstract void elementClicked(int i, boolean flag);
@@ -50,45 +35,12 @@ public abstract class GuiSlot
 
     protected int getContentHeight()
     {
-        return getSize() * posZ + field_27261_r;
+        return getSize() * posZ;
     }
 
     protected abstract void drawBackground();
 
     protected abstract void drawSlot(int i, int j, int k, int l, Tessellator tessellator);
-
-    protected void func_27260_a(int i, int j, Tessellator tessellator)
-    {
-    }
-
-    protected void func_27255_a(int i, int j)
-    {
-    }
-
-    protected void func_27257_b(int i, int j)
-    {
-    }
-
-    public int func_27256_c(int i, int j)
-    {
-        int k = width / 2 - 110;
-        int l = width / 2 + 110;
-        int i1 = ((j - top - field_27261_r) + (int)amountScrolled) - 4;
-        int j1 = i1 / posZ;
-        if(i >= k && i <= l && j1 >= 0 && i1 >= 0 && j1 < getSize())
-        {
-            return j1;
-        } else
-        {
-            return -1;
-        }
-    }
-
-    public void registerScrollButtons(List list, int i, int j)
-    {
-        scrollUpButtonID = i;
-        scrollDownButtonID = j;
-    }
 
     private void bindAmountScrolled()
     {
@@ -104,26 +56,6 @@ public abstract class GuiSlot
         if(amountScrolled > (float)i)
         {
             amountScrolled = i;
-        }
-    }
-
-    public void actionPerformed(GuiButton guibutton)
-    {
-        if(!guibutton.enabled)
-        {
-            return;
-        }
-        if(guibutton.id == scrollUpButtonID)
-        {
-            amountScrolled -= (posZ * 2) / 3;
-            initialClickY = -2F;
-            bindAmountScrolled();
-        } else
-        if(guibutton.id == scrollDownButtonID)
-        {
-            amountScrolled += (posZ * 2) / 3;
-            initialClickY = -2F;
-            bindAmountScrolled();
         }
     }
 
@@ -144,7 +76,7 @@ public abstract class GuiSlot
                 {
                     int j1 = width / 2 - 110;
                     int k1 = width / 2 + 110;
-                    int i2 = ((j - top - field_27261_r) + (int)amountScrolled) - 4;
+                    int i2 = ((j - top) + (int)amountScrolled) - 4;
                     int k2 = i2 / posZ;
                     if(i >= j1 && i <= k1 && k2 >= 0 && i2 >= 0 && k2 < k)
                     {
@@ -155,7 +87,6 @@ public abstract class GuiSlot
                     } else
                     if(i >= j1 && i <= k1 && i2 < 0)
                     {
-                        func_27255_a(i - j1, ((j - top) + (int)amountScrolled) - 4);
                         flag = false;
                     }
                     if(i >= l && i <= i1)
@@ -202,30 +133,12 @@ public abstract class GuiSlot
             initialClickY = -1F;
         }
         bindAmountScrolled();
-//        GL11.glDisable(2896 /*GL_LIGHTING*/);
-//        GL11.glDisable(2912 /*GL_FOG*/);
         Tessellator tessellator = Tessellator.instance;
-//        GL11.glBindTexture(3553 /*GL_TEXTURE_2D*/, Loader.singleton.getGuiTexture(EGUITexture.BACKGROUND));
-//        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
-//        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
-//        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-//        float f1 = 32F;
-//        tessellator.startDrawingQuads();
-//        tessellator.setColorOpaque_I(0x202020);
-//        tessellator.addVertexWithUV(left, bottom, 0.0D, (float)left / f1, (float)(bottom + (int)amountScrolled) / f1);
-//        tessellator.addVertexWithUV(right, bottom, 0.0D, (float)right / f1, (float)(bottom + (int)amountScrolled) / f1);
-//        tessellator.addVertexWithUV(right, top, 0.0D, (float)right / f1, (float)(top + (int)amountScrolled) / f1);
-//        tessellator.addVertexWithUV(left, top, 0.0D, (float)left / f1, (float)(top + (int)amountScrolled) / f1);
-//        tessellator.draw();
         int l1 = width / 2 - 92 - 16;
         int j2 = (top + 4) - (int)amountScrolled;
-        if(field_27262_q)
-        {
-            func_27260_a(l1, j2, tessellator);
-        }
         for(int l2 = 0; l2 < k; l2++)
         {
-            int j3 = j2 + l2 * posZ + field_27261_r;
+            int j3 = j2 + l2 * posZ;
             int i4 = posZ - 4;
             if(j3 > bottom || j3 + i4 < top)
             {
@@ -236,7 +149,7 @@ public abstract class GuiSlot
                 int k4 = width / 2 - 110;
                 int i5 = width / 2 + 110;
                 GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-                GL11.glDisable(3553 /*GL_TEXTURE_2D*/);
+                GL11.glDisable(GL11.GL_TEXTURE_2D);
                 tessellator.startDrawingQuads();
                 tessellator.setColorOpaque_I(0x808080);
                 tessellator.addVertexWithUV(k4, j3 + i4 + 2, 0.0D, 0.0D, 1.0D);
@@ -249,20 +162,20 @@ public abstract class GuiSlot
                 tessellator.addVertexWithUV(i5 - 1, j3 - 1, 0.0D, 1.0D, 0.0D);
                 tessellator.addVertexWithUV(k4 + 1, j3 - 1, 0.0D, 0.0D, 0.0D);
                 tessellator.draw();
-                GL11.glEnable(3553 /*GL_TEXTURE_2D*/);
+                GL11.glEnable(GL11.GL_TEXTURE_2D);
             }
             drawSlot(l2, l1, j3, i4, tessellator);
         }
 
-        //GL11.glDisable(2929 /*GL_DEPTH_TEST*/);
+        //GL11.glDisable(GL11.GL_DEPTH_TEST);
         byte byte0 = 4;
         overlayBackground(0, top, 255, 255);
         overlayBackground(bottom, height, 255, 255);
-        GL11.glEnable(3042 /*GL_BLEND*/);
+        GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(770, 771);
-        //GL11.glDisable(3008 /*GL_ALPHA_TEST*/);
-        GL11.glShadeModel(7425 /*GL_SMOOTH*/);
-        GL11.glDisable(3553 /*GL_TEXTURE_2D*/);
+        //GL11.glDisable(GL11.GL_ALPHA_TEST);
+        GL11.glShadeModel(GL11.GL_SMOOTH);
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
         tessellator.startDrawingQuads();
         tessellator.setColorRGBA_I(0, 0);
         tessellator.addVertexWithUV(left, top + byte0, 0.0D, 0.0D, 1.0D);
@@ -318,17 +231,16 @@ public abstract class GuiSlot
             tessellator.addVertexWithUV(l, l4, 0.0D, 0.0D, 0.0D);
             tessellator.draw();
         }
-        func_27257_b(i, j);
-        GL11.glEnable(3553 /*GL_TEXTURE_2D*/);
-        GL11.glShadeModel(7424 /*GL_FLAT*/);
-        GL11.glEnable(3008 /*GL_ALPHA_TEST*/);
-        GL11.glDisable(3042 /*GL_BLEND*/);
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+        GL11.glShadeModel(GL11.GL_FLAT);
+        GL11.glEnable(GL11.GL_ALPHA_TEST);
+        GL11.glDisable(GL11.GL_BLEND);
     }
 
     private void overlayBackground(int i, int j, int k, int l)
     {
         Tessellator tessellator = Tessellator.instance;
-        GL11.glBindTexture(3553 /*GL_TEXTURE_2D*/, Loader.singleton.getGuiTexture(EGUITexture.BACKGROUND));
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, Loader.singleton.getGuiTexture(EGUITexture.BACKGROUND));
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -350,8 +262,6 @@ public abstract class GuiSlot
     private final int right;
     private final int left = 0;
     protected final int posZ;
-    private int scrollUpButtonID;
-    private int scrollDownButtonID;
     protected int field_35409_k;
     protected int field_35408_l;
     private float initialClickY;
@@ -360,6 +270,4 @@ public abstract class GuiSlot
     private int selectedElement;
     private long lastClicked;
     private boolean field_25123_p;
-    private boolean field_27262_q;
-    private int field_27261_r;
 }

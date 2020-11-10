@@ -53,14 +53,7 @@ public class GuiTexturePacks extends GuiScreen
         }));
         MinecraftTexturePackRepository.singleton.getTexturePacks();
         guiTexturePackSlot = new GuiTexturePackSlot(this);
-        guiTexturePackSlot.registerScrollButtons(controlList, 7, 8);
     }
-
-//    protected void actionPerformed(GuiButton guibutton)
-//    {
-//            guiTexturePackSlot.actionPerformed(guibutton);
-//
-//    }
 
     protected void mouseClicked(int i, int j, int k)
     {

@@ -66,23 +66,6 @@ public class GuiSlotServer extends GuiSlot
             } else {
                 versionName = version.name;
             }
-
-
-//                    boolean clientInstalled = false;
-//
-//                    found:
-//                    for (String clientVersion : version.clientVersions) {
-//                        for (MinecraftVersion installedClient : MinecraftVersionRepository.getSingleton().getInstalledClients()) {
-//                            if (installedClient.baseVersion.equals(clientVersion)) {
-//                                clientInstalled = true;
-//                                break found;
-//                            }
-//                        }
-//                    }
-
-//                    if (!clientInstalled) {
-//                        info2 = info2 + " - Not Installed!";
-//                    }
         }
 
         guiMultiplayer.drawString(server.name, j + 2, k + 1, 0xffffff);
