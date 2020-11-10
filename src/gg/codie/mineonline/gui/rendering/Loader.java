@@ -213,7 +213,7 @@ public class Loader {
         }
     }
 
-    public static void reloadMinecraftTextures() {
+    public static void reloadMinecraftTextures(Class minecraftClass) {
         String[] textureNames = new String[] {
                 "/terrain.png",
                 "/gui/gui.png",
@@ -221,20 +221,28 @@ public class Loader {
                 "/default.png"
         };
 
-        try {
-            ZipFile texturesZip = new ZipFile(LauncherFiles.MINECRAFT_TEXTURE_PACKS_PATH + Settings.singleton.getTexturePack());
-            for (String textureName : textureNames) {
+        ZipFile texturesZip = null;
+
+        for (String textureName : textureNames) {
+            try {
+                if (texturesZip == null)
+                    texturesZip = new ZipFile(LauncherFiles.MINECRAFT_TEXTURE_PACKS_PATH + Settings.singleton.getTexturePack());
+
                 ZipEntry texture = texturesZip.getEntry(textureName.substring(1));
+
                 if (texture != null) {
-//                    return loadTexture(eguiTexture.textureName, texturesZip.getInputStream(texture));
                     Loader.singleton.overwriteTexture(HashMapPutAdvice.textures.get(textureName), texturesZip.getInputStream(texture), textureName);
+                    continue;
                 }
+            } catch (Exception ex) {
+
             }
-        } catch (Exception ex) {
-
+            try {
+                if (minecraftClass != null) Loader.singleton.overwriteTexture(HashMapPutAdvice.textures.get(textureName), minecraftClass.getResourceAsStream(textureName), textureName);
+            } catch (Exception ex) {
+                // ignore
+            }
         }
-
-//        Loader.singleton.overwriteTexture(HashMapPutAdvice.textures.get("/terrain.png"), , "/terrain.png");
     }
 
     public static int get2Fold(int fold) {
@@ -246,21 +254,28 @@ public class Loader {
     }
 
     public int getGuiTexture(EGUITexture eguiTexture) {
-        if (!textures.containsKey(eguiTexture.textureName)) {
+        if (!textures.containsKey("mineonline:" + eguiTexture.textureName)) {
             Settings.singleton.loadSettings();
             try {
                 ZipFile texturesZip = new ZipFile(LauncherFiles.MINECRAFT_TEXTURE_PACKS_PATH + Settings.singleton.getTexturePack());
                 ZipEntry texture = texturesZip.getEntry(eguiTexture.textureName.substring(1));
                 if (texture != null) {
-                    return loadTexture(eguiTexture.textureName, texturesZip.getInputStream(texture));
+                    return loadTexture("mineonline:" + eguiTexture.textureName, texturesZip.getInputStream(texture));
                 }
             } catch (Exception ex) {
 
             }
 
-            return loadTexture(eguiTexture.textureName, Loader.class.getResource(eguiTexture.textureName));
+            return loadTexture("mineonline:" + eguiTexture.textureName, Loader.class.getResource(eguiTexture.textureName));
         } else
-            return textures.get(eguiTexture.textureName);
+            return textures.get("mineonline:" + eguiTexture.textureName);
+    }
+
+    public void unloadTexture(EGUITexture eguiTexture) {
+        if (textures.containsKey("mineonline:" + eguiTexture.textureName)) {
+            GL11.glDeleteTextures(textures.get("mineonline:" + eguiTexture.textureName));
+            textures.remove("mineonline:" + eguiTexture.textureName);
+        }
     }
 
     private int createVAO() {

@@ -47,6 +47,7 @@ public class MinecraftClientLauncher {
 
             libraries.add(new File(MinecraftClientLauncher.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath());
             libraries.add(jarPath);
+            libraries.add(LauncherFiles.DISCORD_RPC_JAR);
 
             LinkedList<String> launchArgs = new LinkedList();
             launchArgs.add(JREUtils.getJavaExecutable());

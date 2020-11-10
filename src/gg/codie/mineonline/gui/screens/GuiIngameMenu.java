@@ -19,9 +19,11 @@ import org.lwjgl.util.glu.GLU;
 
 public class GuiIngameMenu extends GuiScreen
 {
+    private Class minecraftClass;
 
-    public GuiIngameMenu()
+    public GuiIngameMenu(Class minecraftClass)
     {
+        this.minecraftClass = minecraftClass;
         updateCounter2 = 0;
         updateCounter = 0;
     }
@@ -38,7 +40,7 @@ public class GuiIngameMenu extends GuiScreen
 //        }
         controlList.add(new GuiButton(4, getWidth() / 2 - 100, getHeight() / 4 + 24 + byte0, "Back to game"));
         controlList.add(new GuiButton(0, getWidth() / 2 - 100, getHeight() / 4 + 96 + byte0, "Options..."));
-        controlList.add(new GuiButton(5, getWidth() / 2 - 100, getHeight() / 4 + 48 + byte0, "Join Server"));
+        controlList.add(new GuiButton(5, getWidth() / 2 - 100, getHeight() / 4 + 48 + byte0, "Multiplayer"));
 
     }
 
@@ -67,7 +69,7 @@ public class GuiIngameMenu extends GuiScreen
         }
         if(guibutton.id == 1)
         {
-            MenuManager.setGUIScreen(new GuiTexturePacks(this));
+            MenuManager.setGUIScreen(new GuiTexturePacks(this, minecraftClass));
             //mc.displayGuiScreen(new GuiTexturePacks(this));
         }
     }

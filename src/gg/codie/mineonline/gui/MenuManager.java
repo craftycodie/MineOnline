@@ -30,6 +30,7 @@ import javax.swing.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.util.Arrays;
 import java.util.Random;
 import java.util.Set;
 
@@ -91,13 +92,19 @@ public class MenuManager {
         return updateAvailable;
     }
 
+    static boolean skipUpdates = false;
     public static void main(String[] args) throws Exception {
         Logging.enableLogging();
 
         DiscordRPCHandler.initialize();
 
-        ProgressDialog.showProgress("Loading MineOnline", closeListener);
-        ProgressDialog.setMessage("Loading LWJGL");
+        if(Arrays.stream(args).anyMatch(arg -> arg.equals("-skipupdates")))
+            skipUpdates = true;
+
+        if (!skipUpdates) {
+            ProgressDialog.showProgress("Loading MineOnline", closeListener);
+            ProgressDialog.setMessage("Loading LWJGL");
+        }
 
         LibraryManager.updateNativesPath();
 
@@ -106,17 +113,19 @@ public class MenuManager {
 
         formopen = true;
 
-        try {
-            updateAvailable = !MineOnlineAPI.getLauncherVersion().replaceAll("\\s","").equals(Globals.LAUNCHER_VERSION);
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        if (!skipUpdates) {
+            try {
+                updateAvailable = !MineOnlineAPI.getLauncherVersion().replaceAll("\\s", "").equals(Globals.LAUNCHER_VERSION);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
 
         ProgressDialog.setMessage("Loading Minecraft versions");
         ProgressDialog.setProgress(40);
 
         // Load this before showing the display.
-        MinecraftVersionRepository.getSingleton();
+        MinecraftVersionRepository.getSingleton(skipUpdates);
 
         boolean multiinstance = false;
         String quicklaunch = null;
@@ -201,15 +210,7 @@ public class MenuManager {
         ProgressDialog.setMessage("Loading done.");
         ProgressDialog.setProgress(100);
 
-        DisplayManager.createDisplay();
 
-        DisplayManager.getFrame().addWindowListener(closeListener);
-
-        Keyboard.enableRepeatEvents(true);
-
-        Renderer renderer = new Renderer();
-        Loader loader = new Loader();
-        TextMaster.init(loader);
 
         if (sessionToken != null && username != null) {
             new Session(username, sessionToken, lastLogin.clientToken, uuid, true);
@@ -291,6 +292,16 @@ public class MenuManager {
             MinecraftVersion.launchMinecraft(quicklaunch, ip, port, mppass);
             return;
         }
+
+        DisplayManager.createDisplay();
+
+        DisplayManager.getFrame().addWindowListener(closeListener);
+
+        Keyboard.enableRepeatEvents(true);
+
+        Renderer renderer = new Renderer();
+        Loader loader = new Loader();
+        TextMaster.init(loader);
 
         GameObject playerPivot = new GameObject("player_origin", new Vector3f(), new Vector3f(0, 30, 0), new Vector3f(1, 1, 1));
         PlayerGameObject playerGameObject = new PlayerGameObject("player", loader, new Vector3f(0, -21, 0), new Vector3f(), new Vector3f(1, 1, 1));

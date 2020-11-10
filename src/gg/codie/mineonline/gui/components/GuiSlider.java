@@ -40,7 +40,7 @@ public class GuiSlider extends GuiButton
                 sliderValue = 1.0F;
             }
             // TODO: Save Change
-//            LWJGLPerspectiveAdvice.customFOV = 40 + (sliderValue * 70);
+            LWJGLPerspectiveAdvice.customFOV = 40 + (sliderValue * 70);
 
 //            minecraft.gameSettings.setOptionFloatValue(idFloat, sliderValue);
             displayString = "" + sliderValue;

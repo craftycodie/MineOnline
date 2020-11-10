@@ -3,7 +3,6 @@ package gg.codie.mineonline.gui.components;
 import gg.codie.mineonline.Globals;
 import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.Settings;
-import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.gui.events.IOnClickListener;
 import gg.codie.mineonline.gui.rendering.*;
 import gg.codie.mineonline.gui.rendering.models.RawModel;
@@ -103,7 +102,7 @@ public class SelectableTexturePackList extends GUIObject {
         }
         texturePacks.clear();
 
-        addTexturePack("Default", "The default look of Minecraft", Loader.singleton.getGuiTexture(EGUITexture.PACK));
+        addTexturePack("Default", "The default look of Minecraft", Loader.singleton.getGuiTexture(EGUITexture.DEFAULT_PACK));
 
         File texturePacksFolder = new File(LauncherFiles.MINECRAFT_TEXTURE_PACKS_PATH);
 

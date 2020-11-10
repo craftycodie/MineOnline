@@ -413,7 +413,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
 
                         if (Keyboard.getEventKey() == mineonlineMenuKey && !Keyboard.isRepeatEvent() && Keyboard.getEventKeyState() && !menuWasDown) {
                             if (MenuManager.getGuiScreen() == null) {
-                                MenuManager.setGUIScreen(new GuiIngameMenu());
+                                MenuManager.setGUIScreen(new GuiIngameMenu(appletClass));
                                 Mouse.setGrabbed(false);
                             }
 
@@ -695,6 +695,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
             appletResize(widthBeforeFullscreen, heightBeforeFullscreen);
             minecraftApplet.setPreferredSize(new Dimension(widthBeforeFullscreen, heightBeforeFullscreen));
             minecraftApplet.resize(new Dimension(widthBeforeFullscreen , heightBeforeFullscreen));
+            DisplayManager.getFrame().setSize(widthBeforeFullscreen + DisplayManager.getFrame().getInsets().left + DisplayManager.getFrame().getInsets().right, heightBeforeFullscreen + DisplayManager.getFrame().getInsets().top + DisplayManager.getFrame().getInsets().bottom);
         } else {
             appletResize(Display.getDesktopDisplayMode().getWidth(), Display.getDesktopDisplayMode().getHeight());
             minecraftApplet.setPreferredSize(new Dimension(Display.getDesktopDisplayMode().getWidth(), Display.getDesktopDisplayMode().getHeight()));

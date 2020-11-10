@@ -19,11 +19,13 @@ import java.io.File;
 
 public class GuiTexturePacks extends GuiScreen
 {
+    Class minecraftClass;
 
-    public GuiTexturePacks(GuiScreen guiscreen)
+    public GuiTexturePacks(GuiScreen guiscreen, Class minecraftClass)
     {
         field_6454_o = -1;
         parent = guiscreen;
+        this.minecraftClass = minecraftClass;
         MinecraftTexturePackRepository.singleton.loadTexturePacks();
         Settings.singleton.loadSettings();
         initGui();
@@ -55,14 +57,13 @@ public class GuiTexturePacks extends GuiScreen
         } else
         if(guibutton.id == 6)
         {
-            //mc.renderEngine.refreshTextures();
-            Loader.singleton.unloadTexture(EGUITexture.PACK.textureName);
-            Loader.singleton.unloadTexture(EGUITexture.BACKGROUND.textureName);
-            Loader.singleton.unloadTexture(EGUITexture.GUI.textureName);
-            Loader.singleton.unloadTexture(EGUITexture.UNKNOWN_PACK.textureName);
-            Loader.singleton.unloadTexture(EGUITexture.FONT.textureName);
-            //GL11.glDeleteTextures(HashMapPutAdvice.textures.get("/terrain.png"));
-            Loader.reloadMinecraftTextures();
+            //Loader.singleton.unloadTexture(EGUITexture.DEFAULT_PACK.textureName);
+            Loader.singleton.unloadTexture(EGUITexture.BACKGROUND);
+            Loader.singleton.unloadTexture(EGUITexture.GUI);
+            Loader.singleton.unloadTexture(EGUITexture.GUI_ICONS);
+            Loader.singleton.unloadTexture(EGUITexture.UNKNOWN_PACK);
+            Loader.singleton.unloadTexture(EGUITexture.FONT);
+            Loader.reloadMinecraftTextures(minecraftClass);
             FontRenderer.reloadFont();
 
             MenuManager.setGUIScreen(parent);

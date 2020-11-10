@@ -46,7 +46,7 @@ public class MainMenuScreen implements IMenuScreen {
         String jarPath = MinecraftVersionRepository.getSingleton().getLastSelectedJarPath();
         boolean jarSelected = jarPath != null && !jarPath.isEmpty();
 
-        playButton = new MediumButton("Play", new Vector2f((DisplayManager.getDefaultWidth() / 2) + 30, (DisplayManager.getDefaultHeight() / 2) - 40), new IOnClickListener() {
+        playButton = new MediumButton("Singleplayer", new Vector2f((DisplayManager.getDefaultWidth() / 2) + 30, (DisplayManager.getDefaultHeight() / 2) - 40), new IOnClickListener() {
             @Override
             public void onClick() {
                 try {
@@ -58,7 +58,7 @@ public class MainMenuScreen implements IMenuScreen {
             }
         });
 
-        joinServerButton = new MediumButton("Join Server", new Vector2f((DisplayManager.getDefaultWidth() / 2) + 30, (DisplayManager.getDefaultHeight() / 2) + 8), new IOnClickListener() {
+        joinServerButton = new MediumButton("Multiplayer", new Vector2f((DisplayManager.getDefaultWidth() / 2) + 30, (DisplayManager.getDefaultHeight() / 2) + 8), new IOnClickListener() {
             @Override
             public void onClick() {
                 MenuManager.setMenuScreen(new JoinServerScreen(null));

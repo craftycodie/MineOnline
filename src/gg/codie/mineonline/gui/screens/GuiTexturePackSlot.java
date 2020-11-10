@@ -40,16 +40,15 @@ class GuiTexturePackSlot extends GuiSlot
         List list = MinecraftTexturePackRepository.singleton.getTexturePacks();
         Settings.singleton.setTexturePack(((TexturePackBase)list.get(i)).texturePackFileName);
         Settings.singleton.saveSettings();
-        //mc.renderEngine.refreshTextures();
-        Loader.singleton.unloadTexture(EGUITexture.PACK.textureName);
-        Loader.singleton.unloadTexture(EGUITexture.BACKGROUND.textureName);
-        Loader.singleton.unloadTexture(EGUITexture.GUI.textureName);
-        Loader.singleton.unloadTexture(EGUITexture.UNKNOWN_PACK.textureName);
-        Loader.singleton.unloadTexture(EGUITexture.FONT.textureName);
+        Loader.singleton.unloadTexture(EGUITexture.BACKGROUND);
+        Loader.singleton.unloadTexture(EGUITexture.GUI);
+        Loader.singleton.unloadTexture(EGUITexture.GUI_ICONS);
+        Loader.singleton.unloadTexture(EGUITexture.UNKNOWN_PACK);
+        Loader.singleton.unloadTexture(EGUITexture.FONT);
         //System.out.println(HashMapPutAdvice.textures);
         //GL11.glDeleteTextures(HashMapPutAdvice.textures.get("/terrain.png"));
         FontRenderer.reloadFont();
-        Loader.reloadMinecraftTextures();
+        Loader.reloadMinecraftTextures(parentTexturePackGui.minecraftClass);
     }
 
     protected boolean isSelected(int i)
