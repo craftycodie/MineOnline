@@ -343,6 +343,13 @@ public class Options implements IMinecraftOptionsHandler {
 
     @Override
     public String getTexturePack() throws NoSuchFieldException {
+        switch (optionsVersion) {
+            case CLASSIC:
+            case PRESKINS:
+                throw new NoSuchFieldException("No skin in this version");
+            default:
+        }
+
         try {
             return getOption("skin");
         } catch (IOException ex) {
@@ -352,9 +359,17 @@ public class Options implements IMinecraftOptionsHandler {
 
     @Override
     public void setTexturePack(String texturePack) {
+        switch (optionsVersion) {
+            case CLASSIC:
+            case PRESKINS:
+                return;
+            default:
+        }
+
         try {
             setOption("skin", texturePack);
         } catch (IOException ex) {
+            ex.printStackTrace();
             // ignore
         }
     }
@@ -415,6 +430,14 @@ public class Options implements IMinecraftOptionsHandler {
 
     @Override
     public float getFOV() throws NoSuchFieldException {
+        switch (optionsVersion) {
+            case CLASSIC:
+            case PRESKINS:
+            case PREFOV:
+                throw new NoSuchFieldException("No fov in this version");
+            default:
+        }
+
         try {
             return 70 + (40 * Float.parseFloat(getOption("fov")));
         } catch (IOException ex) {
@@ -424,6 +447,14 @@ public class Options implements IMinecraftOptionsHandler {
 
     @Override
     public void setFOV(float fov) {
+        switch (optionsVersion) {
+            case CLASSIC:
+            case PRESKINS:
+            case PREFOV:
+                return;
+            default:
+        }
+
         try {
             setOption("fov", "" + ((fov - 70) / 40));
         } catch (IOException ex) {

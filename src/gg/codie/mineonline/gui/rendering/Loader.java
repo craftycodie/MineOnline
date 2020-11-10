@@ -213,11 +213,76 @@ public class Loader {
         }
     }
 
-    public static void reloadMinecraftTextures(Class minecraftClass) {
+    public static void reloadMinecraftTextures(Class minecraftClass, String texturePack) {
         String[] textureNames = new String[] {
                 "/terrain.png",
+                "/particles.png",
+
                 "/gui/gui.png",
+                "/gui/background.png",
+                "/gui/container.png",
+                "/gui/crafting.png",
+                "/gui/logo.png",
+                "/gui/furnace.png",
+                "/gui/inventory.png",
+                "/gui/items.png",
+                "/gui/unknown_pack.png",
                 "/gui/icons.png",
+
+                "/armor/chain_1.png",
+                "/armor/chain_2.png",
+                "/armor/cloth_1.png",
+                "/armor/cloth_2.png",
+                "/armor/diamond_1.png",
+                "/armor/diamond_2.png",
+                "/armor/gold_1.png",
+                "/armor/gold_2.png",
+                "/armor/iron_1.png",
+                "/armor/iron_2.png",
+
+                "/art/kz.png",
+
+                "/environment/clouds.png",
+                "/environment/rain.png",
+                "/environment/snow.png",
+
+                "/font/default.png",
+
+                "/item/arrows.png",
+                "/item/boat.png",
+                "/item/cart.png",
+                "/item/door.png",
+                "/item/sign.png",
+
+                "/misc/dial.png",
+                "/misc/foliagecolor.png",
+                "/misc/grasscolor.png",
+                "/misc/pumpkinblur.png",
+                "/misc/shadow.png",
+                "/misc/vignette.png",
+                "/misc/water.png",
+
+                "/mob/char.png",
+                "/mob/chicken.png",
+                "/mob/cow.png",
+                "/mob/creeper.png",
+                "/mob/ghast.png",
+                "/mob/ghast_fire.png",
+                "/mob/pig.png",
+                "/mob/pigman.png",
+                "/mob/pigzombie.png",
+                "/mob/saddle.png",
+                "/mob/sheep.png",
+                "/mob/sheep_fur.png",
+                "/mob/skeleton.png",
+                "/mob/slime.png",
+                "/mob/spider.png",
+                "/mob/spider_eyes.png",
+                "/mob/zombie.png",
+
+                "/terrain/.moonpng",
+                "/terrain/sun.png",
+
                 "/default.png"
         };
 
@@ -226,7 +291,7 @@ public class Loader {
         for (String textureName : textureNames) {
             try {
                 if (texturesZip == null)
-                    texturesZip = new ZipFile(LauncherFiles.MINECRAFT_TEXTURE_PACKS_PATH + Settings.singleton.getTexturePack());
+                    texturesZip = new ZipFile(LauncherFiles.MINECRAFT_TEXTURE_PACKS_PATH + texturePack);
 
                 ZipEntry texture = texturesZip.getEntry(textureName.substring(1));
 

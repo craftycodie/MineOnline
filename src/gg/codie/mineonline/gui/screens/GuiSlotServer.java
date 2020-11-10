@@ -28,18 +28,18 @@ public class GuiSlotServer extends GuiSlot
 
     protected void elementClicked(int i, boolean flag)
     {
-        GuiMultiplayer.func_35326_a(guiMultiplayer, i);
-        boolean flag1 = GuiMultiplayer.func_35333_b(guiMultiplayer) >= 0 && GuiMultiplayer.func_35333_b(guiMultiplayer) < getSize();
-        GuiMultiplayer.func_35329_c(guiMultiplayer).enabled = flag1;
+        guiMultiplayer.select(i);
+        boolean flag1 = guiMultiplayer.getSelectedIndex() >= 0 && guiMultiplayer.getSelectedIndex() < getSize();
+        guiMultiplayer.getConnectButton().enabled = flag1;
         if(flag && flag1)
         {
-            GuiMultiplayer.func_35332_b(guiMultiplayer, i);
+            guiMultiplayer.joinServer(i);
         }
     }
 
     protected boolean isSelected(int i)
     {
-        return i == GuiMultiplayer.func_35333_b(guiMultiplayer);
+        return i == guiMultiplayer.getSelectedIndex();
     }
 
     protected int getContentHeight()
@@ -54,19 +54,6 @@ public class GuiSlotServer extends GuiSlot
 
     protected void drawSlot(int i, int j, int k, int l, Tessellator tessellator)
     {
-//        ServerNBTStorage servernbtstorage = (ServerNBTStorage)GuiMultiplayer.getServers(guiMultiplayer).get(i);
-//        synchronized(GuiMultiplayer.func_35321_g())
-//        {
-//            if(GuiMultiplayer.func_35338_m() < 5 && !servernbtstorage.field_35790_f)
-//            {
-//                servernbtstorage.field_35790_f = true;
-//                servernbtstorage.field_35792_e = -2L;
-//                servernbtstorage.field_35791_d = "";
-//                servernbtstorage.field_35794_c = "";
-//                GuiMultiplayer.func_35331_n();
-//                (new ThreadPollServers(this, servernbtstorage)).start();
-//            }
-//        }
         MineOnlineServer server = guiMultiplayer.getServers().get(i);
 
         MinecraftVersion version = MinecraftVersionRepository.getSingleton().getVersionByMD5(server.md5);
@@ -100,7 +87,7 @@ public class GuiSlotServer extends GuiSlot
 
         guiMultiplayer.drawString(server.name, j + 2, k + 1, 0xffffff);
         guiMultiplayer.drawString(versionName, j + 2, k + 12, 0x808080);
-        String users = server.isMineOnline ? "" + server.users : "?";
+        String users = server.isMineOnline ? "" + server.users : "";
         guiMultiplayer.drawString(users + "/" + server.maxUsers, (j + 215) - FontRenderer.minecraftFontRenderer.getStringWidth(users + "/" + server.maxUsers), k + 12, 0x808080);
         guiMultiplayer.drawString(server.onlineMode ? "Online Mode" : "", j + 2, k + 12 + 11, 0x55FF55);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);

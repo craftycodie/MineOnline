@@ -11,5 +11,6 @@
   "entityRendererClass": "jq",
   "viewModelFunction": "b",
   "scaledResolutionClass": "ka",
-  "resourcesVersion": "a1.2.1_01"
+  "resourcesVersion": "a1.2.1_01",
+  "optionsVersion": "PRESKINS"
 }

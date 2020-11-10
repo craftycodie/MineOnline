@@ -18,9 +18,6 @@ public class ThreadPollServers extends Thread
 
     public static void pollServer(MineOnlineServer server) {
         new ThreadPollServers(server).run();
-        synchronized (ThreadPollServers.serverLatencies) {
-            System.out.println(ThreadPollServers.serverLatencies);
-        }
     }
 
     private ThreadPollServers(MineOnlineServer mineOnlineServer)
@@ -122,8 +119,6 @@ public class ThreadPollServers extends Thread
         String s1 = as[0];
         int j = as.length <= 1 ? 25565 : parseIntWithDefault(as[1], 25565);
         Socket socket = null;
-        DataInputStream datainputstream = null;
-        DataOutputStream dataoutputstream = null;
         try
         {
             socket = new Socket();
@@ -131,61 +126,9 @@ public class ThreadPollServers extends Thread
             socket.setTcpNoDelay(true);
             socket.setTrafficClass(18);
             socket.connect(new InetSocketAddress(s1, j), 3000);
-            datainputstream = new DataInputStream(socket.getInputStream());
-            dataoutputstream = new DataOutputStream(socket.getOutputStream());
-            dataoutputstream.write(254);
-//            if(datainputstream.read() != 255)
-//            {
-//                throw new IOException("Bad message");
-//            }
-//            String s4 = Packet.readString(datainputstream, 64);
-//            char ac[] = s4.toCharArray();
-//            for(int k = 0; k < ac.length; k++)
-//            {
-//                if(ac[k] != '\247' && ChatAllowedCharacters.allowedCharacters.indexOf(ac[k]) < 0)
-//                {
-//                    ac[k] = '?';
-//                }
-//            }
-//
-//            s4 = new String(ac);
-//            String as1[] = s4.split("\247");
-//            s4 = as1[0];
-//            int l = -1;
-//            int i1 = -1;
-//            try
-//            {
-//                l = Integer.parseInt(as1[1]);
-//                i1 = Integer.parseInt(as1[2]);
-//            }
-//            catch(Exception exception) { }
-//            servernbtstorage.field_35791_d = (new StringBuilder()).append("\2477").append(s4).toString();
-//            if(l >= 0 && i1 > 0)
-//            {
-//                servernbtstorage.field_35794_c = (new StringBuilder()).append("\2477").append(l).append("\2478/\2477").append(i1).toString();
-//            } else
-//            {
-//                servernbtstorage.field_35794_c = "\2478???";
-//            }
         }
         finally
         {
-            try
-            {
-                if(datainputstream != null)
-                {
-                    datainputstream.close();
-                }
-            }
-            catch(Throwable throwable) { }
-            try
-            {
-                if(dataoutputstream != null)
-                {
-                    dataoutputstream.close();
-                }
-            }
-            catch(Throwable throwable1) { }
             try
             {
                 if(socket != null)

@@ -9,84 +9,70 @@ package gg.codie.mineonline.gui.screens;
 //            GameSettings, GuiSlider, GuiButton, ScaledResolution
 
 import gg.codie.mineonline.Settings;
-import gg.codie.mineonline.gui.GUIScale;
+import gg.codie.mineonline.client.LegacyGameManager;
 import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.gui.components.GuiButton;
 import gg.codie.mineonline.gui.components.GuiSlider;
-import gg.codie.mineonline.gui.components.GuiSmallButton;
-import gg.codie.mineonline.patches.lwjgl.LWJGLPerspectiveAdvice;
 import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.Display;
 
 public class GuiIngameOptions extends GuiScreen
 {
 
     public GuiIngameOptions(GuiScreen guiscreen)
     {
-        field_22107_a = "Options";
+        screenName = "Options";
         parent = guiscreen;
         initGui();
     }
 
-    public void initGui()
-    {
-        field_22107_a = "Options";
-        int i = 0;
-        EnumOptions aenumoptions[] = EnumOptions.values();
-        int j = aenumoptions.length;
-        for(int k = 0; k < j; k++)
-        {
-            EnumOptions enumoptions = aenumoptions[k];
-            if(!enumoptions.getEnumFloat())
-            {
-                controlList.add(new GuiSmallButton(enumoptions.ordinal(), (getWidth() / 2 - 155) + (i % 2) * 160, getHeight() / 6 + 24 * (i >> 1), enumoptions, enumoptions.name()));
-            } else
-            {
-                controlList.add(new GuiSlider(enumoptions.ordinal(), (getWidth() / 2 - 155) + (i % 2) * 160, getHeight() / 6 + 24 * (i >> 1), enumoptions, enumoptions.name(), 0));
-            }
-            i++;
+    String getFOVLabel(int fov) {
+        String fovLabel = "" + fov;
+
+        switch(fov) {
+            case 70:
+                fovLabel = "Normal";
+                break;
+            case 110:
+                fovLabel = "Quake Pro";
+                break;
         }
 
-        controlList.add(new GuiButton(200, getWidth() / 2 - 100, getHeight() / 6 + 168, "Done"));
-        controlList.add(new GuiButton(100, getWidth() / 2 - 100, getHeight() / 6 + 120 + 12, "Controls"));
-
+        return "FOV: " + fovLabel;
     }
 
-    protected void actionPerformed(GuiButton guibutton)
+    public void initGui()
     {
-        if(!guibutton.enabled)
-        {
-            return;
-        }
-        if(guibutton.id < 100 && (guibutton instanceof GuiSmallButton))
-        {
-            // TODO: Set Value
-            //guiGameSettings.setOptionValue(((GuiSmallButton)guibutton).returnEnumOptions(), 1);
-            //guibutton.displayString = guiGameSettings.getKeyBinding(EnumOptions.getEnumOptions(guibutton.id));
-        }
-        if(guibutton.id < 100 && (guibutton instanceof GuiSlider))
-        {
-            // TODO: Set Value
-            //guiGameSettings.setOptionValue(((GuiSmallButton)guibutton).returnEnumOptions(), 1);
-            //guibutton.displayString = guiGameSettings.getKeyBinding(EnumOptions.getEnumOptions(guibutton.id));
-        }
-        if(guibutton.id == 100)
-        {
-            MenuManager.setGUIScreen(new GuiControls(this));
-        }
-        if(guibutton.id == 200)
-        {
-            Settings.singleton.saveSettings();
-            MenuManager.setGUIScreen(parent);
-            if (parent == null)
-                Mouse.setGrabbed(true);
+        GuiScreen thisScreen = this;
 
-            //mc.displayGuiScreen(null);
-//            mc.setIngameFocus();
-        }
-        GUIScale scaledresolution = new GUIScale(Display.getWidth(), Display.getHeight());
-        int i = (int)scaledresolution.getScaledWidth();
-        int j = (int)scaledresolution.getScaledHeight();
+        controlList.add(new GuiButton(200, getWidth() / 2 - 100, getHeight() / 6 + 168, "Done", new GuiButton.GuiButtonListener() {
+            @Override
+            public void OnButtonPress() {
+                Settings.singleton.saveSettings();
+                MenuManager.setGUIScreen(parent);
+                if (parent == null)
+                    Mouse.setGrabbed(true);
+            }
+        }));
+        controlList.add(new GuiButton(100, getWidth() / 2 - 100, getHeight() / 6 + 120 + 12, "Controls", new GuiButton.GuiButtonListener() {
+            @Override
+            public void OnButtonPress() {
+                MenuManager.setGUIScreen(new GuiControls(thisScreen));
+            }
+        }));
+        controlList.add(new GuiSlider(0, getWidth() / 2 - 155, getHeight() / 6 + 24, getFOVLabel((int)Settings.singleton.getFOV()), (Settings.singleton.getFOV() - 40) / 70, new GuiSlider.SliderListener() {
+            @Override
+            public String onValueChange(float sliderValue) {
+                int fov = (int)(sliderValue * 70) + 40;
+                if (LegacyGameManager.isInGame()) {
+                    LegacyGameManager.setFOV(fov);
+                } else {
+                    Settings.singleton.setFOV(fov);
+                }
+
+                return getFOVLabel(fov);
+            }
+        }));
+
     }
 
     @Override
@@ -95,10 +81,10 @@ public class GuiIngameOptions extends GuiScreen
         //controlList.clear();
 
         drawDefaultBackground();
-        drawCenteredString(field_22107_a, getWidth() / 2, 20, 0xffffff);
+        drawCenteredString(screenName, getWidth() / 2, 20, 0xffffff);
         super.drawScreen(i, j);
     }
 
     private GuiScreen parent;
-    protected String field_22107_a;
+    protected String screenName;
 }

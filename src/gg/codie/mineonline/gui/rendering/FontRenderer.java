@@ -17,6 +17,7 @@ import java.nio.IntBuffer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+// TODO: Tidy names
 public class FontRenderer
 {
     public static void reloadFont() {
@@ -249,94 +250,6 @@ public class FontRenderer
         }
 
         return i;
-    }
-
-    public void func_27278_a(String s, int i, int j, int k, int l)
-    {
-        String as[] = s.split("\n");
-        if(as.length > 1)
-        {
-            for(int i1 = 0; i1 < as.length; i1++)
-            {
-                func_27278_a(as[i1], i, j, k, l);
-                j += func_27277_a(as[i1], k);
-            }
-
-            return;
-        }
-        String as1[] = s.split(" ");
-        int j1 = 0;
-        do
-        {
-            if(j1 >= as1.length)
-            {
-                break;
-            }
-            String s1;
-            for(s1 = (new StringBuilder()).append(as1[j1++]).append(" ").toString(); j1 < as1.length && getStringWidth((new StringBuilder()).append(s1).append(as1[j1]).toString()) < k; s1 = (new StringBuilder()).append(s1).append(as1[j1++]).append(" ").toString()) { }
-            int k1;
-            for(; getStringWidth(s1) > k; s1 = s1.substring(k1))
-            {
-                for(k1 = 0; getStringWidth(s1.substring(0, k1 + 1)) <= k; k1++) { }
-                if(s1.substring(0, k1).trim().length() > 0)
-                {
-                    drawString(s1.substring(0, k1), i, j, l);
-                    j += 8;
-                }
-            }
-
-            if(s1.trim().length() > 0)
-            {
-                drawString(s1, i, j, l);
-                j += 8;
-            }
-        } while(true);
-    }
-
-    public int func_27277_a(String s, int i)
-    {
-        String as[] = s.split("\n");
-        if(as.length > 1)
-        {
-            int j = 0;
-            for(int k = 0; k < as.length; k++)
-            {
-                j += func_27277_a(as[k], i);
-            }
-
-            return j;
-        }
-        String as1[] = s.split(" ");
-        int l = 0;
-        int i1 = 0;
-        do
-        {
-            if(l >= as1.length)
-            {
-                break;
-            }
-            String s1;
-            for(s1 = (new StringBuilder()).append(as1[l++]).append(" ").toString(); l < as1.length && getStringWidth((new StringBuilder()).append(s1).append(as1[l]).toString()) < i; s1 = (new StringBuilder()).append(s1).append(as1[l++]).append(" ").toString()) { }
-            int j1;
-            for(; getStringWidth(s1) > i; s1 = s1.substring(j1))
-            {
-                for(j1 = 0; getStringWidth(s1.substring(0, j1 + 1)) <= i; j1++) { }
-                if(s1.substring(0, j1).trim().length() > 0)
-                {
-                    i1 += 8;
-                }
-            }
-
-            if(s1.trim().length() > 0)
-            {
-                i1 += 8;
-            }
-        } while(true);
-        if(i1 < 8)
-        {
-            i1 += 8;
-        }
-        return i1;
     }
 
     private int charWidth[];

@@ -2,17 +2,27 @@ package gg.codie.mineonline.gui.components;
 
 import gg.codie.mineonline.gui.rendering.Loader;
 import gg.codie.mineonline.gui.rendering.textures.EGUITexture;
+import gg.codie.mineonline.gui.sound.ClickSound;
 import org.lwjgl.opengl.GL11;
 
 public class GuiButton extends GuiComponent
 {
-
-    public GuiButton(int i, int xPos, int yPos, String s)
-    {
-        this(i, xPos, yPos, 200, 20, s);
+    public interface GuiButtonListener {
+        void OnButtonPress();
     }
 
-    public GuiButton(int i, int xPos, int yPos, int l, int i1, String s)
+    public void doClick() {
+        ClickSound.play();
+        if(buttonListener != null)
+            buttonListener.OnButtonPress();
+    }
+
+    public GuiButton(int i, int xPos, int yPos, String s, GuiButtonListener buttonListener)
+    {
+        this(i, xPos, yPos, 200, 20, s, buttonListener);
+    }
+
+    public GuiButton(int i, int xPos, int yPos, int l, int i1, String s, GuiButtonListener buttonListener)
     {
         width = 200;
         height = 20;
@@ -24,6 +34,7 @@ public class GuiButton extends GuiComponent
         width = l;
         height = i1;
         displayString = s;
+        this.buttonListener = buttonListener;
     }
 
     protected int getHoverState(boolean flag)
@@ -89,4 +100,5 @@ public class GuiButton extends GuiComponent
     public int id;
     public boolean enabled;
     public boolean enabled2;
+    private GuiButtonListener buttonListener;
 }

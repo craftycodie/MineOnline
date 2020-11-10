@@ -10,5 +10,6 @@
   "resourcesVersion": "b1.3_01",
   "entityRendererClass": "kr",
   "viewModelFunction": "b",
-  "scaledResolutionClass": "lc"
+  "scaledResolutionClass": "lc",
+  "optionsVersion": "PREFOV"
 }

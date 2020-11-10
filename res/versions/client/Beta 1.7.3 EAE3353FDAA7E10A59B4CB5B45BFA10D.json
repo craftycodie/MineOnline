@@ -8,5 +8,6 @@
   "useFOVPatch": true,
   "entityRendererClass": "px",
   "viewModelFunction": "b",
-  "resourcesVersion": "b1.7.3"
+  "resourcesVersion": "b1.7.3",
+  "optionsVersion": "PREFOV"
 }

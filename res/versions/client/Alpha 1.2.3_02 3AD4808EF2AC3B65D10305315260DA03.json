@@ -7,5 +7,6 @@
   "baseVersion": "a1.2.3_02",
   "useFOVPatch": true,
   "ingameVersionString": "Minecraft Alpha v1.2.3_02",
-  "resourcesVersion": "b1.3_01"
+  "resourcesVersion": "b1.3_01",
+  "optionsVersion": "PREFOV"
 }

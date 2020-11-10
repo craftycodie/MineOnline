@@ -55,9 +55,8 @@ public class GuiScreen extends GuiComponent
                 GuiButton guibutton = (GuiButton)controlList.get(l);
                 if(guibutton.mousePressed(i, j))
                 {
+                    guibutton.doClick();
                     selectedButton = guibutton;
-                    ClickSound.play();
-                    actionPerformed(guibutton);
                 }
             }
 

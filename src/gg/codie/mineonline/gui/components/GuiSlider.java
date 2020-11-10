@@ -1,19 +1,19 @@
 package gg.codie.mineonline.gui.components;
 
-import gg.codie.mineonline.gui.screens.EnumOptions;
-import gg.codie.mineonline.patches.lwjgl.LWJGLPerspectiveAdvice;
 import org.lwjgl.opengl.GL11;
 
 public class GuiSlider extends GuiButton
 {
+    public interface SliderListener {
+        String onValueChange(float sliderValue);
+    }
 
-    public GuiSlider(int i, int j, int k, EnumOptions enumoptions, String s, float f)
+    public GuiSlider(int i, int j, int k, String s, float f, SliderListener sliderListener)
     {
-        super(i, j, k, 150, 20, s);
+        super(i, j, k, 150, 20, s, null);
         sliderValue = 1.0F;
         dragging = false;
-        idFloat = null;
-        idFloat = enumoptions;
+        this.sliderListener = sliderListener;
         sliderValue = f;
     }
 
@@ -24,10 +24,10 @@ public class GuiSlider extends GuiButton
 
     protected void mouseDragged(int i, int j)
     {
-//        if(!enabled2)
-//        {
-//            return;
-//        }
+        if(!enabled2)
+        {
+            return;
+        }
         if(dragging)
         {
             sliderValue = (float)(i - (xPosition + 4)) / (float)(width - 8);
@@ -39,11 +39,7 @@ public class GuiSlider extends GuiButton
             {
                 sliderValue = 1.0F;
             }
-            // TODO: Save Change
-            LWJGLPerspectiveAdvice.customFOV = 40 + (sliderValue * 70);
-
-//            minecraft.gameSettings.setOptionFloatValue(idFloat, sliderValue);
-            displayString = "" + sliderValue;
+            displayString = sliderListener.onValueChange(sliderValue);
         }
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         drawTexturedModalRect(xPosition + (int)(sliderValue * (float)(width - 8)), yPosition, 0, 66, 4, 20);
@@ -63,9 +59,7 @@ public class GuiSlider extends GuiButton
             {
                 sliderValue = 1.0F;
             }
-            // TODO: Save Change
-            //minecraft.gameSettings.setOptionFloatValue(idFloat, sliderValue);
-            displayString = "" + sliderValue;
+            displayString = "" + sliderListener.onValueChange(sliderValue);
             dragging = true;
             return true;
         } else
@@ -81,5 +75,5 @@ public class GuiSlider extends GuiButton
 
     public float sliderValue;
     public boolean dragging;
-    private EnumOptions idFloat;
+    private SliderListener sliderListener;
 }

@@ -28,7 +28,14 @@ public class GuiControls extends GuiScreen
 //            controlList.add(new GuiSmallButton(j, i + (j % 2) * 160, getHeight() / 6 + 24 * (j >> 1), 70, 20, options.getOptionDisplayString(j)));
 //        }
 
-        controlList.add(new GuiButton(200, getWidth() / 2 - 100, getHeight() / 6 + 168, "Done"));
+        controlList.add(new GuiButton(200, getWidth() / 2 - 100, getHeight() / 6 + 168, "Done", new GuiButton.GuiButtonListener() {
+            @Override
+            public void OnButtonPress() {
+                MenuManager.setGUIScreen(parentScreen);
+                if(parentScreen == null)
+                    Mouse.setGrabbed(true);
+            }
+        }));
         screenTitle = "Controls";
     }
 
@@ -38,17 +45,6 @@ public class GuiControls extends GuiScreen
 //        {
 //            ((GuiButton)controlList.get(i)).displayString = options.getOptionDisplayString(i);
 //        }
-
-        if(guibutton.id == 200)
-        {
-            MenuManager.setGUIScreen(parentScreen);
-            if(parentScreen == null)
-                Mouse.setGrabbed(true);
-        } else
-        {
-            buttonId = guibutton.id;
-//            guibutton.displayString = (new StringBuilder()).append("> ").append(options.getOptionDisplayString(guibutton.id)).append(" <").toString();
-        }
     }
 
     protected void keyTyped(char c, int i)

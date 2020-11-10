@@ -12,6 +12,7 @@ import gg.codie.mineonline.gui.rendering.Loader;
 import gg.codie.mineonline.gui.rendering.textures.EGUITexture;
 import gg.codie.mineonline.patches.HashMapPutAdvice;
 import org.lwjgl.Sys;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
@@ -19,13 +20,10 @@ import java.io.File;
 
 public class GuiTexturePacks extends GuiScreen
 {
-    Class minecraftClass;
-
-    public GuiTexturePacks(GuiScreen guiscreen, Class minecraftClass)
+    public GuiTexturePacks(GuiScreen guiscreen)
     {
         field_6454_o = -1;
         parent = guiscreen;
-        this.minecraftClass = minecraftClass;
         MinecraftTexturePackRepository.singleton.loadTexturePacks();
         Settings.singleton.loadSettings();
         initGui();
@@ -33,45 +31,36 @@ public class GuiTexturePacks extends GuiScreen
 
     public void initGui()
     {
-        controlList.add(new GuiSmallButton(5, getWidth() / 2 - 154, getHeight() - 48, "Open texture pack folder"));
-        controlList.add(new GuiSmallButton(6, getWidth() / 2 + 4, getHeight() - 48, "Done"));
+        controlList.add(new GuiSmallButton(5, getWidth() / 2 - 154, getHeight() - 48, "Open texture pack folder", new GuiButton.GuiButtonListener() {
+            @Override
+            public void OnButtonPress() {
+                if (OSUtils.isWindows())
+                    Sys.openURL((new StringBuilder()).append("file://").append(LauncherFiles.MINECRAFT_TEXTURE_PACKS_PATH).toString());
+                else
+                    try {
+                        Desktop.getDesktop().open(new File(LauncherFiles.MINECRAFT_TEXTURE_PACKS_PATH));
+                    } catch (Exception ex) { }
+            }
+        }));
+        controlList.add(new GuiSmallButton(6, getWidth() / 2 + 4, getHeight() - 48, "Done", new GuiButton.GuiButtonListener() {
+            @Override
+            public void OnButtonPress() {
+                MenuManager.setGUIScreen(parent);
+                if (parent == null) {
+                    Mouse.setGrabbed(true);
+                }
+            }
+        }));
         MinecraftTexturePackRepository.singleton.getTexturePacks();
         guiTexturePackSlot = new GuiTexturePackSlot(this);
         guiTexturePackSlot.registerScrollButtons(controlList, 7, 8);
     }
 
-    protected void actionPerformed(GuiButton guibutton)
-    {
-        if(!guibutton.enabled)
-        {
-            return;
-        }
-        if(guibutton.id == 5)
-        {
-            if (OSUtils.isWindows())
-                Sys.openURL((new StringBuilder()).append("file://").append(LauncherFiles.MINECRAFT_TEXTURE_PACKS_PATH).toString());
-            else
-                try {
-                    Desktop.getDesktop().open(new File(LauncherFiles.MINECRAFT_TEXTURE_PACKS_PATH));
-                } catch (Exception ex) { }
-        } else
-        if(guibutton.id == 6)
-        {
-            //Loader.singleton.unloadTexture(EGUITexture.DEFAULT_PACK.textureName);
-            Loader.singleton.unloadTexture(EGUITexture.BACKGROUND);
-            Loader.singleton.unloadTexture(EGUITexture.GUI);
-            Loader.singleton.unloadTexture(EGUITexture.GUI_ICONS);
-            Loader.singleton.unloadTexture(EGUITexture.UNKNOWN_PACK);
-            Loader.singleton.unloadTexture(EGUITexture.FONT);
-            Loader.reloadMinecraftTextures(minecraftClass);
-            FontRenderer.reloadFont();
-
-            MenuManager.setGUIScreen(parent);
-        } else
-        {
-            guiTexturePackSlot.actionPerformed(guibutton);
-        }
-    }
+//    protected void actionPerformed(GuiButton guibutton)
+//    {
+//            guiTexturePackSlot.actionPerformed(guibutton);
+//
+//    }
 
     protected void mouseClicked(int i, int j, int k)
     {

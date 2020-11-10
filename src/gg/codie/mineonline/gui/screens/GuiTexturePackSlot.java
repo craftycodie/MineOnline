@@ -5,6 +5,7 @@
 package gg.codie.mineonline.gui.screens;
 
 import gg.codie.mineonline.Settings;
+import gg.codie.mineonline.client.LegacyGameManager;
 import gg.codie.mineonline.client.MinecraftTexturePackRepository;
 import gg.codie.minecraft.client.gui.Tessellator;
 import gg.codie.mineonline.gui.rendering.FontRenderer;
@@ -38,8 +39,7 @@ class GuiTexturePackSlot extends GuiSlot
     protected void elementClicked(int i, boolean flag)
     {
         List list = MinecraftTexturePackRepository.singleton.getTexturePacks();
-        Settings.singleton.setTexturePack(((TexturePackBase)list.get(i)).texturePackFileName);
-        Settings.singleton.saveSettings();
+
         Loader.singleton.unloadTexture(EGUITexture.BACKGROUND);
         Loader.singleton.unloadTexture(EGUITexture.GUI);
         Loader.singleton.unloadTexture(EGUITexture.GUI_ICONS);
@@ -47,8 +47,15 @@ class GuiTexturePackSlot extends GuiSlot
         Loader.singleton.unloadTexture(EGUITexture.FONT);
         //System.out.println(HashMapPutAdvice.textures);
         //GL11.glDeleteTextures(HashMapPutAdvice.textures.get("/terrain.png"));
+
+        if (LegacyGameManager.isInGame()) {
+            LegacyGameManager.setTexturePack(((TexturePackBase)list.get(i)).texturePackFileName);
+        }
+
+        Settings.singleton.setTexturePack(((TexturePackBase) list.get(i)).texturePackFileName);
+        Settings.singleton.saveSettings();
+
         FontRenderer.reloadFont();
-        Loader.reloadMinecraftTextures(parentTexturePackGui.minecraftClass);
     }
 
     protected boolean isSelected(int i)

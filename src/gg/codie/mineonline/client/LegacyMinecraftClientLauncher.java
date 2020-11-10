@@ -341,7 +341,10 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
 //                    GL11.glEnable(3553 /*GL_TEXTURE_2D*/);
 
                     if (Globals.DEV) {
-                        FontRenderer.minecraftFontRenderer.drawStringWithShadow("MineOnline Dev " + Globals.LAUNCHER_VERSION, 2, 2, 0xffffff);
+                        int ypos = 2;
+                        if(minecraftVersion.ingameVersionString != null && !Settings.singleton.getHideVersionString())
+                            ypos = 12;
+                        FontRenderer.minecraftFontRenderer.drawStringWithShadow("MineOnline Dev " + Globals.LAUNCHER_VERSION, 2, ypos, 0xffffff);
                     }
 
                     GUIScale scaledresolution = new GUIScale(Display.getWidth(), Display.getHeight());

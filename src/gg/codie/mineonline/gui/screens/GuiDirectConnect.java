@@ -42,8 +42,21 @@ public class GuiDirectConnect extends GuiScreen
     {
         Keyboard.enableRepeatEvents(true);
         controlList.clear();
-        controlList.add(new GuiButton(0, getWidth() / 2 - 100, getHeight() / 4 + 96 + 12, "Connect"));
-        controlList.add(new GuiButton(1, getWidth() / 2 - 100, getHeight() / 4 + 120 + 12, "Cancel"));
+        controlList.add(new GuiButton(0, getWidth() / 2 - 100, getHeight() / 4 + 96 + 12, "Connect", new GuiButton.GuiButtonListener() {
+            @Override
+            public void OnButtonPress() {
+                joinServer();
+            }
+        }));
+        controlList.add(new GuiButton(1, getWidth() / 2 - 100, getHeight() / 4 + 120 + 12, "Cancel", new GuiButton.GuiButtonListener() {
+            @Override
+            public void OnButtonPress() {
+                MenuManager.setGUIScreen(parentScreen);
+
+                if (parentScreen == null)
+                    Mouse.setGrabbed(true);
+            }
+        }));
         String s = Settings.singleton.getLastServer().replaceAll("_", ":");
         ((GuiButton)controlList.get(0)).enabled = s.length() > 0;
         textField = new GuiTextField(this, getWidth() / 2 - 100, (getHeight() / 4 - 10) + 50 + 18, 200, 20, s);
@@ -56,80 +69,65 @@ public class GuiDirectConnect extends GuiScreen
         Keyboard.enableRepeatEvents(false);
     }
 
-    protected void actionPerformed(GuiButton guibutton)
-    {
-        if(!guibutton.enabled)
+    private void joinServer() {
+        String s = textField.getText().trim();
+        Settings.singleton.setLastServer(s.replaceAll(":", "_"));
+        Settings.singleton.saveSettings();
+        String as[] = s.split(":");
+        if(s.startsWith("["))
         {
-            return;
-        }
-        if(guibutton.id == 1)
-        {
-            MenuManager.setGUIScreen(parentScreen);
-
-            if (parentScreen == null)
-                Mouse.setGrabbed(true);
-        } else
-        if(guibutton.id == 0)
-        {
-            String s = textField.getText().trim();
-            Settings.singleton.setLastServer(s.replaceAll(":", "_"));
-            Settings.singleton.saveSettings();
-            String as[] = s.split(":");
-            if(s.startsWith("["))
+            int i = s.indexOf("]");
+            if(i > 0)
             {
-                int i = s.indexOf("]");
-                if(i > 0)
+                String s1 = s.substring(1, i);
+                String s2 = s.substring(i + 1).trim();
+                if(s2.startsWith(":") && s2.length() > 0)
                 {
-                    String s1 = s.substring(1, i);
-                    String s2 = s.substring(i + 1).trim();
-                    if(s2.startsWith(":") && s2.length() > 0)
-                    {
-                        s2 = s2.substring(1);
-                        as = new String[2];
-                        as[0] = s1;
-                        as[1] = s2;
-                    } else
-                    {
-                        as = new String[1];
-                        as[0] = s1;
-                    }
+                    s2 = s2.substring(1);
+                    as = new String[2];
+                    as[0] = s1;
+                    as[1] = s2;
+                } else
+                {
+                    as = new String[1];
+                    as[0] = s1;
                 }
             }
-            if(as.length > 2)
-            {
-                as = new String[1];
-                as[0] = s;
+        }
+        if(as.length > 2)
+        {
+            as = new String[1];
+            as[0] = s;
+        }
+
+        try {
+            LinkedList<String> launchArgs = new LinkedList();
+            launchArgs.add(JREUtils.getRunningJavaExecutable());
+            launchArgs.add("-javaagent:" + LauncherFiles.PATCH_AGENT_JAR);
+            launchArgs.add("-Djava.util.Arrays.useLegacyMergeSort=true");
+            launchArgs.add("-cp");
+            launchArgs.add(LibraryManager.getClasspath(true, new String[]{new File(MenuManager.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath(), LauncherFiles.DISCORD_RPC_JAR}));
+            launchArgs.add(MenuManager.class.getCanonicalName());
+            launchArgs.add("-quicklaunch");
+            launchArgs.add("-joinserver");
+            launchArgs.add(as[0] + ":" + (as.length <= 1 ? 25565 : parseIntWithDefault(as[1], 25565)));
+            launchArgs.add("-skipupdates");
+
+            java.util.Properties props = System.getProperties();
+            ProcessBuilder processBuilder = new ProcessBuilder(launchArgs);
+
+            Map<String, String> env = processBuilder.environment();
+            for (String prop : props.stringPropertyNames()) {
+                env.put(prop, props.getProperty(prop));
             }
+            processBuilder.directory(new File(System.getProperty("user.dir")));
 
-            try {
-                LinkedList<String> launchArgs = new LinkedList();
-                launchArgs.add(JREUtils.getRunningJavaExecutable());
-                launchArgs.add("-javaagent:" + LauncherFiles.PATCH_AGENT_JAR);
-                launchArgs.add("-Djava.util.Arrays.useLegacyMergeSort=true");
-                launchArgs.add("-cp");
-                launchArgs.add(LibraryManager.getClasspath(true, new String[]{new File(MenuManager.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath(), LauncherFiles.DISCORD_RPC_JAR}));
-                launchArgs.add(MenuManager.class.getCanonicalName());
-                launchArgs.add("-quicklaunch");
-                launchArgs.add("-joinserver");
-                launchArgs.add(as[0] + ":" + (as.length <= 1 ? 25565 : parseIntWithDefault(as[1], 25565)));
-                launchArgs.add("-skipupdates");
+            Process launcherProcess = processBuilder.inheritIO().start();
 
-                java.util.Properties props = System.getProperties();
-                ProcessBuilder processBuilder = new ProcessBuilder(launchArgs);
-
-                Map<String, String> env = processBuilder.environment();
-                for (String prop : props.stringPropertyNames()) {
-                    env.put(prop, props.getProperty(prop));
-                }
-                processBuilder.directory(new File(System.getProperty("user.dir")));
-
-                Process launcherProcess = processBuilder.inheritIO().start();
-
-                LegacyGameManager.closeGame();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                // ignore for now
-            }
+            LegacyGameManager.closeGame();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            // ignore for now
         }
     }
 

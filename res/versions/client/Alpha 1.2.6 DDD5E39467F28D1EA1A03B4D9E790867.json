@@ -10,5 +10,6 @@
   "ingameVersionString": "Minecraft Alpha v1.2.6",
   "entityRendererClass": "kb",
   "viewModelFunction": "b",
-  "resourcesVersion": "b1.3_01"
+  "resourcesVersion": "b1.3_01",
+  "optionsVersion": "PREFOV"
 }

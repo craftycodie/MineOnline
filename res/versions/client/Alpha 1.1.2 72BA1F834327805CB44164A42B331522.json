@@ -9,5 +9,6 @@
   "useFOVPatch": true,
   "useTexturepackPatch": true,
   "ingameVersionString": "Minecraft Alpha v1.1.2",
-  "resourcesVersion": "a1.1.2"
+  "resourcesVersion": "a1.1.2",
+  "optionsVersion": "PRESKINS"
 }
