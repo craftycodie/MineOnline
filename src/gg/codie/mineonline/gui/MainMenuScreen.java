@@ -2,9 +2,9 @@ package gg.codie.mineonline.gui;
 
 import gg.codie.mineonline.*;
 import gg.codie.mineonline.gui.components.MediumButton;
-import gg.codie.mineonline.gui.components.TinyButton;
 import gg.codie.mineonline.gui.events.IOnClickListener;
 import gg.codie.mineonline.gui.font.GUIText;
+import gg.codie.mineonline.gui.input.MouseHandler;
 import gg.codie.mineonline.gui.rendering.Renderer;
 import gg.codie.mineonline.gui.rendering.*;
 import gg.codie.mineonline.gui.rendering.font.TextMaster;
@@ -146,7 +146,7 @@ public class MainMenuScreen implements IMenuScreen {
                             && y - DisplayManager.scaledHeight(18) - DisplayManager.getYBuffer() <= DisplayManager.scaledHeight(22)
                             && y - DisplayManager.scaledHeight(18) - DisplayManager.getYBuffer() >= 0;
 
-            if (MouseHandler.didClick() && mouseIsOver) {
+            if (MouseHandler.didLeftClick() && mouseIsOver) {
                 try {
                     Desktop.getDesktop().browse(new URI(Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/download"));
                 } catch (Exception ex) {

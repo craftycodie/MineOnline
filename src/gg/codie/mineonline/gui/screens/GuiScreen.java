@@ -1,10 +1,9 @@
 package gg.codie.mineonline.gui.screens;
 
 import gg.codie.mineonline.gui.GUIScale;
-import gg.codie.mineonline.gui.MouseHandler;
+import gg.codie.mineonline.gui.input.MouseHandler;
 import gg.codie.mineonline.gui.components.GuiComponent;
 import gg.codie.mineonline.gui.components.GuiButton;
-import gg.codie.mineonline.gui.sound.ClickSound;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
@@ -92,7 +91,7 @@ public class GuiScreen extends GuiComponent
 
     public void handleMouseInput()
     {
-        if(MouseHandler.didClick())
+        if(MouseHandler.didLeftClick())
         {
             int i = (Mouse.getEventX() * getWidth()) / Display.getWidth();
             int k = getHeight() - (Mouse.getEventY() * getHeight()) / Display.getHeight() - 1;

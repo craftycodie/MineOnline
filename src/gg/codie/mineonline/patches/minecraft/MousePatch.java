@@ -3,6 +3,7 @@ package gg.codie.mineonline.patches.minecraft;
 import gg.codie.mineonline.patches.PointerInfoGetLocationAdvice;
 import gg.codie.mineonline.patches.lwjgl.LWJGLCursorGetCapabilitiesAdvice;
 import gg.codie.mineonline.patches.lwjgl.LWJGLMouseGetDYAdvice;
+import gg.codie.mineonline.patches.lwjgl.LWJGLMouseIsButtonDownAdvice;
 import gg.codie.mineonline.patches.lwjgl.LWJGLMouseSetNativeCursorAdvice;
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.asm.Advice;
@@ -19,6 +20,8 @@ public class MousePatch {
                     // Lock Delta calls to MineOnline, indev calls it and throws away the result, and it can only be called once per frame.
                     .visit(Advice.to(LWJGLMouseGetDYAdvice.class).on(ElementMatchers.named("getDX")))
                     .visit(Advice.to(LWJGLMouseGetDYAdvice.class).on(ElementMatchers.named("getDY")))
+                    // Prevent clicks from doubling.
+                    .visit(Advice.to(LWJGLMouseIsButtonDownAdvice.class).on(ElementMatchers.named("isButtonDown").and(ElementMatchers.takesArguments(int.class))))
                     .make()
                     .load(Class.forName("org.lwjgl.input.Mouse").getClassLoader(), ClassReloadingStrategy.fromInstalledAgent());
 

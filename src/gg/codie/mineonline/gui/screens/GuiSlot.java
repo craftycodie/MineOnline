@@ -1,14 +1,10 @@
 package gg.codie.mineonline.gui.screens;
 
 import gg.codie.minecraft.client.gui.Tessellator;
-import gg.codie.mineonline.gui.MouseHandler;
-import gg.codie.mineonline.gui.components.GuiButton;
+import gg.codie.mineonline.gui.input.MouseHandler;
 import gg.codie.mineonline.gui.rendering.Loader;
 import gg.codie.mineonline.gui.rendering.textures.EGUITexture;
-import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
-
-import java.util.List;
 
 public abstract class GuiSlot
 {
@@ -67,7 +63,7 @@ public abstract class GuiSlot
         int k = getSize();
         int l = width / 2 + 124;
         int i1 = l + 6;
-        if(MouseHandler.isMouseDown())
+        if(MouseHandler.isMouseLeftDown())
         {
             if(initialClickY == -1F)
             {

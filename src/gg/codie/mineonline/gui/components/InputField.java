@@ -1,7 +1,6 @@
 package gg.codie.mineonline.gui.components;
 
-import gg.codie.mineonline.gui.MenuManager;
-import gg.codie.mineonline.gui.MouseHandler;
+import gg.codie.mineonline.gui.input.MouseHandler;
 import gg.codie.mineonline.gui.events.IOnClickListener;
 import gg.codie.mineonline.gui.font.GUIText;
 import gg.codie.mineonline.gui.rendering.*;
@@ -158,7 +157,7 @@ public class InputField extends GUIObject {
             mouseWasOver = false;
         }
 
-        if(MouseHandler.didClick() && mouseIsOver) {
+        if(MouseHandler.didLeftClick() && mouseIsOver) {
             focused = true;
         } else if (Mouse.isButtonDown(0) && !mouseIsOver) {
             focused = false;

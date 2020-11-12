@@ -1,21 +1,16 @@
 package gg.codie.mineonline.client;
 
-import gg.codie.minecraft.client.EMinecraftGUIScale;
 import gg.codie.minecraft.client.EMinecraftMainHand;
-import gg.codie.minecraft.client.gui.Tessellator;
 import gg.codie.mineonline.*;
 import gg.codie.mineonline.discord.DiscordRPCHandler;
 import gg.codie.mineonline.gui.GUIScale;
 import gg.codie.mineonline.gui.MenuManager;
-import gg.codie.mineonline.gui.MouseHandler;
+import gg.codie.mineonline.gui.input.MouseHandler;
 import gg.codie.mineonline.gui.rendering.DisplayManager;
 import gg.codie.mineonline.gui.rendering.FontRenderer;
 import gg.codie.mineonline.gui.rendering.Loader;
 import gg.codie.mineonline.gui.rendering.Renderer;
 import gg.codie.mineonline.gui.screens.GuiIngameMenu;
-import gg.codie.mineonline.gui.screens.GuiIngameOptions;
-import gg.codie.mineonline.gui.screens.GuiMultiplayer;
-import gg.codie.mineonline.gui.screens.GuiScreen;
 import gg.codie.mineonline.lwjgl.OnCreateListener;
 import gg.codie.mineonline.lwjgl.OnUpdateListener;
 import gg.codie.mineonline.patches.*;
@@ -26,14 +21,12 @@ import gg.codie.mineonline.patches.minecraft.MousePatch;
 import gg.codie.mineonline.patches.minecraft.ScaledResolutionConstructorPatch;
 import gg.codie.mineonline.utils.JREUtils;
 import gg.codie.mineonline.utils.Logging;
-import gg.codie.common.utils.OSUtils;
 import gg.codie.common.utils.TransferableImage;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.util.vector.Vector2f;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -185,7 +178,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
 
         LWJGLDisplayPatch.hijackLWJGLThreadPatch(minecraftVersion != null && minecraftVersion.useGreyScreenPatch);
 
-        if (minecraftVersion != null && minecraftVersion.enableCursorPatch && OSUtils.isMac())
+        if (minecraftVersion != null && minecraftVersion.enableCursorPatch)
             MousePatch.fixMouseIssues();
 
         if(minecraftVersion != null)
@@ -366,12 +359,11 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
                         MenuManager.getGuiScreen().drawScreen(k, i1);
 
                         MenuManager.getGuiScreen().handleInput();
-//                            MenuManager.getGuiScreen().field_25091_h.func_25088_a();
                     }
 
                     DisplayManager.checkGLError("minecraft update hook start");
 
-                    if (!OSUtils.isWindows() && minecraftVersion != null && minecraftVersion.enableCursorPatch) {
+                    if (minecraftVersion != null && minecraftVersion.enableCursorPatch) {
                         if (Mouse.isGrabbed() != LWJGLMouseSetNativeCursorAdvice.isFocused)
                             Mouse.setGrabbed(LWJGLMouseSetNativeCursorAdvice.isFocused);
                     }
@@ -417,7 +409,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
                         }
 
                         if (Keyboard.getEventKey() == mineonlineMenuKey && !Keyboard.isRepeatEvent() && Keyboard.getEventKeyState() && !menuWasDown) {
-                            if (MenuManager.getGuiScreen() == null) {
+                            if (MenuManager.getGuiScreen() == null && Mouse.isGrabbed()) {
                                 MenuManager.setGUIScreen(ingameMenu);
                                 Mouse.setGrabbed(false);
                             }
@@ -465,7 +457,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
                 FOVViewmodelPatch.fixViewmodelFOV(minecraftVersion.entityRendererClass, minecraftVersion.viewModelFunction, true);
         }
 
-        if (Settings.singleton.getGUIScale() != EMinecraftGUIScale.AUTO && minecraftVersion != null) {
+        if ( minecraftVersion != null) {
             if (minecraftVersion.scaledResolutionClass != null) {
                 ScaledResolutionConstructorPatch.useGUIScale(minecraftVersion.scaledResolutionClass);
                 LWJGLGL11Patch.useGuiScale();
@@ -484,9 +476,6 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
             ClassPatch.useTexturePacks(Settings.singleton.getTexturePack());
             HashMapPatch.storeMinecraftTextureIDs();
         }
-        // Hide version strings from the HUD
-        if (minecraftVersion != null && minecraftVersion.ingameVersionString != null && Settings.singleton.getHideVersionString())
-            StringPatch.hideVersionNames(minecraftVersion.ingameVersionString);
 
         minecraftApplet.init();
 

@@ -1,7 +1,6 @@
 package gg.codie.mineonline.gui.components;
 
-import gg.codie.mineonline.gui.MenuManager;
-import gg.codie.mineonline.gui.MouseHandler;
+import gg.codie.mineonline.gui.input.MouseHandler;
 import gg.codie.mineonline.gui.events.IOnClickListener;
 import gg.codie.mineonline.gui.font.GUIText;
 import gg.codie.mineonline.gui.rendering.*;
@@ -90,7 +89,7 @@ public class TinyButton extends GUIObject {
             this.model = new TexturedModel(model, texture);
         }
 
-        if(MouseHandler.didClick() && mouseIsOver && clickListener != null) {
+        if(MouseHandler.didLeftClick() && mouseIsOver && clickListener != null) {
             ClickSound.play();
             clickListener.onClick();
         }

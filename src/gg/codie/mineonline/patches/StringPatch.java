@@ -7,9 +7,11 @@ import net.bytebuddy.implementation.Implementation;
 import net.bytebuddy.matcher.ElementMatchers;
 
 public class StringPatch {
+    public static String versionString;
+    public static boolean enable;
+
     public static void hideVersionNames(String versionString) {
-        StringCharAtAdvice.versionString = versionString;
-        StringToCharArrayAdvice.versionString = versionString;
+        StringPatch.versionString = versionString;
         new ByteBuddy()
                 .with(Implementation.Context.Disabled.Factory.INSTANCE)
                 .redefine(String.class)

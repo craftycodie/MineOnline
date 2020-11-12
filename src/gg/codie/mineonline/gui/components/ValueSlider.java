@@ -1,12 +1,10 @@
 package gg.codie.mineonline.gui.components;
 
-import gg.codie.mineonline.gui.MenuManager;
-import gg.codie.mineonline.gui.MouseHandler;
+import gg.codie.mineonline.gui.input.MouseHandler;
 import gg.codie.mineonline.gui.events.IOnClickListener;
 import gg.codie.mineonline.gui.font.GUIText;
 import gg.codie.mineonline.gui.rendering.*;
 import gg.codie.mineonline.gui.rendering.font.TextMaster;
-import gg.codie.mineonline.gui.rendering.models.RawModel;
 import gg.codie.mineonline.gui.rendering.models.TexturedModel;
 import gg.codie.mineonline.gui.rendering.shaders.GUIShader;
 import gg.codie.mineonline.gui.rendering.textures.EGUITexture;
@@ -95,7 +93,7 @@ public class ValueSlider extends GUIObject {
             mouseWasOver = false;
         }
 
-        if(MouseHandler.didClick() && mouseIsOver && clickListener != null) {
+        if(MouseHandler.didLeftClick() && mouseIsOver && clickListener != null) {
             ClickSound.play();
         }
     }

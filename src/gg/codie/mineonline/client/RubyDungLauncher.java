@@ -211,10 +211,6 @@ public class RubyDungLauncher implements IMinecraftAppletWrapper {
             } if (minecraftVersion != null && minecraftVersion.useFOVPatch)
                 LWJGLGLUPatch.useCustomFOV();
 
-            // Hide version strings from the HUD
-            if (minecraftVersion != null && minecraftVersion.ingameVersionString != null && Settings.singleton.getHideVersionString())
-                StringPatch.hideVersionNames(minecraftVersion.ingameVersionString);
-
             main.invoke(null, new Object[] {args.toArray(new String[0])});
 
             //System.exit(0);
