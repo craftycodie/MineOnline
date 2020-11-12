@@ -22,7 +22,7 @@ public class LWJGLMouseIsButtonDownAdvice {
                     The cooldown when holding click is 250ms.
                     If player is NOT clicking, or the cooldown has not ended, and this is not their first click, skip.
                  */
-                if ((boolean)ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.client.LegacyGameManager").getField("enableClassicFixes").get(null))
+                if ((boolean)ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.minecraft.InputPatch").getField("enableClassicFixes").get(null))
                     return !(boolean)ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.gui.input.MouseHandler").getMethod("isButtonDown", int.class).invoke(null, button)
                         || (
                                 !(boolean)ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.gui.input.MouseHandler").getMethod("didClickCooldown", int.class, long.class).invoke(null, button, 250L)
