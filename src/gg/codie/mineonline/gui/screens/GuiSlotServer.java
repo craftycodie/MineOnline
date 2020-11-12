@@ -70,7 +70,7 @@ public class GuiSlotServer extends GuiSlot
 
         guiMultiplayer.drawString(server.name, j + 2, k + 1, 0xffffff);
         guiMultiplayer.drawString(versionName, j + 2, k + 12, 0x808080);
-        String users = server.isMineOnline ? "" + server.users : "";
+        String users = server.isMineOnline ? "" + server.users : "?";
         guiMultiplayer.drawString(users + "/" + server.maxUsers, (j + 215) - FontRenderer.minecraftFontRenderer.getStringWidth(users + "/" + server.maxUsers), k + 12, 0x808080);
         guiMultiplayer.drawString(server.onlineMode ? "Online Mode" : "", j + 2, k + 12 + 11, 0x55FF55);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);

@@ -17,7 +17,6 @@ import gg.codie.mineonline.gui.rendering.models.RawModel;
 import gg.codie.mineonline.gui.rendering.models.TexturedModel;
 import gg.codie.mineonline.gui.rendering.shaders.StaticShader;
 import gg.codie.mineonline.gui.rendering.textures.ModelTexture;
-import gg.codie.mineonline.gui.screens.GuiScreen;
 import gg.codie.mineonline.utils.LastLogin;
 import gg.codie.mineonline.utils.Logging;
 import org.json.JSONObject;
@@ -39,15 +38,6 @@ public class MenuManager {
     public static boolean formopen = false;
 
     private static GUIText playerName;
-
-    private static GuiScreen guiScreen;
-    public static void setGUIScreen(GuiScreen guiScreen) {
-        MenuManager.guiScreen = guiScreen;
-    }
-
-    public static GuiScreen getGuiScreen() {
-        return guiScreen;
-    }
 
     @Deprecated
     public static void setMenuScreen(IMenuScreen menuScreen) {

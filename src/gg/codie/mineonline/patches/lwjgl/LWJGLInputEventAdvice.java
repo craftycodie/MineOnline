@@ -2,13 +2,14 @@ package gg.codie.mineonline.patches.lwjgl;
 
 import net.bytebuddy.asm.Advice;
 
-public class LWJGLMouseGetDXAdvice {
-    public static boolean lock;
-
+public class LWJGLInputEventAdvice {
     @Advice.OnMethodEnter(skipOn = Advice.OnNonDefaultValue.class)
     static boolean lockCalls() {
         try {
-            if ((boolean) ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.client.LegacyGameManager").getMethod("mineonlineMenuOpen").invoke(null))
+            if (
+                    (boolean) ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.client.LegacyGameManager").getMethod("mineonlineMenuOpen").invoke(null)
+                    && !(boolean) ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.lwjgl.LWJGLDisplayUpdateAdvice").getField("inUpdateHook").get(null)
+            )
                 return true;
         } catch (Exception ex) {
             try {
@@ -18,6 +19,6 @@ public class LWJGLMouseGetDXAdvice {
             } catch (Exception ex2) { }
         }
 
-        return lock;
+        return false;
     }
 }

@@ -18,9 +18,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class GuiMultiplayer extends GuiScreen
+public class GuiMultiplayer extends AbstractGuiScreen
 {
-    public GuiMultiplayer(GuiScreen guiscreen)
+    public GuiMultiplayer(AbstractGuiScreen guiscreen)
     {
         selectedIndex = -1;
         tooltip = null;
@@ -62,21 +62,18 @@ public class GuiMultiplayer extends GuiScreen
                 joinServer(serverRepository.getServers().get(selectedIndex));
             }
         }));
-        GuiScreen thisScreen = this;
+        AbstractGuiScreen thisScreen = this;
         controlList.add(new GuiButton(4, getWidth() / 2 - 50, getHeight() - 48, 100, 20, "Direct Connect", new GuiButton.GuiButtonListener() {
             @Override
             public void OnButtonPress() {
-                MenuManager.setGUIScreen(new GuiDirectConnect(thisScreen));
+                LegacyGameManager.setGUIScreen(new GuiDirectConnect(thisScreen));
 
             }
         }));
         controlList.add(new GuiButton(3, getWidth() / 2 + 4 + 50, getHeight() - 48, 100, 20, "Cancel", new GuiButton.GuiButtonListener() {
             @Override
             public void OnButtonPress() {
-                MenuManager.setGUIScreen(parentScreen);
-                if(parentScreen == null) {
-                    Mouse.setGrabbed(true);
-                }
+                LegacyGameManager.setGUIScreen(parentScreen);
             }
         }));
         connectButton.enabled = selectedIndex >= 0 && selectedIndex < guiSlotServer.getSize();
@@ -193,7 +190,7 @@ public class GuiMultiplayer extends GuiScreen
         return tooltip = s;
     }
 
-    private GuiScreen parentScreen;
+    private AbstractGuiScreen parentScreen;
     private GuiSlotServer guiSlotServer;
     private int selectedIndex;
     private GuiButton connectButton;

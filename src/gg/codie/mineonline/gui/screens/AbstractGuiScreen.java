@@ -1,5 +1,6 @@
 package gg.codie.mineonline.gui.screens;
 
+import gg.codie.mineonline.client.LegacyGameManager;
 import gg.codie.mineonline.gui.GUIScale;
 import gg.codie.mineonline.gui.input.MouseHandler;
 import gg.codie.mineonline.gui.components.GuiComponent;
@@ -9,12 +10,13 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
-public class GuiScreen extends GuiComponent
+public abstract class AbstractGuiScreen extends GuiComponent
 {
 
-    public GuiScreen()
+    public AbstractGuiScreen()
     {
         controlList = new ArrayList();
         selectedButton = null;
@@ -71,12 +73,10 @@ public class GuiScreen extends GuiComponent
         }
     }
 
-    protected void actionPerformed(GuiButton guibutton)
-    {
-    }
+    public abstract void initGui();
 
-    public void initGui()
-    {
+    protected void actionPerformed(GuiButton guiButton) {
+
     }
 
     public void handleInput()
@@ -91,15 +91,23 @@ public class GuiScreen extends GuiComponent
 
     public void handleMouseInput()
     {
-        if(MouseHandler.didLeftClick())
+        int width = Display.getWidth();
+        int height = Display.getHeight();
+
+        if (LegacyGameManager.isInGame()) {
+            width = LegacyGameManager.getWidth();
+            height = LegacyGameManager.getHeight();
+        }
+
+        if(MouseHandler.didClick(0))
         {
-            int i = (Mouse.getEventX() * getWidth()) / Display.getWidth();
-            int k = getHeight() - (Mouse.getEventY() * getHeight()) / Display.getHeight() - 1;
+            int i = (Mouse.getEventX() * getWidth()) / width;
+            int k = getHeight() - (Mouse.getEventY() * getHeight()) / height - 1;
             mouseClicked(i, k, Mouse.getEventButton());
         } else
         {
-            int j = (Mouse.getEventX() * getWidth()) / Display.getWidth();
-            int l = getHeight() - (Mouse.getEventY() * getWidth()) / Display.getHeight() - 1;
+            int j = (Mouse.getEventX() * getWidth()) / width;
+            int l = getHeight() - (Mouse.getEventY() * getWidth()) / height - 1;
             mouseMovedOrUp(j, l, Mouse.getEventButton());
         }
     }
@@ -127,7 +135,10 @@ public class GuiScreen extends GuiComponent
 
     public void drawWorldBackground(int i)
     {
+        // Alpha/Beta
         drawGradientRect(0, 0, getWidth(), getHeight(), 0xc0101010, 0xd0101010);
+        // Classic
+        //drawGradientRect(0, 0, getWidth(), getHeight(), 1610941696, -1607454624);
     }
 
     public void selectNextField()

@@ -6,12 +6,12 @@ public class MouseHandler {
 
     @Deprecated
     public static boolean isMouseLeftDown() {
-        return mouseLeftWasDown;
+        return isButtonDown(0);
     }
 
     @Deprecated
     public static boolean didLeftClick() {
-        return didLeftClick;
+        return didClick(0);
     }
 
     public static boolean isButtonDown(int button) {
@@ -53,7 +53,6 @@ public class MouseHandler {
     static long lastRightClickMillis = 0L;
 
     public static void update() {
-
         if(!Mouse.isButtonDown(0) && mouseLeftWasDown) {
             mouseLeftWasDown = false;
         }
@@ -81,7 +80,6 @@ public class MouseHandler {
             didRightClick = true;
             lastRightClickMillis = System.currentTimeMillis();
         }
-
     }
 
 }

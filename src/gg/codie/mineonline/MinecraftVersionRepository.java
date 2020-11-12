@@ -263,6 +263,8 @@ public class MinecraftVersionRepository {
         if(onlyKnownVersionInfo) {
             versions = getVersions(LauncherFiles.MINEONLINE_VERSIONS_FOLDER);
             customVersions = getVersions(LauncherFiles.MINEONLINE_CUSTOM_VERSIONS_FOLDER);
+            // TODO: Ideally call this later.
+            loadInstalledVersions();
         } else {
             // If there's a resource version that's not in the cache, extract it.
             ProgressDialog.setSubMessage("Extracting version information...");

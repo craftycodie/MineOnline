@@ -154,6 +154,7 @@ public class URLConstructAdvice {
                         "skins.minecraft.net",
                         "session.minecraft.net",
                         "authenticate.minecraft.net",
+                        "login.minecraft.net",
                         "assets.minecraft.net",
                         "mcoapi.minecraft.net",
                         "www.minecraft.net",

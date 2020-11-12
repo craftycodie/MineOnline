@@ -9,12 +9,10 @@ import gg.codie.mineonline.lwjgl.OnCreateListener;
 import gg.codie.mineonline.lwjgl.OnUpdateListener;
 import gg.codie.mineonline.patches.ClassPatch;
 import gg.codie.mineonline.patches.HashMapPatch;
-import gg.codie.mineonline.patches.StringPatch;
 import gg.codie.mineonline.patches.URLPatch;
 import gg.codie.mineonline.patches.lwjgl.LWJGLDisplayPatch;
-import gg.codie.mineonline.patches.lwjgl.LWJGLMouseSetNativeCursorAdvice;
 import gg.codie.mineonline.patches.lwjgl.LWJGLGLUPatch;
-import gg.codie.mineonline.patches.minecraft.MousePatch;
+import gg.codie.mineonline.patches.minecraft.InputPatch;
 import gg.codie.mineonline.utils.JREUtils;
 import gg.codie.mineonline.utils.Logging;
 import gg.codie.common.utils.OSUtils;
@@ -24,7 +22,6 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.util.vector.Vector2f;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -123,9 +120,6 @@ public class RubyDungLauncher implements IMinecraftAppletWrapper {
 
             LWJGLDisplayPatch.hijackLWJGLThreadPatch(minecraftVersion != null && minecraftVersion.useGreyScreenPatch);
 
-            if (minecraftVersion != null && minecraftVersion.enableCursorPatch && OSUtils.isMac())
-                MousePatch.fixMouseIssues();
-
             try {
                 rubyDungClass = classLoader.loadClass("com.mojang.rubydung.RubyDung");
             } catch (ClassNotFoundException ex) {
@@ -152,8 +146,8 @@ public class RubyDungLauncher implements IMinecraftAppletWrapper {
                     DisplayManager.checkGLError("minecraft update hook start");
 
                     if (!OSUtils.isWindows() && minecraftVersion != null && minecraftVersion.enableCursorPatch) {
-                        if (Mouse.isGrabbed() != LWJGLMouseSetNativeCursorAdvice.isFocused)
-                            Mouse.setGrabbed(LWJGLMouseSetNativeCursorAdvice.isFocused);
+                        if (Mouse.isGrabbed() != InputPatch.isFocused)
+                            Mouse.setGrabbed(InputPatch.isFocused);
                     }
 
                     // DEBUG: Frees the cursor when pressing tab.
@@ -297,6 +291,28 @@ public class RubyDungLauncher implements IMinecraftAppletWrapper {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public int getWidth() {
+        int width = Display.getWidth();
+
+        if (Display.isFullscreen()) {
+            width = Display.getDisplayMode().getWidth();
+        }
+
+        return width;
+    }
+
+    @Override
+    public int getHeight() {
+        int height = Display.getHeight();
+
+        if (Display.isFullscreen() ) {
+            height = Display.getDisplayMode().getHeight();
+        }
+
+        return height;
     }
 
     @Override

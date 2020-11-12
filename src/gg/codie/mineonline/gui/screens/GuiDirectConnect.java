@@ -23,10 +23,10 @@ import java.util.Map;
 //            GuiScreen, GuiTextField, StringTranslate, GuiButton, 
 //            GameSettings, GuiConnecting
 
-public class GuiDirectConnect extends GuiScreen
+public class GuiDirectConnect extends AbstractGuiScreen
 {
 
-    public GuiDirectConnect(GuiScreen guiscreen)
+    public GuiDirectConnect(AbstractGuiScreen guiscreen)
     {
         parentScreen = guiscreen;
         initGui();
@@ -51,10 +51,7 @@ public class GuiDirectConnect extends GuiScreen
         controlList.add(new GuiButton(1, getWidth() / 2 - 100, getHeight() / 4 + 120 + 12, "Cancel", new GuiButton.GuiButtonListener() {
             @Override
             public void OnButtonPress() {
-                MenuManager.setGUIScreen(parentScreen);
-
-                if (parentScreen == null)
-                    Mouse.setGrabbed(true);
+                LegacyGameManager.setGUIScreen(parentScreen);
             }
         }));
         String s = Settings.singleton.getLastServer().replaceAll("_", ":");
@@ -171,6 +168,6 @@ public class GuiDirectConnect extends GuiScreen
         super.drawScreen(i, j);
     }
 
-    private GuiScreen parentScreen;
+    private AbstractGuiScreen parentScreen;
     private GuiTextField textField;
 }

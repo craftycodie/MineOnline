@@ -1,33 +1,18 @@
-// Decompiled by Jad v1.5.8g. Copyright 2001 Pavel Kouznetsov.
-// Jad home page: http://www.kpdus.com/jad.html
-// Decompiler options: packimports(3) braces deadcode 
-
 package gg.codie.mineonline.gui.screens;
-
-// Referenced classes of package net.minecraft.src:
-//            GuiScreen, GuiButton, StatCollector, GuiOptions, 
-//            StatList, StatFileWriter, World, GuiMainMenu, 
-//            GuiAchievements, GuiStats, MathHelper
 
 import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.LibraryManager;
-import gg.codie.mineonline.client.IMinecraftAppletWrapper;
 import gg.codie.mineonline.client.LegacyGameManager;
 import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.gui.components.GuiButton;
-import gg.codie.mineonline.gui.rendering.DisplayManager;
-import gg.codie.mineonline.patches.lwjgl.LWJGLPerspectiveAdvice;
 import gg.codie.mineonline.utils.JREUtils;
 import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.util.glu.GLU;
 
 import java.io.File;
 import java.util.LinkedList;
 import java.util.Map;
 
-public class GuiIngameMenu extends GuiScreen
+public class GuiIngameMenu extends AbstractGuiScreen
 {
     public GuiIngameMenu()
     {
@@ -73,17 +58,16 @@ public class GuiIngameMenu extends GuiScreen
         controlList.add(new GuiButton(4, getWidth() / 2 - 100, getHeight() / 4 + 24 + byte0, "Back to game", new GuiButton.GuiButtonListener() {
             @Override
             public void OnButtonPress() {
-                MenuManager.setGUIScreen(null);
-                Mouse.setGrabbed(true);
+                LegacyGameManager.setGUIScreen(null);
             }
         }));
 
-        GuiScreen thisScreen = this;
+        AbstractGuiScreen thisScreen = this;
 
         controlList.add(new GuiButton(0, getWidth() / 2 - 100, getHeight() / 4 + 96 + byte0, "Options...", new GuiButton.GuiButtonListener() {
             @Override
             public void OnButtonPress() {
-                MenuManager.setGUIScreen(new GuiIngameOptions(thisScreen));
+                LegacyGameManager.setGUIScreen(new GuiIngameOptions(thisScreen));
             }
         }));
 
@@ -91,20 +75,20 @@ public class GuiIngameMenu extends GuiScreen
             controlList.add(new GuiButton(5, getWidth() / 2 - 100, getHeight() / 4 + 48 + byte0, 98, 20, "Multiplayer", new GuiButton.GuiButtonListener() {
                 @Override
                 public void OnButtonPress() {
-                    MenuManager.setGUIScreen(new GuiMultiplayer(thisScreen));
+                    LegacyGameManager.setGUIScreen(new GuiMultiplayer(thisScreen));
                 }
             }));
             controlList.add(new GuiButton(6, getWidth() / 2 + 2, getHeight() / 4 + 48 + byte0, 98, 20, "Texture Packs", new GuiButton.GuiButtonListener() {
                 @Override
                 public void OnButtonPress() {
-                    MenuManager.setGUIScreen(new GuiTexturePacks(thisScreen));
+                    LegacyGameManager.setGUIScreen(new GuiTexturePacks(thisScreen));
                 }
             }));
         } else {
             controlList.add(new GuiButton(5, getWidth() / 2 - 100, getHeight() / 4 + 48 + byte0, "Multiplayer", new GuiButton.GuiButtonListener() {
                 @Override
                 public void OnButtonPress() {
-                    MenuManager.setGUIScreen(new GuiMultiplayer(thisScreen));
+                    LegacyGameManager.setGUIScreen(new GuiMultiplayer(thisScreen));
                 }
             }));
         }
@@ -124,14 +108,6 @@ public class GuiIngameMenu extends GuiScreen
         initGui();
 
         drawDefaultBackground();
-        //boolean flag = !mc.theWorld.func_650_a(updateCounter2++);
-//        if(flag || updateCounter < 20)
-//        {
-//            float f1 = ((float)(updateCounter % 10) + f) / 10F;
-//            f1 = (float)Math.sin(f1 * 3.141593F * 2.0F) * 0.2F + 0.8F;
-//            int k = (int)(255F * f1);
-//            drawString("Saving level..", 8, height - 16, k << 16 | k << 8 | k);
-//        }
         drawCenteredString("MineOnline menu", getWidth() / 2, 40, 0xffffff);
         super.drawScreen(i, j);
     }

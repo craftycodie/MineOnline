@@ -1,58 +1,65 @@
 package gg.codie.mineonline.gui.screens;
 
-import gg.codie.mineonline.gui.MenuManager;
+import gg.codie.mineonline.Settings;
+import gg.codie.mineonline.client.LegacyGameManager;
 import gg.codie.mineonline.gui.components.GuiButton;
 import gg.codie.mineonline.gui.components.GuiSmallButton;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
-public class GuiControls extends GuiScreen
+public class GuiControls extends AbstractGuiScreen
 {
 
-    public GuiControls(GuiScreen guiscreen)
+    public GuiControls(AbstractGuiScreen guiscreen)
     {
         screenTitle = "Controls";
         buttonId = -1;
         parentScreen = guiscreen;
     }
 
-    private int func_20080_j()
-    {
-        return getWidth() / 2 - 155;
-    }
-
     public void initGui()
     {
-        int i = func_20080_j();
-//        for(int j = 0; j < options.keyBindings.length; j++)
-//        {
-//            controlList.add(new GuiSmallButton(j, i + (j % 2) * 160, getHeight() / 6 + 24 * (j >> 1), 70, 20, options.getOptionDisplayString(j)));
-//        }
+        int i = getWidth() / 2 - 155;
+
+        controlList.add(new GuiSmallButton(0, i + (0 % 2) * 160, getHeight() / 6 + 24 * (0 >> 1), 70, 20, Keyboard.getKeyName(Settings.singleton.getZoomKeyCode()), new GuiButton.GuiButtonListener() {
+            @Override
+            public void OnButtonPress() {
+                buttonId = 0;
+                ((GuiButton)controlList.get(0)).displayString = (new StringBuilder()).append("> ").append(Keyboard.getKeyName(Settings.singleton.getZoomKeyCode())).append(" <").toString();
+            }
+        }));
+        controlList.add(new GuiSmallButton(1, i + (1 % 2) * 160, getHeight() / 6 + 24 * (1 >> 1), 70, 20, Keyboard.getKeyName(Settings.singleton.getMineonlineMenuKeyCode()), new GuiButton.GuiButtonListener() {
+            @Override
+            public void OnButtonPress() {
+                buttonId = 1;
+                ((GuiButton)controlList.get(1)).displayString = (new StringBuilder()).append("> ").append(Keyboard.getKeyName(Settings.singleton.getMineonlineMenuKeyCode())).append(" <").toString();
+            }
+        }));
 
         controlList.add(new GuiButton(200, getWidth() / 2 - 100, getHeight() / 6 + 168, "Done", new GuiButton.GuiButtonListener() {
             @Override
             public void OnButtonPress() {
-                MenuManager.setGUIScreen(parentScreen);
-                if(parentScreen == null)
-                    Mouse.setGrabbed(true);
+                LegacyGameManager.setGUIScreen(parentScreen);
             }
         }));
         screenTitle = "Controls";
-    }
-
-    protected void actionPerformed(GuiButton guibutton)
-    {
-//        for(int i = 0; i < options.keyBindings.length; i++)
-//        {
-//            ((GuiButton)controlList.get(i)).displayString = options.getOptionDisplayString(i);
-//        }
     }
 
     protected void keyTyped(char c, int i)
     {
         if(buttonId >= 0)
         {
-//            options.setKeyBinding(buttonId, i);
-//            ((GuiButton)controlList.get(buttonId)).displayString = options.getOptionDisplayString(buttonId);
+            switch(buttonId) {
+                case 0:
+                    Settings.singleton.setZoomKeyCode(i);
+                    ((GuiButton)controlList.get(buttonId)).displayString = Keyboard.getKeyName(Settings.singleton.getZoomKeyCode());
+                    break;
+                case 1:
+                    Settings.singleton.setMineonlineMenuKeyCode(i);
+                    ((GuiButton)controlList.get(buttonId)).displayString = Keyboard.getKeyName(Settings.singleton.getMineonlineMenuKeyCode());
+                    break;
+            }
+            Settings.singleton.saveSettings();
             buttonId = -1;
         } else
         {
@@ -67,16 +74,14 @@ public class GuiControls extends GuiScreen
 
         drawDefaultBackground();
         drawCenteredString(screenTitle, getWidth() / 2, 20, 0xffffff);
-        int k = func_20080_j();
-//        for(int l = 0; l < options.keyBindings.length; l++)
-//        {
-//            drawString(options.getKeyBindingDescription(l), k + (l % 2) * 160 + 70 + 6, getHeight() / 6 + 24 * (l >> 1) + 7, -1);
-//        }
+        int k = getWidth() / 2 - 155;
+        drawString("Zoom", k + (0 % 2) * 160 + 70 + 6, getHeight() / 6 + 24 * (0 >> 1) + 7, -1);
+        drawString("MineOnline Menu", k + (1 % 2) * 160 + 70 + 6, getHeight() / 6 + 24 * (1 >> 1) + 7, -1);
 
         super.drawScreen(i, j);
     }
 
-    private GuiScreen parentScreen;
+    private AbstractGuiScreen parentScreen;
     protected String screenTitle;
     private int buttonId;
 }

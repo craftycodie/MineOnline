@@ -3,13 +3,12 @@ package gg.codie.mineonline.gui.components;
 
 
 import gg.codie.mineonline.gui.input.InputSanitization;
-import gg.codie.mineonline.gui.rendering.FontRenderer;
-import gg.codie.mineonline.gui.screens.GuiScreen;
+import gg.codie.mineonline.gui.screens.AbstractGuiScreen;
 
 public class GuiTextField extends GuiComponent
 {
 
-    public GuiTextField(GuiScreen guiscreen, int i, int j, int k, int l, String s)
+    public GuiTextField(AbstractGuiScreen guiscreen, int i, int j, int k, int l, String s)
     {
         isFocused = false;
         isEnabled = true;
@@ -50,7 +49,7 @@ public class GuiTextField extends GuiComponent
         {
             String s;
             int j;
-            s = GuiScreen.getClipboardString();
+            s = AbstractGuiScreen.getClipboardString();
             if(s == null)
             {
                 s = "";
@@ -118,5 +117,5 @@ public class GuiTextField extends GuiComponent
     private int cursorCounter;
     public boolean isFocused;
     public boolean isEnabled;
-    private GuiScreen parentGuiScreen;
+    private AbstractGuiScreen parentGuiScreen;
 }

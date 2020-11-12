@@ -3,17 +3,16 @@ package gg.codie.mineonline.gui.screens;
 import gg.codie.minecraft.client.EMinecraftGUIScale;
 import gg.codie.mineonline.Settings;
 import gg.codie.mineonline.client.LegacyGameManager;
-import gg.codie.mineonline.gui.MenuManager;
+import gg.codie.mineonline.gui.GUIScale;
 import gg.codie.mineonline.gui.components.GuiButton;
 import gg.codie.mineonline.gui.components.GuiSlider;
 import gg.codie.mineonline.gui.components.GuiSmallButton;
-import gg.codie.mineonline.gui.rendering.DisplayManager;
 import org.lwjgl.input.Mouse;
 
-public class GuiIngameOptions extends GuiScreen
+public class GuiIngameOptions extends AbstractGuiScreen
 {
 
-    public GuiIngameOptions(GuiScreen guiscreen)
+    public GuiIngameOptions(AbstractGuiScreen guiscreen)
     {
         screenName = "Options";
         parent = guiscreen;
@@ -37,21 +36,19 @@ public class GuiIngameOptions extends GuiScreen
 
     public void initGui()
     {
-        GuiScreen thisScreen = this;
+        AbstractGuiScreen thisScreen = this;
 
         controlList.add(new GuiButton(200, getWidth() / 2 - 100, getHeight() / 6 + 168, "Done", new GuiButton.GuiButtonListener() {
             @Override
             public void OnButtonPress() {
                 Settings.singleton.saveSettings();
-                MenuManager.setGUIScreen(parent);
-                if (parent == null)
-                    Mouse.setGrabbed(true);
+                LegacyGameManager.setGUIScreen(parent);
             }
         }));
         controlList.add(new GuiButton(100, getWidth() / 2 - 100, getHeight() / 6 + 120 + 12, "Controls", new GuiButton.GuiButtonListener() {
             @Override
             public void OnButtonPress() {
-                MenuManager.setGUIScreen(new GuiControls(thisScreen));
+                LegacyGameManager.setGUIScreen(new GuiControls(thisScreen));
             }
         }));
 
@@ -69,6 +66,8 @@ public class GuiIngameOptions extends GuiScreen
             }
         }));
 
+        ((GuiButton)controlList.get(2)).enabled = LegacyGameManager.getVersion().useFOVPatch;
+
         controlList.add(new GuiSmallButton(0, getWidth() / 2 + 5, getHeight() / 6, "GUI Scale: " + Settings.singleton.getGUIScale().getName().toUpperCase(), new GuiButton.GuiButtonListener() {
             @Override
             public void OnButtonPress() {
@@ -81,6 +80,8 @@ public class GuiIngameOptions extends GuiScreen
 
                 if (LegacyGameManager.isInGame()) {
                     LegacyGameManager.setGUIScale(newGuiScale);
+                    new GUIScale(getWidth(), getHeight());
+                    LegacyGameManager.setGUIScreen(new GuiIngameOptions(parent));
                 } else {
                     Settings.singleton.setGUIScale(newGuiScale);
                 }
@@ -88,6 +89,9 @@ public class GuiIngameOptions extends GuiScreen
                 ((GuiSmallButton)controlList.get(3)).displayString = "GUI Scale: " + Settings.singleton.getGUIScale().getName().toUpperCase();
             }
         }));
+
+        ((GuiButton)controlList.get(3)).enabled = LegacyGameManager.getVersion().scaledResolutionClass != null && LegacyGameManager.getVersion().guiScreenClass != null;
+
 
         controlList.add(new GuiSmallButton(0, getWidth() / 2 - 155, getHeight() / 6 + 24, "Hide Version Number: " + (Settings.singleton.getHideVersionString() ? "YES" : "NO"), new GuiButton.GuiButtonListener() {
             @Override
@@ -98,7 +102,16 @@ public class GuiIngameOptions extends GuiScreen
                     Settings.singleton.setHideVersionString(!Settings.singleton.getHideVersionString());
                 }
 
-                ((GuiSmallButton)controlList.get(4)).displayString = "Hide Version Number: " + (Settings.singleton.getHideVersionString() ? "YES" : "NO");
+                ((GuiSmallButton) controlList.get(4)).displayString = "Hide Version Number: " + (Settings.singleton.getHideVersionString() ? "YES" : "NO");
+            }
+        }));
+
+        ((GuiButton)controlList.get(4)).enabled = LegacyGameManager.getVersion().ingameVersionString != null;
+
+        controlList.add(new GuiButton(101, getWidth() / 2 - 100, getHeight() / 6 + 96 + 12, "About", new GuiButton.GuiButtonListener() {
+            @Override
+            public void OnButtonPress() {
+                LegacyGameManager.setGUIScreen(new GuiAbout(thisScreen));
             }
         }));
     }
@@ -113,6 +126,6 @@ public class GuiIngameOptions extends GuiScreen
         super.drawScreen(i, j);
     }
 
-    private GuiScreen parent;
+    private AbstractGuiScreen parent;
     protected String screenName;
 }

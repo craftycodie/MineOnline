@@ -40,10 +40,10 @@ public class GUIScale
     public int scaleFactor;
 
     public static int lastScaledWidth() {
-        return (int)singleton.getScaledWidth();
+        return (int)Math.ceil(singleton.getScaledWidth());
     }
 
     public static int lastScaledHeight() {
-        return (int)singleton.getScaledHeight();
+        return (int)Math.ceil(singleton.getScaledHeight());
     }
 }

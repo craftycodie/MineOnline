@@ -321,14 +321,16 @@ public class Loader {
     public int getGuiTexture(EGUITexture eguiTexture) {
         if (!textures.containsKey("mineonline:" + eguiTexture.textureName)) {
             Settings.singleton.loadSettings();
-            try {
-                ZipFile texturesZip = new ZipFile(LauncherFiles.MINECRAFT_TEXTURE_PACKS_PATH + Settings.singleton.getTexturePack());
-                ZipEntry texture = texturesZip.getEntry(eguiTexture.textureName.substring(1));
-                if (texture != null) {
-                    return loadTexture("mineonline:" + eguiTexture.textureName, texturesZip.getInputStream(texture));
-                }
-            } catch (Exception ex) {
+            if (eguiTexture.useTexturePack ) {
+                try {
+                    ZipFile texturesZip = new ZipFile(LauncherFiles.MINECRAFT_TEXTURE_PACKS_PATH + Settings.singleton.getTexturePack());
+                    ZipEntry texture = texturesZip.getEntry(eguiTexture.textureName.substring(1));
+                    if (texture != null) {
+                        return loadTexture("mineonline:" + eguiTexture.textureName, texturesZip.getInputStream(texture));
+                    }
+                } catch (Exception ex) {
 
+                }
             }
 
             return loadTexture("mineonline:" + eguiTexture.textureName, Loader.class.getResource(eguiTexture.textureName));

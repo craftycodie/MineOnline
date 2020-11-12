@@ -1,10 +1,8 @@
-package gg.codie.mineonline.patches.lwjgl;
+package gg.codie.mineonline.patches;
 
 import net.bytebuddy.asm.Advice;
 
-public class LWJGLMouseGetDXAdvice {
-    public static boolean lock;
-
+public class RobotMouseMoveAdvice {
     @Advice.OnMethodEnter(skipOn = Advice.OnNonDefaultValue.class)
     static boolean lockCalls() {
         try {
@@ -18,6 +16,6 @@ public class LWJGLMouseGetDXAdvice {
             } catch (Exception ex2) { }
         }
 
-        return lock;
+        return false;
     }
 }

@@ -3,24 +3,19 @@ package gg.codie.mineonline.gui.screens;
 import gg.codie.common.utils.OSUtils;
 import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.Settings;
+import gg.codie.mineonline.client.LegacyGameManager;
 import gg.codie.mineonline.client.MinecraftTexturePackRepository;
-import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.gui.components.GuiButton;
 import gg.codie.mineonline.gui.components.GuiSmallButton;
-import gg.codie.mineonline.gui.rendering.FontRenderer;
-import gg.codie.mineonline.gui.rendering.Loader;
-import gg.codie.mineonline.gui.rendering.textures.EGUITexture;
-import gg.codie.mineonline.patches.HashMapPutAdvice;
 import org.lwjgl.Sys;
 import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 import java.io.File;
 
-public class GuiTexturePacks extends GuiScreen
+public class GuiTexturePacks extends AbstractGuiScreen
 {
-    public GuiTexturePacks(GuiScreen guiscreen)
+    public GuiTexturePacks(AbstractGuiScreen guiscreen)
     {
         field_6454_o = -1;
         parent = guiscreen;
@@ -45,10 +40,7 @@ public class GuiTexturePacks extends GuiScreen
         controlList.add(new GuiSmallButton(6, getWidth() / 2 + 4, getHeight() - 48, "Done", new GuiButton.GuiButtonListener() {
             @Override
             public void OnButtonPress() {
-                MenuManager.setGUIScreen(parent);
-                if (parent == null) {
-                    Mouse.setGrabbed(true);
-                }
+                LegacyGameManager.setGUIScreen(parent);
             }
         }));
         MinecraftTexturePackRepository.singleton.getTexturePacks();
@@ -84,7 +76,7 @@ public class GuiTexturePacks extends GuiScreen
         field_6454_o--;
     }
 
-    protected GuiScreen parent;
+    protected AbstractGuiScreen parent;
     private int field_6454_o;
     private GuiTexturePackSlot guiTexturePackSlot;
 }

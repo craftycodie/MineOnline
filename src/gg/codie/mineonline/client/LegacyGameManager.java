@@ -5,23 +5,26 @@ import gg.codie.minecraft.client.Options;
 import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.MinecraftVersion;
 import gg.codie.mineonline.Settings;
-import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.gui.rendering.DisplayManager;
 import gg.codie.mineonline.gui.rendering.Loader;
+import gg.codie.mineonline.gui.screens.AbstractGuiScreen;
 import gg.codie.mineonline.patches.ClassGetResourceAdvice;
-import gg.codie.mineonline.patches.StringCharAtAdvice;
 import gg.codie.mineonline.patches.StringPatch;
-import gg.codie.mineonline.patches.StringToCharArrayAdvice;
 import gg.codie.mineonline.patches.lwjgl.LWJGLGL11GLOrthoAdvice;
 import gg.codie.mineonline.patches.lwjgl.LWJGLPerspectiveAdvice;
 import gg.codie.mineonline.patches.minecraft.GuiScreenOpenAdvice;
+import gg.codie.mineonline.patches.minecraft.InputPatch;
 import gg.codie.mineonline.patches.minecraft.ScaledResolutionConstructorAdvice;
+import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.Display;
 
+import java.awt.*;
 import java.io.IOException;
 
 public class LegacyGameManager {
 
     private static LegacyGameManager singleton;
+    public static AbstractGuiScreen guiScreen;
 
     private MinecraftVersion version;
     private IMinecraftAppletWrapper appletWrapper;
@@ -49,9 +52,19 @@ public class LegacyGameManager {
     }
 
     private static void preparePatches() {
-        if (getVersion() != null && getVersion().ingameVersionString != null) {
-            StringPatch.hideVersionNames(getVersion().ingameVersionString);
-            StringPatch.enable = Settings.singleton.getHideVersionString();
+        MinecraftVersion version = getVersion();
+
+        // Allow the MineOnline menu to freeze game input.
+        InputPatch.init();
+
+        if (version != null) {
+            if (version.ingameVersionString != null) {
+                StringPatch.hideVersionNames(version.ingameVersionString);
+                StringPatch.enable = Settings.singleton.getHideVersionString();
+            }
+
+            // Fixes various input issues with classic - infdev versions.
+            InputPatch.enableClassicFixes = version.enableCursorPatch;
         }
     }
 
@@ -98,11 +111,48 @@ public class LegacyGameManager {
         LWJGLGL11GLOrthoAdvice.guiScale = guiScale.getIntValue();
         ScaledResolutionConstructorAdvice.guiScale = guiScale.getIntValue();
         // TODO: Fake Resize
-        DisplayManager.getFrame().setSize(DisplayManager.getFrame().getSize());
+        getGuiScreen().initGui();
+        //DisplayManager.getFrame().setSize(DisplayManager.getFrame().getSize());
         //getAppletWrapper().resize();
     }
 
     public static boolean isInGame() {
         return getSingleton() != null;
+    }
+
+    public static int getWidth() {
+        return getAppletWrapper().getWidth();
+    }
+
+    public static int getHeight() {
+        return getAppletWrapper().getHeight();
+    }
+
+    public static boolean mineonlineMenuOpen() {
+        return getGuiScreen() != null;
+    }
+
+    public static void setGUIScreen(AbstractGuiScreen guiScreen) {
+
+        if (LegacyGameManager.guiScreen == null) {
+            InputPatch.isFocused = false;
+
+            Canvas mcCanvas = Display.getParent();
+            Mouse.setCursorPosition((mcCanvas.getWidth() / 2) + DisplayManager.getFrame().getInsets().left, mcCanvas.getHeight() / 2);
+            Mouse.setGrabbed(false);
+        }
+
+        if (guiScreen == null) {
+            if (Display.isActive()) {
+                InputPatch.isFocused = true;
+                Mouse.setGrabbed(true);
+            }
+        }
+
+        LegacyGameManager.guiScreen = guiScreen;
+    }
+
+    public static AbstractGuiScreen getGuiScreen() {
+        return guiScreen;
     }
 }

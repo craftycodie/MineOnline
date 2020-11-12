@@ -619,6 +619,14 @@ public class Settings implements IMinecraftOptionsHandler {
         return settings.optInt(KEY_CODE_INGAME_MENU, 19);
     }
 
+    public void setZoomKeyCode(int keyCode) {
+        settings.put(KEY_CODE_ZOOM, keyCode);
+    }
+
+    public void setMineonlineMenuKeyCode(int keyCode) {
+        settings.put(KEY_CODE_INGAME_MENU, keyCode);
+    }
+
     public EMinecraftOptionsVersion getLastLaunchedOptionsVersion() {
         return settings.optEnum(EMinecraftOptionsVersion.class, LAST_LAUNCHED_OPTIONS_VERSION, EMinecraftOptionsVersion.DEFAULT);
     }
