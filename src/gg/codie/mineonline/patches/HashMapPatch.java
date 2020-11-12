@@ -9,7 +9,7 @@ import net.bytebuddy.matcher.ElementMatchers;
 import java.util.HashMap;
 
 public class HashMapPatch {
-    public static void storeMinecraftTextureIDs() {
+    public static void init() {
         new ByteBuddy()
                 .with(Implementation.Context.Disabled.Factory.INSTANCE)
                 .redefine(HashMap.class)

@@ -102,7 +102,7 @@ public class SelectableTexturePackList extends GUIObject {
         }
         texturePacks.clear();
 
-        addTexturePack("Default", "The default look of Minecraft", Loader.singleton.getGuiTexture(EGUITexture.DEFAULT_PACK));
+        addTexturePack("Default", "The default look of Minecraft", Loader.singleton.getGuiTexture(EGUITexture.PACK));
 
         File texturePacksFolder = new File(LauncherFiles.MINECRAFT_TEXTURE_PACKS_PATH);
 

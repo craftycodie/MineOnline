@@ -9,6 +9,8 @@ import gg.codie.mineonline.gui.rendering.DisplayManager;
 import gg.codie.mineonline.gui.rendering.Loader;
 import gg.codie.mineonline.gui.screens.AbstractGuiScreen;
 import gg.codie.mineonline.patches.ClassGetResourceAdvice;
+import gg.codie.mineonline.patches.ClassPatch;
+import gg.codie.mineonline.patches.HashMapPatch;
 import gg.codie.mineonline.patches.StringPatch;
 import gg.codie.mineonline.patches.lwjgl.LWJGLGL11GLOrthoAdvice;
 import gg.codie.mineonline.patches.lwjgl.LWJGLPerspectiveAdvice;
@@ -57,10 +59,17 @@ public class LegacyGameManager {
         // Allow the MineOnline menu to freeze game input.
         InputPatch.init();
 
+        HashMapPatch.init();
+        ClassPatch.init();
+
         if (version != null) {
             if (version.ingameVersionString != null) {
                 StringPatch.hideVersionNames(version.ingameVersionString);
                 StringPatch.enable = Settings.singleton.getHideVersionString();
+            }
+
+            if (getVersion().useTexturepackPatch) {
+                ClassPatch.texturePack = Settings.singleton.getTexturePack();
             }
 
             // Fixes various input issues with classic - infdev versions.
@@ -87,7 +96,7 @@ public class LegacyGameManager {
     public static void setTexturePack(String texturePack) {
         Settings.singleton.setTexturePack(texturePack);
         Settings.singleton.saveSettings();
-        ClassGetResourceAdvice.texturePack = texturePack;
+        ClassPatch.texturePack = texturePack;
         Loader.reloadMinecraftTextures(getAppletWrapper().getMinecraftAppletClass(), texturePack);
     }
 

@@ -54,7 +54,7 @@ public class LegacyMinecraftLauncherLauncher {
             URLConnectionPatch.patchResponses();
             // Allow texture packs in versions before Alpha 1.2.2
             if (minecraftVersion != null && minecraftVersion.useTexturepackPatch)
-                ClassPatch.useTexturePacks(Settings.singleton.getTexturePack());
+                ClassPatch.init();
 
             if(minecraftVersion != null)
                 DiscordRPCHandler.play(minecraftVersion.name, null, null);

@@ -6,7 +6,7 @@ public enum  EGUITexture {
     GUI_ICONS("/gui/icons.png", false),
     FONT("/font/default.png", true),
     UNKNOWN_PACK("/gui/unknown_pack.png", true),
-    DEFAULT_PACK("pack.png", false),
+    PACK("/pack.png", false),
     BACKGROUND("/gui/background.png", true);
 
     public final String textureName;

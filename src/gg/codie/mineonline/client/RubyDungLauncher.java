@@ -198,11 +198,7 @@ public class RubyDungLauncher implements IMinecraftAppletWrapper {
 
 
             URLPatch.redefineURL();
-            // Allow texture packs in versions before Alpha 1.2.2
-            if (minecraftVersion != null && minecraftVersion.useTexturepackPatch) {
-                ClassPatch.useTexturePacks(Settings.singleton.getTexturePack());
-                HashMapPatch.storeMinecraftTextureIDs();
-            } if (minecraftVersion != null && minecraftVersion.useFOVPatch)
+            if (minecraftVersion != null && minecraftVersion.useFOVPatch)
                 LWJGLGLUPatch.useCustomFOV();
 
             main.invoke(null, new Object[] {args.toArray(new String[0])});

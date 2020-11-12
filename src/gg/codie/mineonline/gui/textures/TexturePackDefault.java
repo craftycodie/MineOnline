@@ -18,7 +18,7 @@ public class TexturePackDefault extends TexturePackBase
         firstDescriptionLine = "The default look of Minecraft";
         try
         {
-            texturePackThumbnail = ImageIO.read((TexturePackDefault.class).getResource(EGUITexture.DEFAULT_PACK.textureName));
+            texturePackThumbnail = ImageIO.read((TexturePackDefault.class).getResource(EGUITexture.PACK.textureName));
         }
         catch(IOException ioexception)
         {
@@ -30,7 +30,7 @@ public class TexturePackDefault extends TexturePackBase
     {
         if(texturePackThumbnail != null)
         {
-            //Loader.singleton.unloadTexture(EGUITexture.DEFAULT_PACK.textureName);
+            //Loader.singleton.unloadTexture(EGUITexture.PACK.textureName);
         }
     }
 
@@ -38,11 +38,11 @@ public class TexturePackDefault extends TexturePackBase
     {
         if(texturePackThumbnail != null && texturePackName < 0)
         {
-            texturePackName = Loader.singleton.getGuiTexture(EGUITexture.DEFAULT_PACK);
+            texturePackName = Loader.singleton.getGuiTexture(EGUITexture.PACK);
         }
         if(texturePackThumbnail != null)
         {
-            GL11.glBindTexture(3553 /*GL_TEXTURE_2D*/, Loader.singleton.getGuiTexture(EGUITexture.DEFAULT_PACK));
+            GL11.glBindTexture(3553 /*GL_TEXTURE_2D*/, Loader.singleton.getGuiTexture(EGUITexture.PACK));
         } else
         {
             GL11.glBindTexture(3553 /*GL_TEXTURE_2D*/, Loader.singleton.getGuiTexture(EGUITexture.UNKNOWN_PACK));

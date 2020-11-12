@@ -479,11 +479,6 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
         // Allows c0.0.15a to have a username sent to servers.
         if (minecraftVersion != null && minecraftVersion.useUsernamesPatch)
             ByteBufferPatch.enableC0015aUsernames(Session.session.getUsername());
-        // Allow texture packs in versions before Alpha 1.2.2
-        if (minecraftVersion != null && minecraftVersion.useTexturepackPatch) {
-            ClassPatch.useTexturePacks(Settings.singleton.getTexturePack());
-            HashMapPatch.storeMinecraftTextureIDs();
-        }
 
         minecraftApplet.init();
 

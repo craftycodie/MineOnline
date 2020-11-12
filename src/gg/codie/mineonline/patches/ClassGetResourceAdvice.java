@@ -1,39 +1,73 @@
 package gg.codie.mineonline.patches;
 
+import gg.codie.common.utils.ArrayUtils;
 import gg.codie.mineonline.LauncherFiles;
 import net.bytebuddy.asm.Advice;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.time.LocalDate;
+import java.time.Month;
+import java.util.Date;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 public class ClassGetResourceAdvice {
-    public static String texturePack;
 
     @Advice.OnMethodExit
-    static void intercept(@Advice.Argument(0) String textureName, @Advice.Return(readOnly = false) InputStream inputStream) {
-//        if (textureName.endsWith(".png"))
-//            return;
-
+    static void intercept(@Advice.Argument(0) String resourceName, @Advice.Return(readOnly = false) InputStream inputStream) {
         try {
             boolean DEV = (boolean) ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.Globals").getField("DEV").get(null);
 
             if (DEV)
-                System.out.println("Loading texture: " + textureName);
+                System.out.println("Loading resource: " + resourceName);
 
-            String texturePack = (String) ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.ClassGetResourceAdvice").getField("texturePack").get(null);
-            String texturePacksPath = (String) ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.LauncherFiles").getField("MINECRAFT_TEXTURE_PACKS_PATH").get(null);
+            if(resourceName.endsWith(".png")) {
+
+                String texturePack = (String) ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.ClassPatch").getField("texturePack").get(null);
+                String texturePacksPath = (String) ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.LauncherFiles").getField("MINECRAFT_TEXTURE_PACKS_PATH").get(null);
 
 
-            if (texturePack == null || texturePack.isEmpty())
-                return;
+                if (texturePack == null || texturePack.isEmpty())
+                    return;
 
-            ZipFile texturesZip = new ZipFile(texturePacksPath + texturePack);
-            ZipEntry texture = texturesZip.getEntry(textureName.substring(1));
-            if (texture != null) {
-                inputStream = texturesZip.getInputStream(texture);
+                ZipFile texturesZip = new ZipFile(texturePacksPath + texturePack);
+                ZipEntry texture = texturesZip.getEntry(resourceName.substring(1));
+                if (texture != null) {
+                    inputStream = texturesZip.getInputStream(texture);
+                }
+            } else if(resourceName.endsWith("splashes.txt")) {
+                LocalDate today = LocalDate.now();
+                if(today.getMonth() == Month.MARCH && today.getDayOfMonth() == 26) {
+                    inputStream = new ByteArrayInputStream("Happy Birthday Codie!".getBytes());
+                    return;
+                }
+
+                String customSplashes =
+                        "Black lives matter!\n" +
+                        "Be anti-racist!\n" +
+                        "Learn about allyship!\n" +
+                        "Speak OUT against injustice and UP for equality!\n" +
+                        "Amplify and listen to BIPOC voices!\n" +
+                        "Educate your friends on anti-racism!\n" +
+                        "Support the BIPOC community and creators!\n" +
+                        "Stand up for equality in your community!\n" +
+                        "Trans Rights!\n" +
+                        "Now Playing: Home - Resonance\n" +
+                        "you love chips and i love chips\n" +
+                        "MineOnline!\n" +
+                        "@codieradical\n" +
+                        "Hello Kai!\n" +
+                        "The Great Journey Awaits!\n";
+
+                byte[] splashesTxt = new byte[inputStream.available()];
+                inputStream.read(splashesTxt);
+
+                byte[] splashBytes = (byte[])ClassLoader.getSystemClassLoader().loadClass("gg.codie.common.utils.ArrayUtils").getMethod("concatenate", byte[].class, byte[].class).invoke(null, customSplashes.getBytes(), splashesTxt);
+
+                inputStream = new ByteArrayInputStream(splashBytes);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
