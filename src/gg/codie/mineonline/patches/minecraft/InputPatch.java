@@ -1,6 +1,5 @@
 package gg.codie.mineonline.patches.minecraft;
 
-import gg.codie.common.utils.ByteBufferUtils;
 import gg.codie.mineonline.Settings;
 import gg.codie.mineonline.patches.PointerInfoGetLocationAdvice;
 import gg.codie.mineonline.patches.RobotMouseMoveAdvice;
@@ -18,38 +17,6 @@ public class InputPatch {
     public static boolean enableClassicFixes;
     // For classic, keeps track of whether the mouse is grabbed or not pretty much.
     public static boolean isFocused = false;
-
-    public static void resetKeys() {
-        try {
-            Field readBufferField = Keyboard.class.getDeclaredField("readBuffer");
-            readBufferField.setAccessible(true);
-            ByteBuffer readBuffer = (ByteBuffer)readBufferField.get(null);
-
-            int[] mcKeys = new int[]{
-                    Settings.singleton.getForwardKeyCode(),
-                    Settings.singleton.getBackKeyCode(),
-                    Settings.singleton.getLeftKeyCode(),
-                    Settings.singleton.getRightKeyCode(),
-
-                    Settings.singleton.getJumpKeyCode()
-            };
-
-            readBuffer = ByteBufferUtils.increaseCapacity(readBuffer, mcKeys.length * 18);
-
-
-            for (int key : mcKeys) {
-                readBuffer.putInt(key);
-                readBuffer.put((byte) 0);
-                readBuffer.putInt((byte) Keyboard.getKeyName(key).toCharArray()[0]);
-                readBuffer.putLong(System.nanoTime());
-                readBuffer.put((byte) 0);
-            }
-
-            readBufferField.set(null, readBuffer);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
 
     public static void init() {
         try {
@@ -74,7 +41,10 @@ public class InputPatch {
 
             new ByteBuddy()
                     .redefine(InputPatch.class.getClassLoader().loadClass("org.lwjgl.input.Keyboard"))
-                    .visit(Advice.to(LWJGLKeyboardGetEventKeyStateAdvice.class).on(ElementMatchers.named("getEventKeyState")))
+                    // Prevent inputs from hanging when opening the MO menu.
+                    .visit(Advice.to(LWJGLKeyboardReadNextAdvice.class).on(ElementMatchers.named("readNext")))
+                    // Prevent the classic player list being opened under the MO menu.
+                    .visit(Advice.to(LWJGLKeyboardGetEventKeyStateAdvice.class).on(ElementMatchers.named("isKeyDown")))
                     .make()
                     .load(Class.forName("org.lwjgl.input.Keyboard").getClassLoader(), ClassReloadingStrategy.fromInstalledAgent());
 
