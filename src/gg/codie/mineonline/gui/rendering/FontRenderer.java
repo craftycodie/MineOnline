@@ -174,7 +174,8 @@ public class FontRenderer
             k = (k & 0xfcfcfc) >> 2;
             k += l;
         }
-        GL11.glBindTexture(3553 /*GL_TEXTURE_2D*/, fontTextureName);
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, fontTextureName);
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
         float f = (float)(k >> 16 & 0xff) / 255F;

@@ -2,7 +2,7 @@ package gg.codie.mineonline.patches.lwjgl;
 
 import net.bytebuddy.asm.Advice;
 
-public class LWJGLSetCursorLocationAdvice {
+public class LWJGLSetCursorPositionAdvice {
     @Advice.OnMethodEnter(skipOn = Advice.OnNonDefaultValue.class)
     static boolean lockCalls() {
         try {

@@ -253,7 +253,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
         frame.addComponentListener(new ComponentListener() {
             @Override
             public void componentResized(ComponentEvent e) {
-                appletResize(frame.getWidth(), frame.getHeight());
+                appletResize();
             }
 
             @Override
@@ -372,7 +372,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
                     if (minecraftVersion != null) {
                         // Make sure classic is behaving
                         if (minecraftVersion.guiClass != null)
-                            appletResize(DisplayManager.getFrame().getWidth(), DisplayManager.getFrame().getHeight());
+                            appletResize();
 
                         if (minecraftVersion.enableScreenshotPatch) {
                             try {
@@ -506,7 +506,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
 
     @Override
     public int getWidth() {
-        int width = Display.getWidth();
+        int width = Display.getParent().getWidth();
 
         if (Display.isFullscreen() || fullscreen) {
             width = Display.getDisplayMode().getWidth();
@@ -519,7 +519,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
 
     @Override
     public int getHeight() {
-        int height = Display.getHeight();
+        int height = Display.getParent().getHeight();
 
         if (Display.isFullscreen() || fullscreen) {
             height = Display.getDisplayMode().getHeight();
@@ -577,7 +577,12 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
 
         If any of these searches fail, resizing should just do nothing.
     */
-    public void appletResize(int width, int height){
+    public void appletResize() {
+        appletResize(0, 0);
+    }
+
+    @Override
+    public void appletResize(int unusedWidth, int unusedHeight){
         try {
             Field minecraftField = null;
 
@@ -663,13 +668,15 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
                 }
             }
             else {
-                heightField.setInt(minecraft, height - DisplayManager.getFrame().getInsets().top - DisplayManager.getFrame().getInsets().bottom);
-                widthField.setInt(minecraft, width);
+                int w = Display.getParent().getWidth();
+                int h = Display.getParent().getHeight();
+
+                heightField.setInt(minecraft, h);
+                widthField.setInt(minecraft, w);
 
                 if(gui != null && guiHeightField != null && guiWidthField != null) {
-                    int h = (height - DisplayManager.getFrame().getInsets().top - DisplayManager.getFrame().getInsets().bottom);
                     guiHeightField.setInt(gui, h * 240 / h);
-                    guiWidthField.setInt(gui, width * 240 / h);
+                    guiWidthField.setInt(gui, w * 240 / h);
                 }
             }
 
@@ -680,8 +687,8 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
                 int scaledHeight;
                 int scaleFactor;
 
-                scaledWidth = Display.getWidth();
-                scaledHeight = Display.getHeight();
+                scaledWidth = Display.getParent().getWidth();
+                scaledHeight = Display.getParent().getHeight();
                 scaleFactor = 1;
                 int k = guiScale;
                 if(k == 0)
@@ -700,7 +707,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
                 guiWidthField.setInt(gui, scaledWidth);
             }
 
-            new GUIScale(Display.getWidth(), Display.getHeight());
+            new GUIScale(getWidth(), getHeight());
 
             //screenshotLabel.setBounds(30, (AppletH - 16) - 30, 204, 20);
         } catch (Exception e) {
@@ -722,18 +729,17 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
         DisplayManager.fullscreen(newFullscreen);
         fullscreen = newFullscreen;
         if(!fullscreen) {
-            appletResize(widthBeforeFullscreen, heightBeforeFullscreen);
             minecraftApplet.setPreferredSize(new Dimension(widthBeforeFullscreen, heightBeforeFullscreen));
             minecraftApplet.resize(new Dimension(widthBeforeFullscreen , heightBeforeFullscreen));
             DisplayManager.getFrame().setSize(widthBeforeFullscreen + DisplayManager.getFrame().getInsets().left + DisplayManager.getFrame().getInsets().right, heightBeforeFullscreen + DisplayManager.getFrame().getInsets().top + DisplayManager.getFrame().getInsets().bottom);
         } else {
-            appletResize(Display.getDesktopDisplayMode().getWidth(), Display.getDesktopDisplayMode().getHeight());
             minecraftApplet.setPreferredSize(new Dimension(Display.getDesktopDisplayMode().getWidth(), Display.getDesktopDisplayMode().getHeight()));
             minecraftApplet.resize(new Dimension(Display.getDesktopDisplayMode().getWidth(), Display.getDesktopDisplayMode().getHeight()));
             DisplayManager.getFrame().setPreferredSize(new Dimension(Display.getDesktopDisplayMode().getWidth(), Display.getDesktopDisplayMode().getHeight()));
         }
 
         DisplayManager.getFrame().pack();
+        appletResize();
     }
 
     private static ByteBuffer buffer;

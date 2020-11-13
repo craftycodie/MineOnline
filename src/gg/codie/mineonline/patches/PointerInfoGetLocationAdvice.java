@@ -13,7 +13,6 @@ public class PointerInfoGetLocationAdvice {
                 return;
 
             Canvas mcCanvas = (Canvas) ClassLoader.getSystemClassLoader().loadClass("org.lwjgl.opengl.Display").getMethod("getParent").invoke(null);
-            Frame mcFrame = (Frame) ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.gui.rendering.DisplayManager").getMethod("getFrame").invoke(null);
 
             // If the MineOnline menu is open, just return center screen.
             if (
@@ -21,7 +20,7 @@ public class PointerInfoGetLocationAdvice {
                             && !(boolean) ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.lwjgl.LWJGLDisplayUpdateAdvice").getField("inUpdateHook").get(null)
             ) {
                 returnPoint = new Point(
-                        mcCanvas.getLocationOnScreen().x + (mcCanvas.getWidth() / 2) + mcFrame.getInsets().left,
+                        mcCanvas.getLocationOnScreen().x + (mcCanvas.getWidth() / 2),
                         mcCanvas.getLocationOnScreen().y + (mcCanvas.getHeight() / 2)
                 );
                 return;

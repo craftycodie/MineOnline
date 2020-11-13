@@ -2,15 +2,19 @@ package gg.codie.mineonline.patches.lwjgl;
 
 import net.bytebuddy.asm.Advice;
 
-public class LWJGLInputEventAdvice {
-    @Advice.OnMethodEnter(skipOn = Advice.OnNonDefaultValue.class)
-    static boolean lockCalls() {
+import java.awt.*;
+
+public class LWJGLMouseGetYAdvice {
+    @Advice.OnMethodExit()
+    static void ignoreMovement(@Advice.Return(readOnly = false) int returnY) {
         try {
             if (
                     (boolean) ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.client.LegacyGameManager").getMethod("mineonlineMenuOpen").invoke(null)
-                    && !(boolean) ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.lwjgl.LWJGLDisplayUpdateAdvice").getField("inUpdateHook").get(null)
+                            && !(boolean) ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.lwjgl.LWJGLDisplayUpdateAdvice").getField("inUpdateHook").get(null)
             ) {
-                return true;
+                Canvas mcCanvas = (Canvas) ClassLoader.getSystemClassLoader().loadClass("org.lwjgl.opengl.Display").getMethod("getParent").invoke(null);
+
+                returnY = mcCanvas.getHeight() / 2;
             }
         } catch (Exception ex) {
             try {
@@ -19,7 +23,5 @@ public class LWJGLInputEventAdvice {
                     ex.printStackTrace();
             } catch (Exception ex2) { }
         }
-
-        return false;
     }
 }

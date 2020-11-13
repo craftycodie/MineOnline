@@ -1,5 +1,7 @@
 package gg.codie.mineonline.patches.minecraft;
 
+import gg.codie.common.utils.ByteBufferUtils;
+import gg.codie.mineonline.Settings;
 import gg.codie.mineonline.patches.PointerInfoGetLocationAdvice;
 import gg.codie.mineonline.patches.RobotMouseMoveAdvice;
 import gg.codie.mineonline.patches.lwjgl.*;
@@ -7,11 +9,47 @@ import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.asm.Advice;
 import net.bytebuddy.dynamic.loading.ClassReloadingStrategy;
 import net.bytebuddy.matcher.ElementMatchers;
+import org.lwjgl.input.Keyboard;
+
+import java.lang.reflect.Field;
+import java.nio.ByteBuffer;
 
 public class InputPatch {
     public static boolean enableClassicFixes;
     // For classic, keeps track of whether the mouse is grabbed or not pretty much.
     public static boolean isFocused = false;
+
+    public static void resetKeys() {
+        try {
+            Field readBufferField = Keyboard.class.getDeclaredField("readBuffer");
+            readBufferField.setAccessible(true);
+            ByteBuffer readBuffer = (ByteBuffer)readBufferField.get(null);
+
+            int[] mcKeys = new int[]{
+                    Settings.singleton.getForwardKeyCode(),
+                    Settings.singleton.getBackKeyCode(),
+                    Settings.singleton.getLeftKeyCode(),
+                    Settings.singleton.getRightKeyCode(),
+
+                    Settings.singleton.getJumpKeyCode()
+            };
+
+            readBuffer = ByteBufferUtils.increaseCapacity(readBuffer, mcKeys.length * 18);
+
+
+            for (int key : mcKeys) {
+                readBuffer.putInt(key);
+                readBuffer.put((byte) 0);
+                readBuffer.putInt((byte) Keyboard.getKeyName(key).toCharArray()[0]);
+                readBuffer.putLong(System.nanoTime());
+                readBuffer.put((byte) 0);
+            }
+
+            readBufferField.set(null, readBuffer);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
 
     public static void init() {
         try {
@@ -25,11 +63,11 @@ public class InputPatch {
                     // Prevent clicks from doubling.
                     .visit(Advice.to(LWJGLMouseIsButtonDownAdvice.class).on(ElementMatchers.named("isButtonDown").and(ElementMatchers.takesArguments(int.class))))
                     // Prevent mouse centering when the MO menu is open.
-                    .visit(Advice.to(LWJGLSetCursorLocationAdvice.class).on(ElementMatchers.named("setCursorLocation")))
+                    .visit(Advice.to(LWJGLSetCursorPositionAdvice.class).on(ElementMatchers.named("setCursorPosition")))
                     // Prevent placing/breaking when the MO menu is open.
                     .visit(Advice.to(LWJGLInputEventAdvice.class).on(ElementMatchers.named("getEventButtonState")))
-                    .visit(Advice.to(LWJGLInputEventAdvice.class).on(ElementMatchers.named("getX")))
-                    .visit(Advice.to(LWJGLInputEventAdvice.class).on(ElementMatchers.named("getY")))
+                    .visit(Advice.to(LWJGLMouseGetXAdvice.class).on(ElementMatchers.named("getX")))
+                    .visit(Advice.to(LWJGLMouseGetYAdvice.class).on(ElementMatchers.named("getY")))
                     .visit(Advice.to(LWJGLInputEventAdvice.class).on(ElementMatchers.named("next")))
                     .make()
                     .load(Class.forName("org.lwjgl.input.Mouse").getClassLoader(), ClassReloadingStrategy.fromInstalledAgent());
