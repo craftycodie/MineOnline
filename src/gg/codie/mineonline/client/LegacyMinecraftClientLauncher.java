@@ -386,7 +386,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
                                 }
 
                                 if (opacityMultiplier > 0) {
-                                    FontRenderer.minecraftFontRenderer.drawStringWithShadow("Saved screenshot as " + lastScreenshotName, 2, 190, 0xffffff + ((int)(0xff * opacityMultiplier) << 24));
+                                    FontRenderer.minecraftFontRenderer.drawStringWithShadow("Saved screenshot as " + lastScreenshotName, 2, GUIScale.lastScaledHeight() - 100, 0xffffff + ((int)(0xff * opacityMultiplier) << 24));
                                 }
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -465,15 +465,6 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
                 FOVViewmodelPatch.fixViewmodelFOV(minecraftVersion.entityRendererClass, minecraftVersion.viewModelFunction, true);
         }
 
-        if ( minecraftVersion != null) {
-            if (minecraftVersion.scaledResolutionClass != null) {
-                ScaledResolutionConstructorPatch.useGUIScale(minecraftVersion.scaledResolutionClass);
-                LWJGLGL11Patch.useGuiScale();
-            } else if (minecraftVersion.guiClass != null && minecraftVersion.guiScreenClass != null) {
-                GuiScreenPatch.useGUIScale(minecraftVersion.guiScreenClass);
-                LWJGLGL11Patch.useGuiScale();
-            }
-        }
         // Allows c0.0.15a to connect to servers.
         InetSocketAddressPatch.allowCustomServers(serverAddress, serverPort);
         // Allows c0.0.15a to have a username sent to servers.

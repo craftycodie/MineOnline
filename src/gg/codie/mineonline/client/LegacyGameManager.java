@@ -13,10 +13,9 @@ import gg.codie.mineonline.patches.ClassPatch;
 import gg.codie.mineonline.patches.HashMapPatch;
 import gg.codie.mineonline.patches.StringPatch;
 import gg.codie.mineonline.patches.lwjgl.LWJGLGL11GLOrthoAdvice;
+import gg.codie.mineonline.patches.lwjgl.LWJGLGL11Patch;
 import gg.codie.mineonline.patches.lwjgl.LWJGLPerspectiveAdvice;
-import gg.codie.mineonline.patches.minecraft.GuiScreenOpenAdvice;
-import gg.codie.mineonline.patches.minecraft.InputPatch;
-import gg.codie.mineonline.patches.minecraft.ScaledResolutionConstructorAdvice;
+import gg.codie.mineonline.patches.minecraft.*;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 
@@ -61,6 +60,7 @@ public class LegacyGameManager {
 
         HashMapPatch.init();
         ClassPatch.init();
+        LWJGLGL11Patch.init();
 
         if (version != null) {
             if (version.ingameVersionString != null) {
@@ -74,6 +74,16 @@ public class LegacyGameManager {
 
             // Fixes various input issues with classic - infdev versions.
             InputPatch.enableClassicFixes = version.enableCursorPatch;
+        }
+
+        if (getVersion() != null) {
+            if (getVersion().scaledResolutionClass != null) {
+                ScaledResolutionConstructorPatch.useGUIScale(getVersion().scaledResolutionClass);
+                LWJGLGL11GLOrthoAdvice.enable = true;
+            } else if (getVersion().guiClass != null && getVersion().guiScreenClass != null) {
+                GuiScreenPatch.useGUIScale(getVersion().guiScreenClass);
+                LWJGLGL11GLOrthoAdvice.enable = true;
+            }
         }
     }
 
@@ -97,7 +107,7 @@ public class LegacyGameManager {
         Settings.singleton.setTexturePack(texturePack);
         Settings.singleton.saveSettings();
         ClassPatch.texturePack = texturePack;
-        Loader.reloadMinecraftTextures(getAppletWrapper().getMinecraftAppletClass(), texturePack);
+        Loader.reloadMinecraftTextures();
     }
 
     public static void setFOV(int fov) {

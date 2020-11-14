@@ -102,7 +102,7 @@ public class FontRenderer
         Tessellator tessellator = Tessellator.instance;
         for(int i1 = 0; i1 < 256; i1++)
         {
-            GL11.glNewList(fontDisplayLists + i1, 4864 /*GL_COMPILE*/);
+            GL11.glNewList(fontDisplayLists + i1, GL11.GL_COMPILE);
             tessellator.startDrawingQuads();
             int l1 = (i1 % 16) * 8;
             int k2 = (i1 / 16) * 8;
@@ -144,7 +144,7 @@ public class FontRenderer
                 j3 /= 4;
                 k3 /= 4;
             }
-            GL11.glNewList(fontDisplayLists + 256 + j1, 4864 /*GL_COMPILE*/);
+            GL11.glNewList(fontDisplayLists + 256 + j1, GL11.GL_COMPILE);
             GL11.glColor3f((float)l2 / 255F, (float)j3 / 255F, (float)k3 / 255F);
             GL11.glEndList();
         }
@@ -162,13 +162,13 @@ public class FontRenderer
         renderString(s, i, j, k, false);
     }
 
-    public void renderString(String s, int i, int j, int k, boolean flag)
+    public void renderString(String s, int i, int j, int k, boolean shadow)
     {
         if(s == null)
         {
             return;
         }
-        if(flag)
+        if(shadow)
         {
             int l = k & 0xff000000;
             k = (k & 0xfcfcfc) >> 2;
@@ -199,7 +199,7 @@ public class FontRenderer
                 {
                     j1 = 15;
                 }
-                buffer.put(fontDisplayLists + 256 + j1 + (flag ? 16 : 0));
+                buffer.put(fontDisplayLists + 256 + j1 + (shadow ? 16 : 0));
                 if(buffer.remaining() == 0)
                 {
                     buffer.flip();
@@ -213,7 +213,7 @@ public class FontRenderer
                 int k1 = InputSanitization.allowedCharacters.indexOf(s.charAt(i1));
                 if(k1 >= 0)
                 {
-                    buffer.put(fontDisplayLists + k1 + 32);
+                    buffer.put(fontDisplayLists + k1);
                 }
             }
             if(buffer.remaining() == 0)
@@ -246,7 +246,7 @@ public class FontRenderer
             int k = InputSanitization.allowedCharacters.indexOf(s.charAt(j));
             if(k >= 0)
             {
-                i += charWidth[k + 32];
+                i += charWidth[k];
             }
         }
 

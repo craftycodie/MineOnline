@@ -4,12 +4,20 @@ import net.bytebuddy.asm.Advice;
 import org.lwjgl.opengl.Display;
 
 public class LWJGLGL11GLOrthoAdvice {
+    public static boolean enable;
     public static int guiScale;
 
     @Advice.OnMethodEnter
     static void intercept(@Advice.Argument(value = 1, readOnly = false) double right, @Advice.Argument(value = 2, readOnly = false) double bottom) {
         try {
             int guiScale = (int)ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.lwjgl.LWJGLGL11GLOrthoAdvice").getField("guiScale").get(null);
+            boolean enable = (boolean)ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.lwjgl.LWJGLGL11GLOrthoAdvice").getField("enable").get(null);
+
+            if (guiScale == 0)
+                return;
+
+            if (!enable)
+                return;
 
             int scaledWidth;
             int scaledHeight;

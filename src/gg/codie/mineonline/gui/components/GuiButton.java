@@ -22,17 +22,17 @@ public class GuiButton extends GuiComponent
         this(i, xPos, yPos, 200, 20, s, buttonListener);
     }
 
-    public GuiButton(int i, int xPos, int yPos, int l, int i1, String s, GuiButtonListener buttonListener)
+    public GuiButton(int i, int xPos, int yPos, int width, int height, String s, GuiButtonListener buttonListener)
     {
-        width = 200;
-        height = 20;
+        this.width = 200;
+        this.height = 20;
         enabled = true;
         enabled2 = true;
         id = i;
         xPosition = xPos;
         yPosition = yPos;
-        width = l;
-        height = i1;
+        this.width = width;
+        this.height = height;
         displayString = s;
         this.buttonListener = buttonListener;
     }
@@ -57,7 +57,7 @@ public class GuiButton extends GuiComponent
         {
             return;
         }
-        GL11.glBindTexture(3553 /*GL_TEXTURE_2D*/, Loader.singleton.getGuiTexture(EGUITexture.GUI));
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, Loader.singleton.getGuiTexture(EGUITexture.GUI));
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);

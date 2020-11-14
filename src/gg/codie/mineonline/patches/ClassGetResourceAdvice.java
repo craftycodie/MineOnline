@@ -1,44 +1,18 @@
 package gg.codie.mineonline.patches;
 
-import gg.codie.common.utils.ArrayUtils;
-import gg.codie.mineonline.LauncherFiles;
 import net.bytebuddy.asm.Advice;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.Date;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 public class ClassGetResourceAdvice {
 
     @Advice.OnMethodExit
     static void intercept(@Advice.Argument(0) String resourceName, @Advice.Return(readOnly = false) InputStream inputStream) {
         try {
-            boolean DEV = (boolean) ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.Globals").getField("DEV").get(null);
-
-            if (DEV)
-                System.out.println("Loading resource: " + resourceName);
-
-            if(resourceName.endsWith(".png")) {
-
-                String texturePack = (String) ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.ClassPatch").getField("texturePack").get(null);
-                String texturePacksPath = (String) ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.LauncherFiles").getField("MINECRAFT_TEXTURE_PACKS_PATH").get(null);
-
-
-                if (texturePack == null || texturePack.isEmpty())
-                    return;
-
-                ZipFile texturesZip = new ZipFile(texturePacksPath + texturePack);
-                ZipEntry texture = texturesZip.getEntry(resourceName.substring(1));
-                if (texture != null) {
-                    inputStream = texturesZip.getInputStream(texture);
-                }
-            } else if(resourceName.endsWith("splashes.txt")) {
+            if(resourceName.endsWith("splashes.txt")) {
                 LocalDate today = LocalDate.now();
                 if(today.getMonth() == Month.MARCH && today.getDayOfMonth() == 26) {
                     inputStream = new ByteArrayInputStream("Happy Birthday Codie!".getBytes());

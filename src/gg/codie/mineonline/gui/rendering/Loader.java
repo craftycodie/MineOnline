@@ -2,10 +2,12 @@ package gg.codie.mineonline.gui.rendering;
 
 import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.Settings;
+import gg.codie.mineonline.client.LegacyGameManager;
 import gg.codie.mineonline.gui.rendering.models.RawModel;
 import gg.codie.mineonline.gui.rendering.textures.EGUITexture;
 import gg.codie.mineonline.gui.rendering.utils.MathUtils;
 import gg.codie.mineonline.patches.HashMapPutAdvice;
+import gg.codie.mineonline.patches.lwjgl.LWJGLGL11GLTexSubImageAdvice;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.*;
 import org.lwjgl.util.vector.Vector2f;
@@ -14,6 +16,8 @@ import org.newdawn.slick.opengl.*;
 import org.newdawn.slick.opengl.renderer.Renderer;
 import org.newdawn.slick.opengl.renderer.SGL;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -213,7 +217,7 @@ public class Loader {
         }
     }
 
-    public static void reloadMinecraftTextures(Class minecraftClass, String texturePack) {
+    public static void reloadMinecraftTextures() {
         String[] textureNames = new String[] {
                 "/terrain.png",
                 "/particles.png",
@@ -286,6 +290,8 @@ public class Loader {
                 "/default.png"
         };
 
+        String texturePack = Settings.singleton.getTexturePack();
+
         ZipFile texturesZip = null;
 
         for (String textureName : textureNames) {
@@ -303,10 +309,24 @@ public class Loader {
 
             }
             try {
-                if (minecraftClass != null) Loader.singleton.overwriteTexture(HashMapPutAdvice.textures.get(textureName), minecraftClass.getResourceAsStream(textureName), textureName);
+                if (LegacyGameManager.getAppletWrapper().getMinecraftAppletClass() != null) Loader.singleton.overwriteTexture(HashMapPutAdvice.textures.get(textureName), LegacyGameManager.getAppletWrapper().getMinecraftAppletClass().getResourceAsStream(textureName), textureName);
             } catch (Exception ex) {
                 // ignore
             }
+        }
+
+        if (texturesZip != null) {
+            try {
+                BufferedImage terrain = ImageIO.read(texturesZip.getInputStream(texturesZip.getEntry("terrain.png")));
+                LWJGLGL11GLTexSubImageAdvice.xMul = (float)terrain.getWidth() / 256;
+                LWJGLGL11GLTexSubImageAdvice.yMul = (float)terrain.getHeight() / 256;
+            } catch (Exception ex) {
+                LWJGLGL11GLTexSubImageAdvice.xMul = 1;
+                LWJGLGL11GLTexSubImageAdvice.yMul = 1;
+            }
+        } else {
+            LWJGLGL11GLTexSubImageAdvice.xMul = 1;
+            LWJGLGL11GLTexSubImageAdvice.yMul = 1;
         }
     }
 
