@@ -15,10 +15,7 @@ import gg.codie.mineonline.lwjgl.OnCreateListener;
 import gg.codie.mineonline.lwjgl.OnUpdateListener;
 import gg.codie.mineonline.patches.*;
 import gg.codie.mineonline.patches.lwjgl.*;
-import gg.codie.mineonline.patches.minecraft.FOVViewmodelPatch;
-import gg.codie.mineonline.patches.minecraft.GuiScreenPatch;
-import gg.codie.mineonline.patches.minecraft.InputPatch;
-import gg.codie.mineonline.patches.minecraft.ScaledResolutionConstructorPatch;
+import gg.codie.mineonline.patches.minecraft.*;
 import gg.codie.mineonline.utils.JREUtils;
 import gg.codie.mineonline.utils.Logging;
 import gg.codie.common.utils.TransferableImage;
@@ -393,6 +390,23 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
                             }
                         }
 
+                        if (Keyboard.getEventKey() == Keyboard.KEY_F1 && !Keyboard.isRepeatEvent() && Keyboard.getEventKeyState() && !f1WasDown) {
+                            if (minecraftVersion.enableScreenshotPatch) {
+                                LWJGLGL11GLOrthoAdvice.hideHud = true;
+                                FOVViewmodelAdvice.hideViewModel = true;
+                            }
+
+                            f1WasDown = true;
+                        }
+                        if (Keyboard.getEventKey() == Keyboard.KEY_F1 && !Keyboard.isRepeatEvent() && !Keyboard.getEventKeyState()) {
+                            if(!zoomWasDown) {
+                                LWJGLGL11GLOrthoAdvice.hideHud = false;
+                                FOVViewmodelAdvice.hideViewModel = false;
+                            }
+                            f1WasDown = false;
+                        }
+
+
                         if (Keyboard.getEventKey() == Keyboard.KEY_F2 && !Keyboard.isRepeatEvent() && Keyboard.getEventKeyState() && !f2wasDown) {
                             screenshot();
                             f2wasDown = true;
@@ -403,9 +417,15 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
 
                         if (Keyboard.getEventKey() == Settings.singleton.getZoomKeyCode() && !Keyboard.isRepeatEvent() && Keyboard.getEventKeyState() && !zoomWasDown) {
                             LWJGLGLUPatch.zoom();
+                            LWJGLGL11GLOrthoAdvice.hideHud = true;
+                            FOVViewmodelAdvice.hideViewModel = true;
                             zoomWasDown = true;
                         } else if (Keyboard.getEventKey() == Settings.singleton.getZoomKeyCode() && !Keyboard.isRepeatEvent() && !Keyboard.getEventKeyState()) {
                             LWJGLGLUPatch.unZoom();
+                            if(!f1WasDown) {
+                                LWJGLGL11GLOrthoAdvice.hideHud = false;
+                                FOVViewmodelAdvice.hideViewModel = false;
+                            }
                             zoomWasDown = false;
                         }
 
@@ -490,6 +510,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
         }).run();
     }
 
+    boolean f1WasDown = false;
     boolean f2wasDown = false;
     boolean f11WasDown = false;
     boolean zoomWasDown = false;

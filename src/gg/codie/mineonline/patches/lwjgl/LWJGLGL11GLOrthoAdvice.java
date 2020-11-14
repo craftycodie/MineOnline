@@ -6,12 +6,20 @@ import org.lwjgl.opengl.Display;
 public class LWJGLGL11GLOrthoAdvice {
     public static boolean enable;
     public static int guiScale;
+    public static boolean hideHud;
 
     @Advice.OnMethodEnter
-    static void intercept(@Advice.Argument(value = 1, readOnly = false) double right, @Advice.Argument(value = 2, readOnly = false) double bottom) {
+    static void intercept(@Advice.Argument(value = 1, readOnly = false) double right, @Advice.Argument(value = 2, readOnly = false) double bottom, @Advice.Argument(value = 4, readOnly = false) double zNear, @Advice.Argument(value = 5, readOnly = false) double zFar) {
         try {
             int guiScale = (int)ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.lwjgl.LWJGLGL11GLOrthoAdvice").getField("guiScale").get(null);
             boolean enable = (boolean)ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.lwjgl.LWJGLGL11GLOrthoAdvice").getField("enable").get(null);
+            boolean hideHud = (boolean)ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.lwjgl.LWJGLGL11GLOrthoAdvice").getField("hideHud").get(null);
+
+            if (hideHud) {
+                zNear = 1;
+                zFar = 2;
+                return;
+            }
 
             if (guiScale == 0)
                 return;

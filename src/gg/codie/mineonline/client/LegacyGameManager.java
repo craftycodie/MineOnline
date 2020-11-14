@@ -8,13 +8,12 @@ import gg.codie.mineonline.Settings;
 import gg.codie.mineonline.gui.rendering.DisplayManager;
 import gg.codie.mineonline.gui.rendering.Loader;
 import gg.codie.mineonline.gui.screens.AbstractGuiScreen;
-import gg.codie.mineonline.patches.ClassGetResourceAdvice;
 import gg.codie.mineonline.patches.ClassPatch;
 import gg.codie.mineonline.patches.HashMapPatch;
 import gg.codie.mineonline.patches.StringPatch;
 import gg.codie.mineonline.patches.lwjgl.LWJGLGL11GLOrthoAdvice;
 import gg.codie.mineonline.patches.lwjgl.LWJGLGL11Patch;
-import gg.codie.mineonline.patches.lwjgl.LWJGLPerspectiveAdvice;
+import gg.codie.mineonline.patches.lwjgl.LWJGLGLUPerspectiveAdvice;
 import gg.codie.mineonline.patches.minecraft.*;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
@@ -113,7 +112,7 @@ public class LegacyGameManager {
     public static void setFOV(int fov) {
         Settings.singleton.setFOV(fov);
         Settings.singleton.saveSettings();
-        LWJGLPerspectiveAdvice.customFOV = fov;
+        LWJGLGLUPerspectiveAdvice.customFOV = fov;
     }
 
     public static void setHideVersionString(boolean hideVersionString) {
