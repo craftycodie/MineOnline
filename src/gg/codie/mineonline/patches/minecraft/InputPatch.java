@@ -36,6 +36,7 @@ public class InputPatch {
                     .visit(Advice.to(LWJGLMouseGetXAdvice.class).on(ElementMatchers.named("getX")))
                     .visit(Advice.to(LWJGLMouseGetYAdvice.class).on(ElementMatchers.named("getY")))
                     .visit(Advice.to(LWJGLInputEventAdvice.class).on(ElementMatchers.named("next")))
+                    .visit(Advice.to(LWJGLMouseSetGrabbedAdvice.class).on(ElementMatchers.named("setGrabbed")))
                     .make()
                     .load(Class.forName("org.lwjgl.input.Mouse").getClassLoader(), ClassReloadingStrategy.fromInstalledAgent());
 
