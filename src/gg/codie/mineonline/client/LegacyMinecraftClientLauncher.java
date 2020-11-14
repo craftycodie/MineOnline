@@ -415,30 +415,34 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
                             f2wasDown = false;
                         }
 
-                        if (Keyboard.getEventKey() == Settings.singleton.getZoomKeyCode() && !Keyboard.isRepeatEvent() && Keyboard.getEventKeyState() && !zoomWasDown) {
-                            LWJGLGLUPatch.zoom();
-                            LWJGLGL11GLOrthoAdvice.hideHud = true;
-                            FOVViewmodelAdvice.hideViewModel = true;
-                            zoomWasDown = true;
-                        } else if (Keyboard.getEventKey() == Settings.singleton.getZoomKeyCode() && !Keyboard.isRepeatEvent() && !Keyboard.getEventKeyState()) {
-                            LWJGLGLUPatch.unZoom();
-                            if(!f1WasDown) {
-                                LWJGLGL11GLOrthoAdvice.hideHud = false;
-                                FOVViewmodelAdvice.hideViewModel = false;
+                        if (Settings.singleton.getZoomKeyCode() != 0) {
+                            if (Keyboard.getEventKey() == Settings.singleton.getZoomKeyCode() && !Keyboard.isRepeatEvent() && Keyboard.getEventKeyState() && !zoomWasDown) {
+                                LWJGLGLUPatch.zoom();
+                                LWJGLGL11GLOrthoAdvice.hideHud = true;
+                                FOVViewmodelAdvice.hideViewModel = true;
+                                zoomWasDown = true;
+                            } else if (Keyboard.getEventKey() == Settings.singleton.getZoomKeyCode() && !Keyboard.isRepeatEvent() && !Keyboard.getEventKeyState()) {
+                                LWJGLGLUPatch.unZoom();
+                                if (!f1WasDown) {
+                                    LWJGLGL11GLOrthoAdvice.hideHud = false;
+                                    FOVViewmodelAdvice.hideViewModel = false;
+                                }
+                                zoomWasDown = false;
                             }
-                            zoomWasDown = false;
                         }
 
-                        if (Keyboard.getEventKey() == Settings.singleton.getMineonlineMenuKeyCode() && !Keyboard.isRepeatEvent() && Keyboard.getEventKeyState() && !menuWasDown) {
-                            if (LegacyGameManager.getGuiScreen() == null && Mouse.isGrabbed()) {
-                                LegacyGameManager.setGUIScreen(ingameMenu);
-                            } else if (LegacyGameManager.getGuiScreen() != null) {
-                                LegacyGameManager.setGUIScreen(null);
-                            }
+                        if (Settings.singleton.getMineonlineMenuKeyCode() != 0) {
+                            if (Keyboard.getEventKey() == Settings.singleton.getMineonlineMenuKeyCode() && !Keyboard.isRepeatEvent() && Keyboard.getEventKeyState() && !menuWasDown) {
+                                if (LegacyGameManager.getGuiScreen() == null && Mouse.isGrabbed()) {
+                                    LegacyGameManager.setGUIScreen(ingameMenu);
+                                } else if (LegacyGameManager.getGuiScreen() != null) {
+                                    LegacyGameManager.setGUIScreen(null);
+                                }
 
-                            menuWasDown = true;
-                        } else if (Keyboard.getEventKey() == Settings.singleton.getMineonlineMenuKeyCode() && !Keyboard.isRepeatEvent() && !Keyboard.getEventKeyState()) {
-                            menuWasDown = false;
+                                menuWasDown = true;
+                            } else if (Keyboard.getEventKey() == Settings.singleton.getMineonlineMenuKeyCode() && !Keyboard.isRepeatEvent() && !Keyboard.getEventKeyState()) {
+                                menuWasDown = false;
+                            }
                         }
 
                         if (Keyboard.getEventKey() == 1 && !Keyboard.isRepeatEvent() && Keyboard.getEventKeyState()) {
