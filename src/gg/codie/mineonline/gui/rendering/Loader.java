@@ -259,8 +259,8 @@ public class Loader {
                 "/item/sign.png",
 
                 "/misc/dial.png",
-                "/misc/foliagecolor.png",
-                "/misc/grasscolor.png",
+                //"/misc/foliagecolor.png", Needs to be patched separately.
+                //"/misc/grasscolor.png", Needs to be patched separately.
                 "/misc/pumpkinblur.png",
                 "/misc/shadow.png",
                 "/misc/vignette.png",
@@ -289,6 +289,9 @@ public class Loader {
 
                 "/default.png"
         };
+
+        if (LegacyGameManager.isInGame() && !LegacyGameManager.getVersion().useTexturepackPatch)
+            return;
 
         String texturePack = Settings.singleton.getTexturePack();
 
