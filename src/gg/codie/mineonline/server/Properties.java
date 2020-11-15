@@ -9,6 +9,7 @@ public class Properties extends gg.codie.minecraft.server.Properties {
     protected static final String DISCORD_TOKEN = "discord-token";
     protected static final String DISCORD_CHANNEL = "discord-channel";
     protected static final String DISCORD_WEBHOOK_URL = "discord-webhook-url";
+    protected static final String DONT_LIST_PLAYERS = "dont-list-players";
 
     public Properties(String jarPath) throws IOException {
         super(jarPath);
@@ -32,11 +33,16 @@ public class Properties extends gg.codie.minecraft.server.Properties {
 
     public String discordToken() { return properties.getProperty(DISCORD_TOKEN, null); }
 
-    public String discordChan() { return properties.getProperty(DISCORD_CHANNEL, null); }
+    public String discordChannel() { return properties.getProperty(DISCORD_CHANNEL, null); }
 
     public String discordWebhookUrl() { return properties.getProperty(DISCORD_WEBHOOK_URL, null); }
 
     public String versionMD5() {
         return properties.getProperty(VERSION_MD5, null);
     }
+
+    public boolean dontListPlayers() {
+        return properties.getProperty(DONT_LIST_PLAYERS, "false").equals("true");
+    }
+
 }

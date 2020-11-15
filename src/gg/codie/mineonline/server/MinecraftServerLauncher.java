@@ -141,9 +141,9 @@ public class MinecraftServerLauncher {
             }
         };
 
-        if (serverProperties.discordToken() != null && serverProperties.discordChan() != null) { // Create the discord bot if token and channel are present
+        if (serverProperties.discordToken() != null && serverProperties.discordChannel() != null) { // Create the discord bot if token and channel are present
             try {
-                discord = new DiscordChatBridge(new MinotarAvatarProvider(), serverProperties.discordChan(), serverProperties.discordToken(), serverProperties.discordWebhookUrl(), messageRecievedListener, shutdownListener);
+                discord = new DiscordChatBridge(new MinotarAvatarProvider(), serverProperties.discordChannel(), serverProperties.discordToken(), serverProperties.discordWebhookUrl(), messageRecievedListener, shutdownListener);
             } catch (Exception ex) {
                 System.out.println("Failed to start discord bridge.");
                 ex.printStackTrace();
@@ -429,7 +429,9 @@ public class MinecraftServerLauncher {
                         serverProperties.onlineMode(),
                         md5,
                         whitelisted,
-                        playerNames
+                        playerNames,
+                        serverProperties.motd(),
+                        serverProperties.dontListPlayers()
                 );
             } catch (Exception e) {
                 e.printStackTrace();

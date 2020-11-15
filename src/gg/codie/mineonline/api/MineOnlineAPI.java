@@ -275,7 +275,9 @@ public class MineOnlineAPI {
             boolean onlineMode,
             String md5,
             boolean whitelisted,
-            String[] playerNames
+            String[] playerNames,
+            String motd,
+            boolean dontListPlayers
     ) {
         HttpURLConnection connection = null;
 
@@ -284,14 +286,17 @@ public class MineOnlineAPI {
             if (ip != null)
                 jsonObject.put("ip", ip);
             jsonObject.put("port", port);
-            if (users > -1)
+            if (users > -1 && !dontListPlayers)
                 jsonObject.put("users", users);
             jsonObject.put("max", maxUsers);
             jsonObject.put("name", name);
             jsonObject.put("onlinemode", onlineMode);
             jsonObject.put("md5", md5);
             jsonObject.put("whitelisted", whitelisted);
-            jsonObject.put("players", playerNames);
+            if (!dontListPlayers)
+                jsonObject.put("players", playerNames);
+            jsonObject.put("motd", motd);
+            jsonObject.put("dontListPlayers", dontListPlayers);
 
             String json = jsonObject.toString();
 
