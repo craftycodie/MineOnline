@@ -15,7 +15,6 @@ public class Properties {
     protected static final String SERVER_IP = "server-ip";
     protected static final String SERVER_PORT = "server-port";
     protected static final String PORT = "port";
-    protected static final String MOTD = "motd";
 
     protected java.util.Properties properties;
 
@@ -43,10 +42,6 @@ public class Properties {
 
     public String serverName() {
         return properties.getProperty(SERVER_NAME, "MineOnline Server");
-    }
-
-    public String motd() {
-        return properties.getProperty(MOTD, null);
     }
 
     public boolean onlineMode() {

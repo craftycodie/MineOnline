@@ -10,6 +10,7 @@ public class Properties extends gg.codie.minecraft.server.Properties {
     protected static final String DISCORD_CHANNEL = "discord-channel";
     protected static final String DISCORD_WEBHOOK_URL = "discord-webhook-url";
     protected static final String DONT_LIST_PLAYERS = "dont-list-players";
+    protected static final String SERVERLIST_MOTD = "serverlist-motd";
 
     public Properties(String jarPath) throws IOException {
         super(jarPath);
@@ -43,6 +44,10 @@ public class Properties extends gg.codie.minecraft.server.Properties {
 
     public boolean dontListPlayers() {
         return properties.getProperty(DONT_LIST_PLAYERS, "false").equals("true");
+    }
+
+    public String motd() {
+        return properties.getProperty(SERVERLIST_MOTD, null);
     }
 
 }
