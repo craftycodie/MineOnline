@@ -20,8 +20,10 @@ public class MineOnlineServer {
     public final boolean isMineOnline;
     public final boolean onlineMode;
     public final String[] players;
+    public final String motd;
+    public final boolean dontListPlayers;
 
-    MineOnlineServer(String createdAt, String connectAddress, String ip, int port, int users, int maxUsers, String name, String md5, boolean isMineOnline, boolean onlineMode, String[] players) {
+    MineOnlineServer(String createdAt, String connectAddress, String ip, int port, int users, int maxUsers, String name, String md5, boolean isMineOnline, boolean onlineMode, String[] players, String motd, boolean dontListPlayers) {
         this.createdAt = createdAt;
         this.connectAddress = connectAddress;
         this.ip = ip;
@@ -33,6 +35,8 @@ public class MineOnlineServer {
         this.isMineOnline = isMineOnline;
         this.onlineMode = onlineMode;
         this.players = players;
+        this.motd = motd;
+        this.dontListPlayers = dontListPlayers;
     }
 
     public static LinkedList<MineOnlineServer> parseServers(JSONArray jsonArray) {
@@ -66,7 +70,9 @@ public class MineOnlineServer {
                 object.getString("md5"),
                 object.getBoolean("isMineOnline"),
                 object.getBoolean("onlinemode"),
-                object.has("players") ? JSONUtils.getStringArray(object.getJSONArray("players")) : new String[0]
+                object.has("players") ? JSONUtils.getStringArray(object.getJSONArray("players")) : new String[0],
+                object.optString("motd", null),
+                object.optBoolean("dontListPlayers", false)
         );
     }
 }
