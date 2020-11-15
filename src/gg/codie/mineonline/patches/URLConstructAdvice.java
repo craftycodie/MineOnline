@@ -150,6 +150,7 @@ public class URLConstructAdvice {
                 }
 
                 for (String replaceHost : new String[]{
+                        "www.minecraft.net:80",
                         "www.minecraft.net:-1",
                         "skins.minecraft.net",
                         "session.minecraft.net",
