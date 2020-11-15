@@ -1,6 +1,7 @@
 package gg.codie.mineonline.client;
 
 import gg.codie.minecraft.client.EMinecraftGUIScale;
+import gg.codie.minecraft.client.EMinecraftMainHand;
 import gg.codie.minecraft.client.Options;
 import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.MinecraftVersion;
@@ -11,6 +12,7 @@ import gg.codie.mineonline.gui.screens.AbstractGuiScreen;
 import gg.codie.mineonline.patches.ClassPatch;
 import gg.codie.mineonline.patches.HashMapPatch;
 import gg.codie.mineonline.patches.StringPatch;
+import gg.codie.mineonline.patches.lwjgl.LWJGLGL11GLEnableAdvice;
 import gg.codie.mineonline.patches.lwjgl.LWJGLGL11GLOrthoAdvice;
 import gg.codie.mineonline.patches.lwjgl.LWJGLGL11Patch;
 import gg.codie.mineonline.patches.lwjgl.LWJGLGLUPerspectiveAdvice;
@@ -67,15 +69,18 @@ public class LegacyGameManager {
                 StringPatch.enable = Settings.singleton.getHideVersionString();
             }
 
-            if (getVersion().useTexturepackPatch) {
+            if (version.useTexturepackPatch) {
                 ClassPatch.texturePack = Settings.singleton.getTexturePack();
+            }
+
+            // Screenshotting was officially added at the same time as F1 to hide the HUD / viewmodel.
+            if (version.enableScreenshotPatch && version.viewModelFunction == null) {
+                LWJGLGL11GLEnableAdvice.enableClassicViewmodelPatch = true;
             }
 
             // Fixes various input issues with classic - infdev versions.
             InputPatch.enableClassicFixes = version.enableCursorPatch;
-        }
 
-        if (getVersion() != null) {
             if (getVersion().scaledResolutionClass != null) {
                 ScaledResolutionConstructorPatch.useGUIScale(getVersion().scaledResolutionClass);
                 LWJGLGL11GLOrthoAdvice.enable = true;
@@ -132,6 +137,12 @@ public class LegacyGameManager {
         getGuiScreen().initGui();
         //DisplayManager.getFrame().setSize(DisplayManager.getFrame().getSize());
         //getAppletWrapper().resize();
+    }
+
+    public static void setMainHand(EMinecraftMainHand mainHand) {
+        Settings.singleton.setMainHand(mainHand);
+        Settings.singleton.saveSettings();
+        FOVViewmodelAdvice.leftHanded = mainHand == EMinecraftMainHand.LEFT;
     }
 
     public static boolean isInGame() {
