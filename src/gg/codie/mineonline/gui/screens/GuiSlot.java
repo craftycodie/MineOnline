@@ -4,6 +4,7 @@ import gg.codie.minecraft.client.gui.Tessellator;
 import gg.codie.mineonline.gui.input.MouseHandler;
 import gg.codie.mineonline.gui.rendering.Loader;
 import gg.codie.mineonline.gui.rendering.textures.EGUITexture;
+import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 
 public abstract class GuiSlot
@@ -21,6 +22,13 @@ public abstract class GuiSlot
         this.bottom = bottom;
         posZ = i1;
         right = width;
+    }
+
+    public void resize(int width, int height, int top, int bottom) {
+        this.width = width;
+        this.height = height;
+        this.top = top;
+        this.bottom = bottom;
     }
 
     protected abstract int getSize();
@@ -251,10 +259,10 @@ public abstract class GuiSlot
         tessellator.draw();
     }
 
-    private final int width;
-    private final int height;
-    protected final int top;
-    protected final int bottom;
+    private int width;
+    private int height;
+    protected int top;
+    protected int bottom;
     private final int right;
     private final int left = 0;
     protected final int posZ;

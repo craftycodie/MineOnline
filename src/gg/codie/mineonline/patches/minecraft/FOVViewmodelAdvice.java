@@ -19,7 +19,9 @@ public class FOVViewmodelAdvice {
 
             GL11.glMatrixMode(5889);
             GL11.glLoadIdentity();
+
             ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.lwjgl.LWJGLGLUPerspectiveAdvice").getField("ignore").set(null, true);
+
             if (leftHanded)
                 GL11.glScalef(-1, 1, 1);
             if (hideViewModel)

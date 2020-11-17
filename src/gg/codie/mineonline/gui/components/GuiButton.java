@@ -37,6 +37,12 @@ public class GuiButton extends GuiComponent
         this.buttonListener = buttonListener;
     }
 
+    @Override
+    public void resize(int x, int y) {
+        xPosition = x;
+        yPosition = y;
+    }
+
     protected int getHoverState(boolean flag)
     {
         byte byte0 = 1;

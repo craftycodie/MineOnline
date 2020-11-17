@@ -54,6 +54,8 @@ public class GuiSlotServer extends GuiSlot
 
     protected void drawSlot(int i, int j, int k, int l, Tessellator tessellator)
     {
+        resize(guiMultiplayer.getWidth(), guiMultiplayer.getHeight(), 32, (guiMultiplayer.getHeight() - 55));
+
         MineOnlineServer server = guiMultiplayer.getServers().get(i);
 
         MinecraftVersion version = MinecraftVersionRepository.getSingleton().getVersionByMD5(server.md5);
@@ -78,7 +80,7 @@ public class GuiSlotServer extends GuiSlot
             guiMultiplayer.drawString(server.motd, j + 2, k + 12 + 11, 0x808080);
 
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, Loader.singleton.getGuiTexture(EGUITexture.GUI_ICONS));
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, Loader.singleton.getGuiTexture(EGUITexture.MINEONLINE_GUI_ICONS));
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
 

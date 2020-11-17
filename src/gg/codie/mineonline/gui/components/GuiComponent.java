@@ -12,26 +12,8 @@ public class GuiComponent
         zLevel = 0.0F;
     }
 
-    protected void func_27100_a(int i, int j, int k, int l)
-    {
-        if(j < i)
-        {
-            int i1 = i;
-            i = j;
-            j = i1;
-        }
-        drawRect(i, k, j + 1, k + 1, l);
-    }
+    public void resize(int x, int y) {
 
-    protected void func_27099_b(int i, int j, int k, int l)
-    {
-        if(k < j)
-        {
-            int i1 = j;
-            j = k;
-            k = i1;
-        }
-        drawRect(i, j + 1, i + 1, k, l);
     }
 
     protected void drawRect(int i, int j, int k, int l, int i1)
@@ -96,12 +78,13 @@ public class GuiComponent
         GL11.glEnable(3008 /*GL_ALPHA_TEST*/);
         GL11.glEnable(3553 /*GL_TEXTURE_2D*/);
     }
-
+    
     public void drawCenteredString(String s, int i, int j, int k)
     {
         FontRenderer.minecraftFontRenderer.drawStringWithShadow(s, i - FontRenderer.minecraftFontRenderer.getStringWidth(s) / 2, j, k);
     }
 
+    @Deprecated
     public void drawString(String s, int i, int j, int k)
     {
         FontRenderer.minecraftFontRenderer.drawStringWithShadow(s, i, j, k);

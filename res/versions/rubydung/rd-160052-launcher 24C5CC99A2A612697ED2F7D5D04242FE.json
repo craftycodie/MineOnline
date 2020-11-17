@@ -8,5 +8,6 @@
   "legacy": true,
   "baseVersion": "rd-160052-launcher",
   "useFOVPatch": true,
-  "useTexturepackPatch": true
+  "useTexturepackPatch": true,
+  "useResizePatch": true
 }

@@ -18,7 +18,7 @@ public abstract class AbstractGuiScreen extends GuiComponent
 
     public AbstractGuiScreen()
     {
-        controlList = new ArrayList();
+        controlList = new ArrayList<>();
         selectedButton = null;
     }
 
@@ -152,6 +152,6 @@ public abstract class AbstractGuiScreen extends GuiComponent
     public int getHeight() {
         return GUIScale.lastScaledHeight();
     }
-    protected List controlList;
+    protected List<GuiComponent> controlList;
     private GuiButton selectedButton;
 }

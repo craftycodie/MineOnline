@@ -3,7 +3,8 @@ package gg.codie.mineonline.gui.rendering.textures;
 public enum  EGUITexture {
     OLD_GUI("/img/gui.png", true),
     GUI("/gui/gui.png", true),
-    GUI_ICONS("/gui/icons.png", false),
+    MINEONLINE_GUI_ICONS("/mineonline/gui/icons.png", true),
+    MINEONLINE_LOGO("/mineonline/gui/logo.png", false),
     FONT("/font/default.png", true),
     UNKNOWN_PACK("/gui/unknown_pack.png", true),
     PACK("/pack.png", false),

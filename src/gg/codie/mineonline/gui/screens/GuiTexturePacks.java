@@ -21,11 +21,14 @@ public class GuiTexturePacks extends AbstractGuiScreen
         parent = guiscreen;
         MinecraftTexturePackRepository.singleton.loadTexturePacks();
         Settings.singleton.loadSettings();
-        initGui();
+        MinecraftTexturePackRepository.singleton.getTexturePacks();
+        guiTexturePackSlot = new GuiTexturePackSlot(this);
     }
 
     public void initGui()
     {
+        controlList.clear();
+
         controlList.add(new GuiSmallButton(5, getWidth() / 2 - 154, getHeight() - 48, "Open texture pack folder", new GuiButton.GuiButtonListener() {
             @Override
             public void OnButtonPress() {
@@ -43,8 +46,6 @@ public class GuiTexturePacks extends AbstractGuiScreen
                 LegacyGameManager.setGUIScreen(parent);
             }
         }));
-        MinecraftTexturePackRepository.singleton.getTexturePacks();
-        guiTexturePackSlot = new GuiTexturePackSlot(this);
     }
 
     protected void mouseClicked(int i, int j, int k)
@@ -59,6 +60,8 @@ public class GuiTexturePacks extends AbstractGuiScreen
 
     public void drawScreen(int i, int j)
     {
+        initGui();
+
         guiTexturePackSlot.drawScreen(i, j);
         if(field_6454_o <= 0)
         {

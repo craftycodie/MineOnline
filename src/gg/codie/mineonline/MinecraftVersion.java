@@ -53,6 +53,7 @@ public class MinecraftVersion {
     public final boolean useUsernamesPatch;
     public final boolean useGreyScreenPatch;
     public final EMinecraftOptionsVersion optionsVersion;
+    public final boolean useResizePatch;
 
     public MinecraftVersion(
             String sha256,
@@ -83,7 +84,8 @@ public class MinecraftVersion {
             String resourcesVersion,
             boolean useUsernamesPatch,
             boolean useGreyScreenPatch,
-            EMinecraftOptionsVersion optionsVersion
+            EMinecraftOptionsVersion optionsVersion,
+            boolean useResizePatch
     ) {
         this.sha256 = sha256;
         this.name = name;
@@ -114,6 +116,7 @@ public class MinecraftVersion {
         this.useUsernamesPatch = useUsernamesPatch;
         this.useGreyScreenPatch = useGreyScreenPatch;
         this.optionsVersion = optionsVersion;
+        this.useResizePatch = useResizePatch;
     }
 
     public MinecraftVersion(JSONObject object) {
@@ -140,12 +143,13 @@ public class MinecraftVersion {
         entityRendererClass = object.optString("entityRendererClass", null);
         viewModelFunction = object.optString("viewModelFunction", null);
         useFOVPatch = object.optBoolean("useFOVPatch", false);
-        useTexturepackPatch = object.optBoolean("useTexturepackPatch", false);
+        useTexturepackPatch = object.optBoolean("useTexturepackPatch", true);
         ingameVersionString = object.optString("ingameVersionString", null);
         resourcesVersion = object.optString("resourcesVersion", "default");
         useUsernamesPatch = object.optBoolean("useUsernamesPatch", false);
         useGreyScreenPatch = object.optBoolean("useGreyScreenPatch", false);
         optionsVersion = object.optEnum(EMinecraftOptionsVersion.class, "optionsVersion", EMinecraftOptionsVersion.DEFAULT);
+        useResizePatch = object.optBoolean("useResizePatch", false);
     }
 
 
@@ -346,7 +350,8 @@ public class MinecraftVersion {
                     "default",
                     false,
                     false,
-                    EMinecraftOptionsVersion.DEFAULT
+                    EMinecraftOptionsVersion.DEFAULT,
+                    false
             );
         } catch (Exception ex) {
             System.err.println("Bad launcher JSON for version " + jarFile);

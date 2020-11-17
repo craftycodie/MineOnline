@@ -29,11 +29,8 @@ public class GuiMultiplayer extends AbstractGuiScreen
         serverRepository.onGotServers(gotServersListener);
         serverRepository.loadServers();
 
-        initGui();
-    }
-
-    public void updateScreen()
-    {
+        controlList.clear();
+        guiSlotServer = new GuiSlotServer(this);
     }
 
     static MineOnlineServerRepository.GotServersListener gotServersListener = new MineOnlineServerRepository.GotServersListener() {
@@ -48,14 +45,8 @@ public class GuiMultiplayer extends AbstractGuiScreen
 
     public void initGui()
     {
-        Keyboard.enableRepeatEvents(true);
         controlList.clear();
-        guiSlotServer = new GuiSlotServer(this);
-        func_35337_c();
-    }
 
-    public void func_35337_c()
-    {
         controlList.add(connectButton = new GuiButton(1, getWidth() / 2 - 154, getHeight() - 48, 100, 20, "Join Server", new GuiButton.GuiButtonListener() {
             @Override
             public void OnButtonPress() {
@@ -81,7 +72,6 @@ public class GuiMultiplayer extends AbstractGuiScreen
 
     public void onGuiClosed()
     {
-        Keyboard.enableRepeatEvents(false);
         serverRepository.offGotServers(gotServersListener);
     }
 
@@ -100,6 +90,8 @@ public class GuiMultiplayer extends AbstractGuiScreen
 
     public void drawScreen(int i, int j)
     {
+        initGui();
+
         tooltip = null;
         drawDefaultBackground();
         guiSlotServer.drawScreen(i, j);

@@ -1,6 +1,7 @@
 package gg.codie.mineonline.gui.screens;
 
 import gg.codie.minecraft.client.EMinecraftGUIScale;
+import gg.codie.minecraft.client.EMinecraftMainHand;
 import gg.codie.mineonline.Settings;
 import gg.codie.mineonline.client.LegacyGameManager;
 import gg.codie.mineonline.gui.GUIScale;
@@ -90,7 +91,7 @@ public class GuiIngameOptions extends AbstractGuiScreen
             }
         }));
 
-        ((GuiButton)controlList.get(3)).enabled = LegacyGameManager.getVersion().scaledResolutionClass != null && LegacyGameManager.getVersion().guiScreenClass != null;
+        ((GuiButton)controlList.get(3)).enabled = LegacyGameManager.getVersion().scaledResolutionClass != null || LegacyGameManager.getVersion().guiScreenClass != null;
 
 
         controlList.add(new GuiSmallButton(0, getWidth() / 2 - 155, getHeight() / 6 + 24, "Hide Version Number: " + (Settings.singleton.getHideVersionString() ? "YES" : "NO"), new GuiButton.GuiButtonListener() {
@@ -108,6 +109,27 @@ public class GuiIngameOptions extends AbstractGuiScreen
 
         ((GuiButton)controlList.get(4)).enabled = LegacyGameManager.getVersion().ingameVersionString != null;
 
+
+//        controlList.add(new GuiSmallButton(0, getWidth() / 2 + 5, getHeight() / 6 + 24, "Main Hand: " + Settings.singleton.getMainHand().name(), new GuiButton.GuiButtonListener() {
+//            @Override
+//            public void OnButtonPress() {
+//                EMinecraftMainHand newMainHand;
+//                if (Settings.singleton.getMainHand().ordinal() + 1 == EMinecraftMainHand.values().length) {
+//                    newMainHand = EMinecraftMainHand.values()[0];
+//                } else {
+//                    newMainHand = EMinecraftMainHand.values()[Settings.singleton.getMainHand().ordinal() + 1];
+//                }
+//
+//                if (LegacyGameManager.isInGame()) {
+//                    LegacyGameManager.setMainHand(newMainHand);
+//                } else {
+//                    Settings.singleton.setMainHand(newMainHand);
+//                }
+//
+//                ((GuiSmallButton) controlList.get(5)).displayString = "Main Hand: " + Settings.singleton.getMainHand().name();
+//            }
+//        }));
+
         controlList.add(new GuiButton(101, getWidth() / 2 - 100, getHeight() / 6 + 96 + 12, "About", new GuiButton.GuiButtonListener() {
             @Override
             public void OnButtonPress() {
@@ -116,10 +138,20 @@ public class GuiIngameOptions extends AbstractGuiScreen
         }));
     }
 
+    public void resizeGui() {
+        controlList.get(0).resize(getWidth() / 2 - 100, getHeight() / 6 + 168);
+        controlList.get(1).resize(getWidth() / 2 - 100, getHeight() / 6 + 120 + 12);
+        controlList.get(2).resize(getWidth() / 2 - 155, getHeight() / 6);
+        controlList.get(3).resize(getWidth() / 2 + 5, getHeight() / 6);
+        controlList.get(4).resize(getWidth() / 2 - 155, getHeight() / 6 + 24);
+//        controlList.get(5).resize(getWidth() / 2 + 5, getHeight() / 6 + 24);
+        controlList.get(5).resize(getWidth() / 2 - 100, getHeight() / 6 + 96 + 12);
+    }
+
     @Override
     public void drawScreen(int i, int j)
     {
-        //controlList.clear();
+        resizeGui();
 
         drawDefaultBackground();
         drawCenteredString(screenName, getWidth() / 2, 20, 0xffffff);
@@ -127,5 +159,5 @@ public class GuiIngameOptions extends AbstractGuiScreen
     }
 
     private AbstractGuiScreen parent;
-    protected String screenName;
+    private String screenName;
 }

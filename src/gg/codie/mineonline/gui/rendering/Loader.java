@@ -342,29 +342,29 @@ public class Loader {
     }
 
     public int getGuiTexture(EGUITexture eguiTexture) {
-        if (!textures.containsKey("mineonline:" + eguiTexture.textureName)) {
+        if (!textures.containsKey(eguiTexture.textureName)) {
             Settings.singleton.loadSettings();
             if (eguiTexture.useTexturePack ) {
                 try {
                     ZipFile texturesZip = new ZipFile(LauncherFiles.MINECRAFT_TEXTURE_PACKS_PATH + Settings.singleton.getTexturePack());
                     ZipEntry texture = texturesZip.getEntry(eguiTexture.textureName.substring(1));
                     if (texture != null) {
-                        return loadTexture("mineonline:" + eguiTexture.textureName, texturesZip.getInputStream(texture));
+                        return loadTexture(eguiTexture.textureName, texturesZip.getInputStream(texture));
                     }
                 } catch (Exception ex) {
 
                 }
             }
 
-            return loadTexture("mineonline:" + eguiTexture.textureName, Loader.class.getResource(eguiTexture.textureName));
+            return loadTexture(eguiTexture.textureName, Loader.class.getResource(eguiTexture.textureName));
         } else
-            return textures.get("mineonline:" + eguiTexture.textureName);
+            return textures.get(eguiTexture.textureName);
     }
 
     public void unloadTexture(EGUITexture eguiTexture) {
-        if (textures.containsKey("mineonline:" + eguiTexture.textureName)) {
-            GL11.glDeleteTextures(textures.get("mineonline:" + eguiTexture.textureName));
-            textures.remove("mineonline:" + eguiTexture.textureName);
+        if (textures.containsKey(eguiTexture.textureName)) {
+            GL11.glDeleteTextures(textures.get(eguiTexture.textureName));
+            textures.remove(eguiTexture.textureName);
         }
     }
 

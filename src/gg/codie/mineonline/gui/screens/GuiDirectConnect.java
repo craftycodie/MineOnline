@@ -10,6 +10,7 @@ import gg.codie.mineonline.Settings;
 import gg.codie.mineonline.client.LegacyGameManager;
 import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.gui.components.GuiButton;
+import gg.codie.mineonline.gui.components.GuiComponent;
 import gg.codie.mineonline.gui.components.GuiTextField;
 import gg.codie.mineonline.utils.JREUtils;
 import org.lwjgl.input.Keyboard;
@@ -59,6 +60,12 @@ public class GuiDirectConnect extends AbstractGuiScreen
         textField = new GuiTextField(this, getWidth() / 2 - 100, (getHeight() / 4 - 10) + 50 + 18, 200, 20, s);
         textField.isFocused = true;
         textField.setMaxStringLength(128);
+    }
+
+    public void resizeGui() {
+        controlList.get(0).resize(getWidth() / 2 - 100, getHeight() / 4 + 96 + 12);
+        controlList.get(1).resize(getWidth() / 2 - 100, getHeight() / 4 + 120 + 12);
+        textField.resize(getWidth() / 2 - 100, (getHeight() / 4 - 10) + 50 + 18);
     }
 
     public void onGuiClosed()
@@ -159,9 +166,11 @@ public class GuiDirectConnect extends AbstractGuiScreen
     @Override
     public void drawScreen(int i, int j)
     {
+        resizeGui();
+
         drawDefaultBackground();
         drawCenteredString("Play Multiplayer", getWidth() / 2, (getHeight() / 4 - 60) + 20, 0xffffff);
-        drawString("Minecraft Multiplayer is currently not finished, but there", getWidth() / 2 - 140, (getHeight() / 4 - 60) + 60 + 0, 0xa0a0a0);
+        drawString("Minecraft Multiplayer is currently not finished, but there", getWidth() / 2 - 140, (getHeight() / 4 - 60) + 60, 0xa0a0a0);
         drawString("is some buggy early testing going on.", getWidth() / 2 - 140, (getHeight() / 4 - 60) + 60 + 9, 0xa0a0a0);
         drawString("Enter the IP of a server to connect to it:", getWidth() / 2 - 140, (getHeight() / 4 - 60) + 60 + 36, 0xa0a0a0);
         textField.drawTextBox();

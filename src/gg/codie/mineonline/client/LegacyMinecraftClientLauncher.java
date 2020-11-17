@@ -12,6 +12,7 @@ import gg.codie.mineonline.gui.rendering.Loader;
 import gg.codie.mineonline.gui.rendering.Renderer;
 import gg.codie.mineonline.gui.screens.GuiIngameMenu;
 import gg.codie.mineonline.lwjgl.OnCreateListener;
+import gg.codie.mineonline.lwjgl.OnDestroyListener;
 import gg.codie.mineonline.lwjgl.OnUpdateListener;
 import gg.codie.mineonline.patches.*;
 import gg.codie.mineonline.patches.lwjgl.*;
@@ -195,8 +196,13 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
         DisplayManager.getFrame().addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                DisplayManager.getFrame().setVisible(false);
-                super.windowClosed(e);
+                closeApplet();
+            }
+        });
+
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            public void run() {
+                closeApplet();
             }
         });
 
@@ -211,6 +217,13 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
                 renderer = new Renderer();
                 new Loader();
                 DisplayManager.checkGLError("minecraft create hook end");
+            }
+        };
+
+        LWJGLDisplayPatch.destroyListener = new OnDestroyListener() {
+            @Override
+            public void onDestroyEvent() throws Throwable {
+                System.exit(0);
             }
         };
 
@@ -250,7 +263,10 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
         frame.addComponentListener(new ComponentListener() {
             @Override
             public void componentResized(ComponentEvent e) {
-                appletResize();
+                int w = DisplayManager.getFrame().getWidth() - (DisplayManager.getFrame().getInsets().left + DisplayManager.getFrame().getInsets().right);
+                int h = DisplayManager.getFrame().getHeight() - (DisplayManager.getFrame().getInsets().top + DisplayManager.getFrame().getInsets().bottom);
+                appletResize(w, h);
+                //minecraftApplet.resize(w, h);
             }
 
             @Override
@@ -273,16 +289,6 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
         LWJGLDisplayPatch.updateListener = new OnUpdateListener() {
             @Override
             public void onUpdateEvent() {
-//                if (closeNextUpdate) {
-//                    LWJGLDisplayIsCloseRequestedAdvice.requestClose = true;
-//                    //Display.destroy();
-//                    closing = true;
-//                    closeNextUpdate = false;
-//                }
-
-//                if(closing)
-//                    return;
-
                 MouseHandler.update();
 
                 if (!Display.isActive() && LegacyGameManager.mineonlineMenuOpen()) {
@@ -340,7 +346,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
 
                     GUIScale scaledresolution = new GUIScale(getWidth(), getHeight());
 //                    GL11.glClear(256);
-                    GL11.glMatrixMode(5889 /*GL_PROJECTION*/);
+                    GL11.glMatrixMode(GL11.GL_PROJECTION);
                     GL11.glLoadIdentity();
                     GL11.glOrtho(0.0D, scaledresolution.scaledWidth, scaledresolution.scaledHeight, 0.0D, 1000D, 3000D);
                     GL11.glMatrixMode(5888 /*GL_MODELVIEW0_ARB*/);
@@ -369,7 +375,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
                     if (minecraftVersion != null) {
                         // Make sure classic is behaving
                         if (minecraftVersion.guiClass != null)
-                            appletResize();
+                            appletResize(Display.getParent().getWidth(), Display.getParent().getHeight());
 
                         if (minecraftVersion.enableScreenshotPatch) {
                             try {
@@ -546,10 +552,56 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
         return height;
     }
 
-    // TODO: Classic needs System.exiting, probably ind/inf too.
     @Override
     public void closeApplet(){
-        DisplayManager.getFrame().dispatchEvent(new WindowEvent(DisplayManager.getFrame(), WindowEvent.WINDOW_CLOSING));
+        try {
+            // The MC game loop has a condition, if it's canvas is null and close has been requested, the game will close.
+            // So in order to gracefully shut down (ie save and exit) the canvas is set to null here using reflection.
+            // If this fails for some reason, shutdown will be forced.
+
+            Field minecraftField = null;
+
+            try {
+                minecraftField = minecraftApplet.getClass().getDeclaredField("minecraft");
+            } catch (NoSuchFieldException ne) {
+                for (Field field : minecraftApplet.getClass().getDeclaredFields()) {
+                    if (field.getType().getPackage() == minecraftApplet.getClass().getPackage()) {
+                        minecraftField = field;
+                        break;
+                    }
+                }
+            }
+
+            Class<?> minecraftClass = minecraftField.getType();
+
+            Field canvasField = null;
+
+            // Since Minecraft is obfuscated we can't just get the width and height fields by name.
+            // Hopefully, they're always the first two ints. Seems likely.
+            for (Field field : minecraftClass.getDeclaredFields()) {
+                if (Canvas.class.equals(field.getType())) {
+                    canvasField = field;
+                    break;
+                }
+            }
+
+            if (canvasField == null)
+                throw new ReflectiveOperationException("canvas not found");
+
+            canvasField.setAccessible(true);
+            minecraftField.setAccessible(true);
+
+            Object minecraft = minecraftField.get(minecraftApplet);
+            canvasField.set(minecraft, null);
+
+            LWJGLDisplayIsCloseRequestedAdvice.isCloseRequested = true;
+        } catch (ReflectiveOperationException ex) {
+            System.out.println("Failed to shutdown gracefully.");
+            ex.printStackTrace();
+            this.stop();
+            this.destroy();
+            System.exit(1);
+        }
     }
 
     @Override
@@ -593,13 +645,11 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
 
         If any of these searches fail, resizing should just do nothing.
     */
-    public void appletResize() {
-        appletResize(0, 0);
-    }
-
     @Override
-    public void appletResize(int unusedWidth, int unusedHeight){
+    public void appletResize(int width, int height){
         try {
+            new GUIScale(width, height);
+
             Field minecraftField = null;
 
             try {
@@ -673,59 +723,23 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
 
             Object gui = guiField != null & minecraft != null ? guiField.get(minecraft) : null;
 
-            if (fullscreen){
-                heightField.setInt(minecraft, Display.getDisplayMode().getHeight());
-                widthField.setInt(minecraft, Display.getDisplayMode().getWidth());
-
-                if(gui != null && guiHeightField != null && guiWidthField != null) {
-                    int h = Display.getDisplayMode().getHeight();
-                    guiHeightField.setInt(gui, h * 240 / h);
-                    guiWidthField.setInt(gui, Display.getDisplayMode().getWidth() * 240 / h);
-                }
-            }
-            else {
-                int w = Display.getParent().getWidth();
-                int h = Display.getParent().getHeight();
-
-                heightField.setInt(minecraft, h);
-                widthField.setInt(minecraft, w);
-
-                if(gui != null && guiHeightField != null && guiWidthField != null) {
-                    guiHeightField.setInt(gui, h * 240 / h);
-                    guiWidthField.setInt(gui, w * 240 / h);
-                }
+            if (minecraftVersion.useResizePatch) {
+                widthField.setInt(minecraft, width);
+                heightField.setInt(minecraft, height);
             }
 
-            int guiScale = Settings.singleton.getGUIScale().getIntValue();
+            if(gui != null && guiHeightField != null && guiWidthField != null) {
+                guiHeightField.setInt(gui, height * 240 / height);
+                guiWidthField.setInt(gui, width * 240 / height);
+            }
 
             if (gui != null && guiHeightField != null && guiWidthField != null && minecraftVersion != null && minecraftVersion.guiScreenClass != null) {
-                int scaledWidth;
-                int scaledHeight;
-                int scaleFactor;
-
-                scaledWidth = Display.getParent().getWidth();
-                scaledHeight = Display.getParent().getHeight();
-                scaleFactor = 1;
-                int k = guiScale;
-                if(k == 0)
-                {
-                    k = 1000;
-                }
-                for(; scaleFactor < k && scaledWidth / (scaleFactor + 1) >= 320 && scaledHeight / (scaleFactor + 1) >= 240; scaleFactor++) { }
-                scaledWidth = (int)Math.ceil((double)scaledWidth / (double)scaleFactor);
-                scaledHeight = (int)Math.ceil((double)scaledHeight / (double)scaleFactor);
-
-                int h = scaledHeight;
-                guiHeightField.setInt(gui, h * 240 / h);
-                guiWidthField.setInt(gui, scaledWidth * 240 / h);
-
-                guiHeightField.setInt(gui, scaledHeight);
-                guiWidthField.setInt(gui, scaledWidth);
+                guiWidthField.setInt(gui, GUIScale.lastScaledWidth());
+                guiHeightField.setInt(gui, GUIScale.lastScaledHeight());
             }
 
-            new GUIScale(getWidth(), getHeight());
-
-            //screenshotLabel.setBounds(30, (AppletH - 16) - 30, 204, 20);
+            // Resizable versions of Minecraft check the canvas size against the game size, if it changes the game is resized.
+            Display.getParent().setSize(width, height);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -755,7 +769,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
         }
 
         DisplayManager.getFrame().pack();
-        appletResize();
+        appletResize(Display.getParent().getWidth(), Display.getParent().getHeight());
     }
 
     private static ByteBuffer buffer;

@@ -8,7 +8,6 @@ import gg.codie.mineonline.gui.rendering.FontRenderer;
 import gg.codie.mineonline.gui.rendering.Loader;
 import gg.codie.mineonline.gui.rendering.textures.EGUITexture;
 import gg.codie.mineonline.gui.textures.TexturePackBase;
-import gg.codie.mineonline.patches.HashMapPutAdvice;
 import org.lwjgl.opengl.GL11;
 
 import java.util.List;
@@ -32,11 +31,11 @@ class GuiTexturePackSlot extends GuiSlot
     {
         List list = MinecraftTexturePackRepository.singleton.getTexturePacks();
 
-        Loader.singleton.unloadTexture(EGUITexture.BACKGROUND);
-        Loader.singleton.unloadTexture(EGUITexture.GUI);
-        Loader.singleton.unloadTexture(EGUITexture.GUI_ICONS);
-        Loader.singleton.unloadTexture(EGUITexture.UNKNOWN_PACK);
-        Loader.singleton.unloadTexture(EGUITexture.FONT);
+        for(EGUITexture texture : EGUITexture.values()) {
+            if(texture.useTexturePack) {
+                Loader.singleton.unloadTexture(texture);
+            }
+        }
 
         if (LegacyGameManager.isInGame()) {
             LegacyGameManager.setTexturePack(((TexturePackBase)list.get(i)).texturePackFileName);
@@ -66,6 +65,8 @@ class GuiTexturePackSlot extends GuiSlot
 
     protected void drawSlot(int i, int j, int k, int l, Tessellator tessellator)
     {
+        resize(parentTexturePackGui.getWidth(), parentTexturePackGui.getHeight(), 32, (parentTexturePackGui.getHeight() - 55) + 4);
+
         TexturePackBase texturepackbase = MinecraftTexturePackRepository.singleton.getTexturePacks().get(i);
         texturepackbase.bindThumbnailTexture();
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);

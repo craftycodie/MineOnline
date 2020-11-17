@@ -20,6 +20,12 @@ public class GuiTextField extends GuiComponent
         setText(s);
     }
 
+    @Override
+    public void resize(int x, int y) {
+        xPos = x;
+        yPos = y;
+    }
+
     public void setText(String s)
     {
         text = s;
@@ -68,7 +74,7 @@ public class GuiTextField extends GuiComponent
         {
             text = text.substring(0, text.length() - 1);
         }
-        if(InputSanitization.allowedCharacters.indexOf(c) >= 0 && (text.length() < maxStringLength || maxStringLength == 0))
+        if(InputSanitization.allowedCharacters.indexOf(c) >= 0 && (text.length() < maxStringLength || maxStringLength == 0) && (int)c > 32)
         {
             text += c;
         }
@@ -108,8 +114,8 @@ public class GuiTextField extends GuiComponent
         maxStringLength = i;
     }
 
-    private final int xPos;
-    private final int yPos;
+    private int xPos;
+    private int yPos;
     private final int width;
     private final int height;
     private String text;

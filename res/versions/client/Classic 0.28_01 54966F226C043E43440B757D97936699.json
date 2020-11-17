@@ -12,5 +12,6 @@
   "ingameVersionString": "0.28_01",
   "resourcesVersion": "a1.0.1_01",
   "guiClass": "com.mojang.minecraft.e.m",
-  "optionsVersion": "CLASSIC"
+  "optionsVersion": "CLASSIC",
+  "useResizePatch": true
 }

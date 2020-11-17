@@ -11,5 +11,6 @@
   "useTexturepackPatch": true,
   "ingameVersionString": "0.0.16a_02",
   "resourcesVersion": "c0.0.22a_05",
-  "optionsVersion": "CLASSIC"
+  "optionsVersion": "CLASSIC",
+  "useResizePatch": true
 }
