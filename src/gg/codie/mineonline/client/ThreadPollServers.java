@@ -17,7 +17,7 @@ public class ThreadPollServers extends Thread
     public static final HashMap<String, Long> serverLatencies = new HashMap<>();
 
     public static void pollServer(MineOnlineServer server) {
-        new ThreadPollServers(server).run();
+        new ThreadPollServers(server).start();
     }
 
     private ThreadPollServers(MineOnlineServer mineOnlineServer)
@@ -25,6 +25,7 @@ public class ThreadPollServers extends Thread
         this.mineOnlineServer = mineOnlineServer;
     }
 
+    @Override
     public void run() {
         boolean var27 = false;
 
