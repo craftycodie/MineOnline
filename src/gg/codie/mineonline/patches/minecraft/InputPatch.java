@@ -1,6 +1,5 @@
 package gg.codie.mineonline.patches.minecraft;
 
-import gg.codie.mineonline.Settings;
 import gg.codie.mineonline.patches.PointerInfoGetLocationAdvice;
 import gg.codie.mineonline.patches.RobotMouseMoveAdvice;
 import gg.codie.mineonline.patches.lwjgl.*;
@@ -8,10 +7,6 @@ import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.asm.Advice;
 import net.bytebuddy.dynamic.loading.ClassReloadingStrategy;
 import net.bytebuddy.matcher.ElementMatchers;
-import org.lwjgl.input.Keyboard;
-
-import java.lang.reflect.Field;
-import java.nio.ByteBuffer;
 
 public class InputPatch {
     public static boolean enableClassicFixes;

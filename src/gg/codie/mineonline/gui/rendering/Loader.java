@@ -8,6 +8,7 @@ import gg.codie.mineonline.gui.rendering.textures.EGUITexture;
 import gg.codie.mineonline.gui.rendering.utils.MathUtils;
 import gg.codie.mineonline.patches.HashMapPutAdvice;
 import gg.codie.mineonline.patches.lwjgl.LWJGLGL11GLTexSubImageAdvice;
+import gg.codie.mineonline.patches.minecraft.HDTextureFXHelper;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.*;
 import org.lwjgl.util.vector.Vector2f;
@@ -221,6 +222,14 @@ public class Loader {
         String[] textureNames = new String[] {
                 "/terrain.png",
                 "/particles.png",
+                "/clouds.png",
+                "/rain.png",
+                "/rock.png",
+                "/water.png",
+                "/dirt.png",
+                "/grass.png",
+                "/char.png",
+                "/2char.png",
 
                 "/gui/gui.png",
                 "/gui/background.png",
@@ -231,7 +240,7 @@ public class Loader {
                 "/gui/inventory.png",
                 "/gui/items.png",
                 "/gui/unknown_pack.png",
-                "/gui/icons.png",
+                "/mineonline/gui/icons.png",
 
                 "/armor/chain_1.png",
                 "/armor/chain_2.png",
@@ -250,7 +259,7 @@ public class Loader {
                 "/environment/rain.png",
                 "/environment/snow.png",
 
-                "/font/default.png",
+//                "/font/default.png",
 
                 "/item/arrows.png",
                 "/item/boat.png",
@@ -284,11 +293,17 @@ public class Loader {
                 "/mob/spider_eyes.png",
                 "/mob/zombie.png",
 
-                "/terrain/.moonpng",
+                "/terrain/moon.png",
                 "/terrain/sun.png",
 
-                "/default.png"
+//                "/default.png"
         };
+
+//        for(EGUITexture texture : EGUITexture.values()) {
+//            if(texture.useTexturePack) {
+//                Loader.singleton.unloadTexture(texture);
+//            }
+//        }
 
         if (LegacyGameManager.isInGame() && !LegacyGameManager.getVersion().useTexturepackPatch)
             return;
@@ -306,30 +321,38 @@ public class Loader {
 
                 if (texture != null) {
                     Loader.singleton.overwriteTexture(HashMapPutAdvice.textures.get(textureName), texturesZip.getInputStream(texture), textureName);
+
+                    if(textureName.equals("/terrain.png")) {
+                        try {
+                            BufferedImage terrain = ImageIO.read(texturesZip.getInputStream(texture));
+                            HDTextureFXHelper.scale = (float)terrain.getHeight() / 256;
+                        } catch (Exception ex) {
+                            HDTextureFXHelper.scale = 1;
+                        }
+                        HDTextureFXHelper.reloadTextures();
+                    }
+
                     continue;
+                } else {
+                    if(textureName.equals("/terrain.png")) {
+                        HDTextureFXHelper.scale = 1;
+                        HDTextureFXHelper.reloadTextures();
+                    }
                 }
             } catch (Exception ex) {
 
             }
             try {
-                if (LegacyGameManager.getAppletWrapper().getMinecraftAppletClass() != null) Loader.singleton.overwriteTexture(HashMapPutAdvice.textures.get(textureName), LegacyGameManager.getAppletWrapper().getMinecraftAppletClass().getResourceAsStream(textureName), textureName);
+
+                if (LegacyGameManager.getAppletWrapper().getMinecraftAppletClass() != null)
+                    Loader.singleton.overwriteTexture(HashMapPutAdvice.textures.get(textureName), LegacyGameManager.getAppletWrapper().getMinecraftAppletClass().getResourceAsStream(textureName), textureName);
+                if(textureName.equals("/terrain.png")) {
+                    HDTextureFXHelper.scale = 1;
+                    HDTextureFXHelper.reloadTextures();
+                }
             } catch (Exception ex) {
                 // ignore
             }
-        }
-
-        if (texturesZip != null) {
-            try {
-                BufferedImage terrain = ImageIO.read(texturesZip.getInputStream(texturesZip.getEntry("terrain.png")));
-                LWJGLGL11GLTexSubImageAdvice.xMul = (float)terrain.getWidth() / 256;
-                LWJGLGL11GLTexSubImageAdvice.yMul = (float)terrain.getHeight() / 256;
-            } catch (Exception ex) {
-                LWJGLGL11GLTexSubImageAdvice.xMul = 1;
-                LWJGLGL11GLTexSubImageAdvice.yMul = 1;
-            }
-        } else {
-            LWJGLGL11GLTexSubImageAdvice.xMul = 1;
-            LWJGLGL11GLTexSubImageAdvice.yMul = 1;
         }
     }
 

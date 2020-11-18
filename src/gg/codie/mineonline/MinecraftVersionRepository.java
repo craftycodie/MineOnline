@@ -18,6 +18,7 @@ public class MinecraftVersionRepository {
     private MinecraftVersion[] versions = new MinecraftVersion[0];
     private MinecraftVersion[] customVersions = new MinecraftVersion[0];
     private Map<String, MinecraftVersion> installedVersions = new HashMap<>();
+    boolean loadingInstalledVersions = true;
 
     JSONObject installedVersionJSON = new JSONObject();
 
@@ -84,6 +85,28 @@ public class MinecraftVersionRepository {
 
     public LinkedList<MinecraftVersion> getInstalledClients() {
         return installedVersions.values().stream().filter(version -> version != null).filter(version -> version.type.equals("client") || version.type.equals("launcher")).distinct().collect(Collectors.toCollection(LinkedList::new));
+    }
+
+    private void loadLastSelectedJar() {
+        if (getLastSelectedJarPath() != null) {
+            File jar = new File(getLastSelectedJarPath());
+            if (!jar.exists())
+                return;
+
+            MinecraftVersion version = getVersion(getLastSelectedJarPath());
+
+            if(version == null) {
+                try {
+                    if (!MinecraftVersion.isPlayableJar(getLastSelectedJarPath())) {
+                        return;
+                    }
+                } catch (Exception ex) {
+                    return;
+                }
+            }
+
+            installedVersions.put(getLastSelectedJarPath(), version);
+        }
     }
 
     // This is kinda heavy, that's why it's cached. So avoid it as much as possible.
@@ -200,7 +223,7 @@ public class MinecraftVersionRepository {
         }
     }
 
-    private void fetchVersions() {
+    private void downloadVersionInfo() {
         MinecraftVersion[] cachedVersions = getVersions(LauncherFiles.MINEONLINE_VERSIONS_FOLDER);
         try {
             JSONObject index = MineOnlineAPI.getVersionIndex();
@@ -260,12 +283,7 @@ public class MinecraftVersionRepository {
     }
 
     private void loadVersions(boolean onlyKnownVersionInfo) {
-        if(onlyKnownVersionInfo) {
-            versions = getVersions(LauncherFiles.MINEONLINE_VERSIONS_FOLDER);
-            customVersions = getVersions(LauncherFiles.MINEONLINE_CUSTOM_VERSIONS_FOLDER);
-            // TODO: Ideally call this later.
-            loadInstalledVersions();
-        } else {
+        if (!onlyKnownVersionInfo) {
             // If there's a resource version that's not in the cache, extract it.
             ProgressDialog.setSubMessage("Extracting version information...");
             ProgressDialog.setProgress(40);
@@ -285,27 +303,35 @@ public class MinecraftVersionRepository {
                 }
             }
 //            if (!Globals.DEV) {
-                // Fetch latest versions from the API
-                ProgressDialog.setSubMessage("Downloading latest version information...");
-                ProgressDialog.setProgress(44);
-                fetchVersions();
+            // Fetch latest versions from the API
+            ProgressDialog.setSubMessage("Downloading latest version information...");
+            ProgressDialog.setProgress(44);
+            downloadVersionInfo();
 //            }
-            // Load cached versions
-            ProgressDialog.setSubMessage("Reading version information...");
-            ProgressDialog.setProgress(48);
-            versions = getVersions(LauncherFiles.MINEONLINE_VERSIONS_FOLDER);
-            // Load custom versions
-            ProgressDialog.setSubMessage("Reading custom version information......");
-            ProgressDialog.setProgress(52);
-            customVersions = getVersions(LauncherFiles.MINEONLINE_CUSTOM_VERSIONS_FOLDER);
-            // Load installed versions
-            ProgressDialog.setSubMessage("Loading installed versions...");
-            ProgressDialog.setProgress(56);
-            loadInstalledVersions();
-            // Load official launcher installed versions
-            loadOfficialLauncherVersions();
-            ProgressDialog.setSubMessage(null);
         }
+        // Load cached versions
+        ProgressDialog.setSubMessage("Reading version information...");
+        ProgressDialog.setProgress(48);
+        versions = getVersions(LauncherFiles.MINEONLINE_VERSIONS_FOLDER);
+        // Load custom versions
+        ProgressDialog.setSubMessage("Reading custom version information......");
+        ProgressDialog.setProgress(52);
+        customVersions = getVersions(LauncherFiles.MINEONLINE_CUSTOM_VERSIONS_FOLDER);
+        //Loasd installed versions
+        loadLastSelectedJar();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                // Load installed versions
+                ProgressDialog.setSubMessage("Loading installed versions...");
+                ProgressDialog.setProgress(56);
+                loadInstalledVersions();
+                // Load official launcher installed versions
+                loadOfficialLauncherVersions();
+                ProgressDialog.setSubMessage(null);
+                loadingInstalledVersions = false;
+            }
+        }).start();
     }
 
     public MinecraftVersion getVersionByMD5(String md5) {

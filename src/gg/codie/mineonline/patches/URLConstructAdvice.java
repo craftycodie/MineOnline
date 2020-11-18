@@ -109,8 +109,7 @@ public class URLConstructAdvice {
                 boolean validJoin = (boolean)sessionServerClass.getMethod("hasJoined", String.class, String.class, String.class).invoke(
                         null,
                         username,
-                        serverId,
-                        ip
+                        serverId
                 );
 
                 if (validJoin)

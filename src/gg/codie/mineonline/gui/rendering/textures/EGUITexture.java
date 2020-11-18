@@ -5,7 +5,7 @@ public enum  EGUITexture {
     GUI("/gui/gui.png", true),
     MINEONLINE_GUI_ICONS("/mineonline/gui/icons.png", true),
     MINEONLINE_LOGO("/mineonline/gui/logo.png", false),
-    FONT("/font/default.png", true),
+    FONT("/font/default.png", false),
     UNKNOWN_PACK("/gui/unknown_pack.png", true),
     PACK("/pack.png", false),
     BACKGROUND("/gui/background.png", true);

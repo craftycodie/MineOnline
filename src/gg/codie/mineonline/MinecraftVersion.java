@@ -54,6 +54,7 @@ public class MinecraftVersion {
     public final boolean useGreyScreenPatch;
     public final EMinecraftOptionsVersion optionsVersion;
     public final boolean useResizePatch;
+    public final boolean hasPortalTexture;
 
     public MinecraftVersion(
             String sha256,
@@ -85,7 +86,8 @@ public class MinecraftVersion {
             boolean useUsernamesPatch,
             boolean useGreyScreenPatch,
             EMinecraftOptionsVersion optionsVersion,
-            boolean useResizePatch
+            boolean useResizePatch,
+            boolean hasPortalTexture
     ) {
         this.sha256 = sha256;
         this.name = name;
@@ -117,6 +119,7 @@ public class MinecraftVersion {
         this.useGreyScreenPatch = useGreyScreenPatch;
         this.optionsVersion = optionsVersion;
         this.useResizePatch = useResizePatch;
+        this.hasPortalTexture = hasPortalTexture;
     }
 
     public MinecraftVersion(JSONObject object) {
@@ -150,6 +153,7 @@ public class MinecraftVersion {
         useGreyScreenPatch = object.optBoolean("useGreyScreenPatch", false);
         optionsVersion = object.optEnum(EMinecraftOptionsVersion.class, "optionsVersion", EMinecraftOptionsVersion.DEFAULT);
         useResizePatch = object.optBoolean("useResizePatch", false);
+        hasPortalTexture = object.optBoolean("hasPortalTexture", true);
     }
 
 
@@ -351,7 +355,8 @@ public class MinecraftVersion {
                     false,
                     false,
                     EMinecraftOptionsVersion.DEFAULT,
-                    false
+                    false,
+                    true
             );
         } catch (Exception ex) {
             System.err.println("Bad launcher JSON for version " + jarFile);

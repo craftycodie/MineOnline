@@ -4,9 +4,7 @@
 
 package gg.codie.mineonline.gui.screens;
 
-import gg.codie.mineonline.LauncherFiles;
-import gg.codie.mineonline.LibraryManager;
-import gg.codie.mineonline.Settings;
+import gg.codie.mineonline.*;
 import gg.codie.mineonline.client.LegacyGameManager;
 import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.gui.components.GuiButton;
@@ -17,6 +15,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import java.io.File;
+import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.Map;
 
@@ -42,6 +41,7 @@ public class GuiDirectConnect extends AbstractGuiScreen
     public void initGui()
     {
         Keyboard.enableRepeatEvents(true);
+        AbstractGuiScreen thisScreen = this;
         controlList.clear();
         controlList.add(new GuiButton(0, getWidth() / 2 - 100, getHeight() / 4 + 96 + 12, "Connect", new GuiButton.GuiButtonListener() {
             @Override
@@ -49,10 +49,20 @@ public class GuiDirectConnect extends AbstractGuiScreen
                 joinServer();
             }
         }));
-        controlList.add(new GuiButton(1, getWidth() / 2 - 100, getHeight() / 4 + 120 + 12, "Cancel", new GuiButton.GuiButtonListener() {
+        controlList.add(new GuiButton(1, getWidth() / 2 - 100, (getHeight() / 4 - 10) + 50 + 18, "Cancel", new GuiButton.GuiButtonListener() {
             @Override
             public void OnButtonPress() {
                 LegacyGameManager.setGUIScreen(parentScreen);
+            }
+        }));
+        MinecraftVersion selected = MinecraftVersionRepository.getSingleton().getVersion(MinecraftVersionRepository.getSingleton().getLastSelectedJarPath());
+        String versionName = Paths.get(MinecraftVersionRepository.getSingleton().getLastSelectedJarPath()).getFileName().toString();
+        if (selected != null)
+            versionName = selected.name;
+        controlList.add(new GuiButton(2, getWidth() / 2 - 100, (getHeight() / 4 - 10) - 50 + 18, versionName, new GuiButton.GuiButtonListener() {
+            @Override
+            public void OnButtonPress() {
+                LegacyGameManager.setGUIScreen(new GuiVersions(thisScreen));
             }
         }));
         String s = Settings.singleton.getLastServer().replaceAll("_", ":");
