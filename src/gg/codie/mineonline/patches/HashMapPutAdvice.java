@@ -35,7 +35,10 @@ public class HashMapPutAdvice {
                     "/custom_water_flowing.png",
                     "/custom_water_still.png",
                     "/custom_lava_flowing.png",
-                    "/custom_lava_still.png"
+                    "/custom_lava_still.png",
+                    "/custom_portal.png",
+                    "/custom_fire_e_w.png",
+                    "/custom_fire_n_s.png"
             });
 
             if (ignored.contains(key))

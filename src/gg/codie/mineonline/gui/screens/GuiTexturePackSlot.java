@@ -44,7 +44,7 @@ class GuiTexturePackSlot extends GuiSlot
         Settings.singleton.setTexturePack(((TexturePackBase) list.get(i)).texturePackFileName);
         Settings.singleton.saveSettings();
 
-        FontRenderer.reloadFont();
+        //FontRenderer.reloadFont();
     }
 
     protected boolean isSelected(int i)

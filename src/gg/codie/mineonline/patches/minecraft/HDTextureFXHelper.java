@@ -34,7 +34,10 @@ public class HDTextureFXHelper {
                 "/custom_water_flowing.png",
                 "/custom_water_still.png",
                 "/custom_lava_flowing.png",
-                "/custom_lava_still.png"
+                "/custom_lava_still.png",
+                "/custom_portal.png",
+                "/custom_fire_e_w.png",
+                "/custom_fire_n_s.png"
         };
 
         ZipFile texturesZip = null;
@@ -136,10 +139,10 @@ public class HDTextureFXHelper {
         else if (x == 240 && y == 240) // 1/4
             textureName = "/custom_lava_flowing.png";
 
-//        else if (x == 240 && y == 16)
-//            textureName = "/custom_fire_e_w.png";
-//        else if (x == 240 && y == 32)
-//            textureName = "/custom_fire_n_s.png";
+        else if (x == 240 && y == 16)
+            textureName = "/custom_fire_e_w.png";
+        else if (x == 240 && y == 32)
+            textureName = "/custom_fire_n_s.png";
 
 //        else
 //            System.out.println("Unknown dynamic texture: " + x + ", " + y);
