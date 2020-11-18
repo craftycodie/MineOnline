@@ -422,12 +422,12 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
                         }
 
                         if (Settings.singleton.getZoomKeyCode() != 0) {
-                            if (Keyboard.getEventKey() == Settings.singleton.getZoomKeyCode() && !Keyboard.isRepeatEvent() && Keyboard.getEventKeyState() && !zoomWasDown) {
+                            if (Mouse.isGrabbed() && Keyboard.getEventKey() == Settings.singleton.getZoomKeyCode() && !Keyboard.isRepeatEvent() && Keyboard.getEventKeyState() && !zoomWasDown) {
                                 LWJGLGLUPatch.zoom();
                                 LWJGLGL11GLOrthoAdvice.hideHud = true;
                                 FOVViewmodelAdvice.hideViewModel = true;
                                 zoomWasDown = true;
-                            } else if (Keyboard.getEventKey() == Settings.singleton.getZoomKeyCode() && !Keyboard.isRepeatEvent() && !Keyboard.getEventKeyState()) {
+                            } else if (Mouse.isGrabbed() && Keyboard.getEventKey() == Settings.singleton.getZoomKeyCode() && !Keyboard.isRepeatEvent() && !Keyboard.getEventKeyState()) {
                                 LWJGLGLUPatch.unZoom();
                                 if (!f1WasDown) {
                                     LWJGLGL11GLOrthoAdvice.hideHud = false;
