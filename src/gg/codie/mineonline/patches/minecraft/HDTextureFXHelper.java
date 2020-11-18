@@ -3,8 +3,6 @@ package gg.codie.mineonline.patches.minecraft;
 import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.Settings;
 import gg.codie.mineonline.client.LegacyGameManager;
-import gg.codie.mineonline.gui.rendering.Loader;
-import gg.codie.mineonline.patches.HashMapPutAdvice;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -103,7 +101,7 @@ public class HDTextureFXHelper {
 
         // classic
         if (x == 224 && y == 0) {
-            if (LegacyGameManager.getVersion().hasPortalTexture)
+            if (LegacyGameManager.getVersion().hasNetherPortalTexture)
                 textureName = "/custom_portal.png";
             else
                 textureName = "/custom_water_still.png";

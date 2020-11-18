@@ -12,5 +12,6 @@
   "enableCursorPatch": true,
   "resourcesVersion": "a1.0.1_01",
   "optionsVersion": "CLASSIC",
+  "hasNetherPortalTexture": false,
   "useResizePatch": true
 }

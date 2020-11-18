@@ -11,5 +11,6 @@
   "useTexturepackPatch": true,
   "ingameVersionString": "Minecraft Alpha v1.1.2_01",
   "resourcesVersion": "a1.1.2_01",
-  "optionsVersion": "PRESKINS"
+  "optionsVersion": "PRESKINS",
+  "hasNetherPortalTexture": false
 }

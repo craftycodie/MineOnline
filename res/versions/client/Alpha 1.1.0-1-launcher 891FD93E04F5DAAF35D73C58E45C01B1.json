@@ -13,5 +13,6 @@
   "viewModelFunction": "b",
   "scaledResolutionClass": "iy",
   "resourcesVersion": "a1.1.0",
-  "optionsVersion": "CLASSIC"
+  "optionsVersion": "CLASSIC",
+  "hasNetherPortalTexture": false
 }

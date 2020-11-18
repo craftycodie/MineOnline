@@ -10,5 +10,6 @@
   "useTexturepackPatch": true,
   "ingameVersionString": "Minecraft Alpha v1.0.13",
   "resourcesVersion": "a1.0.15",
-  "optionsVersion": "CLASSIC"
+  "optionsVersion": "CLASSIC",
+  "hasNetherPortalTexture": false
 }

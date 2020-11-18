@@ -14,5 +14,6 @@
   "ingameVersionString": "0.0.11a",
   "resourcesVersion": "c0.0.14a_08",
   "optionsVersion": "CLASSIC",
-  "useResizePatch": true
+  "useResizePatch": true,
+  "hasNetherPortalTexture": false
 }

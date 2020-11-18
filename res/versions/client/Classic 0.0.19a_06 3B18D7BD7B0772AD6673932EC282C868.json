@@ -12,5 +12,6 @@
   "resourcesVersion": "c0.0.22a_05",
   "guiClass": "com.mojang.minecraft.b.a",
   "optionsVersion": "CLASSIC",
-  "useResizePatch": true
+  "useResizePatch": true,
+  "hasNetherPortalTexture": false
 }

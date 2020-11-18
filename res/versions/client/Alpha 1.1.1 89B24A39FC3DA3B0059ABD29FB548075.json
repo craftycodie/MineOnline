@@ -11,5 +11,6 @@
   "ingameVersionString": "Minecraft Alpha v1.1.1",
   "resourcesVersion": "a1.1.1",
   "useGreyScreenPatch": true,
-  "optionsVersion": "PRESKINS"
+  "optionsVersion": "PRESKINS",
+  "hasNetherPortalTexture": false
 }

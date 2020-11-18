@@ -15,5 +15,6 @@
   "guiClass": "com.mojang.minecraft.c.m",
   "guiScreenClass": "com.mojang.minecraft.c.o",
   "optionsVersion": "CLASSIC",
-  "useResizePatch": true
+  "useResizePatch": true,
+  "hasNetherPortalTexture": false
 }

@@ -12,5 +12,6 @@
   "ingameVersionString": "Minecraft Infdev",
   "resourcesVersion": "a1.0.1_01",
   "optionsVersion": "CLASSIC",
-  "useResizePatch": true
+  "useResizePatch": true,
+  "hasNetherPortalTexture": false
 }
