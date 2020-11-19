@@ -6,7 +6,6 @@ import gg.codie.mineonline.client.LegacyGameManager;
 import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.gui.components.GuiButton;
 import gg.codie.mineonline.utils.JREUtils;
-import org.lwjgl.input.Mouse;
 
 import java.io.File;
 import java.util.LinkedList;
@@ -67,7 +66,8 @@ public class GuiIngameMenu extends AbstractGuiScreen
         controlList.add(new GuiButton(0, getWidth() / 2 - 100, getHeight() / 4 + 96 + byte0, "Options...", new GuiButton.GuiButtonListener() {
             @Override
             public void OnButtonPress() {
-                LegacyGameManager.setGUIScreen(new GuiIngameOptions(thisScreen));
+                LegacyGameManager.setGUIScreen(new GuiOptions(thisScreen));
+                //LegacyGameManager.setGUIScreen(new GuiVersions(thisScreen));
             }
         }));
 

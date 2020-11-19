@@ -1,17 +1,9 @@
 package gg.codie.minecraft.client.gui;
 
-import org.lwjgl.opengl.ARBBufferObject;
-import org.lwjgl.opengl.ARBVertexBufferObject;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GLContext;
+import java.nio.*;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
+import org.lwjgl.opengl.*;
 
-// TODO: Refactor Out
-@Deprecated
 public class Tessellator
 {
 
@@ -58,13 +50,13 @@ public class Tessellator
             {
                 vboIndex = (vboIndex + 1) % vboCount;
                 ARBVertexBufferObject.glBindBufferARB(34962 /*GL_ARRAY_BUFFER_ARB*/, vertexBuffers.get(vboIndex));
-                ARBVertexBufferObject.glBufferDataARB(34962 /*GL_ARRAY_BUFFER_ARB*/, byteBuffer, ARBBufferObject.GL_STREAM_DRAW_ARB);
+                ARBVertexBufferObject.glBufferDataARB(34962 /*GL_ARRAY_BUFFER_ARB*/, byteBuffer, 35040 /*GL_STREAM_DRAW_ARB*/);
             }
             if(hasTexture)
             {
                 if(useVBO)
                 {
-                    GL11.glTexCoordPointer(2, GL11.GL_FLOAT, 32, 12L);
+                    GL11.glTexCoordPointer(2, 5126 /*GL_FLOAT*/, 32, 12L);
                 } else
                 {
                     floatBuffer.position(3);
@@ -76,7 +68,7 @@ public class Tessellator
             {
                 if(useVBO)
                 {
-                    GL11.glColorPointer(4, GL11.GL_UNSIGNED_BYTE, 32, 20L);
+                    GL11.glColorPointer(4, 5121 /*GL_UNSIGNED_BYTE*/, 32, 20L);
                 } else
                 {
                     byteBuffer.position(20);
@@ -88,7 +80,7 @@ public class Tessellator
             {
                 if(useVBO)
                 {
-                    GL11.glNormalPointer(GL11.GL_BYTE, 32, 24L);
+                    GL11.glNormalPointer(5120 /*GL_BYTE*/, 32, 24L);
                 } else
                 {
                     byteBuffer.position(24);
@@ -98,7 +90,7 @@ public class Tessellator
             }
             if(useVBO)
             {
-                GL11.glVertexPointer(3, GL11.GL_FLOAT, 32, 0L);
+                GL11.glVertexPointer(3, 5126 /*GL_FLOAT*/, 32, 0L);
             } else
             {
                 floatBuffer.position(0);
@@ -165,6 +157,11 @@ public class Tessellator
         hasTexture = true;
         textureU = d;
         textureV = d1;
+    }
+
+    public void setColorOpaque_F(float f, float f1, float f2)
+    {
+        setColorOpaque((int)(f * 255F), (int)(f1 * 255F), (int)(f2 * 255F));
     }
 
     public void setColorRGBA_F(float f, float f1, float f2, float f3)
@@ -265,9 +262,13 @@ public class Tessellator
         {
             rawBuffer[rawBufferIndex + 5] = color;
         }
-        rawBuffer[rawBufferIndex + 0] = Float.floatToRawIntBits((float)(d));
-        rawBuffer[rawBufferIndex + 1] = Float.floatToRawIntBits((float)(d1));
-        rawBuffer[rawBufferIndex + 2] = Float.floatToRawIntBits((float)(d2));
+        if(hasNormals)
+        {
+            rawBuffer[rawBufferIndex + 6] = normal;
+        }
+        rawBuffer[rawBufferIndex + 0] = Float.floatToRawIntBits((float)(d + xOffset));
+        rawBuffer[rawBufferIndex + 1] = Float.floatToRawIntBits((float)(d1 + yOffset));
+        rawBuffer[rawBufferIndex + 2] = Float.floatToRawIntBits((float)(d2 + zOffset));
         rawBufferIndex += 8;
         vertexCount++;
         if(vertexCount % 4 == 0 && rawBufferIndex >= bufferSize - 32)
@@ -293,6 +294,38 @@ public class Tessellator
         setColorRGBA(k, l, i1, j);
     }
 
+    public void disableColor()
+    {
+        isColorDisabled = true;
+    }
+
+    public void setNormal(float f, float f1, float f2)
+    {
+        if(!isDrawing)
+        {
+            System.out.println("But..");
+        }
+        hasNormals = true;
+        byte byte0 = (byte)(int)(f * 128F);
+        byte byte1 = (byte)(int)(f1 * 127F);
+        byte byte2 = (byte)(int)(f2 * 127F);
+        normal = byte0 | byte1 << 8 | byte2 << 16;
+    }
+
+    public void setTranslationD(double d, double d1, double d2)
+    {
+        xOffset = d;
+        yOffset = d1;
+        zOffset = d2;
+    }
+
+    public void setTranslationF(float f, float f1, float f2)
+    {
+        xOffset += f;
+        yOffset += f1;
+        zOffset += f2;
+    }
+
     private static boolean convertQuadsToTriangles = true;
     private static boolean tryVBO = false;
     private ByteBuffer byteBuffer;
@@ -310,6 +343,10 @@ public class Tessellator
     private int addedVertices;
     private boolean isColorDisabled;
     private int drawMode;
+    private double xOffset;
+    private double yOffset;
+    private double zOffset;
+    private int normal;
     public static final Tessellator instance = new Tessellator(0x200000);
     private boolean isDrawing;
     private boolean useVBO;
@@ -317,4 +354,5 @@ public class Tessellator
     private int vboIndex;
     private int vboCount;
     private int bufferSize;
+
 }

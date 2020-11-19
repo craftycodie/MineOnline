@@ -44,9 +44,7 @@ public class HashMapPutAdvice {
             if (ignored.contains(key))
                 return;
 
-            System.out.println("RELOADING " + key);
-
-
+//            System.out.println("RELOADING " + key);
 
             ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.HashMapPutAdvice").getField("ignore").set(null, true);
             boolean DEV = (boolean) ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.Globals").getField("DEV").get(null);
@@ -60,7 +58,7 @@ public class HashMapPutAdvice {
 
             ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.HashMapPutAdvice").getField("ignore").set(null, false);
 
-            //ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.gui.rendering.Loader").getDeclaredMethod("reloadMinecraftTextures").invoke(null);
+            ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.gui.rendering.Loader").getDeclaredMethod("reloadMinecraftTextures").invoke(null);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

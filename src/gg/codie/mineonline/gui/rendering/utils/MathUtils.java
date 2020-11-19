@@ -1,6 +1,5 @@
 package gg.codie.mineonline.gui.rendering.utils;
 
-import gg.codie.mineonline.gui.rendering.Camera;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Quaternion;
 import org.lwjgl.util.vector.Vector2f;
@@ -140,19 +139,6 @@ public class MathUtils {
                 dest.w * sin + dest.z * cos,
                 dest.w * cos - dest.z * sin);
         return dest;
-    }
-
-    public static Matrix4f createViewMatrix(Camera camera){
-        Matrix4f viewMatrix = new Matrix4f();
-        viewMatrix.setIdentity();
-        Matrix4f.rotate((float) Math.toRadians(camera.getPitch()), new Vector3f(1,0,0), viewMatrix,
-                viewMatrix);
-        Matrix4f.rotate((float) Math.toRadians(camera.getYaw()), new Vector3f(0,1,0), viewMatrix,
-                viewMatrix);
-        Vector3f cameraPos = camera.getPosition();
-        Vector3f negativeCameraPos = new Vector3f(-cameraPos.x,-cameraPos.y,-cameraPos.z);
-        Matrix4f.translate(negativeCameraPos, viewMatrix, viewMatrix);
-        return viewMatrix;
     }
 
     public static float[] makePlaneVertices(Vector2f begin, Vector2f end) {

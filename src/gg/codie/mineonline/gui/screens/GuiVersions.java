@@ -2,11 +2,9 @@ package gg.codie.mineonline.gui.screens;
 
 import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.LibraryManager;
-import gg.codie.mineonline.MinecraftVersionRepository;
 import gg.codie.mineonline.api.MineOnlineServer;
 import gg.codie.mineonline.api.MineOnlineServerRepository;
 import gg.codie.mineonline.client.LegacyGameManager;
-import gg.codie.mineonline.client.ThreadPollServers;
 import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.gui.components.GuiButton;
 import gg.codie.mineonline.gui.rendering.FontRenderer;
@@ -46,7 +44,10 @@ public class GuiVersions extends AbstractGuiScreen
         controlList.add(connectButton = new GuiButton(1, getWidth() / 2 - 154, getHeight() - 48, 100, 20, "Back", new GuiButton.GuiButtonListener() {
             @Override
             public void OnButtonPress() {
-                LegacyGameManager.setGUIScreen(parentScreen);
+                if (LegacyGameManager.isInGame())
+                    LegacyGameManager.setGUIScreen(parentScreen);
+                else
+                    MenuManager.setMenuScreen(parentScreen);
             }
         }));
         AbstractGuiScreen thisScreen = this;
@@ -83,8 +84,10 @@ public class GuiVersions extends AbstractGuiScreen
         controlList.add(new GuiButton(3, getWidth() / 2 + 4 + 50, getHeight() - 48, 100, 20, "Select", new GuiButton.GuiButtonListener() {
             @Override
             public void OnButtonPress() {
-                LegacyGameManager.setGUIScreen(parentScreen);
-            }
+                if (LegacyGameManager.isInGame())
+                    LegacyGameManager.setGUIScreen(parentScreen);
+                else
+                    MenuManager.setMenuScreen(parentScreen);            }
         }));
         connectButton.enabled = selectedIndex >= 0 && selectedIndex < guiSlotServer.getSize();
     }

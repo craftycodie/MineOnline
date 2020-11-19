@@ -73,7 +73,9 @@ public abstract class AbstractGuiScreen extends GuiComponent
         }
     }
 
-    public abstract void initGui();
+    public void initGui() {
+
+    }
 
     protected void actionPerformed(GuiButton guiButton) {
 

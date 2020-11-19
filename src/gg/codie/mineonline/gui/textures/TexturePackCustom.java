@@ -78,7 +78,7 @@ public class TexturePackCustom extends TexturePackBase
     {
         if(texturePackThumbnail != null)
         {
-            Loader.singleton.unloadTexture("/texturepacks/" + texturePackFileName + "/pack.png");
+            Loader.singleton.unloadTexture("/texturepacks/" + texturePackFileName + "pack.png");
         }
         closeTexturePackFile();
     }
@@ -91,7 +91,7 @@ public class TexturePackCustom extends TexturePackBase
                 ByteArrayOutputStream os = new ByteArrayOutputStream();
                 ImageIO.write(texturePackThumbnail, "png", os);
                 InputStream is = new ByteArrayInputStream(os.toByteArray());
-                texturePackName = Loader.singleton.loadTexture("/texturepacks/" + texturePackFileName + "/pack.png", is);
+                texturePackName = Loader.singleton.loadTexture("/texturepacks/" + texturePackFileName + "pack.png", is);
             } catch (Exception ex) {
                 GL11.glBindTexture(3553 /*GL_TEXTURE_2D*/, Loader.singleton.getGuiTexture(EGUITexture.UNKNOWN_PACK));
             }

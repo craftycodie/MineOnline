@@ -3,16 +3,8 @@ package gg.codie.mineonline.gui.screens;
 import gg.codie.minecraft.client.gui.Tessellator;
 import gg.codie.mineonline.MinecraftVersion;
 import gg.codie.mineonline.MinecraftVersionRepository;
-import gg.codie.mineonline.api.MineOnlineServer;
-import gg.codie.mineonline.client.ThreadPollServers;
-import gg.codie.mineonline.gui.rendering.FontRenderer;
-import gg.codie.mineonline.gui.rendering.Loader;
-import gg.codie.mineonline.gui.rendering.textures.EGUITexture;
-import org.lwjgl.opengl.GL11;
 
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 
 public class GuiSlotVersion extends GuiSlot
 {

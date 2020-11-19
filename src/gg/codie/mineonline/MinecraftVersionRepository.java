@@ -26,21 +26,25 @@ public class MinecraftVersionRepository {
     private static final String INSTALLED_VERSIONS = "installedJars";
     private static final String SELECTED_VERSION = "lastSelected";
 
-    public MinecraftVersionRepository(boolean onlyKnownVersionInfo) {
-        loadVersions(onlyKnownVersionInfo);
+    public MinecraftVersionRepository(boolean onlyKnownVersionInfo, String loadJar) {
+        loadVersions(onlyKnownVersionInfo, loadJar);
     }
 
     private static MinecraftVersionRepository singleton;
 
     public static MinecraftVersionRepository getSingleton() {
-        return getSingleton(false);
+        return getSingleton(false, null);
+    }
+
+    public static MinecraftVersionRepository getSingleton(boolean onlyKnownVersionInfo, String loadJar) {
+        if(singleton == null) {
+            singleton = new MinecraftVersionRepository(onlyKnownVersionInfo, loadJar);
+        }
+        return singleton;
     }
 
     public static MinecraftVersionRepository getSingleton(boolean onlyKnownVersionInfo) {
-        if(singleton == null) {
-            singleton = new MinecraftVersionRepository(onlyKnownVersionInfo);
-        }
-        return singleton;
+        return getSingleton(onlyKnownVersionInfo, null);
     }
 
     public void addInstalledVersion(String jarPath) {
@@ -87,26 +91,25 @@ public class MinecraftVersionRepository {
         return installedVersions.values().stream().filter(version -> version != null).filter(version -> version.type.equals("client") || version.type.equals("launcher")).distinct().collect(Collectors.toCollection(LinkedList::new));
     }
 
-    private void loadLastSelectedJar() {
-        if (getLastSelectedJarPath() != null) {
-            File jar = new File(getLastSelectedJarPath());
-            if (!jar.exists())
-                return;
+    private void loadJar(String path) {
+        File jar = new File(path);
 
-            MinecraftVersion version = getVersion(getLastSelectedJarPath());
+        if (!jar.exists())
+            return;
 
-            if(version == null) {
-                try {
-                    if (!MinecraftVersion.isPlayableJar(getLastSelectedJarPath())) {
-                        return;
-                    }
-                } catch (Exception ex) {
+        MinecraftVersion version = getVersion(path);
+
+        if(version == null) {
+            try {
+                if (!MinecraftVersion.isPlayableJar(path) && !MinecraftVersion.isLegacyJar(path)) {
                     return;
                 }
+            } catch (Exception ex) {
+                return;
             }
-
-            installedVersions.put(getLastSelectedJarPath(), version);
         }
+
+        installedVersions.put(path, version);
     }
 
     // This is kinda heavy, that's why it's cached. So avoid it as much as possible.
@@ -282,7 +285,7 @@ public class MinecraftVersionRepository {
         }
     }
 
-    private void loadVersions(boolean onlyKnownVersionInfo) {
+    private void loadVersions(boolean onlyKnownVersionInfo, String loadJarPath) {
         if (!onlyKnownVersionInfo) {
             // If there's a resource version that's not in the cache, extract it.
             ProgressDialog.setSubMessage("Extracting version information...");
@@ -317,8 +320,11 @@ public class MinecraftVersionRepository {
         ProgressDialog.setSubMessage("Reading custom version information......");
         ProgressDialog.setProgress(52);
         customVersions = getVersions(LauncherFiles.MINEONLINE_CUSTOM_VERSIONS_FOLDER);
-        //Loasd installed versions
-        loadLastSelectedJar();
+        //Load installed versions
+        if (loadJarPath != null)
+            loadJar(loadJarPath);
+        if (getLastSelectedJarPath() != null)
+            loadJar(getLastSelectedJarPath());
         new Thread(new Runnable() {
             @Override
             public void run() {

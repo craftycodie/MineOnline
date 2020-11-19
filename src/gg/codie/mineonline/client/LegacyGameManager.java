@@ -8,6 +8,7 @@ import gg.codie.mineonline.MinecraftVersion;
 import gg.codie.mineonline.Settings;
 import gg.codie.mineonline.gui.GUIScale;
 import gg.codie.mineonline.gui.rendering.DisplayManager;
+import gg.codie.mineonline.gui.rendering.FontRenderer;
 import gg.codie.mineonline.gui.rendering.Loader;
 import gg.codie.mineonline.gui.screens.AbstractGuiScreen;
 import gg.codie.mineonline.patches.ClassPatch;
@@ -55,6 +56,8 @@ public class LegacyGameManager {
     }
 
     private static void preparePatches() {
+        System.out.println("Preparing Patches!");
+
         MinecraftVersion version = getVersion();
 
         // Allow the MineOnline menu to freeze game input.
@@ -134,10 +137,7 @@ public class LegacyGameManager {
         GuiScreenOpenAdvice.guiScale = guiScale.getIntValue();
         LWJGLGL11GLOrthoAdvice.guiScale = guiScale.getIntValue();
         ScaledResolutionConstructorAdvice.guiScale = guiScale.getIntValue();
-        // TODO: Fake Resize
         getGuiScreen().resize(GUIScale.lastScaledWidth(), GUIScale.lastScaledHeight());
-        //DisplayManager.getFrame().setSize(DisplayManager.getFrame().getSize());
-        //getAppletWrapper().resize();
     }
 
     public static void setMainHand(EMinecraftMainHand mainHand) {

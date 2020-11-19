@@ -26,10 +26,15 @@ import java.util.Map;
 public class GuiDirectConnect extends AbstractGuiScreen
 {
 
-    public GuiDirectConnect(AbstractGuiScreen guiscreen)
+    public GuiDirectConnect(AbstractGuiScreen guiscreen, String serverString)
     {
         parentScreen = guiscreen;
-        initGui();
+        initGui(serverString);
+    }
+
+    public GuiDirectConnect(AbstractGuiScreen guiscreen)
+    {
+        this(guiscreen, null);
     }
 
     public void updateScreen()
@@ -38,7 +43,7 @@ public class GuiDirectConnect extends AbstractGuiScreen
             textField.updateCursorCounter();
     }
 
-    public void initGui()
+    public void initGui(String serverString)
     {
         Keyboard.enableRepeatEvents(true);
         AbstractGuiScreen thisScreen = this;
@@ -52,8 +57,10 @@ public class GuiDirectConnect extends AbstractGuiScreen
         controlList.add(new GuiButton(1, getWidth() / 2 - 100, (getHeight() / 4 - 10) + 50 + 18, "Cancel", new GuiButton.GuiButtonListener() {
             @Override
             public void OnButtonPress() {
-                LegacyGameManager.setGUIScreen(parentScreen);
-            }
+                if (LegacyGameManager.isInGame())
+                    LegacyGameManager.setGUIScreen(parentScreen);
+                else
+                    MenuManager.setMenuScreen(parentScreen);                  }
         }));
         MinecraftVersion selected = MinecraftVersionRepository.getSingleton().getVersion(MinecraftVersionRepository.getSingleton().getLastSelectedJarPath());
         String versionName = Paths.get(MinecraftVersionRepository.getSingleton().getLastSelectedJarPath()).getFileName().toString();
@@ -62,10 +69,15 @@ public class GuiDirectConnect extends AbstractGuiScreen
         controlList.add(new GuiButton(2, getWidth() / 2 - 100, (getHeight() / 4 - 10) - 50 + 18, versionName, new GuiButton.GuiButtonListener() {
             @Override
             public void OnButtonPress() {
-                LegacyGameManager.setGUIScreen(new GuiVersions(thisScreen));
+                if (LegacyGameManager.isInGame())
+                    LegacyGameManager.setGUIScreen(new GuiVersions(thisScreen));
+                else
+                    MenuManager.setMenuScreen(new GuiVersions(thisScreen));
             }
         }));
         String s = Settings.singleton.getLastServer().replaceAll("_", ":");
+        if (serverString != null)
+            s = serverString;
         ((GuiButton)controlList.get(0)).enabled = s.length() > 0;
         textField = new GuiTextField(this, getWidth() / 2 - 100, (getHeight() / 4 - 10) + 50 + 18, 200, 20, s);
         textField.isFocused = true;

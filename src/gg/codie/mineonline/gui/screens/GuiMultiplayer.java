@@ -1,22 +1,24 @@
 package gg.codie.mineonline.gui.screens;
 
-import gg.codie.mineonline.LauncherFiles;
-import gg.codie.mineonline.LibraryManager;
+import gg.codie.minecraft.api.LauncherAPI;
+import gg.codie.mineonline.*;
+import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.mineonline.api.MineOnlineServer;
 import gg.codie.mineonline.api.MineOnlineServerRepository;
 import gg.codie.mineonline.client.LegacyGameManager;
-import gg.codie.mineonline.client.ThreadPollServers;
+import gg.codie.mineonline.server.ThreadPollServers;
 import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.gui.components.GuiButton;
+import gg.codie.mineonline.gui.rendering.DisplayManager;
 import gg.codie.mineonline.gui.rendering.FontRenderer;
 import gg.codie.mineonline.utils.JREUtils;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.Display;
 
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class GuiMultiplayer extends AbstractGuiScreen
 {
@@ -57,15 +59,19 @@ public class GuiMultiplayer extends AbstractGuiScreen
         controlList.add(new GuiButton(4, getWidth() / 2 - 50, getHeight() - 48, 100, 20, "Direct Connect", new GuiButton.GuiButtonListener() {
             @Override
             public void OnButtonPress() {
-                LegacyGameManager.setGUIScreen(new GuiDirectConnect(thisScreen));
-
+                if (LegacyGameManager.isInGame())
+                    LegacyGameManager.setGUIScreen(new GuiDirectConnect(thisScreen));
+                else
+                    MenuManager.setMenuScreen(new GuiDirectConnect(thisScreen));
             }
         }));
         controlList.add(new GuiButton(3, getWidth() / 2 + 4 + 50, getHeight() - 48, 100, 20, "Cancel", new GuiButton.GuiButtonListener() {
             @Override
             public void OnButtonPress() {
-                LegacyGameManager.setGUIScreen(parentScreen);
-            }
+                if (LegacyGameManager.isInGame())
+                    LegacyGameManager.setGUIScreen(parentScreen);
+                else
+                    MenuManager.setMenuScreen(parentScreen);            }
         }));
         connectButton.enabled = selectedIndex >= 0 && selectedIndex < guiSlotServer.getSize();
     }
@@ -110,31 +116,54 @@ public class GuiMultiplayer extends AbstractGuiScreen
 
     private void joinServer(MineOnlineServer server)
     {
-        try {
-            LinkedList<String> launchArgs = new LinkedList();
-            launchArgs.add(JREUtils.getRunningJavaExecutable());
-            launchArgs.add("-javaagent:" + LauncherFiles.PATCH_AGENT_JAR);
-            launchArgs.add("-Djava.util.Arrays.useLegacyMergeSort=true");
-            launchArgs.add("-cp");
-            launchArgs.add(LibraryManager.getClasspath(true, new String[]{new File(MenuManager.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath(), LauncherFiles.DISCORD_RPC_JAR}));
-            launchArgs.add(MenuManager.class.getCanonicalName());
-            launchArgs.add("-quicklaunch");
-            launchArgs.add("-joinserver");
-            launchArgs.add(server.ip + ":" + server.port);
-            launchArgs.add("-skipupdates");
+        MinecraftVersion serverVersion = MinecraftVersionRepository.getSingleton().getVersionByMD5(server.md5);
 
-            java.util.Properties props = System.getProperties();
-            ProcessBuilder processBuilder = new ProcessBuilder(launchArgs);
+        Set<String> minecraftJars = MinecraftVersionRepository.getSingleton().getInstalledJars().keySet();
 
-            Map<String, String> env = processBuilder.environment();
-            for (String prop : props.stringPropertyNames()) {
-                env.put(prop, props.getProperty(prop));
+        String clientPath = null;
+
+        if (serverVersion != null) {
+            clientloop:
+            for (String compatibleClientBaseVersion : serverVersion.clientVersions) {
+                for (String path : minecraftJars) {
+                    MinecraftVersion clientVersion = MinecraftVersionRepository.getSingleton().getInstalledJars().get(path);
+
+                    if (clientVersion != null && clientVersion.baseVersion.equals(compatibleClientBaseVersion)) {
+                        clientPath = path;
+                        break clientloop;
+                    }
+                }
+
+                try {
+                    File clientJar = new File(LauncherFiles.MINECRAFT_VERSIONS_PATH + compatibleClientBaseVersion + File.separator + "client.jar");
+                    try {
+                        MineOnlineAPI.downloadVersion(compatibleClientBaseVersion);
+                    } catch (Exception ex) {
+                        // ignore
+                    }
+                    if (!clientJar.exists())
+                        LauncherAPI.downloadVersion(compatibleClientBaseVersion);
+
+                    MinecraftVersionRepository.getSingleton().addInstalledVersion(clientJar.getPath());
+                    clientPath = clientJar.getPath();
+                    break clientloop;
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
             }
-            processBuilder.directory(new File(System.getProperty("user.dir")));
+        }
 
-            Process launcherProcess = processBuilder.inheritIO().start();
+        try {
+            String mppas = MineOnlineAPI.getMpPass(Session.session.getAccessToken(), Session.session.getUsername(), Session.session.getUuid(), server.ip, server.port + "");
+            MinecraftVersion.launchMinecraft(clientPath, server.ip, server.port + "", mppas);
 
-            LegacyGameManager.closeGame();
+            if (LegacyGameManager.isInGame())
+                LegacyGameManager.closeGame();
+            else {
+                Display.destroy();
+                DisplayManager.getFrame().dispose();
+                System.exit(0);
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
             // ignore for now

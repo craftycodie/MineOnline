@@ -1,6 +1,7 @@
 package gg.codie.mineonline.gui.screens;
 
 import gg.codie.mineonline.client.LegacyGameManager;
+import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.gui.components.GuiButton;
 
 import java.awt.*;
@@ -22,7 +23,10 @@ public class GuiAbout extends AbstractGuiScreen
         controlList.add(new GuiButton(1, getWidth() / 2 - 100, getHeight() / 4 + 120 + byte0, "Done", new GuiButton.GuiButtonListener() {
             @Override
             public void OnButtonPress() {
-                LegacyGameManager.setGUIScreen(parent);
+                if (LegacyGameManager.isInGame())
+                    LegacyGameManager.setGUIScreen(parent);
+                else
+                    MenuManager.setMenuScreen(parent);
             }
         }));
 

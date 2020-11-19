@@ -2,6 +2,7 @@ package gg.codie.mineonline.gui.screens;
 
 import gg.codie.mineonline.Settings;
 import gg.codie.mineonline.client.LegacyGameManager;
+import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.gui.components.GuiButton;
 import gg.codie.mineonline.gui.components.GuiSmallButton;
 import org.lwjgl.input.Keyboard;
@@ -39,7 +40,10 @@ public class GuiControls extends AbstractGuiScreen
         controlList.add(new GuiButton(200, getWidth() / 2 - 100, getHeight() / 6 + 168, "Done", new GuiButton.GuiButtonListener() {
             @Override
             public void OnButtonPress() {
-                LegacyGameManager.setGUIScreen(parentScreen);
+                if (LegacyGameManager.isInGame())
+                    LegacyGameManager.setGUIScreen(parentScreen);
+                else
+                    MenuManager.setMenuScreen(parentScreen);
             }
         }));
         screenTitle = "Controls";

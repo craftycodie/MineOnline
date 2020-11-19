@@ -3,16 +3,14 @@ package gg.codie.mineonline.gui.rendering;
 import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.Settings;
 import gg.codie.mineonline.client.LegacyGameManager;
-import gg.codie.mineonline.gui.rendering.models.RawModel;
 import gg.codie.mineonline.gui.rendering.textures.EGUITexture;
-import gg.codie.mineonline.gui.rendering.utils.MathUtils;
 import gg.codie.mineonline.patches.HashMapPutAdvice;
-import gg.codie.mineonline.patches.lwjgl.LWJGLGL11GLTexSubImageAdvice;
 import gg.codie.mineonline.patches.minecraft.HDTextureFXHelper;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.*;
-import org.lwjgl.util.vector.Vector2f;
-import org.lwjgl.util.vector.Vector3f;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL15;
+import org.lwjgl.opengl.GL20;
+import org.lwjgl.opengl.GL30;
 import org.newdawn.slick.opengl.*;
 import org.newdawn.slick.opengl.renderer.Renderer;
 import org.newdawn.slick.opengl.renderer.SGL;
@@ -54,68 +52,6 @@ public class Loader {
         storeDataInAttributeList(1, 2, textureCoords);
         unbindVAO();
         return vaoID;
-    }
-
-    public RawModel loadToVAO(float[] positions, float[] textureCoordinates, int[] indices) {
-        int vaoID = createVAO();
-        bindIndicesBuffer(indices);
-        storeDataInAttributeList(0, 3, positions);
-        storeDataInAttributeList(1, 2, textureCoordinates);
-        unbindVAO();
-        return new RawModel(vaoID, indices.length);
-    }
-
-    public RawModel loadGUIToVAO(Vector2f begin, Vector2f size, float[] textureCoordinates) {
-        begin = new Vector2f((begin.x / (Display.getWidth() / 2)) -1, (begin.y / (Display.getHeight() / 2)) -1);
-        size = new Vector2f((size.x / (Display.getWidth() / 2)), (size.y / (Display.getHeight() / 2)));
-
-        Vector2f end = new Vector2f(begin.x + size.x, begin.y + size.y);
-
-        int vaoID = createVAO();
-        bindIndicesBuffer(new int[] {
-                0,1,2,
-                2,3,0,
-        });
-        storeDataInAttributeList(0, 3, MathUtils.makePlaneVertices(begin, end));
-        storeDataInAttributeList(1, 2, textureCoordinates);
-        unbindVAO();
-        return new RawModel(vaoID, 6);
-    }
-
-    public RawModel loadPlaneToVAO(Vector3f begin, Vector3f end, float[] textureCoordinates) {
-        int vaoID = createVAO();
-        bindIndicesBuffer(new int[] {
-                0,1,2,
-                2,3,0,
-        });
-        storeDataInAttributeList(0, 3, MathUtils.makePlaneVertices(new Vector2f(begin.x, begin.y), new Vector2f(end.x, end.y)));
-        storeDataInAttributeList(1, 2, textureCoordinates);
-        unbindVAO();
-        return new RawModel(vaoID, 36);
-    }
-
-
-    public RawModel loadBoxToVAO(Vector3f begin, Vector3f end, float[] textureCoordinates) {
-        int vaoID = createVAO();
-        bindIndicesBuffer(new int[] {
-                0,1,3,
-                3,1,2,
-                4,5,7,
-                7,5,6,
-                8,9,11,
-                11,9,10,
-                12,13,15,
-                15,13,14,
-                16,17,19,
-                19,17,18,
-                20,21,23,
-                23,21,22
-
-        });
-        storeDataInAttributeList(0, 3, MathUtils.makeBoxVertices(begin, end));
-        storeDataInAttributeList(1, 2, textureCoordinates);
-        unbindVAO();
-        return new RawModel(vaoID, 36);
     }
 
     public void unloadTexture(String name) {
@@ -177,6 +113,12 @@ public class Loader {
         }
 
         int textureID = texture.getTextureID();
+
+//        GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureID);
+//        GL11.glTexParameteri(3553 /*GL_TEXTURE_2D*/, 10241 /*GL_TEXTURE_MIN_FILTER*/, 9728 /*GL_NEAREST*/);
+//        GL11.glTexParameteri(3553 /*GL_TEXTURE_2D*/, 10240 /*GL_TEXTURE_MAG_FILTER*/, 9728 /*GL_NEAREST*/);
+//        GL11.glTexParameteri(3553 /*GL_TEXTURE_2D*/, 10242 /*GL_TEXTURE_WRAP_S*/, 10496 /*GL_CLAMP*/);
+//        GL11.glTexParameteri(3553 /*GL_TEXTURE_2D*/, 10243 /*GL_TEXTURE_WRAP_T*/, 10496 /*GL_CLAMP*/);
 
         textures.put(name, textureID);
 

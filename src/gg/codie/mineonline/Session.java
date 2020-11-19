@@ -1,14 +1,11 @@
 package gg.codie.mineonline;
 
-import gg.codie.mineonline.utils.SkinUtils;
-import gg.codie.mineonline.gui.rendering.PlayerGameObject;
 import gg.codie.mineonline.utils.LastLogin;
+import gg.codie.mineonline.utils.SkinUtils;
 import org.json.JSONObject;
 
 import java.io.*;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.file.Paths;
 import java.util.UUID;
 
 public class Session {
@@ -74,8 +71,6 @@ public class Session {
 
     public void logout() {
         session = null;
-        PlayerGameObject.thePlayer.setCloak(LauncherFiles.TEMPLATE_CLOAK_PATH);
-        PlayerGameObject.thePlayer.setSkin(LauncherFiles.TEMPLATE_SKIN_PATH);
         LastLogin.deleteLastLogin();
     }
 
@@ -149,33 +144,6 @@ public class Session {
                     File cachedMetadata = new File(LauncherFiles.CACHED_SKIN_METADATA_PATH);
                     if (cachedMetadata.exists()) {
                         cachedMetadata.delete();
-                    }
-                }
-
-                if(PlayerGameObject.thePlayer != null) {
-                    try {
-                        if (new File(LauncherFiles.CACHED_CLOAK_PATH).exists())
-                            PlayerGameObject.thePlayer.setCloak(Paths.get(LauncherFiles.CACHED_CLOAK_PATH).toUri().toURL());
-                        if (new File(LauncherFiles.CACHED_SKIN_PATH).exists())
-                            PlayerGameObject.thePlayer.setSkin(Paths.get(LauncherFiles.CACHED_SKIN_PATH).toUri().toURL());
-                        try (FileInputStream input = new FileInputStream(LauncherFiles.CACHED_SKIN_METADATA_PATH)) {
-                            byte[] buffer = new byte[8096];
-                            int bytes_read = 0;
-                            StringBuffer stringBuffer = new StringBuffer();
-                            while ((bytes_read = input.read(buffer, 0, 8096)) != -1) {
-                                for (int i = 0; i < bytes_read; i++) {
-                                    stringBuffer.append((char) buffer[i]);
-                                }
-                            }
-
-                            JSONObject metadata = new JSONObject(stringBuffer.toString());
-                            if(metadata.has("slim"))
-                                PlayerGameObject.thePlayer.setSlim(metadata.getBoolean("slim"));
-                        } catch (IOException ex) {
-                            ex.printStackTrace();
-                        }
-                    } catch (MalformedURLException mx) {
-                        mx.printStackTrace();
                     }
                 }
             }

@@ -4,7 +4,7 @@ import gg.codie.minecraft.client.gui.Tessellator;
 import gg.codie.mineonline.MinecraftVersion;
 import gg.codie.mineonline.MinecraftVersionRepository;
 import gg.codie.mineonline.api.MineOnlineServer;
-import gg.codie.mineonline.client.ThreadPollServers;
+import gg.codie.mineonline.server.ThreadPollServers;
 import gg.codie.mineonline.gui.rendering.FontRenderer;
 import gg.codie.mineonline.gui.rendering.Loader;
 import gg.codie.mineonline.gui.rendering.textures.EGUITexture;
@@ -74,7 +74,7 @@ public class GuiSlotServer extends GuiSlot
         guiMultiplayer.drawString(versionName, j + 2, k + 12, 0x808080);
         String users = server.isMineOnline ? "" + server.users : "?";
         guiMultiplayer.drawString(users + "/" + server.maxUsers, (j + 215) - FontRenderer.minecraftFontRenderer.getStringWidth(users + "/" + server.maxUsers), k + 12, 0x808080);
-        ///guiMultiplayer.drawString(server.onlineMode ? "Online Mode" : "", j + 2 + FontRenderer.minecraftFontRenderer.getStringWidth( "Online Mode"), k + 1, 0x55FF55);
+        ///parent.drawString(server.onlineMode ? "Online Mode" : "", j + 2 + FontRenderer.minecraftFontRenderer.getStringWidth( "Online Mode"), k + 1, 0x55FF55);
 
         if (server.motd != null)
             guiMultiplayer.drawString(server.motd, j + 2, k + 12 + 11, 0x808080);
@@ -148,7 +148,7 @@ public class GuiSlotServer extends GuiSlot
         // TODO: Players Tooltip
 //        if(field_35409_k >= (j + 205) - byte0 && field_35408_l >= k && field_35409_k <= j + 205 + 10 + byte0 && field_35408_l <= k + 12 + byte0)
 //        {
-//            guiMultiplayer.setTooltip(Arrays.toString(server.players).replace("[", "").replace("]", "").replace(",", "\n"));
+//            parent.setTooltip(Arrays.toString(server.players).replace("[", "").replace("]", "").replace(",", "\n"));
 //        }
     }
 

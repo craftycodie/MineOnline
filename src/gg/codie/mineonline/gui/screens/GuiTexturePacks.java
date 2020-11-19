@@ -5,6 +5,7 @@ import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.Settings;
 import gg.codie.mineonline.client.LegacyGameManager;
 import gg.codie.mineonline.client.MinecraftTexturePackRepository;
+import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.gui.components.GuiButton;
 import gg.codie.mineonline.gui.components.GuiSmallButton;
 import org.lwjgl.Sys;
@@ -43,8 +44,10 @@ public class GuiTexturePacks extends AbstractGuiScreen
         controlList.add(new GuiSmallButton(6, getWidth() / 2 + 4, getHeight() - 48, "Done", new GuiButton.GuiButtonListener() {
             @Override
             public void OnButtonPress() {
-                LegacyGameManager.setGUIScreen(parent);
-            }
+                if (LegacyGameManager.isInGame())
+                    LegacyGameManager.setGUIScreen(parent);
+                else
+                    MenuManager.setMenuScreen(parent);            }
         }));
     }
 

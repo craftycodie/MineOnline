@@ -18,6 +18,7 @@ import java.net.InetAddress;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.jar.JarEntry;
@@ -385,7 +386,7 @@ public class MinecraftVersion {
             }
         }
 
-        System.out.println("Launching jar " + jarPath + " MD5 " + MD5Checksum.getMD5ChecksumForFile(jarPath));
+        System.out.println("Launching jar " + (minecraftVersion != null ? minecraftVersion.name : jarPath) + " MD5 " + MD5Checksum.getMD5ChecksumForFile(jarPath));
         Settings.singleton.saveMinecraftOptions(minecraftVersion.optionsVersion);
 
 

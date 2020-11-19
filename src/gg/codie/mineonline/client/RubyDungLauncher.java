@@ -1,22 +1,19 @@
 package gg.codie.mineonline.client;
 
+import gg.codie.common.utils.OSUtils;
+import gg.codie.common.utils.TransferableImage;
 import gg.codie.mineonline.*;
 import gg.codie.mineonline.discord.DiscordRPCHandler;
 import gg.codie.mineonline.gui.rendering.DisplayManager;
 import gg.codie.mineonline.gui.rendering.FontRenderer;
-import gg.codie.mineonline.gui.rendering.Renderer;
 import gg.codie.mineonline.lwjgl.OnCreateListener;
 import gg.codie.mineonline.lwjgl.OnUpdateListener;
-import gg.codie.mineonline.patches.ClassPatch;
-import gg.codie.mineonline.patches.HashMapPatch;
 import gg.codie.mineonline.patches.URLPatch;
 import gg.codie.mineonline.patches.lwjgl.LWJGLDisplayPatch;
 import gg.codie.mineonline.patches.lwjgl.LWJGLGLUPatch;
 import gg.codie.mineonline.patches.minecraft.InputPatch;
 import gg.codie.mineonline.utils.JREUtils;
 import gg.codie.mineonline.utils.Logging;
-import gg.codie.common.utils.OSUtils;
-import gg.codie.common.utils.TransferableImage;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -47,7 +44,6 @@ public class RubyDungLauncher implements IMinecraftAppletWrapper {
     private final MinecraftVersion minecraftVersion;
 
     boolean f2wasDown = false;
-    Renderer renderer;
     Class rubyDungClass;
 
     public static void startProcess(String jarPath) {
@@ -133,7 +129,6 @@ public class RubyDungLauncher implements IMinecraftAppletWrapper {
                 @Override
                 public void onCreateEvent() {
                     DisplayManager.checkGLError("minecraft create hook start");
-                    renderer = new Renderer();
                     // The game doesn't scale so until that's fixed, there's no point in doing this.
                     // Display.setResizable(true);
                     DisplayManager.checkGLError("minecraft create hook end");
@@ -150,43 +145,36 @@ public class RubyDungLauncher implements IMinecraftAppletWrapper {
                             Mouse.setGrabbed(InputPatch.isFocused);
                     }
 
-                    // DEBUG: Frees the cursor when pressing tab.
-//                    if (Keyboard.getEventKey() == Keyboard.KEY_TAB) {
-//                        Mouse.setGrabbed(false);
-//                    }
+                    if (Globals.DEV) {
+                        FontRenderer.minecraftFontRenderer.drawStringWithShadow("MineOnline Dev " + Globals.LAUNCHER_VERSION, 2, 2, 0xffffff);
+                    }
 
-                    if (renderer != null) {
-                        if (Globals.DEV) {
-                            FontRenderer.minecraftFontRenderer.drawStringWithShadow("MineOnline Dev " + Globals.LAUNCHER_VERSION, 2, 2, 0xffffff);
+                    if (minecraftVersion != null) {
+                        if (minecraftVersion.enableScreenshotPatch) {
+                            try {
+                                float opacityMultiplier = System.currentTimeMillis() - lastScreenshotTime;
+                                if (opacityMultiplier > 5000) {
+                                    opacityMultiplier -= 5000;
+                                    opacityMultiplier = -(opacityMultiplier / 500);
+                                    opacityMultiplier += 1;
+                                } else {
+                                    opacityMultiplier = 1;
+                                }
+
+                                if (opacityMultiplier > 0) {
+                                    FontRenderer.minecraftFontRenderer.drawStringWithShadow("Saved screenshot as " + lastScreenshotName, 2, 190, 0xffffff + ((int)(0xff * opacityMultiplier) << 24));
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
 
-                        if (minecraftVersion != null) {
-                            if (minecraftVersion.enableScreenshotPatch) {
-                                try {
-                                    float opacityMultiplier = System.currentTimeMillis() - lastScreenshotTime;
-                                    if (opacityMultiplier > 5000) {
-                                        opacityMultiplier -= 5000;
-                                        opacityMultiplier = -(opacityMultiplier / 500);
-                                        opacityMultiplier += 1;
-                                    } else {
-                                        opacityMultiplier = 1;
-                                    }
-
-                                    if (opacityMultiplier > 0) {
-                                        FontRenderer.minecraftFontRenderer.drawStringWithShadow("Saved screenshot as " + lastScreenshotName, 2, 190, 0xffffff + ((int)(0xff * opacityMultiplier) << 24));
-                                    }
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            }
-
-                            if (Keyboard.getEventKey() == Keyboard.KEY_F2 && !Keyboard.isRepeatEvent() && Keyboard.getEventKeyState() && !f2wasDown) {
-                                screenshot();
-                                f2wasDown = true;
-                            }
-                            if (Keyboard.getEventKey() == Keyboard.KEY_F2 && !Keyboard.isRepeatEvent() && !Keyboard.getEventKeyState()) {
-                                f2wasDown = false;
-                            }
+                        if (Keyboard.getEventKey() == Keyboard.KEY_F2 && !Keyboard.isRepeatEvent() && Keyboard.getEventKeyState() && !f2wasDown) {
+                            screenshot();
+                            f2wasDown = true;
+                        }
+                        if (Keyboard.getEventKey() == Keyboard.KEY_F2 && !Keyboard.isRepeatEvent() && !Keyboard.getEventKeyState()) {
+                            f2wasDown = false;
                         }
                     }
 
