@@ -118,77 +118,12 @@ public class GuiMultiplayer extends AbstractGuiScreen
     {
         MinecraftVersion serverVersion = MinecraftVersionRepository.getSingleton().getVersionByMD5(server.md5);
 
-        Set<String> minecraftJars = MinecraftVersionRepository.getSingleton().getInstalledJars().keySet();
-
         Predicate<GuiSlotVersion.SelectableVersion> selectableVersionPredicate = null;
 
         if (serverVersion != null) {
-//            if (serverVersion.clientVersions.length == 1) {
-//                for (String path : minecraftJars) {
-//                    MinecraftVersion clientVersion = MinecraftVersionRepository.getSingleton().getInstalledJars().get(path);
-//
-//                    if (clientVersion != null && clientVersion.baseVersion.equals(serverVersion.clientVersions[0])) {
-//                        clientPath = path;
-//                        break;
-//                    }
-//                }
-//
-//                if (clientPath == null) {
-//                    List<MinecraftVersion> versions = MinecraftVersionRepository.getSingleton().getVersionsByBaseVersion(serverVersion.clientVersions[0]);
-//                    for (MinecraftVersion version : versions) {
-//                        if(version.downloadURL != null)
-//                    }
-//                }
-//
-//                try {
-//                    File clientJar = new File(LauncherFiles.MINECRAFT_VERSIONS_PATH + serverVersion.clientVersions[0] + File.separator + "client.jar");
-//                    try {
-//                        MineOnlineAPI.downloadVersion(serverVersion.clientVersions[0]);
-//                    } catch (Exception ex) {
-//                        // ignore
-//                    }
-//                    if (!clientJar.exists())
-//                        LauncherAPI.downloadVersion(serverVersion.clientVersions[0]);
-//
-//                    MinecraftVersionRepository.getSingleton().addInstalledVersion(clientJar.getPath());
-//                    clientPath = clientJar.getPath();
-//                } catch (Exception ex) {
-//                    ex.printStackTrace();
-//                }
-//            }
-
             selectableVersionPredicate = (GuiSlotVersion.SelectableVersion selectableVersion) -> {
                 return selectableVersion.version != null && (serverVersion.baseVersion == selectableVersion.version.baseVersion || Arrays.stream(serverVersion.clientVersions).anyMatch(selectableVersion.version.baseVersion::equals));
             };
-
-//            clientloop:
-//            for (String compatibleClientBaseVersion : serverVersion.clientVersions) {
-//                for (String path : minecraftJars) {
-//                    MinecraftVersion clientVersion = MinecraftVersionRepository.getSingleton().getInstalledJars().get(path);
-//
-//                    if (clientVersion != null && clientVersion.baseVersion.equals(compatibleClientBaseVersion)) {
-//                        clientPath = path;
-//                        break clientloop;
-//                    }
-//                }
-//
-//                try {
-//                    File clientJar = new File(LauncherFiles.MINECRAFT_VERSIONS_PATH + compatibleClientBaseVersion + File.separator + "client.jar");
-//                    try {
-//                        MineOnlineAPI.downloadVersion(compatibleClientBaseVersion);
-//                    } catch (Exception ex) {
-//                        // ignore
-//                    }
-//                    if (!clientJar.exists())
-//                        LauncherAPI.downloadVersion(compatibleClientBaseVersion);
-//
-//                    MinecraftVersionRepository.getSingleton().addInstalledVersion(clientJar.getPath());
-//                    clientPath = clientJar.getPath();
-//                    break clientloop;
-//                } catch (Exception ex) {
-//                    ex.printStackTrace();
-//                }
-//            }
         }
 
         GuiVersions.IVersionSelectListener selectListener = new GuiVersions.IVersionSelectListener() {
@@ -223,22 +158,6 @@ public class GuiMultiplayer extends AbstractGuiScreen
             LegacyGameManager.setGUIScreen(new GuiVersions(this, selectableVersionPredicate, selectListener, compare, true));
         else
             MenuManager.setMenuScreen(new GuiVersions(this, selectableVersionPredicate, selectListener, compare, true));
-
-//        try {
-//            String mppas = MineOnlineAPI.getMpPass(Session.session.getAccessToken(), Session.session.getUsername(), Session.session.getUuid(), server.ip, server.port + "");
-//            MinecraftVersion.launchMinecraft(clientPath, server.ip, server.port + "", mppas);
-//
-//            if (LegacyGameManager.isInGame())
-//                LegacyGameManager.closeGame();
-//            else {
-//                Display.destroy();
-//                DisplayManager.getFrame().dispose();
-//                System.exit(0);
-//            }
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//            // ignore for now
-//        }
     }
 
     protected void renderTooltip(String s, int i, int j)

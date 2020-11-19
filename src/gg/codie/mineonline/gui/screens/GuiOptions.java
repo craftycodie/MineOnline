@@ -2,6 +2,7 @@ package gg.codie.mineonline.gui.screens;
 
 import gg.codie.minecraft.client.EMinecraftGUIScale;
 import gg.codie.minecraft.client.EMinecraftMainHand;
+import gg.codie.mineonline.Session;
 import gg.codie.mineonline.Settings;
 import gg.codie.mineonline.client.LegacyGameManager;
 import gg.codie.mineonline.gui.GUIScale;
@@ -119,7 +120,6 @@ public class GuiOptions extends AbstractGuiScreen
         if (LegacyGameManager.isInGame())
             ((GuiButton)controlList.get(4)).enabled = LegacyGameManager.getVersion().ingameVersionString != null;
 
-
 //        controlList.add(new GuiSmallButton(0, getWidth() / 2 + 5, getHeight() / 6 + 24, "Main Hand: " + Settings.singleton.getMainHand().name(), new GuiButton.GuiButtonListener() {
 //            @Override
 //            public void OnButtonPress() {
@@ -149,6 +149,32 @@ public class GuiOptions extends AbstractGuiScreen
                     MenuManager.setMenuScreen(new GuiAbout(thisScreen));
             }
         }));
+
+        if (!LegacyGameManager.isInGame()) {
+            controlList.add(new GuiSmallButton(0, getWidth() / 2 + 5, getHeight() / 6 + 24, "Fullscreen: " + (Settings.singleton.getFullscreen() ? "ON" : "OFF"), new GuiButton.GuiButtonListener() {
+                @Override
+                public void OnButtonPress() {
+                    Settings.singleton.setFullscreen(!Settings.singleton.getFullscreen());
+                    ((GuiSmallButton) controlList.get(6)).displayString = "Fullscreen: " + (Settings.singleton.getFullscreen() ? "ON" : "OFF");
+                }
+            }));
+
+            controlList.add(new GuiSmallButton(0, getWidth() / 2 - 155, getHeight() / 6 + 48, "Custom Capes: " + (Settings.singleton.getHideVersionString() ? "YES" : "NO"), new GuiButton.GuiButtonListener() {
+                @Override
+                public void OnButtonPress() {
+                    Settings.singleton.setCustomCapes(!Settings.singleton.getCustomCapes());
+                    ((GuiSmallButton) controlList.get(7)).displayString = "Custom Capes: " + (Settings.singleton.getCustomCapes() ? "YES" : "NO");
+                }
+            }));
+
+            controlList.add(new GuiSmallButton(0, getWidth() / 2 + 5, getHeight() / 6 + 48, "Logout", new GuiButton.GuiButtonListener() {
+                @Override
+                public void OnButtonPress() {
+                    MenuManager.setMenuScreen(new GuiLogin());
+                    Session.session.logout();
+                }
+            }));
+        }
     }
 
     public void resizeGui() {
@@ -159,6 +185,12 @@ public class GuiOptions extends AbstractGuiScreen
         controlList.get(4).resize(getWidth() / 2 - 155, getHeight() / 6 + 24);
 //        controlList.get(5).resize(getWidth() / 2 + 5, getHeight() / 6 + 24);
         controlList.get(5).resize(getWidth() / 2 - 100, getHeight() / 6 + 96 + 12);
+
+        if (!LegacyGameManager.isInGame()) {
+            controlList.get(6).resize(getWidth() / 2 + 5, getHeight() / 6 + 24);
+            controlList.get(7).resize(getWidth() / 2 - 155, getHeight() / 6 + 48);
+            controlList.get(8).resize(getWidth() / 2 + 5, getHeight() / 6 + 48);
+        }
     }
 
     @Override

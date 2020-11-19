@@ -9,5 +9,6 @@
   "baseVersion": "rd-160052-launcher",
   "useFOVPatch": true,
   "useTexturepackPatch": true,
-  "useResizePatch": true
+  "useResizePatch": true,
+  "enableFullscreenPatch": true
 }

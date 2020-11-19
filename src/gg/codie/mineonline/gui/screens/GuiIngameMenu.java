@@ -67,7 +67,6 @@ public class GuiIngameMenu extends AbstractGuiScreen
             @Override
             public void OnButtonPress() {
                 LegacyGameManager.setGUIScreen(new GuiOptions(thisScreen));
-                //LegacyGameManager.setGUIScreen(new GuiVersions(thisScreen));
             }
         }));
 

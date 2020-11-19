@@ -88,6 +88,8 @@ public class GuiMainMenu extends AbstractGuiScreen
                     @Override
                     public void onSelect(String path) {
                         try {
+                            MinecraftVersionRepository.getSingleton().selectJar(path);
+                            MinecraftVersion.launchMinecraft(path, null, null, null);
                             Display.destroy();
                             DisplayManager.getFrame().dispose();
                             System.exit(0);
@@ -155,7 +157,7 @@ public class GuiMainMenu extends AbstractGuiScreen
         GL11.glScalef(f1, f1, f1);
         drawCenteredString(splashText, 0, -8, 0xffff00);
         GL11.glPopMatrix();
-        drawString("MineOnline " + (Globals.DEV ? "Dev " : "") + Globals.LAUNCHER_VERSION, 2, getHeight() - 10, 0xffffff);
+        drawString("MineOnline " + (Globals.DEV ? "Dev " + Globals.LAUNCHER_VERSION + " (" + Globals.BRANCH + ")" : Globals.LAUNCHER_VERSION), 2, getHeight() - 10, 0xffffff);
         String s = "Made by @codieradical <3";
         drawString(s, getWidth() - FontRenderer.minecraftFontRenderer.getStringWidth(s) - 2, getHeight() - 10, 0xffffff);
         super.drawScreen(i, j);

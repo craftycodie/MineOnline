@@ -9,6 +9,7 @@ import gg.codie.mineonline.gui.input.MouseHandler;
 import gg.codie.mineonline.gui.rendering.DisplayManager;
 import gg.codie.mineonline.gui.rendering.FontRenderer;
 import gg.codie.mineonline.gui.rendering.Loader;
+import gg.codie.mineonline.gui.screens.AbstractGuiScreen;
 import gg.codie.mineonline.gui.screens.GuiIngameMenu;
 import gg.codie.mineonline.lwjgl.OnCreateListener;
 import gg.codie.mineonline.lwjgl.OnDestroyListener;
@@ -62,7 +63,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
     int startWidth;
     int startHeight;
 
-    GuiIngameMenu ingameMenu = new GuiIngameMenu();
+    AbstractGuiScreen ingameMenu = new GuiIngameMenu();
 
 
     public static void startProcess(String jarPath, String serverIP, String serverPort, String mpPass) {
@@ -338,7 +339,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
                         int ypos = 2;
                         if (minecraftVersion.ingameVersionString != null && !Settings.singleton.getHideVersionString())
                             ypos = 12;
-                        FontRenderer.minecraftFontRenderer.drawStringWithShadow("MineOnline Dev " + Globals.LAUNCHER_VERSION, 2, ypos, 0xffffff);
+                        FontRenderer.minecraftFontRenderer.drawStringWithShadow("MineOnline Dev " + Globals.LAUNCHER_VERSION + " (" + Globals.BRANCH + ")", 2, ypos, 0xffffff);
                     }
 
                     GUIScale scaledresolution = new GUIScale(getWidth(), getHeight());

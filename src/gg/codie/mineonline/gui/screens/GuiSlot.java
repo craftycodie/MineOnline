@@ -287,7 +287,7 @@ public abstract class GuiSlot
     protected int field_35408_l;
     private float initialClickY;
     private float scrollMultiplier;
-    private float amountScrolled;
+    protected float amountScrolled;
     private int selectedElement;
     private long lastClicked;
     private boolean field_25123_p;

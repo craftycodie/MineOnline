@@ -11,8 +11,6 @@ import org.lwjgl.input.Keyboard;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -32,21 +30,25 @@ public class GuiVersions extends AbstractGuiScreen
 
         initGui();
 
-        List<GuiSlotVersion.SelectableVersion> filteredVersions = filteredVersions();
-
         // If there's only one jar in the list and the list can be skipped, skip.
         if (filteredVersions().size() == 1 && autoSelectSingleJar) {
-            if (LegacyGameManager.isInGame())
-                LegacyGameManager.setGUIScreen(parentScreen);
-            else
-                MenuManager.setMenuScreen(parentScreen);
-
-            this.onSelectListener.onSelect(guiSlotVersion.getSelectedPath());
+            try {
+                this.onSelectListener.onSelect(guiSlotVersion.getSelectedPath());
+            } catch (Exception ex) { }
         }
     }
 
     public void updateScreen()
     {
+        guiSlotVersion.update();
+    }
+
+    public void versionSelected() {
+        try {
+            onSelectListener.onSelect(guiSlotVersion.getSelectedPath());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     private List<GuiSlotVersion.SelectableVersion> filteredVersions() {
@@ -101,13 +103,20 @@ public class GuiVersions extends AbstractGuiScreen
         return filteredVersions;
     }
 
+    boolean versionsWereLoaded;
     public void initGui()
     {
 
         Keyboard.enableRepeatEvents(true);
         controlList.clear();
         func_35337_c();
-        guiSlotVersion = new GuiSlotVersion(this, filteredVersions(), compare);
+
+        if (MinecraftVersionRepository.getSingleton().isLoadingInstalledVersions())
+            guiSlotVersion = new GuiSlotVersion(this, new LinkedList<>(), compare);
+        else {
+            guiSlotVersion = new GuiSlotVersion(this, filteredVersions(), compare);
+            versionsWereLoaded = true;
+        }
     }
 
     // Keep track of the selection inbetween filtering.
@@ -203,7 +212,11 @@ public class GuiVersions extends AbstractGuiScreen
         controlList.add(new GuiButton(3, getWidth() / 2 + 4 + 50, getHeight() - 48, 100, 20, "Play", new GuiButton.GuiButtonListener() {
             @Override
             public void OnButtonPress() {
-                thisScreen.onSelectListener.onSelect(guiSlotVersion.getSelectedPath());
+                try {
+                    thisScreen.onSelectListener.onSelect(guiSlotVersion.getSelectedPath());
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
             }
         }));
         controlList.add(new GuiButton(5, (getWidth() / 2) - 50, getHeight() - 48, 100, 20, "Browse", new GuiButton.GuiButtonListener() {
@@ -249,7 +262,22 @@ public class GuiVersions extends AbstractGuiScreen
 
         tooltip = null;
         drawDefaultBackground();
-        guiSlotVersion.drawScreen(i, j);
+
+        if (MinecraftVersionRepository.getSingleton().isLoadingInstalledVersions()) {
+            guiSlotVersion.drawScreen(i, j);
+            drawCenteredString("Loading versions...", getWidth() / 2, getHeight() / 2, 0x808080);
+        } else if (!versionsWereLoaded) {
+            guiSlotVersion = new GuiSlotVersion(this, filteredVersions(), compare);
+            guiSlotVersion.drawScreen(i, j);
+            versionsWereLoaded = true;
+        } else {
+            guiSlotVersion.drawScreen(i, j);
+        }
+
+        if (guiSlotVersion.getSize() < 1 && versionsWereLoaded) {
+            drawCenteredString("No versions found.", getWidth() / 2, getHeight() / 2, 0x808080);
+        }
+
         drawCenteredString("Select Version", getWidth() / 2, 20, 0xffffff);
         super.drawScreen(i, j);
 

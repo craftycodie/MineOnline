@@ -30,6 +30,10 @@ public class MinecraftVersionRepository {
         loadVersions(onlyKnownVersionInfo, loadJar);
     }
 
+    public boolean isLoadingInstalledVersions() {
+        return loadingInstalledVersions;
+    }
+
     private static MinecraftVersionRepository singleton;
 
     public static MinecraftVersionRepository getSingleton() {
