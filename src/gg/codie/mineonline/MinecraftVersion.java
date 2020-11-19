@@ -2,10 +2,7 @@ package gg.codie.mineonline;
 
 import gg.codie.minecraft.client.EMinecraftOptionsVersion;
 import gg.codie.mineonline.api.MineOnlineAPI;
-import gg.codie.mineonline.client.LegacyMinecraftClientLauncher;
-import gg.codie.mineonline.client.LegacyMinecraftLauncherLauncher;
-import gg.codie.mineonline.client.MinecraftClientLauncher;
-import gg.codie.mineonline.client.RubyDungLauncher;
+import gg.codie.mineonline.client.*;
 import gg.codie.common.utils.JSONUtils;
 import gg.codie.common.utils.MD5Checksum;
 import gg.codie.common.utils.OSUtils;
@@ -403,7 +400,8 @@ public class MinecraftVersion {
         }
 
         System.out.println("Launching jar " + (minecraftVersion != null ? minecraftVersion.name : jarPath) + " MD5 " + MD5Checksum.getMD5ChecksumForFile(jarPath));
-        Settings.singleton.saveMinecraftOptions(minecraftVersion.optionsVersion);
+        if (!LegacyGameManager.isInGame())
+            Settings.singleton.saveMinecraftOptions(minecraftVersion.optionsVersion);
 
 
         if(minecraftVersion != null) {
