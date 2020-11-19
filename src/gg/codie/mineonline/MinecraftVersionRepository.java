@@ -88,7 +88,11 @@ public class MinecraftVersionRepository {
     }
 
     public LinkedList<MinecraftVersion> getInstalledClients() {
-        return installedVersions.values().stream().filter(version -> version != null).filter(version -> version.type.equals("client") || version.type.equals("launcher")).distinct().collect(Collectors.toCollection(LinkedList::new));
+        return installedVersions.values().stream().filter(version -> version != null).filter(version -> version.type.equals("client") || version.type.equals("launcher") || version.type.equals("rubydung")).distinct().collect(Collectors.toCollection(LinkedList::new));
+    }
+
+    public LinkedList<MinecraftVersion> getDownloadableClients() {
+        return Arrays.stream(versions).filter(version -> version != null).filter(version -> (version.type.equals("client") || version.type.equals("launcher") || version.type.equals("rubydung")) && version.downloadURL != null).distinct().collect(Collectors.toCollection(LinkedList::new));
     }
 
     private void loadJar(String path) {

@@ -38,6 +38,7 @@ public abstract class GuiSlot
         this.height = height;
         this.top = top;
         this.bottom = bottom;
+        this.right = width;
     }
 
     public void update() {
@@ -193,6 +194,8 @@ public abstract class GuiSlot
         //GL11.glDisable(GL11.GL_ALPHA_TEST);
         GL11.glShadeModel(GL11.GL_SMOOTH);
         GL11.glDisable(GL11.GL_TEXTURE_2D);
+
+        // Draw Shadow
         tessellator.startDrawingQuads();
         tessellator.setColorRGBA_I(0, 0);
         tessellator.addVertexWithUV(left, top + byte0, 0.0D, 0.0D, 1.0D);
@@ -209,6 +212,7 @@ public abstract class GuiSlot
         tessellator.addVertexWithUV(right, bottom - byte0, 0.0D, 1.0D, 0.0D);
         tessellator.addVertexWithUV(left, bottom - byte0, 0.0D, 0.0D, 0.0D);
         tessellator.draw();
+
         int k3 = getContentHeight() - (bottom - top - 4);
         if(k3 > 0)
         {
@@ -276,7 +280,7 @@ public abstract class GuiSlot
     private int height;
     protected int top;
     protected int bottom;
-    private final int right;
+    private int right;
     private final int left = 0;
     protected final int posZ;
     protected int field_35409_k;

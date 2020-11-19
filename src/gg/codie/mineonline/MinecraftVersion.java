@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Paths;
@@ -56,6 +57,7 @@ public class MinecraftVersion {
     public final EMinecraftOptionsVersion optionsVersion;
     public final boolean useResizePatch;
     public final boolean hasNetherPortalTexture;
+    public final URL downloadURL;
 
     public MinecraftVersion(
             String sha256,
@@ -88,7 +90,8 @@ public class MinecraftVersion {
             boolean useGreyScreenPatch,
             EMinecraftOptionsVersion optionsVersion,
             boolean useResizePatch,
-            boolean hasNetherPortalTexture
+            boolean hasNetherPortalTexture,
+            URL downloadURL
     ) {
         this.sha256 = sha256;
         this.name = name;
@@ -121,6 +124,7 @@ public class MinecraftVersion {
         this.optionsVersion = optionsVersion;
         this.useResizePatch = useResizePatch;
         this.hasNetherPortalTexture = hasNetherPortalTexture;
+        this.downloadURL = downloadURL;
     }
 
     public MinecraftVersion(JSONObject object) {
@@ -155,6 +159,17 @@ public class MinecraftVersion {
         optionsVersion = object.optEnum(EMinecraftOptionsVersion.class, "optionsVersion", EMinecraftOptionsVersion.DEFAULT);
         useResizePatch = object.optBoolean("useResizePatch", false);
         hasNetherPortalTexture = object.optBoolean("hasNetherPortalTexture", true);
+
+        URL parsedURL = null;
+
+        if (object.has("downloadURL")) {
+            try {
+                parsedURL = new URL(object.getString("downloadURL"));
+            } catch (MalformedURLException ex) {
+                System.out.println("Bad download URL for " + name + ", " + object.getString("downloadURL"));
+            }
+        }
+        downloadURL = parsedURL;
     }
 
 
@@ -357,7 +372,8 @@ public class MinecraftVersion {
                     false,
                     EMinecraftOptionsVersion.DEFAULT,
                     false,
-                    true
+                    true,
+                    null
             );
         } catch (Exception ex) {
             System.err.println("Bad launcher JSON for version " + jarFile);

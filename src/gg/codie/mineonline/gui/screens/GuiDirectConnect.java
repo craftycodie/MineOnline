@@ -5,14 +5,17 @@
 package gg.codie.mineonline.gui.screens;
 
 import gg.codie.mineonline.*;
+import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.mineonline.client.LegacyGameManager;
 import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.gui.components.GuiButton;
 import gg.codie.mineonline.gui.components.GuiComponent;
 import gg.codie.mineonline.gui.components.GuiTextField;
+import gg.codie.mineonline.gui.rendering.DisplayManager;
 import gg.codie.mineonline.utils.JREUtils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.Display;
 
 import java.io.File;
 import java.nio.file.Paths;
@@ -48,13 +51,29 @@ public class GuiDirectConnect extends AbstractGuiScreen
         Keyboard.enableRepeatEvents(true);
         AbstractGuiScreen thisScreen = this;
         controlList.clear();
+
+        GuiVersions.IVersionSelectListener selectListener = new GuiVersions.IVersionSelectListener() {
+            @Override
+            public void onSelect(String path) {
+                joinServer(path);
+            }
+        };
+
         controlList.add(new GuiButton(0, getWidth() / 2 - 100, getHeight() / 4 + 96 + 12, "Connect", new GuiButton.GuiButtonListener() {
             @Override
             public void OnButtonPress() {
+
+                GuiSlotVersion.ISelectableVersionCompare compare = new GuiSlotVersion.ISelectableVersionCompare() {
+                    @Override
+                    public boolean isDefault(GuiSlotVersion.SelectableVersion selectableVersion) {
+                        return MinecraftVersionRepository.getSingleton().getLastSelectedJarPath() != null && MinecraftVersionRepository.getSingleton().getLastSelectedJarPath().equals(selectableVersion.path);
+                    }
+                };
+
                 if (LegacyGameManager.isInGame())
-                    LegacyGameManager.setGUIScreen(new GuiVersions(thisScreen));
+                    LegacyGameManager.setGUIScreen(new GuiVersions(thisScreen, null, selectListener, compare, false));
                 else
-                    MenuManager.setMenuScreen(new GuiVersions(thisScreen));
+                    MenuManager.setMenuScreen(new GuiVersions(thisScreen, null, selectListener, compare, false));
 
                 //joinServer();
             }
@@ -103,7 +122,7 @@ public class GuiDirectConnect extends AbstractGuiScreen
         Keyboard.enableRepeatEvents(false);
     }
 
-    private void joinServer() {
+    private void joinServer(String jarPath) {
         String s = textField.getText().trim();
         Settings.singleton.setLastServer(s.replaceAll(":", "_"));
         Settings.singleton.saveSettings();
@@ -135,30 +154,21 @@ public class GuiDirectConnect extends AbstractGuiScreen
         }
 
         try {
-            LinkedList<String> launchArgs = new LinkedList();
-            launchArgs.add(JREUtils.getRunningJavaExecutable());
-            launchArgs.add("-javaagent:" + LauncherFiles.PATCH_AGENT_JAR);
-            launchArgs.add("-Djava.util.Arrays.useLegacyMergeSort=true");
-            launchArgs.add("-cp");
-            launchArgs.add(LibraryManager.getClasspath(true, new String[]{new File(MenuManager.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath(), LauncherFiles.DISCORD_RPC_JAR}));
-            launchArgs.add(MenuManager.class.getCanonicalName());
-            launchArgs.add("-quicklaunch");
-            launchArgs.add("-joinserver");
-            launchArgs.add(as[0] + ":" + (as.length <= 1 ? 25565 : parseIntWithDefault(as[1], 25565)));
-            launchArgs.add("-skipupdates");
+            try {
+                String mppass = MineOnlineAPI.getMpPass(Session.session.getAccessToken(), Session.session.getUsername(), Session.session.getUuid(), as[0], (as.length <= 1 ? 25565 : parseIntWithDefault(as[1], 25565)) + "");
+                MinecraftVersion.launchMinecraft(jarPath, as[0], (as.length <= 1 ? "25565" : as[1]), mppass);
 
-            java.util.Properties props = System.getProperties();
-            ProcessBuilder processBuilder = new ProcessBuilder(launchArgs);
-
-            Map<String, String> env = processBuilder.environment();
-            for (String prop : props.stringPropertyNames()) {
-                env.put(prop, props.getProperty(prop));
+                if (LegacyGameManager.isInGame())
+                    LegacyGameManager.closeGame();
+                else {
+                    Display.destroy();
+                    DisplayManager.getFrame().dispose();
+                    System.exit(0);
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                // ignore for now
             }
-            processBuilder.directory(new File(System.getProperty("user.dir")));
-
-            Process launcherProcess = processBuilder.inheritIO().start();
-
-            LegacyGameManager.closeGame();
         } catch (Exception ex) {
             ex.printStackTrace();
             // ignore for now

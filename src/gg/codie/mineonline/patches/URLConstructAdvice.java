@@ -28,6 +28,9 @@ public class URLConstructAdvice {
             if (url.contains("pc.realms."))
                 return;
 
+            // Fix for RuBeta's resource files.
+            url = url.replace("http://client.rubeta.net/resources/b1.7.3/", "http://s3.amazonaws.com/MinecraftResources");
+
             boolean DEV = (boolean)ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.Globals").getField("DEV").get(null);
 
             if(DEV) {

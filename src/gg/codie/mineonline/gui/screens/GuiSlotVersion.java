@@ -5,23 +5,49 @@ import gg.codie.mineonline.MinecraftVersion;
 import gg.codie.mineonline.MinecraftVersionRepository;
 
 import java.nio.file.Paths;
+import java.util.LinkedList;
+import java.util.List;
 
 public class GuiSlotVersion extends GuiSlot
 {
+    public interface ISelectableVersionCompare {
+        boolean isDefault(GuiSlotVersion.SelectableVersion selectableVersion);
+    }
 
-    public GuiSlotVersion(GuiVersions parent)
+    public static class SelectableVersion {
+        public final MinecraftVersion version;
+        public final String path;
+
+        public SelectableVersion(MinecraftVersion version, String path) {
+            this.version = version;
+            this.path = path;
+        }
+    }
+
+    public GuiSlotVersion(GuiVersions parent, List<SelectableVersion> versions, ISelectableVersionCompare compare)
     {
         super(parent.getWidth(), parent.getHeight(), 32, parent.getHeight() - 55, 36);
         this.parent = parent;
+        this.versions = versions;
+
+        if (compare != null) {
+            for (int i = 0; i < versions.size(); i++) {
+                if (compare.isDefault(versions.get(i))) {
+                    selectedIndex = i;
+                    break;
+                }
+            }
+        }
     }
 
     protected int getSize()
     {
-        return 0;
+        return versions != null ? versions.size() : 0;
     }
 
     protected void elementClicked(int i, boolean flag)
     {
+        selectedIndex = i;
 //        parent.select(i);
 //        boolean flag1 = parent.getSelectedIndex() >= 0 && parent.getSelectedIndex() < getSize();
 //        parent.getConnectButton().enabled = flag1;
@@ -29,6 +55,15 @@ public class GuiSlotVersion extends GuiSlot
 //        {
 //            parent.joinServer(i);
 //        }
+    }
+
+    public String getSelectedPath() {
+        // TODO: Download jars with no path.
+        return versions.get(selectedIndex).path;
+    }
+
+    public SelectableVersion getSelected() {
+        return selectedIndex < versions.size() ? versions.get(selectedIndex) : null;
     }
 
     protected boolean isSelected(int i)
@@ -58,26 +93,14 @@ public class GuiSlotVersion extends GuiSlot
 
     protected void drawSlot(int i, int j, int k, int l, Tessellator tessellator)
     {
-        String path = (String)MinecraftVersionRepository.getSingleton().getInstalledJars().keySet().toArray()[i];
-        MinecraftVersion version = MinecraftVersionRepository.getSingleton().getInstalledJars().get(path);
+        SelectableVersion selectableVersion = versions.get(i);
 
-        parent.drawString(version != null ? version.name : Paths.get(path).getFileName().toString(), j + 2, k + 1, 0xffffff);
-//        parent.drawString(versionName, j + 2, k + 12, 0x808080);
-//        String users = server.isMineOnline ? "" + server.users : "?";
-//        parent.drawString(users + "/" + server.maxUsers, (j + 215) - FontRenderer.minecraftFontRenderer.getStringWidth(users + "/" + server.maxUsers), k + 12, 0x808080);
-//        parent.drawString(server.onlineMode ? "Online Mode" : "", j + 2, k + 12 + 11, 0x55FF55);
-        byte byte0 = 4;
-        if(field_35409_k >= (j + 205) - byte0 && field_35408_l >= k - byte0 && field_35409_k <= j + 205 + 10 + byte0 && field_35408_l <= k + 8 + byte0)
-        {
-//            parent.setTooltip(s);
-        }
-        // TODO: Players Tooltip
-//        if(field_35409_k >= (j + 205) - byte0 && field_35408_l >= k && field_35409_k <= j + 205 + 10 + byte0 && field_35408_l <= k + 12 + byte0)
-//        {
-//            parent.setTooltip(Arrays.toString(server.players).replace("[", "").replace("]", "").replace(",", "\n"));
-//        }
+        parent.drawString(selectableVersion.version != null ? selectableVersion.version.name : Paths.get(selectableVersion.path).getFileName().toString(), j + 2, k + 1, 0xffffff);
+        parent.drawString(selectableVersion.path != null ? Paths.get(selectableVersion.path).getFileName().toString() : "Download", j + 2, k + 12, 0x808080);
+        parent.drawString(selectableVersion.version != null ? selectableVersion.version.info : "", j + 2, k + 12 + 11, 0x808080);
     }
 
     final GuiVersions parent; /* synthetic field */
     private int selectedIndex;
+    private List<SelectableVersion> versions = new LinkedList<>();
 }

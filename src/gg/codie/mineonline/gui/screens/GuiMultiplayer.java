@@ -6,6 +6,7 @@ import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.mineonline.api.MineOnlineServer;
 import gg.codie.mineonline.api.MineOnlineServerRepository;
 import gg.codie.mineonline.client.LegacyGameManager;
+import gg.codie.mineonline.gui.events.IOnClickListener;
 import gg.codie.mineonline.server.ThreadPollServers;
 import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.gui.components.GuiButton;
@@ -15,10 +16,8 @@ import gg.codie.mineonline.utils.JREUtils;
 import org.lwjgl.opengl.Display;
 
 import java.io.File;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.function.Predicate;
 
 public class GuiMultiplayer extends AbstractGuiScreen
 {
@@ -49,7 +48,7 @@ public class GuiMultiplayer extends AbstractGuiScreen
     {
         controlList.clear();
 
-        controlList.add(connectButton = new GuiButton(1, getWidth() / 2 - 154, getHeight() - 48, 100, 20, "Join Server", new GuiButton.GuiButtonListener() {
+        controlList.add(connectButton = new GuiButton(1, getWidth() / 2 + 54, getHeight() - 48, 100, 20, "Join Server", new GuiButton.GuiButtonListener() {
             @Override
             public void OnButtonPress() {
                 joinServer(serverRepository.getServers().get(selectedIndex));
@@ -65,13 +64,14 @@ public class GuiMultiplayer extends AbstractGuiScreen
                     MenuManager.setMenuScreen(new GuiDirectConnect(thisScreen));
             }
         }));
-        controlList.add(new GuiButton(3, getWidth() / 2 + 4 + 50, getHeight() - 48, 100, 20, "Cancel", new GuiButton.GuiButtonListener() {
+        controlList.add(new GuiButton(3, getWidth() / 2 - 154, getHeight() - 48, 100, 20, "Cancel", new GuiButton.GuiButtonListener() {
             @Override
             public void OnButtonPress() {
                 if (LegacyGameManager.isInGame())
                     LegacyGameManager.setGUIScreen(parentScreen);
                 else
-                    MenuManager.setMenuScreen(parentScreen);            }
+                    MenuManager.setMenuScreen(parentScreen);
+            }
         }));
         connectButton.enabled = selectedIndex >= 0 && selectedIndex < guiSlotServer.getSize();
     }
@@ -120,54 +120,125 @@ public class GuiMultiplayer extends AbstractGuiScreen
 
         Set<String> minecraftJars = MinecraftVersionRepository.getSingleton().getInstalledJars().keySet();
 
-        String clientPath = null;
+        Predicate<GuiSlotVersion.SelectableVersion> selectableVersionPredicate = null;
 
         if (serverVersion != null) {
-            clientloop:
-            for (String compatibleClientBaseVersion : serverVersion.clientVersions) {
-                for (String path : minecraftJars) {
-                    MinecraftVersion clientVersion = MinecraftVersionRepository.getSingleton().getInstalledJars().get(path);
+//            if (serverVersion.clientVersions.length == 1) {
+//                for (String path : minecraftJars) {
+//                    MinecraftVersion clientVersion = MinecraftVersionRepository.getSingleton().getInstalledJars().get(path);
+//
+//                    if (clientVersion != null && clientVersion.baseVersion.equals(serverVersion.clientVersions[0])) {
+//                        clientPath = path;
+//                        break;
+//                    }
+//                }
+//
+//                if (clientPath == null) {
+//                    List<MinecraftVersion> versions = MinecraftVersionRepository.getSingleton().getVersionsByBaseVersion(serverVersion.clientVersions[0]);
+//                    for (MinecraftVersion version : versions) {
+//                        if(version.downloadURL != null)
+//                    }
+//                }
+//
+//                try {
+//                    File clientJar = new File(LauncherFiles.MINECRAFT_VERSIONS_PATH + serverVersion.clientVersions[0] + File.separator + "client.jar");
+//                    try {
+//                        MineOnlineAPI.downloadVersion(serverVersion.clientVersions[0]);
+//                    } catch (Exception ex) {
+//                        // ignore
+//                    }
+//                    if (!clientJar.exists())
+//                        LauncherAPI.downloadVersion(serverVersion.clientVersions[0]);
+//
+//                    MinecraftVersionRepository.getSingleton().addInstalledVersion(clientJar.getPath());
+//                    clientPath = clientJar.getPath();
+//                } catch (Exception ex) {
+//                    ex.printStackTrace();
+//                }
+//            }
 
-                    if (clientVersion != null && clientVersion.baseVersion.equals(compatibleClientBaseVersion)) {
-                        clientPath = path;
-                        break clientloop;
-                    }
-                }
+            selectableVersionPredicate = (GuiSlotVersion.SelectableVersion selectableVersion) -> {
+                return selectableVersion.version != null && (serverVersion.baseVersion == selectableVersion.version.baseVersion || Arrays.stream(serverVersion.clientVersions).anyMatch(selectableVersion.version.baseVersion::equals));
+            };
 
+//            clientloop:
+//            for (String compatibleClientBaseVersion : serverVersion.clientVersions) {
+//                for (String path : minecraftJars) {
+//                    MinecraftVersion clientVersion = MinecraftVersionRepository.getSingleton().getInstalledJars().get(path);
+//
+//                    if (clientVersion != null && clientVersion.baseVersion.equals(compatibleClientBaseVersion)) {
+//                        clientPath = path;
+//                        break clientloop;
+//                    }
+//                }
+//
+//                try {
+//                    File clientJar = new File(LauncherFiles.MINECRAFT_VERSIONS_PATH + compatibleClientBaseVersion + File.separator + "client.jar");
+//                    try {
+//                        MineOnlineAPI.downloadVersion(compatibleClientBaseVersion);
+//                    } catch (Exception ex) {
+//                        // ignore
+//                    }
+//                    if (!clientJar.exists())
+//                        LauncherAPI.downloadVersion(compatibleClientBaseVersion);
+//
+//                    MinecraftVersionRepository.getSingleton().addInstalledVersion(clientJar.getPath());
+//                    clientPath = clientJar.getPath();
+//                    break clientloop;
+//                } catch (Exception ex) {
+//                    ex.printStackTrace();
+//                }
+//            }
+        }
+
+        GuiVersions.IVersionSelectListener selectListener = new GuiVersions.IVersionSelectListener() {
+            @Override
+            public void onSelect(String path) {
                 try {
-                    File clientJar = new File(LauncherFiles.MINECRAFT_VERSIONS_PATH + compatibleClientBaseVersion + File.separator + "client.jar");
-                    try {
-                        MineOnlineAPI.downloadVersion(compatibleClientBaseVersion);
-                    } catch (Exception ex) {
-                        // ignore
-                    }
-                    if (!clientJar.exists())
-                        LauncherAPI.downloadVersion(compatibleClientBaseVersion);
+                    String mppas = MineOnlineAPI.getMpPass(Session.session.getAccessToken(), Session.session.getUsername(), Session.session.getUuid(), server.ip, server.port + "");
+                    MinecraftVersion.launchMinecraft(path, server.ip, server.port + "", mppas);
 
-                    MinecraftVersionRepository.getSingleton().addInstalledVersion(clientJar.getPath());
-                    clientPath = clientJar.getPath();
-                    break clientloop;
+                    if (LegacyGameManager.isInGame())
+                        LegacyGameManager.closeGame();
+                    else {
+                        Display.destroy();
+                        DisplayManager.getFrame().dispose();
+                        System.exit(0);
+                    }
                 } catch (Exception ex) {
                     ex.printStackTrace();
+                    // ignore for now
                 }
             }
-        }
+        };
 
-        try {
-            String mppas = MineOnlineAPI.getMpPass(Session.session.getAccessToken(), Session.session.getUsername(), Session.session.getUuid(), server.ip, server.port + "");
-            MinecraftVersion.launchMinecraft(clientPath, server.ip, server.port + "", mppas);
-
-            if (LegacyGameManager.isInGame())
-                LegacyGameManager.closeGame();
-            else {
-                Display.destroy();
-                DisplayManager.getFrame().dispose();
-                System.exit(0);
+        GuiSlotVersion.ISelectableVersionCompare compare = new GuiSlotVersion.ISelectableVersionCompare() {
+            @Override
+            public boolean isDefault(GuiSlotVersion.SelectableVersion selectableVersion) {
+                return selectableVersion.version != null && selectableVersion.version.baseVersion.equals(serverVersion.baseVersion);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            // ignore for now
-        }
+        };
+
+        if (LegacyGameManager.isInGame())
+            LegacyGameManager.setGUIScreen(new GuiVersions(this, selectableVersionPredicate, selectListener, compare, true));
+        else
+            MenuManager.setMenuScreen(new GuiVersions(this, selectableVersionPredicate, selectListener, compare, true));
+
+//        try {
+//            String mppas = MineOnlineAPI.getMpPass(Session.session.getAccessToken(), Session.session.getUsername(), Session.session.getUuid(), server.ip, server.port + "");
+//            MinecraftVersion.launchMinecraft(clientPath, server.ip, server.port + "", mppas);
+//
+//            if (LegacyGameManager.isInGame())
+//                LegacyGameManager.closeGame();
+//            else {
+//                Display.destroy();
+//                DisplayManager.getFrame().dispose();
+//                System.exit(0);
+//            }
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//            // ignore for now
+//        }
     }
 
     protected void renderTooltip(String s, int i, int j)

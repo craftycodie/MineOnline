@@ -2,11 +2,18 @@ package gg.codie.mineonline.gui.screens;
 
 import gg.codie.minecraft.client.gui.Tessellator;
 import gg.codie.mineonline.Globals;
+import gg.codie.mineonline.MinecraftVersion;
+import gg.codie.mineonline.MinecraftVersionRepository;
+import gg.codie.mineonline.Session;
+import gg.codie.mineonline.api.MineOnlineAPI;
+import gg.codie.mineonline.client.LegacyGameManager;
 import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.gui.components.GuiButton;
+import gg.codie.mineonline.gui.rendering.DisplayManager;
 import gg.codie.mineonline.gui.rendering.FontRenderer;
 import gg.codie.mineonline.gui.rendering.Loader;
 import gg.codie.mineonline.gui.rendering.textures.EGUITexture;
+import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 
 import java.io.BufferedReader;
@@ -77,7 +84,25 @@ public class GuiMainMenu extends AbstractGuiScreen
         controlList.add(new GuiButton(1, getWidth() / 2 - 100, i, "Singleplayer", new GuiButton.GuiButtonListener() {
             @Override
             public void OnButtonPress() {
-                MenuManager.setMenuScreen(new GuiVersions(thisScreen));
+                MenuManager.setMenuScreen(new GuiVersions(thisScreen, null, new GuiVersions.IVersionSelectListener() {
+                    @Override
+                    public void onSelect(String path) {
+                        try {
+                            Display.destroy();
+                            DisplayManager.getFrame().dispose();
+                            System.exit(0);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                            // ignore for now
+                        }
+                }
+                }, new GuiSlotVersion.ISelectableVersionCompare() {
+                    @Override
+                    public boolean isDefault(GuiSlotVersion.SelectableVersion selectableVersion) {
+                        return MinecraftVersionRepository.getSingleton().getLastSelectedJarPath() != null && MinecraftVersionRepository.getSingleton().getLastSelectedJarPath().equals(selectableVersion.path);
+                    }
+                },
+                    false));
             }
         }));
         controlList.add(multiplayerButton = new GuiButton(2, getWidth() / 2 - 100, i + 24, "Multiplayer", new GuiButton.GuiButtonListener() {
