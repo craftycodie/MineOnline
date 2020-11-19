@@ -77,7 +77,7 @@ public class GuiMainMenu extends AbstractGuiScreen
         controlList.add(new GuiButton(1, getWidth() / 2 - 100, i, "Singleplayer", new GuiButton.GuiButtonListener() {
             @Override
             public void OnButtonPress() {
-
+                MenuManager.setMenuScreen(new GuiVersions(thisScreen));
             }
         }));
         controlList.add(multiplayerButton = new GuiButton(2, getWidth() / 2 - 100, i + 24, "Multiplayer", new GuiButton.GuiButtonListener() {

@@ -191,6 +191,12 @@ public class GuiMultiplayer extends AbstractGuiScreen
         return serverRepository.getServers() != null ? serverRepository.getServers() : new LinkedList<>();
     }
 
+    @Override
+    public void updateScreen() {
+        guiSlotServer.update();
+        super.updateScreen();
+    }
+
     public int select(int i)
     {
         return selectedIndex = i;

@@ -17,28 +17,38 @@ public class GuiSlotVersion extends GuiSlot
 
     protected int getSize()
     {
-        return MinecraftVersionRepository.getSingleton().getInstalledJars().size();
+        return 0;
     }
 
     protected void elementClicked(int i, boolean flag)
     {
-        parent.select(i);
-        boolean flag1 = parent.getSelectedIndex() >= 0 && parent.getSelectedIndex() < getSize();
-        parent.getConnectButton().enabled = flag1;
-        if(flag && flag1)
-        {
-            parent.joinServer(i);
-        }
+//        parent.select(i);
+//        boolean flag1 = parent.getSelectedIndex() >= 0 && parent.getSelectedIndex() < getSize();
+//        parent.getConnectButton().enabled = flag1;
+//        if(flag && flag1)
+//        {
+//            parent.joinServer(i);
+//        }
     }
 
     protected boolean isSelected(int i)
     {
-        return i == parent.getSelectedIndex();
+        return i == selectedIndex;
+    }
+
+    public int select(int i)
+    {
+        return selectedIndex = i;
+    }
+
+    public int getSelectedIndex()
+    {
+        return selectedIndex;
     }
 
     protected int getContentHeight()
     {
-        return parent.getServers().size() * 36;
+        return getSize() * 36;
     }
 
     protected void drawBackground()
@@ -69,4 +79,5 @@ public class GuiSlotVersion extends GuiSlot
     }
 
     final GuiVersions parent; /* synthetic field */
+    private int selectedIndex;
 }

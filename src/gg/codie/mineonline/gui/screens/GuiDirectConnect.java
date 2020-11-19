@@ -51,7 +51,12 @@ public class GuiDirectConnect extends AbstractGuiScreen
         controlList.add(new GuiButton(0, getWidth() / 2 - 100, getHeight() / 4 + 96 + 12, "Connect", new GuiButton.GuiButtonListener() {
             @Override
             public void OnButtonPress() {
-                joinServer();
+                if (LegacyGameManager.isInGame())
+                    LegacyGameManager.setGUIScreen(new GuiVersions(thisScreen));
+                else
+                    MenuManager.setMenuScreen(new GuiVersions(thisScreen));
+
+                //joinServer();
             }
         }));
         controlList.add(new GuiButton(1, getWidth() / 2 - 100, (getHeight() / 4 - 10) + 50 + 18, "Cancel", new GuiButton.GuiButtonListener() {
@@ -60,21 +65,24 @@ public class GuiDirectConnect extends AbstractGuiScreen
                 if (LegacyGameManager.isInGame())
                     LegacyGameManager.setGUIScreen(parentScreen);
                 else
-                    MenuManager.setMenuScreen(parentScreen);                  }
-        }));
-        MinecraftVersion selected = MinecraftVersionRepository.getSingleton().getVersion(MinecraftVersionRepository.getSingleton().getLastSelectedJarPath());
-        String versionName = Paths.get(MinecraftVersionRepository.getSingleton().getLastSelectedJarPath()).getFileName().toString();
-        if (selected != null)
-            versionName = selected.name;
-        controlList.add(new GuiButton(2, getWidth() / 2 - 100, (getHeight() / 4 - 10) - 50 + 18, versionName, new GuiButton.GuiButtonListener() {
-            @Override
-            public void OnButtonPress() {
-                if (LegacyGameManager.isInGame())
-                    LegacyGameManager.setGUIScreen(new GuiVersions(thisScreen));
-                else
-                    MenuManager.setMenuScreen(new GuiVersions(thisScreen));
+                    MenuManager.setMenuScreen(parentScreen);
             }
         }));
+//        MinecraftVersion selected = MinecraftVersionRepository.getSingleton().getVersion(MinecraftVersionRepository.getSingleton().getLastSelectedJarPath());
+//        String versionName = "Select Version";
+//        if (MinecraftVersionRepository.getSingleton().getLastSelectedJarPath() != null)
+//            versionName = Paths.get(MinecraftVersionRepository.getSingleton().getLastSelectedJarPath()).getFileName().toString();
+//        if (selected != null)
+//            versionName = selected.name;
+//        controlList.add(new GuiButton(2, getWidth() / 2 - 100, (getHeight() / 4 - 10) - 50 + 18, versionName, new GuiButton.GuiButtonListener() {
+//            @Override
+//            public void OnButtonPress() {
+//                if (LegacyGameManager.isInGame())
+//                    LegacyGameManager.setGUIScreen(new GuiVersions(thisScreen));
+//                else
+//                    MenuManager.setMenuScreen(new GuiVersions(thisScreen));
+//            }
+//        }));
         String s = Settings.singleton.getLastServer().replaceAll("_", ":");
         if (serverString != null)
             s = serverString;

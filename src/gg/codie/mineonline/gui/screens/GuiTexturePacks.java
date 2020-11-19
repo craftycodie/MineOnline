@@ -79,6 +79,7 @@ public class GuiTexturePacks extends AbstractGuiScreen
     public void updateScreen()
     {
         super.updateScreen();
+        guiTexturePackSlot.update();
         field_6454_o--;
     }
 

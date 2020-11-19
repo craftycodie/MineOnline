@@ -41,7 +41,7 @@ public class GuiVersions extends AbstractGuiScreen
 
     public void func_35337_c()
     {
-        controlList.add(connectButton = new GuiButton(1, getWidth() / 2 - 154, getHeight() - 48, 100, 20, "Back", new GuiButton.GuiButtonListener() {
+        controlList.add(new GuiButton(1, getWidth() / 2 - 154, getHeight() - 48, 100, 20, "Back", new GuiButton.GuiButtonListener() {
             @Override
             public void OnButtonPress() {
                 if (LegacyGameManager.isInGame())
@@ -50,7 +50,6 @@ public class GuiVersions extends AbstractGuiScreen
                     MenuManager.setMenuScreen(parentScreen);
             }
         }));
-        AbstractGuiScreen thisScreen = this;
         controlList.add(new GuiButton(4, getWidth() / 2 - 50, getHeight() - 48, 20, 20, "c", new GuiButton.GuiButtonListener() {
             @Override
             public void OnButtonPress() {
@@ -89,7 +88,6 @@ public class GuiVersions extends AbstractGuiScreen
                 else
                     MenuManager.setMenuScreen(parentScreen);            }
         }));
-        connectButton.enabled = selectedIndex >= 0 && selectedIndex < guiSlotServer.getSize();
     }
 
     public void onGuiClosed()
@@ -123,44 +121,6 @@ public class GuiVersions extends AbstractGuiScreen
         }
     }
 
-    public void joinServer(int i)
-    {
-        joinServer(serverRepository.getServers().get(i));
-    }
-
-    private void joinServer(MineOnlineServer server)
-    {
-        try {
-            LinkedList<String> launchArgs = new LinkedList();
-            launchArgs.add(JREUtils.getRunningJavaExecutable());
-            launchArgs.add("-javaagent:" + LauncherFiles.PATCH_AGENT_JAR);
-            launchArgs.add("-Djava.util.Arrays.useLegacyMergeSort=true");
-            launchArgs.add("-cp");
-            launchArgs.add(LibraryManager.getClasspath(true, new String[]{new File(MenuManager.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath(), LauncherFiles.DISCORD_RPC_JAR}));
-            launchArgs.add(MenuManager.class.getCanonicalName());
-            launchArgs.add("-quicklaunch");
-            launchArgs.add("-joinserver");
-            launchArgs.add(server.ip + ":" + server.port);
-            launchArgs.add("-skipupdates");
-
-            java.util.Properties props = System.getProperties();
-            ProcessBuilder processBuilder = new ProcessBuilder(launchArgs);
-
-            Map<String, String> env = processBuilder.environment();
-            for (String prop : props.stringPropertyNames()) {
-                env.put(prop, props.getProperty(prop));
-            }
-            processBuilder.directory(new File(System.getProperty("user.dir")));
-
-            Process launcherProcess = processBuilder.inheritIO().start();
-
-            LegacyGameManager.closeGame();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            // ignore for now
-        }
-    }
-
     protected void renderTooltip(String s, int i, int j)
     {
         if(s == null)
@@ -177,26 +137,6 @@ public class GuiVersions extends AbstractGuiScreen
         }
     }
 
-    public List<MineOnlineServer> getServers()
-    {
-        return serverRepository.getServers() != null ? serverRepository.getServers() : new LinkedList<>();
-    }
-
-    public int select(int i)
-    {
-        return selectedIndex = i;
-    }
-
-    public int getSelectedIndex()
-    {
-        return selectedIndex;
-    }
-
-    public GuiButton getConnectButton()
-    {
-        return connectButton;
-    }
-
     public String setTooltip(String s)
     {
         return tooltip = s;
@@ -205,7 +145,5 @@ public class GuiVersions extends AbstractGuiScreen
     private AbstractGuiScreen parentScreen;
     private GuiSlotVersion guiSlotServer;
     private int selectedIndex;
-    private GuiButton connectButton;
     private String tooltip;
-    private MineOnlineServerRepository serverRepository = new MineOnlineServerRepository();
 }

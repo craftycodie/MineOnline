@@ -4,6 +4,7 @@ import gg.codie.minecraft.client.gui.Tessellator;
 import gg.codie.mineonline.gui.input.MouseHandler;
 import gg.codie.mineonline.gui.rendering.Loader;
 import gg.codie.mineonline.gui.rendering.textures.EGUITexture;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 
@@ -22,6 +23,14 @@ public abstract class GuiSlot
         this.bottom = bottom;
         posZ = i1;
         right = width;
+
+        for (int i = 0; i < getSize();  i++) {
+            if (isSelected(i)) {
+                selectedElement = i;
+                amountScrolled = 36 * (i - 1);
+                break;
+            }
+        }
     }
 
     public void resize(int width, int height, int top, int bottom) {
@@ -29,6 +38,10 @@ public abstract class GuiSlot
         this.height = height;
         this.top = top;
         this.bottom = bottom;
+    }
+
+    public void update() {
+        amountScrolled -= (float)Mouse.getDWheel() / 3.3225;
     }
 
     protected abstract int getSize();
