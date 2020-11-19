@@ -101,7 +101,7 @@ public class GuiTextField extends GuiComponent
         drawRect(xPos, yPos, xPos + width, yPos + height, 0xff000000);
         if(isEnabled)
         {
-            boolean flag = isFocused && (cursorCounter / 6) % 2 == 0;
+            boolean flag = isFocused && (System.currentTimeMillis()) % 1000 < 500;
             drawString((new StringBuilder()).append(text).append(flag ? "_" : "").toString(), xPos + 4, yPos + (height - 8) / 2, 0xe0e0e0);
         } else
         {
