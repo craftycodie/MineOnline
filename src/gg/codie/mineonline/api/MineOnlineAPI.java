@@ -338,7 +338,7 @@ public class MineOnlineAPI {
     public static String getLauncherVersion() throws IOException {
         HttpURLConnection connection;
 
-        URL url = new URL(Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/launcherversion");
+        URL url = new URL(Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/version-" + Globals.BRANCH);
         connection = (HttpURLConnection) url.openConnection();
         connection.connect();
 
