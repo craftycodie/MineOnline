@@ -12,5 +12,6 @@
   "viewModelFunction": "b",
   "scaledResolutionClass": "lw",
   "resourcesVersion": "b1.3_01",
-  "optionsVersion": "PREFOV"
+  "optionsVersion": "PREFOV",
+  "downloadURL": "https://launcher.mojang.com/v1/objects/093f371e1a05d89664cfb8068d607953687d5d94/client.jar"
 }

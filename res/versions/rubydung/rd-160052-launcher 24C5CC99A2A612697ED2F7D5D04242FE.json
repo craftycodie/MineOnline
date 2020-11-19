@@ -10,5 +10,6 @@
   "useFOVPatch": true,
   "useTexturepackPatch": true,
   "useResizePatch": true,
-  "enableFullscreenPatch": true
+  "enableFullscreenPatch": true,
+  "downloadURL": "https://launcher.mojang.com/v1/objects/b100be8097195b6c9112046dc6a80d326c8df839/client.jar"
 }

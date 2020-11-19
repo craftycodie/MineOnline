@@ -14,5 +14,6 @@
   "resourcesVersion": "a1.0.1_01",
   "optionsVersion": "CLASSIC",
   "useResizePatch": true,
-  "hasNetherPortalTexture": false
+  "hasNetherPortalTexture": false,
+  "downloadURL": "https://mineonline.codie.gg/public/clients/c0.30-s.jar"
 }

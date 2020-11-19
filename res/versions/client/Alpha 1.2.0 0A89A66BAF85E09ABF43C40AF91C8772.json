@@ -9,5 +9,6 @@
   "useTexturepackPatch": true,
   "ingameVersionString": "Minecraft Alpha v1.2.0",
   "resourcesVersion": "a1.2.0",
-  "optionsVersion": "PRESKINS"
+  "optionsVersion": "PRESKINS",
+  "downloadURL": "https://launcher.mojang.com/v1/objects/8632ea716fd083c2975f16d612306fd80bee46db/client.jar"
 }

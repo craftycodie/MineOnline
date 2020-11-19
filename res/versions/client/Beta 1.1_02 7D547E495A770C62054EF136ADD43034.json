@@ -11,5 +11,6 @@
   "entityRendererClass": "kr",
   "viewModelFunction": "b",
   "scaledResolutionClass": "lc",
-  "optionsVersion": "PREFOV"
+  "optionsVersion": "PREFOV",
+  "downloadURL": "https://launcher.mojang.com/v1/objects/e1c682219df45ebda589a557aadadd6ed093c86c/client.jar"
 }

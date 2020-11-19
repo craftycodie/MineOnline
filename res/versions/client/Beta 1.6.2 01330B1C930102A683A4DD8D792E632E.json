@@ -8,5 +8,6 @@
   "useFOVPatch": true,
   "ingameVersionString": "Minecraft Beta 1.6.2",
   "resourcesVersion": "b1.7.3",
-  "optionsVersion": "PREFOV"
+  "optionsVersion": "PREFOV",
+  "downloadURL": "https://launcher.mojang.com/v1/objects/e8aa50949b077b672be2e651ea3f7b1bbd9020e1/client.jar"
 }

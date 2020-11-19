@@ -9,5 +9,6 @@
   "useFOVPatch": true,
   "ingameVersionString": "Minecraft Alpha v1.2.2",
   "resourcesVersion": "b1.3_01",
-  "optionsVersion": "PREFOV"
+  "optionsVersion": "PREFOV",
+  "downloadURL": "https://launcher.mojang.com/v1/objects/1c28c8431392641045b59e98a81877d7c94ff0ca/client.jar"
 }

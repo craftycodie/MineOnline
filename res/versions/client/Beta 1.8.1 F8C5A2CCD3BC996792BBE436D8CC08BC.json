@@ -6,5 +6,6 @@
   "legacy": true,
   "baseVersion": "b1.8.1",
   "ingameVersionString": "Minecraft Beta 1.8.1",
-  "resourcesVersion": "b1.9-pre4"
+  "resourcesVersion": "b1.9-pre4",
+  "downloadURL": "https://launcher.mojang.com/v1/objects/6b562463ccc2c7ff12ff350a2b04a67b3adcd37b/client.jar"
 }

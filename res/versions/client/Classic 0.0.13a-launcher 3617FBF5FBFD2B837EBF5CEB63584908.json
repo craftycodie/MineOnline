@@ -14,5 +14,6 @@
   "resourcesVersion": "c0.0.14a_08",
   "optionsVersion": "CLASSIC",
   "useResizePatch": true,
-  "hasNetherPortalTexture": false
+  "hasNetherPortalTexture": false,
+  "downloadURL": "https://launcher.mojang.com/v1/objects/936d575b1ab1a04a341ad43d76e441e88d2cd987/client.jar"
 }

@@ -13,5 +13,6 @@
   "guiClass": "com.mojang.minecraft.b.a",
   "optionsVersion": "CLASSIC",
   "useResizePatch": true,
-  "hasNetherPortalTexture": false
+  "hasNetherPortalTexture": false,
+  "downloadURL": "https://mineonline.codie.gg/public/clients/c0.0.20a_01.jar"
 }

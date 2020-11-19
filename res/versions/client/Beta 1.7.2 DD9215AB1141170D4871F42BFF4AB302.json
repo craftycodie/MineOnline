@@ -7,5 +7,6 @@
   "baseVersion": "b1.7.2",
   "useFOVPatch": true,
   "resourcesVersion": "b1.7.3",
-  "optionsVersion": "PREFOV"
+  "optionsVersion": "PREFOV",
+  "downloadURL": "https://launcher.mojang.com/v1/objects/7dc50cc5e2ff204a7283f0c7d38cd0370b49875b/client.jar"
 }

@@ -11,5 +11,6 @@
   "ingameVersionString": "Minecraft Alpha v1.0.16",
   "resourcesVersion": "a1.0.17_04",
   "optionsVersion": "CLASSIC",
-  "hasNetherPortalTexture": false
+  "hasNetherPortalTexture": false,
+  "downloadURL": "https://launcher.mojang.com/v1/objects/98ce80c7630ccb3bb38687ff98bfd18935d49a57/client.jar"
 }
