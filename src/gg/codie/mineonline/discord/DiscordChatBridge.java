@@ -62,6 +62,7 @@ public class DiscordChatBridge extends ListenerAdapter {
     }
 
     public void sendDiscordMessage(String username, String message){
+        message = message.replace("@", "");
         if (webhook != null && !username.equals("")){ // webhook player messages to discord
             webhookMessage = new WebhookMessageBuilder();
             webhookMessage.setUsername(username);
