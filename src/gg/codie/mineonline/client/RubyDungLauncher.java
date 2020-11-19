@@ -133,6 +133,9 @@ public class RubyDungLauncher implements IMinecraftAppletWrapper {
         Settings.singleton.saveMinecraftOptions(minecraftVersion.optionsVersion);
         this.startWidth = width;
         this.startHeight = height;
+
+        boolean premium = System.getProperty("mineonline.token") != null;
+        new Session(System.getProperty("mineonline.username"), System.getProperty("mineonline.token"), System.getProperty("mineonline.uuid"), premium);
     }
 
     public void startRubyDung() throws Exception {
