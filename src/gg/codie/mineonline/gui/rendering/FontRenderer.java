@@ -37,21 +37,21 @@ public class FontRenderer
         BufferedImage bufferedimage;
         try
         {
-            if (Settings.singleton.getTexturePack().isEmpty()) {
+//            if (Settings.singleton.getTexturePack().isEmpty()) {
                 bufferedimage = ImageIO.read(FontRenderer.class.getResourceAsStream(EGUITexture.FONT.textureName));
-            } else {
-                try {
-                    ZipFile texturesZip = new ZipFile(LauncherFiles.MINECRAFT_TEXTURE_PACKS_PATH + Settings.singleton.getTexturePack());
-                    ZipEntry texture = texturesZip.getEntry(EGUITexture.FONT.textureName.substring(1));
-                    if (texture != null) {
-                        bufferedimage = ImageIO.read(texturesZip.getInputStream(texture));
-                    } else {
-                        bufferedimage = ImageIO.read(FontRenderer.class.getResourceAsStream(EGUITexture.FONT.textureName));
-                    }
-                } catch (Exception ex) {
-                    bufferedimage = ImageIO.read(FontRenderer.class.getResourceAsStream(EGUITexture.FONT.textureName));
-                }
-            }
+//            } else {
+//                try {
+//                    ZipFile texturesZip = new ZipFile(LauncherFiles.MINECRAFT_TEXTURE_PACKS_PATH + Settings.singleton.getTexturePack());
+//                    ZipEntry texture = texturesZip.getEntry(EGUITexture.FONT.textureName.substring(1));
+//                    if (texture != null) {
+//                        bufferedimage = ImageIO.read(texturesZip.getInputStream(texture));
+//                    } else {
+//                        bufferedimage = ImageIO.read(FontRenderer.class.getResourceAsStream(EGUITexture.FONT.textureName));
+//                    }
+//                } catch (Exception ex) {
+//                    bufferedimage = ImageIO.read(FontRenderer.class.getResourceAsStream(EGUITexture.FONT.textureName));
+//                }
+//            }
         }
         catch(IOException ioexception)
         {
