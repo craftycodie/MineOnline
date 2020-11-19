@@ -96,6 +96,15 @@ public class GuiLogin extends AbstractGuiScreen
 
             }
         }
+
+        if (j > getHeight() - 10 && j < getHeight() && i > getWidth() - FontRenderer.minecraftFontRenderer.getStringWidth("Made by @codieradical <3")) {
+            ClickSound.play();
+            try {
+                Desktop.getDesktop().browse(new URI("https://twitter.com/codieradical"));
+            } catch (Exception ex) {
+
+            }
+        }
     }
 
     public void initGui()
