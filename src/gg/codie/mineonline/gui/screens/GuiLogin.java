@@ -12,13 +12,16 @@ import gg.codie.mineonline.gui.components.GuiTextField;
 import gg.codie.mineonline.gui.rendering.FontRenderer;
 import gg.codie.mineonline.gui.rendering.Loader;
 import gg.codie.mineonline.gui.rendering.textures.EGUITexture;
+import gg.codie.mineonline.gui.sound.ClickSound;
 import gg.codie.mineonline.utils.LastLogin;
 import org.json.JSONObject;
 import org.lwjgl.opengl.GL11;
 
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -76,13 +79,28 @@ public class GuiLogin extends AbstractGuiScreen
         usernameField.mouseClicked(i, j, k);
         passwordField.mouseClicked(i, j, k);
         super.mouseClicked(i, j, k);
+        if (MenuManager.isUpdateAvailable() && j > getHeight() - 20 && j < getHeight() - 10 && i < FontRenderer.minecraftFontRenderer.getStringWidth("Update Available!")) {
+            ClickSound.play();
+            try {
+                Desktop.getDesktop().browse(new URI(Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/download"));
+            } catch (Exception ex) {
+
+            }
+        }
+
+        if (MenuManager.isUpdateAvailable() && j > getHeight() / 4 + 48 + 96 && j < getHeight() / 4 + 48 + 106 && i > (getWidth() / 2 ) - (FontRenderer.minecraftFontRenderer.getStringWidth("Need Account?")) / 2 && i < (getWidth() / 2 ) + (FontRenderer.minecraftFontRenderer.getStringWidth("Need Account?")) / 2) {
+            ClickSound.play();
+            try {
+                Desktop.getDesktop().browse(new URI("https://www.minecraft.net/store/minecraft-java-edition"));
+            } catch (Exception ex) {
+
+            }
+        }
     }
 
     public void initGui()
     {
         int i = getHeight() / 4 + 48;
-
-        AbstractGuiScreen thisScreen = this;
 
         String username = "";
         LastLogin lastLogin = LastLogin.readLastLogin();
@@ -91,19 +109,7 @@ public class GuiLogin extends AbstractGuiScreen
         }
 
         usernameField = new GuiTextField(this, getWidth() / 2 - 100, i, 200, 20, username);
-//        controlList.add(multiplayerButton = new GuiButton(2, getWidth() / 2 - 100, i + 24, "Multiplayer", new GuiButton.GuiButtonListener() {
-//            @Override
-//            public void OnButtonPress() {
-//                MenuManager.setMenuScreen(new GuiMultiplayer(thisScreen));
-//            }
-//        }));
         passwordField = new GuiPasswordField(this, getWidth() / 2 - 100, i + 42, 200, 20, "");
-//        controlList.add(new GuiButton(3, getWidth() / 2 - 100, i + 48, "Mods and Texture Packs", new GuiButton.GuiButtonListener() {
-//            @Override
-//            public void OnButtonPress() {
-//                MenuManager.setMenuScreen(new GuiTexturePacks(thisScreen));
-//            }
-//        }));
         controlList.add(new GuiButton(0, getWidth() / 2 - 100, i + 72, "Login", new GuiButton.GuiButtonListener() {
             @Override
             public void OnButtonPress() {
@@ -198,27 +204,29 @@ public class GuiLogin extends AbstractGuiScreen
     {
         resizeGui();
 
-        usernameField.drawTextBox();
-        passwordField.drawTextBox();
-
         Tessellator tessellator = Tessellator.instance;
         char c = '\u0112';
         int k = getWidth() / 2 - c / 2;
         byte byte0 = 30;
-        drawGradientRect(0, 0, getWidth(), getHeight(), 0x55ffffff, 0xffffff);
-        drawGradientRect(0, 0, getWidth(), getHeight(), 0, 0x55000000);
+//        drawGradientRect(0, 0, getWidth(), getHeight(), 0x55ffffff, 0xffffff);
+//        drawGradientRect(0, 0, getWidth(), getHeight(), 0, 0x55000000);
         GL11.glBindTexture(3553 /*GL_TEXTURE_2D*/, Loader.singleton.getGuiTexture(EGUITexture.MINEONLINE_LOGO));
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         drawTexturedModalRect(k + 0, byte0 + 0, 0, 0, 155, 44);
         drawTexturedModalRect(k + 155, byte0 + 0, 0, 45, 155, 44);
         tessellator.setColorOpaque_I(0xffffff);
-        drawString("MineOnline " + (Globals.DEV ? "Dev " : "") + Globals.LAUNCHER_VERSION, 2, getHeight() - 10, 0xffffff);
+        if (MenuManager.isUpdateAvailable())
+            drawString("Update Available!", 2, getHeight() - 20, 0xffff00);
+        drawString("MineOnline " + (Globals.DEV ? "Dev " + Globals.LAUNCHER_VERSION + " (" + Globals.BRANCH + ")" : Globals.LAUNCHER_VERSION), 2, getHeight() - 10, 0xffffff);
         String s = "Made by @codieradical <3";
         drawString(s, getWidth() - FontRenderer.minecraftFontRenderer.getStringWidth(s) - 2, getHeight() - 10, 0xffffff);
         drawString("Need Account?", (getWidth() / 2) - FontRenderer.minecraftFontRenderer.getStringWidth("Need Account?") / 2, getHeight() / 4 + 48 + 96, 0xffffff);
         drawString("Username or E-Mail:", getWidth() / 2 - 100, getHeight() / 4 + 48 - 16, 0xffffff);
         drawString("Password:", getWidth() / 2 - 100, getHeight() / 4 + 48 + 48 - 22, 0xffffff);
         drawString(errorText, (getWidth() / 2) - FontRenderer.minecraftFontRenderer.getStringWidth(errorText) / 2, getHeight() / 4 + 48 - 32, 0xFF5555);
+
+        usernameField.drawTextBox();
+        passwordField.drawTextBox();
 
         super.drawScreen(i, j);
     }

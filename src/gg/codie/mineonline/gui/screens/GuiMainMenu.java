@@ -13,11 +13,14 @@ import gg.codie.mineonline.gui.rendering.DisplayManager;
 import gg.codie.mineonline.gui.rendering.FontRenderer;
 import gg.codie.mineonline.gui.rendering.Loader;
 import gg.codie.mineonline.gui.rendering.textures.EGUITexture;
+import gg.codie.mineonline.gui.sound.ClickSound;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -55,6 +58,19 @@ public class GuiMainMenu extends AbstractGuiScreen
         catch(Exception exception) { }
 
         initGui();
+    }
+
+    protected void mouseClicked(int i, int j, int k)
+    {
+        super.mouseClicked(i, j, k);
+        if (MenuManager.isUpdateAvailable() && j > getHeight() - 20 && j < getHeight() - 10 && i < FontRenderer.minecraftFontRenderer.getStringWidth("Update Available!")) {
+            ClickSound.play();
+            try {
+                Desktop.getDesktop().browse(new URI(Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/download"));
+            } catch (Exception ex) {
+
+            }
+        }
     }
 
     public void initGui()
@@ -157,6 +173,8 @@ public class GuiMainMenu extends AbstractGuiScreen
         GL11.glScalef(f1, f1, f1);
         drawCenteredString(splashText, 0, -8, 0xffff00);
         GL11.glPopMatrix();
+        if (MenuManager.isUpdateAvailable())
+            drawString("Update Available!", 2, getHeight() - 20, 0xffff00);
         drawString("MineOnline " + (Globals.DEV ? "Dev " + Globals.LAUNCHER_VERSION + " (" + Globals.BRANCH + ")" : Globals.LAUNCHER_VERSION), 2, getHeight() - 10, 0xffffff);
         String s = "Made by @codieradical <3";
         drawString(s, getWidth() - FontRenderer.minecraftFontRenderer.getStringWidth(s) - 2, getHeight() - 10, 0xffffff);

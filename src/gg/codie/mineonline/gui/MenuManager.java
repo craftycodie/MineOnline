@@ -43,6 +43,8 @@ public class MenuManager {
 //    private static GUIText playerName;
 
     public static void setMenuScreen(AbstractGuiScreen guiScreen) {
+        if(MenuManager.guiScreen != null)
+            MenuManager.guiScreen.onGuiClosed();
         MenuManager.guiScreen = guiScreen;
     }
 
@@ -374,56 +376,10 @@ public class MenuManager {
             lastWidth = Display.getParent().getWidth();
             lastHeight = Display.getParent().getHeight();
 
-//            backgroundImage.increaseRotation(new Vector3f(0, 0.025f, 0));
-
-//            // Handle player resizing.
-//            float maxScale = 1;
-//            if(DisplayManager.isTall()){
-//                maxScale = Display.getWidth() / (float)DisplayManager.getDefaultWidth();
-//            } else {
-//                maxScale = Display.getHeight() / (float)DisplayManager.getDefaultHeight();
-//            }
-//            if(maxScale > 1) {
-//                playerScale.setScale(new Vector3f((1 / maxScale) * (float)DisplayManager.getScale(), (1 / maxScale) * (float)DisplayManager.getScale(), (1 / maxScale) * (float)DisplayManager.getScale()));
-//            }
-//            float xScale = Display.getWidth() / (float)DisplayManager.getDefaultWidth();
-//            if(xScale > 1) {
-//                playerScale.setLocalPosition(new Vector3f(-20 * (1 / xScale) * (float)DisplayManager.getScale(), 0, -65));
-//            }
-//
-//            if(Mouse.isButtonDown(0)) {
-//                rotation.y = Mouse.getDX() * 0.5f;
-//            } else if (!Mouse.isButtonDown(0)) {
-//                rotation.y *= .97f;
-//            }
-
-//            if (rotation.y != 0 && guiScreen.showPlayer())
-//                playerPivot.increaseRotation(rotation);
-
-//            playerGameObject.update();
-//            guiScreen.update();
 
             if(!formopen) return;
 
-//            StaticShader.singleton.start();
-//            StaticShader.singleton.loadViewMatrix(camera);
-
-//            renderer.render(backgroundImage, StaticShader.singleton);
-
-//            if (guiScreen.showPlayer()) {
-//                renderer.render(playerGameObject, StaticShader.singleton);
-//            }
-
-            //StaticShader.singleton.stop();
-
             GUIScale scaledresolution = new GUIScale(Display.getParent().getWidth(), Display.getParent().getHeight());
-//                    GL11.glClear(256);
-//            GL11.glMatrixMode(GL11.GL_PROJECTION);
-//            GL11.glLoadIdentity();
-//            GL11.glOrtho(0.0D, scaledresolution.scaledWidth, scaledresolution.scaledHeight, 0.0D, 1000D, 3000D);
-//            GL11.glMatrixMode(5888 /*GL_MODELVIEW0_ARB*/);
-//            GL11.glLoadIdentity();
-//            GL11.glTranslatef(0.0F, 0.0F, -2000F);
 
             int i = (int)scaledresolution.getScaledWidth();
             int j = (int)scaledresolution.getScaledHeight();
@@ -457,14 +413,9 @@ public class MenuManager {
                 MenuManager.guiScreen.handleInput();
             }
 
-//            TextMaster.render();
-
             DisplayManager.updateDisplay();
         }
 
-//        StaticShader.singleton.cleanUp();
-//        loader.cleanUp();
-//        TextMaster.cleanUp();
         DisplayManager.closeDisplay();
 
         DisplayManager.getFrame().removeWindowListener(closeListener);

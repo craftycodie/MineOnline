@@ -6,9 +6,20 @@ import gg.codie.mineonline.client.LegacyGameManager;
 import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.gui.components.GuiButton;
 import gg.codie.mineonline.gui.components.GuiToggleButton;
+import gg.codie.mineonline.gui.rendering.DisplayManager;
 import gg.codie.mineonline.gui.rendering.FontRenderer;
 import org.lwjgl.input.Keyboard;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetAdapter;
+import java.awt.dnd.DropTargetDropEvent;
+import java.io.File;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Predicate;
@@ -16,23 +27,96 @@ import java.util.stream.Collectors;
 
 public class GuiVersions extends AbstractGuiScreen
 {
+    DropTargetAdapter dropTargetAdapter;
+
     public interface IVersionSelectListener {
         void onSelect(String path);
     }
 
+    public void onGuiClosed() {
+        dropTarget.removeDropTargetListener(dropTargetAdapter);
+        Keyboard.enableRepeatEvents(false);
+    }
+
     public GuiVersions(AbstractGuiScreen guiscreen, Predicate<GuiSlotVersion.SelectableVersion> filter, IVersionSelectListener onSelect, GuiSlotVersion.ISelectableVersionCompare compare, boolean autoSelectSingleJar)
     {
+        dropTarget.setComponent(DisplayManager.getCanvas());
+
+        dropTargetAdapter = new DropTargetAdapter() {
+            @Override
+            public void drop(DropTargetDropEvent event) {
+                // Accept copy drops
+                event.acceptDrop(DnDConstants.ACTION_COPY);
+
+                // Get the transfer which can provide the dropped item data
+                Transferable transferable = event.getTransferable();
+
+                // Get the data formats of the dropped item
+                DataFlavor[] flavors = transferable.getTransferDataFlavors();
+
+                // Loop through the flavors
+                for (DataFlavor flavor : flavors) {
+
+                    try {
+
+                        // If the drop items are files
+                        if (flavor.isFlavorJavaFileListType()) {
+
+                            // Get all of the dropped files
+                            List<File> files = (List<File>) transferable.getTransferData(flavor);
+
+                            // Loop them through
+                            for (File file : files) {
+                                MinecraftVersion minecraftVersion = MinecraftVersionRepository.getSingleton().getVersion(file.getPath());
+
+                                try {
+                                    if (!MinecraftVersion.isPlayableJar(file.getPath())) {
+                                        continue;
+                                    }
+                                } catch (IOException ex) {
+                                    continue;
+                                }
+
+                                MinecraftVersionRepository.getSingleton().addInstalledVersion(file.getPath());
+                                MinecraftVersionRepository.getSingleton().selectJar(file.getPath());
+                                reloadList = true;
+                            }
+
+                        }
+
+                    } catch (Exception e) {
+
+                        // Print out the error stack
+                        e.printStackTrace();
+
+                    }
+                }
+
+                // Inform that the drop is complete
+                event.dropComplete(true);
+            }
+        };
+
+        try {
+            dropTarget.addDropTargetListener(dropTargetAdapter);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         tooltip = null;
         parentScreen = guiscreen;
         this.filter = filter;
         this.onSelectListener = onSelect;
         this.compare = compare;
 
+        fileChooser.setFileHidingEnabled(false);
+
         initGui();
 
         // If there's only one jar in the list and the list can be skipped, skip.
         if (filteredVersions().size() == 1 && autoSelectSingleJar) {
             try {
+                dropTarget.removeDropTargetListener(dropTargetAdapter);
                 this.onSelectListener.onSelect(guiSlotVersion.getSelectedPath());
             } catch (Exception ex) { }
         }
@@ -45,6 +129,7 @@ public class GuiVersions extends AbstractGuiScreen
 
     public void versionSelected() {
         try {
+            dropTarget.removeDropTargetListener(dropTargetAdapter);
             onSelectListener.onSelect(guiSlotVersion.getSelectedPath());
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -100,13 +185,14 @@ public class GuiVersions extends AbstractGuiScreen
         if (filter != null)
             filteredVersions = filteredVersions.stream().filter(filter).collect(Collectors.toList());
 
+        playButton.enabled = filteredVersions.size() > 0;
+
         return filteredVersions;
     }
 
     boolean versionsWereLoaded;
     public void initGui()
     {
-
         Keyboard.enableRepeatEvents(true);
         controlList.clear();
         func_35337_c();
@@ -126,6 +212,8 @@ public class GuiVersions extends AbstractGuiScreen
         controlList.add(new GuiButton(1, getWidth() / 2 - 154, getHeight() - 48, 100, 20, "Back", new GuiButton.GuiButtonListener() {
             @Override
             public void OnButtonPress() {
+                dropTarget.removeDropTargetListener(dropTargetAdapter);
+
                 if (LegacyGameManager.isInGame())
                     LegacyGameManager.setGUIScreen(parentScreen);
                 else
@@ -209,10 +297,11 @@ public class GuiVersions extends AbstractGuiScreen
             }
         }));
         releaseButton.enabled = false;
-        controlList.add(new GuiButton(3, getWidth() / 2 + 4 + 50, getHeight() - 48, 100, 20, "Play", new GuiButton.GuiButtonListener() {
+        controlList.add(playButton = new GuiButton(3, getWidth() / 2 + 4 + 50, getHeight() - 48, 100, 20, "Play", new GuiButton.GuiButtonListener() {
             @Override
             public void OnButtonPress() {
                 try {
+                    dropTarget.removeDropTargetListener(dropTargetAdapter);
                     thisScreen.onSelectListener.onSelect(guiSlotVersion.getSelectedPath());
                 } catch (Exception ex) {
                     ex.printStackTrace();
@@ -222,6 +311,31 @@ public class GuiVersions extends AbstractGuiScreen
         controlList.add(new GuiButton(5, (getWidth() / 2) - 50, getHeight() - 48, 100, 20, "Browse", new GuiButton.GuiButtonListener() {
             @Override
             public void OnButtonPress() {
+                EventQueue.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        int returnVal = fileChooser.showOpenDialog(DisplayManager.getCanvas());
+
+                        if (returnVal == JFileChooser.APPROVE_OPTION) {
+                            File file = fileChooser.getSelectedFile();
+
+                            try {
+                                if (!MinecraftVersion.isPlayableJar(file.getPath())) {
+                                    JOptionPane.showMessageDialog(null, "This jar file is incompatible:\nNo applet or main class found.");
+                                    return;
+                                }
+                            } catch (IOException ex) {
+                                JOptionPane.showMessageDialog(null, "This jar file is incompatible:\nFailed to open.");
+                                return;
+                            }
+
+                            MinecraftVersionRepository.getSingleton().addInstalledVersion(file.getPath());
+                            MinecraftVersionRepository.getSingleton().selectJar(file.getPath());
+
+                            reloadList = true;
+                        }
+                    }
+                });
             }
         }));
     }
@@ -238,11 +352,6 @@ public class GuiVersions extends AbstractGuiScreen
         guiSlotVersion.resize(getWidth(), getHeight(), 32, getHeight() - 55);
     }
 
-    public void onGuiClosed()
-    {
-        Keyboard.enableRepeatEvents(false);
-    }
-
     protected void keyTyped(char c, int i)
     {
         if(c == '\r')
@@ -256,6 +365,7 @@ public class GuiVersions extends AbstractGuiScreen
         super.mouseClicked(i, j, k);
     }
 
+    boolean reloadList;
     public void drawScreen(int i, int j)
     {
         resizeGui();
@@ -271,6 +381,10 @@ public class GuiVersions extends AbstractGuiScreen
             guiSlotVersion.drawScreen(i, j);
             versionsWereLoaded = true;
         } else {
+            if (reloadList) {
+                guiSlotVersion = new GuiSlotVersion(this, filteredVersions(), compare);
+                reloadList = false;
+            }
             guiSlotVersion.drawScreen(i, j);
         }
 
@@ -339,10 +453,14 @@ public class GuiVersions extends AbstractGuiScreen
     private Predicate<GuiSlotVersion.SelectableVersion> filter;
     private IVersionSelectListener onSelectListener;
     private GuiSlotVersion.ISelectableVersionCompare compare;
+    JFileChooser fileChooser = new JFileChooser();
 
     GuiToggleButton classicButton;
     GuiToggleButton indevButton;
     GuiToggleButton alphaButton;
     GuiToggleButton betaButton;
     GuiToggleButton releaseButton;
+    GuiButton playButton;
+    static DropTarget dropTarget = new DropTarget();
+
 }

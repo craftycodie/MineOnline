@@ -47,7 +47,8 @@ public class GuiTexturePacks extends AbstractGuiScreen
                 if (LegacyGameManager.isInGame())
                     LegacyGameManager.setGUIScreen(parent);
                 else
-                    MenuManager.setMenuScreen(parent);            }
+                    MenuManager.setMenuScreen(parent);
+            }
         }));
     }
 

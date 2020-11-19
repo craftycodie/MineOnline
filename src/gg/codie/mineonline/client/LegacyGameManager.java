@@ -170,6 +170,8 @@ public class LegacyGameManager {
             Canvas mcCanvas = Display.getParent();
             Mouse.setCursorPosition((mcCanvas.getWidth() / 2) + DisplayManager.getFrame().getInsets().left, mcCanvas.getHeight() / 2);
             Mouse.setGrabbed(false);
+        } else {
+            LegacyGameManager.getGuiScreen().onGuiClosed();
         }
 
         if (guiScreen == null) {

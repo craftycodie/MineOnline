@@ -11,6 +11,7 @@ import gg.codie.mineonline.gui.rendering.FontRenderer;
 import gg.codie.mineonline.gui.rendering.Loader;
 import gg.codie.mineonline.gui.screens.AbstractGuiScreen;
 import gg.codie.mineonline.gui.screens.GuiIngameMenu;
+import gg.codie.mineonline.gui.screens.GuiMainMenu;
 import gg.codie.mineonline.lwjgl.OnCreateListener;
 import gg.codie.mineonline.lwjgl.OnDestroyListener;
 import gg.codie.mineonline.lwjgl.OnUpdateListener;
