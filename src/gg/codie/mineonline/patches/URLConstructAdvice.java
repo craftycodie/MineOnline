@@ -28,9 +28,6 @@ public class URLConstructAdvice {
             if (url.contains("pc.realms."))
                 return;
 
-            // Fix for RuBeta's resource files.
-            url = url.replace("http://client.rubeta.net/resources/b1.7.3/", "http://s3.amazonaws.com/MinecraftResources");
-
             boolean DEV = (boolean)ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.Globals").getField("DEV").get(null);
 
             if(DEV) {
@@ -90,7 +87,7 @@ public class URLConstructAdvice {
                 String serverId = null;
                 String ip = null;
 
-                String[] args = url.replace("http://www.minecraft.net/game/checkserver.jsp?", "").split("&");
+                String[] args = url.replace("https://", "").replace("http://www.minecraft.net/game/checkserver.jsp?", "").split("&");
                 for (String arg : args) {
                     String[] keyValue = arg.split("=");
 
@@ -112,7 +109,8 @@ public class URLConstructAdvice {
                 boolean validJoin = (boolean)sessionServerClass.getMethod("hasJoined", String.class, String.class, String.class).invoke(
                         null,
                         username,
-                        serverId
+                        serverId,
+                        ip
                 );
 
                 if (validJoin)
