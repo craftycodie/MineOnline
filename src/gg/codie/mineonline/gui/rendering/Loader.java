@@ -182,7 +182,7 @@ public class Loader {
                 "/gui/inventory.png",
                 "/gui/items.png",
                 "/gui/unknown_pack.png",
-                "/mineonline/gui/icons.png",
+                "/gui/icons.png",
 
                 "/armor/chain_1.png",
                 "/armor/chain_2.png",
