@@ -189,7 +189,7 @@ public class GuiMainMenu extends AbstractGuiScreen
         GL11.glPopMatrix();
         if (MenuManager.isUpdateAvailable())
             drawString("Update Available!", 2, getHeight() - 20, 0xffff00);
-        drawString("MineOnline " + (Globals.DEV ? "Dev " + Globals.LAUNCHER_VERSION + " (" + Globals.BRANCH + ")" : Globals.LAUNCHER_VERSION), 2, getHeight() - 10, 0xffffff);
+        drawString("MineOnline " + (Globals.DEV ? "Dev " : "") + Globals.LAUNCHER_VERSION + (!Globals.BRANCH.equalsIgnoreCase("release") ? " (" + Globals.BRANCH + ")" : ""), 2, getHeight() - 10, 0xffffff);
         String s = "Made by @codieradical <3";
         drawString(s, getWidth() - FontRenderer.minecraftFontRenderer.getStringWidth(s) - 2, getHeight() - 10, 0xffffff);
         super.drawScreen(i, j);

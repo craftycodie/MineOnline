@@ -264,11 +264,11 @@ public class RubyDungLauncher implements IMinecraftAppletWrapper {
                     GL11.glViewport(0, 0, DisplayManager.getCanvas().getWidth(), DisplayManager.getCanvas().getHeight());
 
                     if (Loader.singleton != null) {
-                        if (Globals.DEV) {
+                        if (!Globals.BRANCH.equalsIgnoreCase("release")) {
                             int ypos = 2;
                             if (minecraftVersion.ingameVersionString != null && !Settings.singleton.getHideVersionString())
                                 ypos = 12;
-                            FontRenderer.minecraftFontRenderer.drawStringWithShadow("MineOnline Dev " + Globals.LAUNCHER_VERSION + " (" + Globals.BRANCH + ")", 2, ypos, 0xffffff);
+                            FontRenderer.minecraftFontRenderer.drawStringWithShadow("MineOnline " + (Globals.DEV ? "Dev " : "") + Globals.LAUNCHER_VERSION + " (" + Globals.BRANCH + ")", 2, ypos, 0xffffff);
                         }
 
                         GUIScale scaledresolution = new GUIScale(getWidth(), getHeight());

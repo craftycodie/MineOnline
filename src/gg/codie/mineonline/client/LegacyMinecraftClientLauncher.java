@@ -336,11 +336,11 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
 //                    GL11.glEnable(3008 /*GL_ALPHA_TEST*/);
 //                    GL11.glEnable(3553 /*GL_TEXTURE_2D*/);
 
-                    if (Globals.DEV) {
+                    if (!Globals.BRANCH.equalsIgnoreCase("release")) {
                         int ypos = 2;
                         if (minecraftVersion.ingameVersionString != null && !Settings.singleton.getHideVersionString())
                             ypos = 12;
-                        FontRenderer.minecraftFontRenderer.drawStringWithShadow("MineOnline Dev " + Globals.LAUNCHER_VERSION + " (" + Globals.BRANCH + ")", 2, ypos, 0xffffff);
+                        FontRenderer.minecraftFontRenderer.drawStringWithShadow("MineOnline " + (Globals.DEV ? "Dev " : "") + Globals.LAUNCHER_VERSION + " (" + Globals.BRANCH + ")", 2, ypos, 0xffffff);
                     }
 
                     GUIScale scaledresolution = new GUIScale(getWidth(), getHeight());
