@@ -1,6 +1,6 @@
 package gg.codie.mineonline.patches.lwjgl;
 
-import gg.codie.mineonline.patches.minecraft.HDTextureFXHelper;
+import gg.codie.mineonline.patches.mcpatcher.HDTextureFXHelper;
 import net.bytebuddy.asm.Advice;
 
 import java.awt.*;

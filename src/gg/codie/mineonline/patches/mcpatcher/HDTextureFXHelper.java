@@ -1,4 +1,4 @@
-package gg.codie.mineonline.patches.minecraft;
+package gg.codie.mineonline.patches.mcpatcher;
 
 import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.Settings;
@@ -118,6 +118,14 @@ public class HDTextureFXHelper {
 //            textureName = "/custom_fire_e_w.png";
 //        else if (x == 96 && y == 64) // Clock
 //            textureName = "/custom_fire_e_w.png";
+
+        else if (x == 224 && y == 32) // 1/4
+            textureName = "/custom_water_flowing.png";
+
+//        else if (x == 224 && y == 48) // 1/4
+//            textureName = "/custom_gear_clockwise.png";
+//        else if (x == 240 && y == 48) // 1/4
+//            textureName = "/custom_gear_counterclockwise.png";
 
         else if (x == 224 && y == 192) // 1/4
             textureName = "/custom_water_flowing.png";

@@ -5,7 +5,7 @@ import gg.codie.mineonline.Settings;
 import gg.codie.mineonline.client.LegacyGameManager;
 import gg.codie.mineonline.gui.rendering.textures.EGUITexture;
 import gg.codie.mineonline.patches.HashMapPutAdvice;
-import gg.codie.mineonline.patches.minecraft.HDTextureFXHelper;
+import gg.codie.mineonline.patches.mcpatcher.HDTextureFXHelper;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
