@@ -82,7 +82,10 @@ public class GuiLogin extends AbstractGuiScreen
         if (MenuManager.isUpdateAvailable() && j > getHeight() - 20 && j < getHeight() - 10 && i < FontRenderer.minecraftFontRenderer.getStringWidth("Update Available!")) {
             ClickSound.play();
             try {
-                Desktop.getDesktop().browse(new URI(Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/download"));
+                if (Globals.BRANCH.equalsIgnoreCase("release"))
+                    Desktop.getDesktop().browse(new URI(Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/download"));
+                else
+                    Desktop.getDesktop().browse(new URI("https://github.com/codieradical/MineOnline/releases"));
             } catch (Exception ex) {
 
             }
