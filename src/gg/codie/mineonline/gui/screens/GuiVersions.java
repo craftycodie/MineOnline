@@ -20,6 +20,7 @@ import java.awt.dnd.DropTargetAdapter;
 import java.awt.dnd.DropTargetDropEvent;
 import java.io.File;
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Predicate;
@@ -187,6 +188,16 @@ public class GuiVersions extends AbstractGuiScreen
 
         playButton.enabled = filteredVersions.size() > 0;
 
+        filteredVersions = filteredVersions.stream().sorted(new Comparator<GuiSlotVersion.SelectableVersion>() {
+            @Override
+            public int compare(GuiSlotVersion.SelectableVersion o1, GuiSlotVersion.SelectableVersion o2) {
+                String o1Name = o1.version != null ? o1.version.name : o1.path;
+                String o2Name = o2.version != null ? o2.version.name : o2.path;
+
+                return o1Name.compareTo(o2Name);
+            }
+        }).collect(Collectors.toList());
+
         return filteredVersions;
     }
 
@@ -230,7 +241,7 @@ public class GuiVersions extends AbstractGuiScreen
                 compare = new GuiSlotVersion.ISelectableVersionCompare() {
                     @Override
                     public boolean isDefault(GuiSlotVersion.SelectableVersion selectableVersion) {
-                        return ((selectableVersion.version != null && lastSelected.version != null && selectableVersion.version.downloadURL != null && lastSelected.version.downloadURL != null) && selectableVersion.version.downloadURL.equals(lastSelected.version.downloadURL)) || lastSelected.path.equals(selectableVersion.path);
+                        return ((selectableVersion.version != null && lastSelected != null && lastSelected.version != null && selectableVersion.version.downloadURL != null && lastSelected.version.downloadURL != null) && selectableVersion.version.downloadURL.equals(lastSelected.version.downloadURL)) || (lastSelected != null && selectableVersion.path != null && lastSelected.path != null && lastSelected.path.equals(selectableVersion.path));
                     }
                 };
                 guiSlotVersion = new GuiSlotVersion(thisScreen, filteredVersions(), compare);
@@ -245,7 +256,7 @@ public class GuiVersions extends AbstractGuiScreen
                 compare = new GuiSlotVersion.ISelectableVersionCompare() {
                     @Override
                     public boolean isDefault(GuiSlotVersion.SelectableVersion selectableVersion) {
-                        return ((selectableVersion.version != null && lastSelected.version != null && selectableVersion.version.downloadURL != null && lastSelected.version.downloadURL != null) && selectableVersion.version.downloadURL.equals(lastSelected.version.downloadURL)) || lastSelected.path.equals(selectableVersion.path);
+                        return ((selectableVersion.version != null && lastSelected != null && lastSelected.version != null && selectableVersion.version.downloadURL != null && lastSelected.version.downloadURL != null) && selectableVersion.version.downloadURL.equals(lastSelected.version.downloadURL)) || (lastSelected != null && selectableVersion.path != null && lastSelected.path != null && lastSelected.path.equals(selectableVersion.path));
                     }
                 };
                 guiSlotVersion = new GuiSlotVersion(thisScreen, filteredVersions(), compare);
@@ -260,7 +271,7 @@ public class GuiVersions extends AbstractGuiScreen
                 compare = new GuiSlotVersion.ISelectableVersionCompare() {
                     @Override
                     public boolean isDefault(GuiSlotVersion.SelectableVersion selectableVersion) {
-                        return ((selectableVersion.version != null && lastSelected.version != null && selectableVersion.version.downloadURL != null && lastSelected.version.downloadURL != null) && selectableVersion.version.downloadURL.equals(lastSelected.version.downloadURL)) || lastSelected.path.equals(selectableVersion.path);
+                        return ((selectableVersion.version != null && lastSelected != null && lastSelected.version != null && selectableVersion.version.downloadURL != null && lastSelected.version.downloadURL != null) && selectableVersion.version.downloadURL.equals(lastSelected.version.downloadURL)) || (lastSelected != null && selectableVersion.path != null && lastSelected.path != null && lastSelected.path.equals(selectableVersion.path));
                     }
                 };
                 guiSlotVersion = new GuiSlotVersion(thisScreen, filteredVersions(), compare);
@@ -275,7 +286,7 @@ public class GuiVersions extends AbstractGuiScreen
                 compare = new GuiSlotVersion.ISelectableVersionCompare() {
                     @Override
                     public boolean isDefault(GuiSlotVersion.SelectableVersion selectableVersion) {
-                        return ((selectableVersion.version != null && lastSelected.version != null && selectableVersion.version.downloadURL != null && lastSelected.version.downloadURL != null) && selectableVersion.version.downloadURL.equals(lastSelected.version.downloadURL)) || lastSelected.path.equals(selectableVersion.path);
+                        return ((selectableVersion.version != null && lastSelected != null && lastSelected.version != null && selectableVersion.version.downloadURL != null && lastSelected.version.downloadURL != null) && selectableVersion.version.downloadURL.equals(lastSelected.version.downloadURL)) || (lastSelected != null && selectableVersion.path != null && lastSelected.path != null && lastSelected.path.equals(selectableVersion.path));
                     }
                 };
                 guiSlotVersion = new GuiSlotVersion(thisScreen, filteredVersions(), compare);
@@ -290,7 +301,7 @@ public class GuiVersions extends AbstractGuiScreen
                 compare = new GuiSlotVersion.ISelectableVersionCompare() {
                     @Override
                     public boolean isDefault(GuiSlotVersion.SelectableVersion selectableVersion) {
-                        return ((selectableVersion.version != null && lastSelected.version != null && selectableVersion.version.downloadURL != null && lastSelected.version.downloadURL != null) && selectableVersion.version.downloadURL.equals(lastSelected.version.downloadURL)) || lastSelected.path.equals(selectableVersion.path);
+                        return ((selectableVersion.version != null && lastSelected != null && lastSelected.version != null && selectableVersion.version.downloadURL != null && lastSelected.version.downloadURL != null) && selectableVersion.version.downloadURL.equals(lastSelected.version.downloadURL)) || (lastSelected != null && selectableVersion.path != null && lastSelected.path != null && lastSelected.path.equals(selectableVersion.path));
                     }
                 };
                 guiSlotVersion = new GuiSlotVersion(thisScreen, filteredVersions(), compare);
