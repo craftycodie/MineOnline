@@ -5,7 +5,6 @@
   "clientName": "Classic 0.30",
   "hasHeartbeat": true,
   "clientVersions": [
-    "c0.30-c-renew",
     "c0.30-c",
     "c0.30-s",
     "c0.29_02",
