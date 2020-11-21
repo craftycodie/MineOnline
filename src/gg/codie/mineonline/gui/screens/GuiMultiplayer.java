@@ -150,7 +150,7 @@ public class GuiMultiplayer extends AbstractGuiScreen
         GuiSlotVersion.ISelectableVersionCompare compare = new GuiSlotVersion.ISelectableVersionCompare() {
             @Override
             public boolean isDefault(GuiSlotVersion.SelectableVersion selectableVersion) {
-                return selectableVersion.version != null && selectableVersion.version.baseVersion.equals(serverVersion.baseVersion);
+                return selectableVersion.version != null && selectableVersion.version.baseVersion.equals(serverVersion.clientVersions[0]);
             }
         };
 
