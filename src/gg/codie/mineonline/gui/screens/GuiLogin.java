@@ -220,6 +220,8 @@ public class GuiLogin extends AbstractGuiScreen
 //        drawGradientRect(0, 0, getWidth(), getHeight(), 0x55ffffff, 0xffffff);
 //        drawGradientRect(0, 0, getWidth(), getHeight(), 0, 0x55000000);
         GL11.glBindTexture(3553 /*GL_TEXTURE_2D*/, Loader.singleton.getGuiTexture(EGUITexture.MINEONLINE_LOGO));
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, 10241, GL11.GL_NEAREST);
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, 10240, GL11.GL_NEAREST);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         drawTexturedModalRect(k + 0, byte0 + 0, 0, 0, 155, 44);
         drawTexturedModalRect(k + 155, byte0 + 0, 0, 45, 155, 44);
