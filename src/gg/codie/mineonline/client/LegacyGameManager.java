@@ -163,6 +163,8 @@ public class LegacyGameManager {
     }
 
     public static void setGUIScreen(AbstractGuiScreen guiScreen) {
+        if (!getVersion().useMineOnlineMenu)
+            return;
 
         if (LegacyGameManager.guiScreen == null) {
             InputPatch.isFocused = false;

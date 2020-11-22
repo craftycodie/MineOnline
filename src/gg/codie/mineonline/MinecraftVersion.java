@@ -55,6 +55,7 @@ public class MinecraftVersion {
     public final boolean useResizePatch;
     public final boolean hasNetherPortalTexture;
     public final URL downloadURL;
+    public final boolean useMineOnlineMenu;
 
     public MinecraftVersion(
             String sha256,
@@ -88,7 +89,8 @@ public class MinecraftVersion {
             EMinecraftOptionsVersion optionsVersion,
             boolean useResizePatch,
             boolean hasNetherPortalTexture,
-            URL downloadURL
+            URL downloadURL,
+            boolean useMineOnlineMenu
     ) {
         this.sha256 = sha256;
         this.name = name;
@@ -122,6 +124,7 @@ public class MinecraftVersion {
         this.useResizePatch = useResizePatch;
         this.hasNetherPortalTexture = hasNetherPortalTexture;
         this.downloadURL = downloadURL;
+        this.useMineOnlineMenu = useMineOnlineMenu;
     }
 
     public MinecraftVersion(JSONObject object) {
@@ -156,6 +159,7 @@ public class MinecraftVersion {
         optionsVersion = object.optEnum(EMinecraftOptionsVersion.class, "optionsVersion", EMinecraftOptionsVersion.DEFAULT);
         useResizePatch = object.optBoolean("useResizePatch", false);
         hasNetherPortalTexture = object.optBoolean("hasNetherPortalTexture", true);
+        useMineOnlineMenu = object.optBoolean("useMineOnlineMenu", true);
 
         URL parsedURL = null;
 
@@ -370,7 +374,8 @@ public class MinecraftVersion {
                     EMinecraftOptionsVersion.DEFAULT,
                     false,
                     true,
-                    null
+                    null,
+                    false
             );
         } catch (Exception ex) {
             System.err.println("Bad launcher JSON for version " + jarFile);
