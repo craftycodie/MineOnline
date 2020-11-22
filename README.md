@@ -3,6 +3,7 @@ As I enter my final year of University I will be taking a break from this projec
 Everything will remain online and I will do my best to ensure things keep running smoothly, but I will be unable to tackle big changes until June 2021.
 If you find this project interesting, and know your way around Java, please consider supporting helping me get through the issues :)
 See the "For Developers" section below.
+These days, I'm not the only person working on this, so progress will continue, slowly.
 - Codie
 
 
