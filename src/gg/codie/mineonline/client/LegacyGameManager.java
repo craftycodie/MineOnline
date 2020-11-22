@@ -8,12 +8,9 @@ import gg.codie.mineonline.MinecraftVersion;
 import gg.codie.mineonline.Settings;
 import gg.codie.mineonline.gui.GUIScale;
 import gg.codie.mineonline.gui.rendering.DisplayManager;
-import gg.codie.mineonline.gui.rendering.FontRenderer;
 import gg.codie.mineonline.gui.rendering.Loader;
 import gg.codie.mineonline.gui.screens.AbstractGuiScreen;
-import gg.codie.mineonline.patches.ClassPatch;
-import gg.codie.mineonline.patches.HashMapPatch;
-import gg.codie.mineonline.patches.StringPatch;
+import gg.codie.mineonline.patches.*;
 import gg.codie.mineonline.patches.lwjgl.LWJGLGL11GLEnableAdvice;
 import gg.codie.mineonline.patches.lwjgl.LWJGLGL11GLOrthoAdvice;
 import gg.codie.mineonline.patches.lwjgl.LWJGLGL11Patch;
@@ -24,6 +21,7 @@ import org.lwjgl.opengl.Display;
 
 import java.awt.*;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class LegacyGameManager {
 
@@ -66,6 +64,7 @@ public class LegacyGameManager {
         HashMapPatch.init();
         ClassPatch.init();
         LWJGLGL11Patch.init();
+        PaulscodePatch.watchCodecs();
 
         if (version != null) {
             if (version.ingameVersionString != null) {
@@ -116,6 +115,8 @@ public class LegacyGameManager {
         Settings.singleton.saveSettings();
         ClassPatch.texturePack = texturePack;
         Loader.reloadMinecraftTextures();
+        PaulscodeCodecJOrbisConstructorAdvice.resetCodecs();
+        HashMapPutAdvice.sounds.clear();
     }
 
     public static void setFOV(int fov) {
