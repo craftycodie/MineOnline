@@ -37,7 +37,7 @@ class GuiTexturePackSlot extends GuiSlot
             }
         }
 
-        if (LegacyGameManager.isInGame()) {
+        if (LegacyGameManager.isInGame() && !Settings.singleton.getTexturePack().equals(((TexturePackBase)list.get(i)).texturePackFileName)) {
             LegacyGameManager.setTexturePack(((TexturePackBase)list.get(i)).texturePackFileName);
         }
 
