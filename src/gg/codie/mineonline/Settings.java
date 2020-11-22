@@ -1,6 +1,7 @@
 package gg.codie.mineonline;
 
 import gg.codie.minecraft.client.*;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.lwjgl.input.Keyboard;
 
@@ -86,9 +87,14 @@ public class Settings implements IMinecraftOptionsHandler {
 
             singleton = new Settings();
 
-            if (new File(LauncherFiles.MINEONLINE_SETTINGS_FILE).exists()) {
-                singleton.loadSettings();
-            } else {
+            try {
+                if (new File(LauncherFiles.MINEONLINE_SETTINGS_FILE).exists()) {
+                    singleton.loadSettings();
+                } else {
+                    singleton.resetSettings();
+                }
+            } catch (JSONException ex) {
+                System.err.println("Bad settings file, resetting.");
                 singleton.resetSettings();
             }
         } catch (ClassNotFoundException ex) {
