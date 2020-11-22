@@ -74,7 +74,6 @@ public class GuiSlotServer extends GuiSlot
         guiMultiplayer.drawString(versionName, j + 2, k + 12, 0x808080);
         String users = server.isMineOnline ? "" + server.users : "?";
         guiMultiplayer.drawString(users + "/" + server.maxUsers, (j + 215) - FontRenderer.minecraftFontRenderer.getStringWidth(users + "/" + server.maxUsers), k + 12, 0x808080);
-        ///parent.drawString(server.onlineMode ? "Online Mode" : "", j + 2 + FontRenderer.minecraftFontRenderer.getStringWidth( "Online Mode"), k + 1, 0x55FF55);
 
         if (server.motd != null)
             guiMultiplayer.drawString(server.motd, j + 2, k + 12 + 11, 0x808080);
@@ -84,8 +83,11 @@ public class GuiSlotServer extends GuiSlot
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
 
-        if (server.onlineMode)
+        if (server.featured)
+            guiMultiplayer.drawTexturedModalRect(j + 190, k, 20, 184, 10, 8);
+        else if (server.onlineMode)
             guiMultiplayer.drawTexturedModalRect(j + 190, k, 20, 176, 10, 8);
+
 
         int connectionIconTypeIndex;
         int connectionIconIndex;
@@ -141,9 +143,12 @@ public class GuiSlotServer extends GuiSlot
             guiMultiplayer.setTooltip(tooltipText);
         }
 
-        if (server.onlineMode && field_35409_k >= (j + 190) - byte0 && field_35408_l >= k - byte0 && field_35409_k <= j + 190 + 10 + byte0 && field_35408_l <= k + 8 + byte0)
+        if (field_35409_k >= (j + 190) - byte0 && field_35408_l >= k - byte0 && field_35409_k <= j + 190 + 10 + byte0 && field_35408_l <= k + 8 + byte0)
         {
-            guiMultiplayer.setTooltip("Online Mode (Secured)");
+            if (server.featured)
+                guiMultiplayer.setTooltip("Featured Server");
+            else if (server.onlineMode)
+                guiMultiplayer.setTooltip("Online Mode (Secured)");
         }
         // TODO: Players Tooltip
 //        if(field_35409_k >= (j + 205) - byte0 && field_35408_l >= k && field_35409_k <= j + 205 + 10 + byte0 && field_35408_l <= k + 12 + byte0)
