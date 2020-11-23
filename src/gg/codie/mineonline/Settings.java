@@ -71,7 +71,7 @@ public class Settings implements IMinecraftOptionsHandler {
     public static final String KEY_CODE_INGAME_MENU = "keyCodeIngameMenu";
 
 
-    private static final int SETTINGS_VERSION_NUMBER = 10;
+    private static final int SETTINGS_VERSION_NUMBER = 12;
 
     private static boolean readonly = true;
 
