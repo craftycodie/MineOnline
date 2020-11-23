@@ -539,6 +539,8 @@ public class Settings implements IMinecraftOptionsHandler {
             saveSettings();
         } catch (IOException ex) {
             saveSettings();
+        } catch (JSONException ex) {
+            resetSettings();
         }
     }
 

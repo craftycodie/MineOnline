@@ -164,17 +164,16 @@ public class GuiMainMenu extends AbstractGuiScreen
         resizeGui();
 
         Tessellator tessellator = Tessellator.instance;
-        char c = '\u0112';
-        int k = getWidth() / 2 - c / 2;
-        byte byte0 = 30;
+        int k = (int)(((getWidth() / 2) - (90 * 1.6)) / 1.6f);
 //        drawGradientRect(0, 0, getWidth(), getHeight(), 0x55ffffff, 0xffffff);
 //        drawGradientRect(0, 0, getWidth(), getHeight(), 0, 0x55000000);
         GL11.glBindTexture(3553 /*GL_TEXTURE_2D*/, Loader.singleton.getGuiTexture(EGUITexture.MINEONLINE_LOGO));
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, 10241, GL11.GL_NEAREST);
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, 10240, GL11.GL_NEAREST);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        drawTexturedModalRect(k + 0, byte0 + 0, 0, 0, 155, 44);
-        drawTexturedModalRect(k + 155, byte0 + 0, 0, 45, 155, 44);
+        GL11.glScalef(1.6f, 1.6f, 1);
+        drawTexturedModalRect(k, 22, 0, 0, 180, 180);
+        GL11.glScalef(0.625f, 0.625f, 1);
         tessellator.setColorOpaque_I(0xffffff);
         GL11.glPushMatrix();
         GL11.glTranslatef(getWidth() / 2 + 90, 70F, 0.0F);
