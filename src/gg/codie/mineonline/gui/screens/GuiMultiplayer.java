@@ -1,5 +1,6 @@
 package gg.codie.mineonline.gui.screens;
 
+import gg.codie.minecraft.api.BetaEvolutionsUtils;
 import gg.codie.minecraft.api.LauncherAPI;
 import gg.codie.mineonline.*;
 import gg.codie.mineonline.api.MineOnlineAPI;
@@ -138,6 +139,11 @@ public class GuiMultiplayer extends AbstractGuiScreen
                     else {
                         Display.destroy();
                         DisplayManager.getFrame().dispose();
+                        if(server.usingBetaEvolutions || true) {
+                            BetaEvolutionsUtils betaEvolutions = new BetaEvolutionsUtils(false);
+                            BetaEvolutionsUtils.VerificationResults verificationResults = betaEvolutions.authenticateUser(Session.session.getUsername(), Session.session.getAccessToken());
+                            System.out.println("[Beta Evolutions] Authenticated with " + verificationResults.getSuccessful() + "/" + verificationResults.getTotal() + " BetaEVO nodes.");
+                        }
                         System.exit(0);
                     }
                 } catch (Exception ex) {

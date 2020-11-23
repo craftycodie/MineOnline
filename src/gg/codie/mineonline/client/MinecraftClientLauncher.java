@@ -87,7 +87,6 @@ public class MinecraftClientLauncher {
 
             processBuilder.inheritIO().start();
 
-            Runtime.getRuntime().halt(0);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
