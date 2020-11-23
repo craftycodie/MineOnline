@@ -104,8 +104,3 @@ If you would like to help out, a good place to start is the ZenHub workspace, al
 As per the license you are welcome to use the launcher code under non-commercial conditions.
 
 I also request that forks remain up to date for security.
-
-
-## Credit
-
-- I wouldn't have been able to make this LWJGL UI without [ThinMatrix](https://twitter.com/thinmatrix)'s LWJGL 2 tutorial.
