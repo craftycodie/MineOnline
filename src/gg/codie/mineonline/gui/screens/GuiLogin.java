@@ -36,7 +36,7 @@ public class GuiLogin extends AbstractGuiScreen
         try
         {
             ArrayList arraylist = new ArrayList();
-            BufferedReader bufferedreader = new BufferedReader(new InputStreamReader((GuiLogin.class).getResourceAsStream("/title/splashes.txt"), Charset.forName("UTF-8")));
+            BufferedReader bufferedreader = new BufferedReader(new InputStreamReader((GuiLogin.class).getResourceAsStream("/mineonline/gui/splashes.txt"), Charset.forName("UTF-8")));
             String s = "";
             do
             {

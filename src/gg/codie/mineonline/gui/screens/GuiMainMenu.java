@@ -4,9 +4,6 @@ import gg.codie.minecraft.client.gui.Tessellator;
 import gg.codie.mineonline.Globals;
 import gg.codie.mineonline.MinecraftVersion;
 import gg.codie.mineonline.MinecraftVersionRepository;
-import gg.codie.mineonline.Session;
-import gg.codie.mineonline.api.MineOnlineAPI;
-import gg.codie.mineonline.client.LegacyGameManager;
 import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.gui.components.GuiButton;
 import gg.codie.mineonline.gui.rendering.DisplayManager;
@@ -35,7 +32,7 @@ public class GuiMainMenu extends AbstractGuiScreen
         try
         {
             ArrayList arraylist = new ArrayList();
-            BufferedReader bufferedreader = new BufferedReader(new InputStreamReader((GuiMainMenu.class).getResourceAsStream("/title/splashes.txt"), Charset.forName("UTF-8")));
+            BufferedReader bufferedreader = new BufferedReader(new InputStreamReader((GuiMainMenu.class).getResourceAsStream("/mineonline/gui/splashes.txt"), Charset.forName("UTF-8")));
             String s = "";
             do
             {
