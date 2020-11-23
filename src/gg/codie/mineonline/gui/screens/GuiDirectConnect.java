@@ -142,7 +142,7 @@ public class GuiDirectConnect extends AbstractGuiScreen
         try {
             try {
                 String ip = as[0];
-                String port = as.length > 1 ? as[2] : "25565";
+                String port = as.length > 1 ? as[1] : "25565";
                 String mppass = MineOnlineAPI.getMpPass(Session.session.getAccessToken(), Session.session.getUsername(), Session.session.getUuid(), ip, port);
                 MinecraftVersion.launchMinecraft(jarPath, as[0], (as.length <= 1 ? "25565" : as[1]), mppass);
 

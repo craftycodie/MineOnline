@@ -1,10 +1,10 @@
 package gg.codie.mineonline;
 
 import gg.codie.mineonline.api.MineOnlineAPI;
-import gg.codie.mineonline.gui.ProgressDialog;
 import gg.codie.common.utils.ArrayUtils;
 import gg.codie.common.utils.JSONUtils;
 import gg.codie.common.utils.MD5Checksum;
+import gg.codie.mineonline.gui.ProgressDialog;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -251,7 +251,6 @@ public class MinecraftVersionRepository {
                         continue;
 
 
-                    ProgressDialog.setSubMessage("Downloading new version info for " + ((JSONObject) versionPathObject).getString("name"));
                     System.out.println("Downloaded new version info " + ((JSONObject) versionPathObject).getString("name"));
 
                     String downloadVersionText = MineOnlineAPI.getVersionInfo(((JSONObject) versionPathObject).getString("url"));

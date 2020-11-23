@@ -171,7 +171,6 @@ public class MinecraftVersion {
 
     public String download() throws IOException {
         HttpURLConnection httpConnection = (java.net.HttpURLConnection) (downloadURL.openConnection());
-
         InputStream in = httpConnection.getInputStream();
 
         File clientJar = new File(LauncherFiles.MINECRAFT_VERSIONS_PATH + baseVersion + File.separator + "client.jar");

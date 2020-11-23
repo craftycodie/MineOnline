@@ -1,17 +1,14 @@
 package gg.codie.mineonline.gui.screens;
 
 import gg.codie.minecraft.client.gui.Tessellator;
-import gg.codie.mineonline.Globals;
 import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.MinecraftVersion;
 import gg.codie.mineonline.MinecraftVersionRepository;
-import gg.codie.mineonline.gui.ProgressDialog;
 
 import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.net.URL;
 import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.List;

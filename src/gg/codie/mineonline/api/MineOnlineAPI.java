@@ -2,8 +2,6 @@ package gg.codie.mineonline.api;
 
 import gg.codie.minecraft.api.SessionServer;
 import gg.codie.mineonline.Globals;
-import gg.codie.mineonline.LauncherFiles;
-import gg.codie.mineonline.gui.ProgressDialog;
 import gg.codie.common.utils.SHA1Utils;
 import org.json.JSONArray;
 import org.json.JSONObject;
