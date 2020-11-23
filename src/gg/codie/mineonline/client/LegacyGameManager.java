@@ -6,6 +6,7 @@ import gg.codie.minecraft.client.Options;
 import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.MinecraftVersion;
 import gg.codie.mineonline.Settings;
+import gg.codie.mineonline.discord.DiscordRPCHandler;
 import gg.codie.mineonline.gui.GUIScale;
 import gg.codie.mineonline.gui.rendering.DisplayManager;
 import gg.codie.mineonline.gui.rendering.FontRenderer;
@@ -108,6 +109,7 @@ public class LegacyGameManager {
     }
 
     public static void closeGame() {
+        DiscordRPCHandler.stop();
         getAppletWrapper().closeApplet();
     }
 

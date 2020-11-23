@@ -123,7 +123,6 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
                     // ignore.
                 }
             }
-            Runtime.getRuntime().halt(0);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -195,13 +194,13 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
         DisplayManager.getFrame().addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                closeApplet();
+                LegacyGameManager.closeGame();
             }
         });
 
         Runtime.getRuntime().addShutdownHook(new Thread() {
             public void run() {
-                closeApplet();
+                LegacyGameManager.closeGame();
             }
         });
 
@@ -222,6 +221,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
         LWJGLDisplayPatch.destroyListener = new OnDestroyListener() {
             @Override
             public void onDestroyEvent() throws Throwable {
+                DisplayManager.getFrame().dispose();
                 System.exit(0);
             }
         };
@@ -508,16 +508,6 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
         fullscreen = Settings.singleton.getFullscreen();
 
         minecraftApplet.start();
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (minecraftApplet.isActive()) {
-
-                }
-                Runtime.getRuntime().halt(0);
-            }
-        }).run();
     }
 
     boolean f1WasDown = false;
@@ -552,9 +542,62 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
         return height;
     }
 
+    boolean closing;
     @Override
     public void closeApplet(){
-        Runtime.getRuntime().halt(0);
+        if (closing)
+            return;
+        else
+            closing = true;
+
+        try {
+            // The MC game loop has a condition, if it's canvas is null and close has been requested, the game will close.
+            // So in order to gracefully shut down (ie save and exit) the canvas is set to null here using reflection.
+            // If this fails for some reason, shutdown will be forced.
+
+            Field minecraftField = null;
+
+            try {
+                minecraftField = minecraftApplet.getClass().getDeclaredField("minecraft");
+            } catch (NoSuchFieldException ne) {
+                for (Field field : minecraftApplet.getClass().getDeclaredFields()) {
+                    if (field.getType().getPackage() == minecraftApplet.getClass().getPackage()) {
+                        minecraftField = field;
+                        break;
+                    }
+                }
+            }
+
+            Class<?> minecraftClass = minecraftField.getType();
+
+            Field canvasField = null;
+
+            // Since Minecraft is obfuscated we can't just get the width and height fields by name.
+            // Hopefully, they're always the first two ints. Seems likely.
+            for (Field field : minecraftClass.getDeclaredFields()) {
+                if (Canvas.class.equals(field.getType())) {
+                    canvasField = field;
+                    break;
+                }
+            }
+
+            if (canvasField == null)
+                throw new ReflectiveOperationException("canvas not found");
+
+            canvasField.setAccessible(true);
+            minecraftField.setAccessible(true);
+
+            Object minecraft = minecraftField.get(minecraftApplet);
+            canvasField.set(minecraft, null);
+
+            LWJGLDisplayIsCloseRequestedAdvice.isCloseRequested = true;
+        } catch (ReflectiveOperationException ex) {
+            System.out.println("Failed to shutdown gracefully.");
+            ex.printStackTrace();
+            this.stop();
+            this.destroy();
+            System.exit(1);
+        }
     }
 
     @Override

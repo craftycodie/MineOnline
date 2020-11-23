@@ -5,10 +5,7 @@ import gg.codie.minecraft.server.*;
 import gg.codie.mineonline.MinecraftVersion;
 import gg.codie.mineonline.MinecraftVersionRepository;
 import gg.codie.mineonline.api.MineOnlineAPI;
-import gg.codie.mineonline.discord.DiscordChatBridge;
-import gg.codie.mineonline.discord.IMessageRecievedListener;
-import gg.codie.mineonline.discord.IShutdownListener;
-import gg.codie.mineonline.discord.MinotarAvatarProvider;
+import gg.codie.mineonline.discord.*;
 import gg.codie.mineonline.utils.Logging;
 import gg.codie.common.utils.MD5Checksum;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -172,7 +169,7 @@ public class MinecraftServerLauncher {
 
         Thread closeLauncher = new Thread() {
             public void run() {
-                Runtime.getRuntime().halt(0);
+                System.exit(0);
             }
         };
 

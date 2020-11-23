@@ -111,9 +111,6 @@ public class RubyDungLauncher implements IMinecraftAppletWrapper {
             DisplayManager.getFrame().setVisible(false);
 
             processBuilder.inheritIO().start();
-
-            Runtime.getRuntime().halt(0);
-
         } catch (Exception ex) {
             ex.printStackTrace();
         }

@@ -86,8 +86,6 @@ public class MinecraftClientLauncher {
             processBuilder.redirectInput(ProcessBuilder.Redirect.INHERIT);
 
             processBuilder.inheritIO().start();
-
-            Runtime.getRuntime().halt(0);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

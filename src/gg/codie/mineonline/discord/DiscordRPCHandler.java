@@ -5,6 +5,7 @@ import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.LibraryManager;
 import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.mineonline.api.MineOnlineServer;
+import gg.codie.mineonline.client.LegacyGameManager;
 import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.utils.JREUtils;
 import gg.codie.common.utils.OSUtils;
@@ -144,10 +145,12 @@ public class DiscordRPCHandler {
 
     static String externalIP;
 
+    private static Thread discordThread;
+
     public static void initialize(){
         externalIP = MineOnlineAPI.getExternalIP();
 
-        Thread discordThread = new Thread(() -> {
+        discordThread = new Thread(() -> {
             DiscordEventHandlers handlers = new DiscordEventHandlers.Builder().setReadyEventHandler((user) -> {
                 System.out.println("Discord logged in " + user.username + "#" + user.discriminator + "!");
                 DiscordRichPresence.Builder presence = new DiscordRichPresence.Builder("In the launcher.");
@@ -182,7 +185,11 @@ public class DiscordRPCHandler {
 
                         processBuilder.inheritIO().start();
 
-                        Runtime.getRuntime().halt(0);
+                        if (LegacyGameManager.isInGame()) {
+                            LegacyGameManager.closeGame();
+                        }
+
+                        System.exit(0);
                     } catch (Exception ex) {
                         JOptionPane.showMessageDialog(null, "Failed to join game.");
                     }
@@ -223,5 +230,9 @@ public class DiscordRPCHandler {
         discordThread.start();
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> discordThread.interrupt()));
+    }
+
+    public static void stop() {
+        discordThread.interrupt();
     }
 }
