@@ -233,6 +233,7 @@ public class DiscordRPCHandler {
     }
 
     public static void stop() {
-        discordThread.interrupt();
+        if (discordThread != null && !discordThread.isInterrupted())
+            discordThread.interrupt();
     }
 }

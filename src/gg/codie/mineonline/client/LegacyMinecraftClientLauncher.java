@@ -893,6 +893,10 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
             case "mppass":
                 value = MPPass;
                 break;
+
+            // Only used by the NFC mod.
+            case "uuid":
+                value = Session.session.getUuid();
             default:
                 //don't do anything
         }
