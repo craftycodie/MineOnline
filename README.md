@@ -103,11 +103,6 @@ If you would like to help out, a good place to start is the ZenHub workspace, al
 
 As per the license you are welcome to use the launcher code under non-commercial conditions.
 
-Note that the graphics code is VERY rough. I've never used LWJGL before, I've also never written game engine code on that level.
-I might tidy things up in future, if I get time. (See [#126](https://github.com/codieradical/MineOnline/issues/126))
-
-The GUI and menu code shall not be used for 'clone' projects (for instance, copying my API and pointing the launcher to it).
-
 I also request that forks remain up to date for security.
 
 
