@@ -4,8 +4,10 @@
 
 package gg.codie.mineonline.gui.screens;
 
+import com.johnymuffin.BetaEvolutionsUtils;
 import gg.codie.mineonline.*;
 import gg.codie.mineonline.api.MineOnlineAPI;
+import gg.codie.mineonline.api.MineOnlineServer;
 import gg.codie.mineonline.client.LegacyGameManager;
 import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.gui.components.GuiButton;
@@ -18,6 +20,7 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.Map;
@@ -138,13 +141,36 @@ public class GuiDirectConnect extends AbstractGuiScreen
 
         try {
             try {
-                String mppass = MineOnlineAPI.getMpPass(Session.session.getAccessToken(), Session.session.getUsername(), Session.session.getUuid(), as[0], (as.length <= 1 ? 25565 : parseIntWithDefault(as[1], 25565)) + "");
+                String ip = as[0];
+                String port = as.length > 1 ? as[2] : "25565";
+                String mppass = MineOnlineAPI.getMpPass(Session.session.getAccessToken(), Session.session.getUsername(), Session.session.getUuid(), ip, port);
                 MinecraftVersion.launchMinecraft(jarPath, as[0], (as.length <= 1 ? "25565" : as[1]), mppass);
 
-                if (LegacyGameManager.isInGame())
+                boolean usingBetaEvolutions = false;
+
+                try {
+                    MineOnlineServer server = MineOnlineAPI.getServer(ip, port);
+                    usingBetaEvolutions = server.usingBetaEvolutions;
+                } catch (IOException ex) {
+                    // ignore
+                }
+
+
+                if (LegacyGameManager.isInGame()) {
+                    if (usingBetaEvolutions) {
+                        BetaEvolutionsUtils betaEvolutions = new BetaEvolutionsUtils(true);
+                        BetaEvolutionsUtils.VerificationResults verificationResults = betaEvolutions.authenticateUser(Session.session.getUsername(), Session.session.getAccessToken());
+                        System.out.println("[Beta Evolutions] Authenticated with " + verificationResults.getSuccessful() + "/" + verificationResults.getTotal() + " BetaEVO nodes.");
+                    }
                     LegacyGameManager.closeGame();
-                else {
+                } else {
                     Display.destroy();
+                    DisplayManager.getFrame().setVisible(false);
+                    if(usingBetaEvolutions) {
+                        BetaEvolutionsUtils betaEvolutions = new BetaEvolutionsUtils(true);
+                        BetaEvolutionsUtils.VerificationResults verificationResults = betaEvolutions.authenticateUser(Session.session.getUsername(), Session.session.getAccessToken());
+                        System.out.println("[Beta Evolutions] Authenticated with " + verificationResults.getSuccessful() + "/" + verificationResults.getTotal() + " BetaEVO nodes.");
+                    }
                     DisplayManager.getFrame().dispose();
                     System.exit(0);
                 }

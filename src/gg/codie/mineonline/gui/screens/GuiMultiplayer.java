@@ -132,19 +132,20 @@ public class GuiMultiplayer extends AbstractGuiScreen
 
                     if (LegacyGameManager.isInGame()) {
                         if (server.usingBetaEvolutions) {
-                            BetaEvolutionsUtils betaEvolutions = new BetaEvolutionsUtils(false);
+                            BetaEvolutionsUtils betaEvolutions = new BetaEvolutionsUtils(true);
                             BetaEvolutionsUtils.VerificationResults verificationResults = betaEvolutions.authenticateUser(Session.session.getUsername(), Session.session.getAccessToken());
                             System.out.println("[Beta Evolutions] Authenticated with " + verificationResults.getSuccessful() + "/" + verificationResults.getTotal() + " BetaEVO nodes.");
                         }
                         LegacyGameManager.closeGame();
                     } else {
                         Display.destroy();
-                        DisplayManager.getFrame().dispose();
+                        DisplayManager.getFrame().setVisible(false);
                         if(server.usingBetaEvolutions) {
-                            BetaEvolutionsUtils betaEvolutions = new BetaEvolutionsUtils(false);
+                            BetaEvolutionsUtils betaEvolutions = new BetaEvolutionsUtils(true);
                             BetaEvolutionsUtils.VerificationResults verificationResults = betaEvolutions.authenticateUser(Session.session.getUsername(), Session.session.getAccessToken());
                             System.out.println("[Beta Evolutions] Authenticated with " + verificationResults.getSuccessful() + "/" + verificationResults.getTotal() + " BetaEVO nodes.");
                         }
+                        DisplayManager.getFrame().dispose();
                         System.exit(0);
                     }
                 } catch (Exception ex) {
