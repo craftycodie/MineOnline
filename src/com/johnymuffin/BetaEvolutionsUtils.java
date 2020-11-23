@@ -1,4 +1,4 @@
-package gg.codie.minecraft.api;
+package com.johnymuffin;
 
 
 import org.json.JSONException;

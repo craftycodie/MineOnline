@@ -122,42 +122,26 @@ public class MinecraftVersionRepository {
 
     // This is kinda heavy, that's why it's cached. So avoid it as much as possible.
     private void loadInstalledVersions() {
-        try (FileInputStream input = new FileInputStream(MINEONLINE_JARS_JSON_FILE)) {
-            // load a settings file
-            byte[] buffer = new byte[8096];
-            int bytes_read = 0;
-            StringBuffer stringBuffer = new StringBuffer();
-            while ((bytes_read = input.read(buffer, 0, 8096)) != -1) {
-                for (int i = 0; i < bytes_read; i++) {
-                    stringBuffer.append((char) buffer[i]);
-                }
-            }
+        String[] jarPaths = installedVersionJSON.has(INSTALLED_VERSIONS) ? JSONUtils.getStringArray(installedVersionJSON.getJSONArray(INSTALLED_VERSIONS)) : new String[0];
 
-            installedVersionJSON = new JSONObject(stringBuffer.toString());
+        for(String jarPath : jarPaths) {
+            File jar = new File(jarPath);
+            if (!jar.exists())
+                continue;
 
-            String[] jarPaths = installedVersionJSON.has(INSTALLED_VERSIONS) ? JSONUtils.getStringArray(installedVersionJSON.getJSONArray(INSTALLED_VERSIONS)) : new String[0];
+            MinecraftVersion version = getVersion(jarPath);
 
-            for(String jarPath : jarPaths) {
-                File jar = new File(jarPath);
-                if (!jar.exists())
-                    continue;
-
-                MinecraftVersion version = getVersion(jarPath);
-
-                if(version == null) {
-                    try {
-                        if (!MinecraftVersion.isPlayableJar(jarPath)) {
-                            continue;
-                        }
-                    } catch (Exception ex) {
+            if(version == null) {
+                try {
+                    if (!MinecraftVersion.isPlayableJar(jarPath)) {
                         continue;
                     }
+                } catch (Exception ex) {
+                    continue;
                 }
-
-                installedVersions.put(jarPath, version);
             }
-        } catch (IOException ex) {
-            saveInstalledVersions();
+
+            installedVersions.put(jarPath, version);
         }
     }
 
@@ -294,6 +278,22 @@ public class MinecraftVersionRepository {
     }
 
     private void loadVersions(boolean onlyKnownVersionInfo, String loadJarPath) {
+        try (FileInputStream input = new FileInputStream(MINEONLINE_JARS_JSON_FILE)) {
+            // load a settings file
+            byte[] buffer = new byte[8096];
+            int bytes_read = 0;
+            StringBuffer stringBuffer = new StringBuffer();
+            while ((bytes_read = input.read(buffer, 0, 8096)) != -1) {
+                for (int i = 0; i < bytes_read; i++) {
+                    stringBuffer.append((char) buffer[i]);
+                }
+            }
+
+            installedVersionJSON = new JSONObject(stringBuffer.toString());
+        } catch (IOException ex) {
+            saveInstalledVersions();
+        }
+
         if (!onlyKnownVersionInfo) {
             // If there's a resource version that's not in the cache, extract it.
             ProgressDialog.setSubMessage("Extracting version information...");
@@ -315,18 +315,12 @@ public class MinecraftVersionRepository {
             }
 //            if (!Globals.DEV) {
             // Fetch latest versions from the API
-            ProgressDialog.setSubMessage("Downloading latest version information...");
-            ProgressDialog.setProgress(44);
             downloadVersionInfo();
 //            }
         }
         // Load cached versions
-        ProgressDialog.setSubMessage("Reading version information...");
-        ProgressDialog.setProgress(48);
         versions = getVersions(LauncherFiles.MINEONLINE_VERSIONS_FOLDER);
         // Load custom versions
-        ProgressDialog.setSubMessage("Reading custom version information......");
-        ProgressDialog.setProgress(52);
         customVersions = getVersions(LauncherFiles.MINEONLINE_CUSTOM_VERSIONS_FOLDER);
         //Load installed versions
         if (loadJarPath != null)
@@ -337,8 +331,6 @@ public class MinecraftVersionRepository {
             @Override
             public void run() {
                 // Load installed versions
-                ProgressDialog.setSubMessage("Loading installed versions...");
-                ProgressDialog.setProgress(56);
                 loadInstalledVersions();
                 // Load official launcher installed versions
                 loadOfficialLauncherVersions();

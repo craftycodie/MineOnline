@@ -17,42 +17,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 
 public class MineOnlineAPI {
-
-    public static void downloadVersion(String baseVersion) throws IOException {
-        try {
-            URL jarUrl = new URL(Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/clients/" + baseVersion + ".jar");
-
-//            ProgressDialog.showProgress("Downloading", null);
-//            ProgressDialog.setMessage("Minecraft " + baseVersion);
-
-            HttpURLConnection httpConnection = (java.net.HttpURLConnection) (jarUrl.openConnection());
-
-            long completeFileSize = httpConnection.getContentLength();
-            InputStream in = httpConnection.getInputStream();
-
-            File clientJar = new File(LauncherFiles.MINECRAFT_VERSIONS_PATH + baseVersion + File.separator + "client.jar");
-            clientJar.getParentFile().mkdirs();
-            OutputStream out = new java.io.FileOutputStream(LauncherFiles.MINECRAFT_VERSIONS_PATH + baseVersion + File.separator + "client.jar", false);
-
-            final byte[] data = new byte[1024];
-            long downloadedFileSize = 0;
-            int count;
-            while ((count = in.read(data, 0, 1024)) != -1) {
-                downloadedFileSize += count;
-
-                final int currentProgress = (int) (((double) downloadedFileSize) / ((double) completeFileSize) * 100d);
-
-                ProgressDialog.setProgress(currentProgress);
-
-                out.write(data, 0, count);
-            }
-            ProgressDialog.setProgress(100);
-        } catch (Exception ex) {
-            ProgressDialog.setProgress(100);
-            throw ex;
-        }
-    }
-
     public static String getMpPass(String accessToken, String username, String userID, String serverIP, String serverPort) {
 
         try {

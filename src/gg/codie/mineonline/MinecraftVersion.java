@@ -8,13 +8,8 @@ import gg.codie.common.utils.MD5Checksum;
 import gg.codie.common.utils.OSUtils;
 import org.json.JSONObject;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
+import java.io.*;
+import java.net.*;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -173,6 +168,24 @@ public class MinecraftVersion {
         downloadURL = parsedURL;
     }
 
+
+    public String download() throws IOException {
+        HttpURLConnection httpConnection = (java.net.HttpURLConnection) (downloadURL.openConnection());
+
+        InputStream in = httpConnection.getInputStream();
+
+        File clientJar = new File(LauncherFiles.MINECRAFT_VERSIONS_PATH + baseVersion + File.separator + "client.jar");
+        clientJar.getParentFile().mkdirs();
+        OutputStream out = new java.io.FileOutputStream(LauncherFiles.MINECRAFT_VERSIONS_PATH + baseVersion + File.separator + "client.jar", false);
+
+        final byte[] data = new byte[1024];
+        int count;
+        while ((count = in.read(data, 0, 1024)) != -1) {
+            out.write(data, 0, count);
+        }
+
+        return LauncherFiles.MINECRAFT_VERSIONS_PATH + baseVersion + File.separator + "client.jar";
+    }
 
     public static String getAppletClass(String path) throws IOException {
         JarFile jarFile = new JarFile(path);

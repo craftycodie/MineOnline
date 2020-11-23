@@ -1,22 +1,18 @@
 package gg.codie.mineonline.gui.screens;
 
-import gg.codie.minecraft.api.BetaEvolutionsUtils;
-import gg.codie.minecraft.api.LauncherAPI;
+import com.johnymuffin.BetaEvolutionsUtils;
 import gg.codie.mineonline.*;
 import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.mineonline.api.MineOnlineServer;
 import gg.codie.mineonline.api.MineOnlineServerRepository;
 import gg.codie.mineonline.client.LegacyGameManager;
-import gg.codie.mineonline.gui.events.IOnClickListener;
 import gg.codie.mineonline.server.ThreadPollServers;
 import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.gui.components.GuiButton;
 import gg.codie.mineonline.gui.rendering.DisplayManager;
 import gg.codie.mineonline.gui.rendering.FontRenderer;
-import gg.codie.mineonline.utils.JREUtils;
 import org.lwjgl.opengl.Display;
 
-import java.io.File;
 import java.util.*;
 import java.util.function.Predicate;
 
@@ -134,9 +130,14 @@ public class GuiMultiplayer extends AbstractGuiScreen
                     String mppas = MineOnlineAPI.getMpPass(Session.session.getAccessToken(), Session.session.getUsername(), Session.session.getUuid(), server.ip, server.port + "");
                     MinecraftVersion.launchMinecraft(path, server.ip, server.port + "", mppas);
 
-                    if (LegacyGameManager.isInGame())
+                    if (LegacyGameManager.isInGame()) {
+                        if (server.usingBetaEvolutions) {
+                            BetaEvolutionsUtils betaEvolutions = new BetaEvolutionsUtils(false);
+                            BetaEvolutionsUtils.VerificationResults verificationResults = betaEvolutions.authenticateUser(Session.session.getUsername(), Session.session.getAccessToken());
+                            System.out.println("[Beta Evolutions] Authenticated with " + verificationResults.getSuccessful() + "/" + verificationResults.getTotal() + " BetaEVO nodes.");
+                        }
                         LegacyGameManager.closeGame();
-                    else {
+                    } else {
                         Display.destroy();
                         DisplayManager.getFrame().dispose();
                         if(server.usingBetaEvolutions) {

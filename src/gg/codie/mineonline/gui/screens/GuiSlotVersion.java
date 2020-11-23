@@ -87,6 +87,8 @@ public class GuiSlotVersion extends GuiSlot
                 out.write(data, 0, count);
             }
 
+            MinecraftVersionRepository.getSingleton().addInstalledVersion(LauncherFiles.MINECRAFT_VERSIONS_PATH + version.version.baseVersion + File.separator + "client.jar");
+
             return LauncherFiles.MINECRAFT_VERSIONS_PATH + version.version.baseVersion + File.separator + "client.jar";
         }
 

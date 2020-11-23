@@ -109,7 +109,8 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
             }
             processBuilder.directory(new File(System.getProperty("user.dir")));
 
-            DisplayManager.getFrame().setVisible(false);
+            if (DisplayManager.getFrame() != null)
+                DisplayManager.getFrame().setVisible(false);
 
             Process gameProcess = processBuilder.inheritIO().start();
 

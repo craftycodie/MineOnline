@@ -1,7 +1,7 @@
 package gg.codie.mineonline.gui;
 
 import gg.codie.minecraft.api.AuthServer;
-import gg.codie.minecraft.api.LauncherAPI;
+import com.johnymuffin.BetaEvolutionsUtils;
 import gg.codie.minecraft.api.MojangAPI;
 import gg.codie.minecraft.client.gui.Tessellator;
 import gg.codie.mineonline.*;
@@ -19,6 +19,7 @@ import gg.codie.mineonline.gui.screens.GuiMainMenu;
 import gg.codie.mineonline.utils.LastLogin;
 import gg.codie.mineonline.utils.Logging;
 import org.json.JSONObject;
+import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
@@ -29,10 +30,7 @@ import javax.imageio.ImageIO;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.InputStream;
+import java.io.*;
 import java.util.Arrays;
 import java.util.Set;
 
@@ -97,15 +95,7 @@ public class MenuManager {
         if(Arrays.stream(args).anyMatch(arg -> arg.equals("-skipupdates")))
             skipUpdates = true;
 
-        if (!skipUpdates) {
-            ProgressDialog.showProgress("Loading MineOnline", closeListener);
-            ProgressDialog.setMessage("Loading LWJGL");
-        }
-
         LibraryManager.updateNativesPath();
-
-        ProgressDialog.setMessage("Checking for updates");
-        ProgressDialog.setProgress(20);
 
         formopen = true;
 
@@ -116,9 +106,6 @@ public class MenuManager {
                 ex.printStackTrace();
             }
         }
-
-        ProgressDialog.setMessage("Loading Minecraft versions");
-        ProgressDialog.setProgress(40);
 
         boolean multiinstance = false;
         String quicklaunch = null;
@@ -153,6 +140,10 @@ public class MenuManager {
             }
         }
 
+        if (quicklaunch == null && !skipUpdates) {
+            showLoadingScreen();
+        }
+
         // Load this before showing the display.
         MinecraftVersionRepository.getSingleton(skipUpdates, quicklaunch);
 
@@ -164,9 +155,6 @@ public class MenuManager {
                 return;
             }
         }
-
-        ProgressDialog.setMessage("Logging in");
-        ProgressDialog.setProgress(60);
 
         LastLogin lastLogin = null;
 
@@ -196,17 +184,7 @@ public class MenuManager {
             }
         }
 
-        ProgressDialog.setMessage("Preparing MineOnline");
-        ProgressDialog.setProgress(80);
-
         Settings.singleton.loadSettings(true);
-
-        DisplayManager.init();
-
-        ProgressDialog.setMessage("Loading done.");
-        ProgressDialog.setProgress(100);
-
-
 
         if (sessionToken != null && username != null) {
             new Session(username, sessionToken, lastLogin.clientToken, uuid, true);
@@ -238,27 +216,32 @@ public class MenuManager {
                                     mppass = MineOnlineAPI.getMpPass(Session.session.getAccessToken(), Session.session.getUsername(), Session.session.getUuid(), mineOnlineServer.ip, "" + mineOnlineServer.port);
                                 }
 
+                                if (mineOnlineServer.usingBetaEvolutions) {
+                                    BetaEvolutionsUtils betaEvolutions = new BetaEvolutionsUtils(false);
+                                    BetaEvolutionsUtils.VerificationResults verificationResults = betaEvolutions.authenticateUser(Session.session.getUsername(), Session.session.getAccessToken());
+                                    System.out.println("[Beta Evolutions] Authenticated with " + verificationResults.getSuccessful() + "/" + verificationResults.getTotal() + " BetaEVO nodes.");
+                                }
+
                                 MinecraftVersion.launchMinecraft(path, mineOnlineServer.ip, "" + mineOnlineServer.port, mppass);
                                 return;
                             }
                         }
 
                         try {
-                            File clientJar = new File(LauncherFiles.MINECRAFT_VERSIONS_PATH + compatibleClientBaseVersion + File.separator + "client.jar");
-                            try {
-                                MineOnlineAPI.downloadVersion(compatibleClientBaseVersion);
-                            } catch (Exception ex) {
-                                // ignore
-                            }
-                            if (!clientJar.exists())
-                                LauncherAPI.downloadVersion(compatibleClientBaseVersion);
+                            String path = serverVersion.download();
 
-                            MinecraftVersionRepository.getSingleton().addInstalledVersion(clientJar.getPath());
                             String mppass = null;
                             if(serverVersion != null && serverVersion.hasHeartbeat) {
                                 mppass = MineOnlineAPI.getMpPass(Session.session.getAccessToken(), Session.session.getUsername(), Session.session.getUuid(), mineOnlineServer.ip, "" + mineOnlineServer.port);
                             }
-                            MinecraftVersion.launchMinecraft(clientJar.getPath(), mineOnlineServer.ip, "" + mineOnlineServer.port, mppass);
+
+                            if (mineOnlineServer.usingBetaEvolutions) {
+                                BetaEvolutionsUtils betaEvolutions = new BetaEvolutionsUtils(false);
+                                BetaEvolutionsUtils.VerificationResults verificationResults = betaEvolutions.authenticateUser(Session.session.getUsername(), Session.session.getAccessToken());
+                                System.out.println("[Beta Evolutions] Authenticated with " + verificationResults.getSuccessful() + "/" + verificationResults.getTotal() + " BetaEVO nodes.");
+                            }
+
+                            MinecraftVersion.launchMinecraft(path, mineOnlineServer.ip, "" + mineOnlineServer.port, mppass);
                             return;
                         } catch (Exception ex) {
                             ex.printStackTrace();
@@ -289,61 +272,8 @@ public class MenuManager {
             return;
         }
 
-        DisplayManager.createDisplay();
-        Mouse.create();
-        Keyboard.create();
-
-        Loader loader = new Loader();
-
-        new GUIScale(Display.getParent().getWidth(), Display.getParent().getHeight());
-
-        GL11.glEnable(3553 /*GL_TEXTURE_2D*/);
-        GL11.glShadeModel(7425 /*GL_SMOOTH*/);
-        GL11.glClearDepth(1.0D);
-        GL11.glEnable(2929 /*GL_DEPTH_TEST*/);
-        GL11.glDepthFunc(515);
-        GL11.glEnable(3008 /*GL_ALPHA_TEST*/);
-        GL11.glAlphaFunc(516, 0.1F);
-        GL11.glCullFace(1029 /*GL_BACK*/);
-        GL11.glMatrixMode(5889 /*GL_PROJECTION*/);
-        GL11.glLoadIdentity();
-        GL11.glMatrixMode(5888 /*GL_MODELVIEW0_ARB*/);
-
-        GL11.glClear(16640);
-        GL11.glMatrixMode(5889 /*GL_PROJECTION*/);
-        GL11.glLoadIdentity();
-        GL11.glOrtho(0.0D, GUIScale.lastScaledWidth(), GUIScale.lastScaledHeight(), 0.0D, 1000D, 3000D);
-        GL11.glMatrixMode(5888 /*GL_MODELVIEW0_ARB*/);
-        GL11.glLoadIdentity();
-        GL11.glTranslatef(0.0F, 0.0F, -2000F);
-        GL11.glViewport(0, 0, Display.getParent().getWidth(), Display.getParent().getHeight());
-        GL11.glClearColor(0.0F, 0.0F, 0.0F, 0.0F);
-        Tessellator tessellator = Tessellator.instance;
-        GL11.glDisable(2896 /*GL_LIGHTING*/);
-        GL11.glEnable(3553 /*GL_TEXTURE_2D*/);
-        GL11.glDisable(2912 /*GL_FOG*/);
-        GL11.glBindTexture(3553 /*GL_TEXTURE_2D*/, Loader.singleton.getGuiTexture(EGUITexture.LOADING));
-        tessellator.startDrawingQuads();
-        tessellator.setColorOpaque_I(0xffffff);
-        tessellator.addVertexWithUV(0.0D, Display.getParent().getHeight(), 0.0D, 0.0D, 0.0D);
-        tessellator.addVertexWithUV(Display.getParent().getWidth(), Display.getParent().getHeight(), 0.0D, 0.0D, 0.0D);
-        tessellator.addVertexWithUV(Display.getParent().getWidth(), 0.0D, 0.0D, 0.0D, 0.0D);
-        tessellator.addVertexWithUV(0.0D, 0.0D, 0.0D, 0.0D, 0.0D);
-        tessellator.draw();
-        char c = '\u0100';
-        char c1 = '\u0100';
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        tessellator.setColorOpaque_I(0xffffff);
-        scaledTessellator((GUIScale.lastScaledWidth() - c) / 2, (GUIScale.lastScaledHeight() - c1) / 2, 0, 0, c, c1);
-        GL11.glDisable(2896 /*GL_LIGHTING*/);
-        GL11.glDisable(2912 /*GL_FOG*/);
-        GL11.glEnable(3008 /*GL_ALPHA_TEST*/);
-        GL11.glAlphaFunc(516, 0.1F);
-        Display.swapBuffers();
-
-        DisplayManager.getFrame().addWindowListener(closeListener);
-
-        Keyboard.enableRepeatEvents(true);
+        if (DisplayManager.getFrame() == null)
+            showLoadingScreen();
 
         if(Session.session != null && Session.session.isOnline())
             if(joinserver != null)
@@ -419,6 +349,65 @@ public class MenuManager {
         DisplayManager.closeDisplay();
 
         DisplayManager.getFrame().removeWindowListener(closeListener);
+    }
+
+    private static void showLoadingScreen() throws LWJGLException {
+        DisplayManager.init();
+        DisplayManager.createDisplay();
+        Mouse.create();
+        Keyboard.create();
+
+        new Loader();
+
+        new GUIScale(Display.getParent().getWidth(), Display.getParent().getHeight());
+
+        GL11.glEnable(3553 /*GL_TEXTURE_2D*/);
+        GL11.glShadeModel(7425 /*GL_SMOOTH*/);
+        GL11.glClearDepth(1.0D);
+        GL11.glEnable(2929 /*GL_DEPTH_TEST*/);
+        GL11.glDepthFunc(515);
+        GL11.glEnable(3008 /*GL_ALPHA_TEST*/);
+        GL11.glAlphaFunc(516, 0.1F);
+        GL11.glCullFace(1029 /*GL_BACK*/);
+        GL11.glMatrixMode(5889 /*GL_PROJECTION*/);
+        GL11.glLoadIdentity();
+        GL11.glMatrixMode(5888 /*GL_MODELVIEW0_ARB*/);
+
+        GL11.glClear(16640);
+        GL11.glMatrixMode(5889 /*GL_PROJECTION*/);
+        GL11.glLoadIdentity();
+        GL11.glOrtho(0.0D, GUIScale.lastScaledWidth(), GUIScale.lastScaledHeight(), 0.0D, 1000D, 3000D);
+        GL11.glMatrixMode(5888 /*GL_MODELVIEW0_ARB*/);
+        GL11.glLoadIdentity();
+        GL11.glTranslatef(0.0F, 0.0F, -2000F);
+        GL11.glViewport(0, 0, Display.getParent().getWidth(), Display.getParent().getHeight());
+        GL11.glClearColor(0.0F, 0.0F, 0.0F, 0.0F);
+        Tessellator tessellator = Tessellator.instance;
+        GL11.glDisable(2896 /*GL_LIGHTING*/);
+        GL11.glEnable(3553 /*GL_TEXTURE_2D*/);
+        GL11.glDisable(2912 /*GL_FOG*/);
+        GL11.glBindTexture(3553 /*GL_TEXTURE_2D*/, Loader.singleton.getGuiTexture(EGUITexture.LOADING));
+        tessellator.startDrawingQuads();
+        tessellator.setColorOpaque_I(0xffffff);
+        tessellator.addVertexWithUV(0.0D, Display.getParent().getHeight(), 0.0D, 0.0D, 0.0D);
+        tessellator.addVertexWithUV(Display.getParent().getWidth(), Display.getParent().getHeight(), 0.0D, 0.0D, 0.0D);
+        tessellator.addVertexWithUV(Display.getParent().getWidth(), 0.0D, 0.0D, 0.0D, 0.0D);
+        tessellator.addVertexWithUV(0.0D, 0.0D, 0.0D, 0.0D, 0.0D);
+        tessellator.draw();
+        char c = '\u0100';
+        char c1 = '\u0100';
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        tessellator.setColorOpaque_I(0xffffff);
+        scaledTessellator((GUIScale.lastScaledWidth() - c) / 2, (GUIScale.lastScaledHeight() - c1) / 2, 0, 0, c, c1);
+        GL11.glDisable(2896 /*GL_LIGHTING*/);
+        GL11.glDisable(2912 /*GL_FOG*/);
+        GL11.glEnable(3008 /*GL_ALPHA_TEST*/);
+        GL11.glAlphaFunc(516, 0.1F);
+        Display.swapBuffers();
+
+        DisplayManager.getFrame().addWindowListener(closeListener);
+
+        Keyboard.enableRepeatEvents(true);
     }
 
     private static void panorama(int i, int j, float f)

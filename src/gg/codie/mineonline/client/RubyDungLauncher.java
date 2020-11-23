@@ -108,7 +108,8 @@ public class RubyDungLauncher implements IMinecraftAppletWrapper {
             processBuilder.redirectErrorStream(true);
             processBuilder.redirectInput(ProcessBuilder.Redirect.INHERIT);
 
-            DisplayManager.getFrame().setVisible(false);
+            if (DisplayManager.getFrame() != null)
+                DisplayManager.getFrame().setVisible(false);
 
             processBuilder.inheritIO().start();
         } catch (Exception ex) {
