@@ -139,7 +139,7 @@ public class GuiMultiplayer extends AbstractGuiScreen
                     else {
                         Display.destroy();
                         DisplayManager.getFrame().dispose();
-                        if(server.usingBetaEvolutions || true) {
+                        if(server.usingBetaEvolutions) {
                             BetaEvolutionsUtils betaEvolutions = new BetaEvolutionsUtils(false);
                             BetaEvolutionsUtils.VerificationResults verificationResults = betaEvolutions.authenticateUser(Session.session.getUsername(), Session.session.getAccessToken());
                             System.out.println("[Beta Evolutions] Authenticated with " + verificationResults.getSuccessful() + "/" + verificationResults.getTotal() + " BetaEVO nodes.");
