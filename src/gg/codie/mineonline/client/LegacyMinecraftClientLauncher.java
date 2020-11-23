@@ -123,7 +123,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
                     // ignore.
                 }
             }
-            Runtime.getRuntime().halt(0);
+
         } catch (Exception ex) {
             ex.printStackTrace();
         }
