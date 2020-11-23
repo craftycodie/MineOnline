@@ -384,6 +384,8 @@ public class GuiVersions extends AbstractGuiScreen
         tooltip = null;
         drawDefaultBackground();
 
+        playButton.enabled = guiSlotVersion != null && guiSlotVersion.getSelected() != null;
+
         if (MinecraftVersionRepository.getSingleton().isLoadingInstalledVersions()) {
             guiSlotVersion.drawScreen(i, j);
             drawCenteredString("Loading versions...", getWidth() / 2, getHeight() / 2, 0x808080);
