@@ -58,7 +58,7 @@ public class HashMapPutAdvice {
 
             ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.HashMapPutAdvice").getField("ignore").set(null, false);
 
-            ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.gui.rendering.Loader").getDeclaredMethod("reloadMinecraftTextures").invoke(null);
+            ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.gui.rendering.Loader").getDeclaredMethod("reloadMinecraftTexture", String.class).invoke(null, new Object[] { key });
         } catch (Exception ex) {
             ex.printStackTrace();
         }
