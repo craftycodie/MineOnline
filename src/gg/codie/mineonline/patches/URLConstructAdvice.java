@@ -87,7 +87,9 @@ public class URLConstructAdvice {
                 String serverId = null;
                 String ip = null;
 
-                String[] args = url.replace("https://", "").replace("http://www.minecraft.net/game/checkserver.jsp?", "").split("&");
+                String[] args = url
+                        .substring(url.lastIndexOf("?") + 1)
+                        .split("&");
                 for (String arg : args) {
                     String[] keyValue = arg.split("=");
 
