@@ -10,7 +10,13 @@ import gg.codie.mineonline.gui.rendering.Loader;
 import gg.codie.mineonline.gui.rendering.textures.EGUITexture;
 import org.lwjgl.opengl.GL11;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.util.Arrays;
+import java.util.Base64;
 
 public class GuiSlotServer extends GuiSlot
 {
@@ -70,9 +76,29 @@ public class GuiSlotServer extends GuiSlot
             }
         }
 
-//        TexturePackBase texturepackbase = MinecraftTexturePackRepository.singleton.getTexturePacks().get(i);
-//        texturepackbase.bindThumbnailTexture();
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, Loader.singleton.getGuiTexture(EGUITexture.UNKNOWN_PACK));
+        if (server.serverIcon != null) {
+            BufferedImage image;
+            byte[] imageByte;
+            try {
+                Base64.Decoder decoder = Base64.getDecoder();
+                imageByte = decoder.decode(server.serverIcon);
+                ByteArrayInputStream bis = new ByteArrayInputStream(imageByte);
+                image = ImageIO.read(bis);
+                bis.close();
+
+                ByteArrayOutputStream os = new ByteArrayOutputStream();
+                ImageIO.write(image, "png", os);
+                InputStream is = new ByteArrayInputStream(os.toByteArray());
+
+                GL11.glBindTexture(GL11.GL_TEXTURE_2D, Loader.singleton.loadTexture("/servers/" + server.ip + ":" + server.port + "/server-icon.png", is));
+            } catch (Exception e) {
+                GL11.glBindTexture(GL11.GL_TEXTURE_2D, Loader.singleton.getGuiTexture(EGUITexture.UNKNOWN_PACK));
+                e.printStackTrace();
+            }
+        } else {
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, Loader.singleton.getGuiTexture(EGUITexture.UNKNOWN_PACK));
+        }
+
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         tessellator.startDrawingQuads();
         tessellator.setColorOpaque_I(0xffffff);

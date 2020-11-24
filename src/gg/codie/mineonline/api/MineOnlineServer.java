@@ -24,8 +24,9 @@ public class MineOnlineServer {
     public final boolean dontListPlayers;
     public final boolean featured;
     public final boolean usingBetaEvolutions;
+    public final String serverIcon;
 
-    MineOnlineServer(String createdAt, String connectAddress, String ip, int port, int users, int maxUsers, String name, String md5, boolean isMineOnline, boolean onlineMode, String[] players, String motd, boolean dontListPlayers, boolean featured, boolean usingBetaEvolutions) {
+    MineOnlineServer(String createdAt, String connectAddress, String ip, int port, int users, int maxUsers, String name, String md5, boolean isMineOnline, boolean onlineMode, String[] players, String motd, boolean dontListPlayers, boolean featured, boolean usingBetaEvolutions, String serverIcon) {
         this.createdAt = createdAt;
         this.connectAddress = connectAddress;
         this.ip = ip;
@@ -41,6 +42,7 @@ public class MineOnlineServer {
         this.dontListPlayers = dontListPlayers;
         this.featured = featured;
         this.usingBetaEvolutions = usingBetaEvolutions;
+        this.serverIcon = serverIcon;
     }
 
     public static LinkedList<MineOnlineServer> parseServers(JSONArray jsonArray) {
@@ -78,7 +80,8 @@ public class MineOnlineServer {
                 object.optString("motd", null),
                 object.optBoolean("dontListPlayers", false),
                 object.optBoolean("featured", false),
-                object.getBoolean("useBetaEvolutionsAuth")
+                object.getBoolean("useBetaEvolutionsAuth"),
+                object.optString("serverIcon", null)
         );
     }
 }

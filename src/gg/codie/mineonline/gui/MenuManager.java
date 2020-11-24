@@ -38,8 +38,6 @@ public class MenuManager {
 
     public static boolean formopen = false;
 
-//    private static GUIText playerName;
-
     public static void setMenuScreen(AbstractGuiScreen guiScreen) {
         if(MenuManager.guiScreen != null)
             MenuManager.guiScreen.onGuiClosed();
