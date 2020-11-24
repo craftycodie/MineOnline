@@ -10,5 +10,6 @@
   "resourcesVersion": "nfc_187_02",
   "optionsVersion": "PREFOV",
   "info": "Beta 1.7.3 Mod",
-  "downloadURL": "https://mineonline.codie.gg/clients/nfc_187_02_mo.jar"
+  "downloadURL": "https://mineonline.codie.gg/clients/nfc_187_02_mo.jar",
+  "useTexturepackPatch": false
 }
