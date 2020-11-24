@@ -17,7 +17,7 @@ public class GuiSlotServer extends GuiSlot
 
     public GuiSlotServer(GuiMultiplayer guimultiplayer)
     {
-        super(guimultiplayer.getWidth(), guimultiplayer.getHeight(), 32, guimultiplayer.getHeight() - 55, 36);
+        super(guimultiplayer.getWidth(), guimultiplayer.getHeight(), 32, guimultiplayer.getHeight() - 55, 36, 304);
         guiMultiplayer = guimultiplayer;
     }
 
@@ -70,13 +70,25 @@ public class GuiSlotServer extends GuiSlot
             }
         }
 
-        guiMultiplayer.drawString(server.name, j + 2, k + 1, 0xffffff);
-        guiMultiplayer.drawString(versionName, j + 2, k + 12, 0x808080);
+//        TexturePackBase texturepackbase = MinecraftTexturePackRepository.singleton.getTexturePacks().get(i);
+//        texturepackbase.bindThumbnailTexture();
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, Loader.singleton.getGuiTexture(EGUITexture.UNKNOWN_PACK));
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        tessellator.startDrawingQuads();
+        tessellator.setColorOpaque_I(0xffffff);
+        tessellator.addVertexWithUV(j, k + l, 0.0D, 0.0D, 1.0D);
+        tessellator.addVertexWithUV(j + 32, k + l, 0.0D, 1.0D, 1.0D);
+        tessellator.addVertexWithUV(j + 32, k, 0.0D, 1.0D, 0.0D);
+        tessellator.addVertexWithUV(j, k, 0.0D, 0.0D, 0.0D);
+        tessellator.draw();
+
+        guiMultiplayer.drawString(server.name, j + 32 + 2, k + 1, 0xffffff);
+        guiMultiplayer.drawString(versionName, j + 32 + 2, k + 12, 0x808080);
         String users = server.isMineOnline ? "" + server.users : "?";
-        guiMultiplayer.drawString(users + "/" + server.maxUsers, (j + 215) - FontRenderer.minecraftFontRenderer.getStringWidth(users + "/" + server.maxUsers), k + 12, 0x808080);
+        guiMultiplayer.drawString(users + "/" + server.maxUsers, (j + slotWidth - 4) - FontRenderer.minecraftFontRenderer.getStringWidth(users + "/" + server.maxUsers), k + 12, 0x808080);
 
         if (server.motd != null)
-            guiMultiplayer.drawString(server.motd, j + 2, k + 12 + 11, 0x808080);
+            guiMultiplayer.drawString(server.motd, j + 32 + 2, k + 12 + 11, 0x808080);
 
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, Loader.singleton.getGuiTexture(EGUITexture.MINEONLINE_GUI_ICONS));
@@ -84,9 +96,9 @@ public class GuiSlotServer extends GuiSlot
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
 
         if (server.featured)
-            guiMultiplayer.drawTexturedModalRect(j + 190, k, 20, 184, 10, 8);
+            guiMultiplayer.drawTexturedModalRect(j + slotWidth - 29, k, 20, 184, 10, 8);
         else if (server.onlineMode)
-            guiMultiplayer.drawTexturedModalRect(j + 190, k, 20, 176, 10, 8);
+            guiMultiplayer.drawTexturedModalRect(j + slotWidth - 29, k, 20, 176, 10, 8);
 
 
         int connectionIconTypeIndex;
@@ -136,14 +148,14 @@ public class GuiSlotServer extends GuiSlot
             }
             tooltipText = "Polling..";
         }
-        guiMultiplayer.drawTexturedModalRect(j + 205, k, 0 + connectionIconTypeIndex * 10, 176 + connectionIconIndex * 8, 10, 8);
+        guiMultiplayer.drawTexturedModalRect(j + slotWidth - 14, k, 0 + connectionIconTypeIndex * 10, 176 + connectionIconIndex * 8, 10, 8);
         byte byte0 = 4;
-        if (field_35409_k >= (j + 205) - byte0 && field_35408_l >= k - byte0 && field_35409_k <= j + 205 + 10 + byte0 && field_35408_l <= k + 8 + byte0)
+        if (field_35409_k >= (j + slotWidth - 14) - byte0 && field_35408_l >= k - byte0 && field_35409_k <= j + (slotWidth - 14) + 10 + byte0 && field_35408_l <= k + 8 + byte0)
         {
             guiMultiplayer.setTooltip(tooltipText);
         }
 
-        if (field_35409_k >= (j + 190) - byte0 && field_35408_l >= k - byte0 && field_35409_k <= j + 190 + 10 + byte0 && field_35408_l <= k + 8 + byte0)
+        if (field_35409_k >= (j + slotWidth - 29) - byte0 && field_35408_l >= k - byte0 && field_35409_k <= j + (slotWidth - 29) + 10 + byte0 && field_35408_l <= k + 8 + byte0)
         {
             if (server.featured)
                 guiMultiplayer.setTooltip("Featured Server");

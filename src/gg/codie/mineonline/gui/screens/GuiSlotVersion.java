@@ -31,7 +31,7 @@ public class GuiSlotVersion extends GuiSlot
 
     public GuiSlotVersion(GuiVersions parent, List<SelectableVersion> versions, ISelectableVersionCompare compare)
     {
-        super(parent.getWidth(), parent.getHeight(), 32, parent.getHeight() - 55, 36);
+        super(parent.getWidth(), parent.getHeight(), 32, parent.getHeight() - 55, 36, 220);
         this.parent = parent;
         this.versions = versions;
 

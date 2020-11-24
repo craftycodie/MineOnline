@@ -10,8 +10,10 @@ import org.lwjgl.opengl.GL11;
 
 public abstract class GuiSlot
 {
+    protected final int slotWidth;
 
-    public GuiSlot(int width, int height, int top, int bottom, int i1)
+
+    public GuiSlot(int width, int height, int top, int bottom, int i1, int slotWidth)
     {
         initialClickY = -2F;
         selectedElement = -1;
@@ -23,6 +25,7 @@ public abstract class GuiSlot
         this.bottom = bottom;
         posZ = i1;
         right = width;
+        this.slotWidth = slotWidth;
 
         for (int i = 0; i < getSize();  i++) {
             if (isSelected(i)) {
@@ -83,7 +86,7 @@ public abstract class GuiSlot
         field_35408_l = j;
         drawBackground();
         int k = getSize();
-        int l = width / 2 + 124;
+        int l = width / 2 + (slotWidth / 2) + 2;
         int i1 = l + 6;
         if(MouseHandler.isMouseLeftDown())
         {
@@ -92,8 +95,8 @@ public abstract class GuiSlot
                 boolean flag = true;
                 if(j >= top && j <= bottom)
                 {
-                    int j1 = width / 2 - 110;
-                    int k1 = width / 2 + 110;
+                    int j1 = width / 2 - (slotWidth / 2);
+                    int k1 = width / 2 + (slotWidth / 2);
                     int i2 = ((j - top) + (int)amountScrolled) - 4;
                     int k2 = i2 / posZ;
                     if(i >= j1 && i <= k1 && k2 >= 0 && i2 >= 0 && k2 < k)
@@ -152,7 +155,7 @@ public abstract class GuiSlot
         }
         bindAmountScrolled();
         Tessellator tessellator = Tessellator.instance;
-        int l1 = width / 2 - 92 - 16;
+        int l1 = width / 2 - (slotWidth / 2) + 2;
         int j2 = (top + 4) - (int)amountScrolled;
         for(int l2 = 0; l2 < k; l2++)
         {
@@ -164,8 +167,8 @@ public abstract class GuiSlot
             }
             if(field_25123_p && isSelected(l2))
             {
-                int k4 = width / 2 - 110;
-                int i5 = width / 2 + 110;
+                int k4 = width / 2 - (slotWidth / 2);
+                int i5 = width / 2 + (slotWidth / 2);
                 GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
                 GL11.glDisable(GL11.GL_TEXTURE_2D);
                 tessellator.startDrawingQuads();

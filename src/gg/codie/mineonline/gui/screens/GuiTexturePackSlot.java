@@ -17,7 +17,7 @@ class GuiTexturePackSlot extends GuiSlot
 
     public GuiTexturePackSlot(GuiTexturePacks guitexturepacks)
     {
-        super(guitexturepacks.getWidth(), guitexturepacks.getHeight(), 32, (guitexturepacks.getHeight() - 55) + 4, 36);
+        super(guitexturepacks.getWidth(), guitexturepacks.getHeight(), 32, (guitexturepacks.getHeight() - 55) + 4, 36, 220);
         parentTexturePackGui = guitexturepacks;
     }
 
