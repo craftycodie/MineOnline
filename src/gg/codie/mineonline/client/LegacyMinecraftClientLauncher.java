@@ -421,7 +421,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
                             f2wasDown = false;
                         }
 
-                        if (Settings.singleton.getZoomKeyCode() != 0) {
+                        if (Settings.singleton.getZoomKeyCode() != 0 && minecraftVersion != null && minecraftVersion.useFOVPatch) {
                             if (Mouse.isGrabbed() && Keyboard.getEventKey() == Settings.singleton.getZoomKeyCode() && !Keyboard.isRepeatEvent() && Keyboard.getEventKeyState() && !zoomWasDown) {
                                 LWJGLGLUPatch.zoom();
                                 LWJGLGL11GLOrthoAdvice.hideHud = true;
