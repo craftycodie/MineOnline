@@ -560,6 +560,16 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
                 }
             }
 
+            // If it's not in the same package as the applet, it might be in the default package.
+            if (minecraftField == null) {
+                for (Field field : minecraftApplet.getClass().getDeclaredFields()) {
+                    if (field.getType().getPackage() == Package.getPackage("")) {
+                        minecraftField = field;
+                        break;
+                    }
+                }
+            }
+
             Class<?> minecraftClass = minecraftField.getType();
 
             Field canvasField = null;
@@ -583,7 +593,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
             canvasField.set(minecraft, null);
 
             LWJGLDisplayIsCloseRequestedAdvice.isCloseRequested = true;
-        } catch (ReflectiveOperationException ex) {
+        } catch (ReflectiveOperationException | NullPointerException ex) {
             System.out.println("Failed to shutdown gracefully.");
             ex.printStackTrace();
             this.stop();
@@ -645,6 +655,16 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
             } catch (NoSuchFieldException ne) {
                 for(Field field : minecraftApplet.getClass().getDeclaredFields()) {
                     if(field.getType().getPackage() == minecraftApplet.getClass().getPackage()) {
+                        minecraftField = field;
+                        break;
+                    }
+                }
+            }
+
+            // If it's not in the same package as the applet, it might be in the default package.
+            if (minecraftField == null) {
+                for (Field field : minecraftApplet.getClass().getDeclaredFields()) {
+                    if (field.getType().getPackage() == Package.getPackage("")) {
                         minecraftField = field;
                         break;
                     }
