@@ -9,7 +9,10 @@ import gg.codie.mineonline.discord.*;
 import gg.codie.mineonline.utils.Logging;
 import gg.codie.common.utils.MD5Checksum;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import sun.misc.BASE64Encoder;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.Arrays;
 import java.util.Collections;
@@ -44,7 +47,7 @@ public class MinecraftServerLauncher {
         minecraftVersion = MinecraftVersionRepository.getSingleton(true).getVersionByMD5(md5);
 
         try {
-            serverProperties = new Properties(jarPath);
+            serverProperties = new Properties(System.getProperty("user.dir"));
         } catch (Exception ex) {
             serverProperties = new Properties(null);
         }
@@ -405,7 +408,7 @@ public class MinecraftServerLauncher {
             updatedPlayerCount = false;
             try {
                 try {
-                    serverProperties = new Properties(jarPath);
+                    serverProperties = new Properties(System.getProperty("user.dir"));
                 } catch (Exception ex) {
                     serverProperties = new Properties(null);
                 }
@@ -416,6 +419,23 @@ public class MinecraftServerLauncher {
                 }
 
                 boolean whitelisted = serverProperties.isWhitelisted();
+
+                BufferedImage serverIconBufferedImage = ImageIO.read(new File(System.getProperty("user.dir") + File.separator + "server-icon.png"));
+                String serverIcon = null;
+
+                if (serverIconBufferedImage.getHeight() <= 64 && serverIconBufferedImage.getWidth() <= 64) {
+                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                    try {
+                        ImageIO.write(serverIconBufferedImage, "png", bos);
+                        byte[] bytes = bos.toByteArray();
+                        BASE64Encoder encoder = new BASE64Encoder();
+                        serverIcon = encoder.encode(bytes);
+                        serverIcon = serverIcon.replace(System.lineSeparator(), "");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        throw new RuntimeException();
+                    }
+                }
 
                 serverUUID = MineOnlineAPI.listServer(
                         serverProperties.serverIP(),
@@ -428,7 +448,8 @@ public class MinecraftServerLauncher {
                         whitelisted,
                         playerNames,
                         serverProperties.motd(),
-                        serverProperties.dontListPlayers()
+                        serverProperties.dontListPlayers(),
+                        serverIcon
                 );
             } catch (Exception e) {
                 e.printStackTrace();

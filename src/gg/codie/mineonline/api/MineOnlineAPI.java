@@ -239,7 +239,8 @@ public class MineOnlineAPI {
             boolean whitelisted,
             String[] playerNames,
             String motd,
-            boolean dontListPlayers
+            boolean dontListPlayers,
+            String serverIcon
     ) {
         HttpURLConnection connection = null;
 
@@ -259,6 +260,7 @@ public class MineOnlineAPI {
                 jsonObject.put("players", playerNames);
             jsonObject.put("motd", motd);
             jsonObject.put("dontListPlayers", dontListPlayers);
+            jsonObject.put("serverIcon", serverIcon);
 
             String json = jsonObject.toString();
 

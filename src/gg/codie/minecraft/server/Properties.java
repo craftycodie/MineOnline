@@ -18,10 +18,10 @@ public class Properties {
 
     protected java.util.Properties properties;
 
-    public Properties(String jarPath) throws IOException {
+    public Properties(String serverDir) throws IOException {
         properties = new java.util.Properties();
-        if (jarPath != null)
-            properties.load(new FileInputStream(new File(jarPath.replace(Paths.get(jarPath).getFileName().toString(), "server.properties"))));
+        if (serverDir != null)
+            properties.load(new FileInputStream(new File(serverDir + File.separator + "server.properties")));
     }
 
     public boolean isWhitelisted() {

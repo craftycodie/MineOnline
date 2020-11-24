@@ -70,7 +70,7 @@ public class MinecraftServerProcess {
 
         URLClassLoader classLoader = new URLClassLoader(new URL[] { Paths.get(args[0]).toUri().toURL() });
 
-        Properties serverProperties = new Properties(args[0]);
+        Properties serverProperties = new Properties(System.getProperty("user.dir"));
         URLPatch.redefineURL(serverProperties.serverIP(), "" + serverProperties.serverPort());
 
         Class mainClass = null;

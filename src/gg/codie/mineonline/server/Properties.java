@@ -12,8 +12,8 @@ public class Properties extends gg.codie.minecraft.server.Properties {
     protected static final String DONT_LIST_PLAYERS = "dont-list-players";
     protected static final String SERVERLIST_MOTD = "serverlist-motd";
 
-    public Properties(String jarPath) throws IOException {
-        super(jarPath);
+    public Properties(String serverDir) throws IOException {
+        super(serverDir);
     }
 
     public String serverIP() {
@@ -32,11 +32,29 @@ public class Properties extends gg.codie.minecraft.server.Properties {
         }
     }
 
-    public String discordToken() { return properties.getProperty(DISCORD_TOKEN, null); }
+    public String discordToken() {
+        String discordToken = properties.getProperty(DISCORD_TOKEN, null);
+        if (discordToken.isEmpty())
+            return null;
+        else
+            return discordToken;
+    }
 
-    public String discordChannel() { return properties.getProperty(DISCORD_CHANNEL, null); }
+    public String discordChannel() {
+        String discordChannel = properties.getProperty(DISCORD_CHANNEL, null);
+        if (discordChannel.isEmpty())
+            return null;
+        else
+            return discordChannel;
+    }
 
-    public String discordWebhookUrl() { return properties.getProperty(DISCORD_WEBHOOK_URL, null); }
+    public String discordWebhookUrl() {
+        String discordWebhookURL = properties.getProperty(DISCORD_WEBHOOK_URL, null);
+        if (discordWebhookURL.isEmpty())
+            return null;
+        else
+            return discordWebhookURL;
+    }
 
     public String versionMD5() {
         return properties.getProperty(VERSION_MD5, null);
