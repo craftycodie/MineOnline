@@ -883,9 +883,20 @@ public class Options implements IMinecraftOptionsHandler {
 
     @Override
     public void setInventoryKeyCode(int keyCode) {
+        String keyName;
+
+        switch (optionsVersion) {
+            case CLASSIC:
+                keyName = "key_Inventory";
+                break;
+            case DEFAULT:
+            default:
+                keyName = "key_key.inventory";
+        }
+
         try {
-            setOption("key_key.inventory", "" + keyCode);
-        } catch (IOException ex) {
+            setOption(keyName, "" + keyCode);
+        } catch (IOException | NumberFormatException ex) {
             // ignore
         }
     }
