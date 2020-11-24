@@ -15,10 +15,7 @@ import gg.codie.mineonline.gui.screens.AbstractGuiScreen;
 import gg.codie.mineonline.patches.ClassPatch;
 import gg.codie.mineonline.patches.HashMapPatch;
 import gg.codie.mineonline.patches.StringPatch;
-import gg.codie.mineonline.patches.lwjgl.LWJGLGL11GLEnableAdvice;
-import gg.codie.mineonline.patches.lwjgl.LWJGLGL11GLOrthoAdvice;
-import gg.codie.mineonline.patches.lwjgl.LWJGLGL11Patch;
-import gg.codie.mineonline.patches.lwjgl.LWJGLGLUPerspectiveAdvice;
+import gg.codie.mineonline.patches.lwjgl.*;
 import gg.codie.mineonline.patches.minecraft.*;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
@@ -67,8 +64,16 @@ public class LegacyGameManager {
         HashMapPatch.init();
         ClassPatch.init();
         LWJGLGL11Patch.init();
+        LWJGLGLUPatch.useCustomFOV();
 
         if (version != null) {
+            if (version.entityRendererClass != null && version.viewModelFunction != null) {
+                if (version.useFOVPatch)
+                    FOVViewmodelPatch.fixViewmodelFOV(version.entityRendererClass, version.viewModelFunction, Settings.singleton.getMainHand() == EMinecraftMainHand.LEFT);
+                else
+                    FOVViewmodelPatch.fixViewmodelFOV(version.entityRendererClass, version.viewModelFunction, true);
+            }
+
             if (version.ingameVersionString != null) {
                 StringPatch.hideVersionNames(version.ingameVersionString);
                 StringPatch.enable = Settings.singleton.getHideVersionString();

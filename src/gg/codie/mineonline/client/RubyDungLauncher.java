@@ -14,7 +14,6 @@ import gg.codie.mineonline.lwjgl.OnCreateListener;
 import gg.codie.mineonline.lwjgl.OnDestroyListener;
 import gg.codie.mineonline.lwjgl.OnUpdateListener;
 import gg.codie.mineonline.patches.URLPatch;
-import gg.codie.mineonline.patches.lwjgl.LWJGLDisplayDestroyAdvice;
 import gg.codie.mineonline.patches.lwjgl.LWJGLDisplayPatch;
 import gg.codie.mineonline.patches.lwjgl.LWJGLGL11GLOrthoAdvice;
 import gg.codie.mineonline.patches.lwjgl.LWJGLGLUPatch;
@@ -346,7 +345,7 @@ public class RubyDungLauncher implements IMinecraftAppletWrapper {
                                 closeApplet();
                             }
 
-                            if (Settings.singleton.getZoomKeyCode() != 0 && minecraftVersion != null && minecraftVersion.useFOVPatch) {
+                            if (Settings.singleton.getZoomKeyCode() != 0) {
                                 if (Mouse.isGrabbed() && Keyboard.getEventKey() == Settings.singleton.getZoomKeyCode() && !Keyboard.isRepeatEvent() && Keyboard.getEventKeyState() && !zoomWasDown) {
                                     LWJGLGLUPatch.zoom();
                                     LWJGLGL11GLOrthoAdvice.hideHud = true;
@@ -397,8 +396,6 @@ public class RubyDungLauncher implements IMinecraftAppletWrapper {
 
 
             URLPatch.redefineURL();
-            if (minecraftVersion != null && minecraftVersion.useFOVPatch)
-                LWJGLGLUPatch.useCustomFOV();
 
             try {
                 Display.setParent(DisplayManager.getCanvas());

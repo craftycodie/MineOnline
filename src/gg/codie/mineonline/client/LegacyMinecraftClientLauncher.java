@@ -421,7 +421,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
                             f2wasDown = false;
                         }
 
-                        if (Settings.singleton.getZoomKeyCode() != 0 && minecraftVersion != null && minecraftVersion.useFOVPatch) {
+                        if (Settings.singleton.getZoomKeyCode() != 0) {
                             if (Mouse.isGrabbed() && Keyboard.getEventKey() == Settings.singleton.getZoomKeyCode() && !Keyboard.isRepeatEvent() && Keyboard.getEventKeyState() && !zoomWasDown) {
                                 LWJGLGLUPatch.zoom();
                                 LWJGLGL11GLOrthoAdvice.hideHud = true;
@@ -486,15 +486,6 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
         URLPatch.redefineURL(null);
         FilePatch.relocateFiles(minecraftVersion != null ? minecraftVersion.resourcesVersion : "default");
         URLConnectionPatch.patchResponses();
-
-        if (minecraftVersion != null && minecraftVersion.useFOVPatch) {
-            LWJGLGLUPatch.useCustomFOV();
-            if (minecraftVersion.entityRendererClass != null && minecraftVersion.viewModelFunction != null)
-                FOVViewmodelPatch.fixViewmodelFOV(minecraftVersion.entityRendererClass, minecraftVersion.viewModelFunction, Settings.singleton.getMainHand() == EMinecraftMainHand.LEFT);
-        } else if (minecraftVersion != null && Settings.singleton.getMainHand() == EMinecraftMainHand.LEFT) {
-            if (minecraftVersion.entityRendererClass != null && minecraftVersion.viewModelFunction != null)
-                FOVViewmodelPatch.fixViewmodelFOV(minecraftVersion.entityRendererClass, minecraftVersion.viewModelFunction, true);
-        }
 
         // Allows c0.0.15a to connect to servers.
         InetSocketAddressPatch.allowCustomServers(serverAddress, serverPort);
