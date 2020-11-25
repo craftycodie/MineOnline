@@ -10,6 +10,8 @@ public class FOVViewmodelPatch {
         FOVViewmodelAdvice.leftHanded = leftHanded;
         try {
             if (hurtEffectFunction != null) {
+                ClassicFOVViewmodelAdvice.callCount = -(2 - ClassicFOVViewmodelAdvice.callCount);
+
                 new ByteBuddy()
                         .redefine(Class.forName(entityRendererClassName))
                         .visit(Advice.to(ClassicFOVViewmodelAdvice.class).on(ElementMatchers.named(hurtEffectFunction).and(ElementMatchers.takesArguments(

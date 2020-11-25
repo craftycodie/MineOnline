@@ -15,5 +15,7 @@
   "optionsVersion": "CLASSIC",
   "useResizePatch": true,
   "hasNetherPortalTexture": false,
-  "downloadURL": "https://mineonline.codie.gg/public/clients/c0.28_01.jar"
+  "downloadURL": "https://mineonline.codie.gg/public/clients/c0.28_01.jar",
+  "entityRendererClass": "com.mojang.minecraft.b.d",
+  "hurtEffectFunction": "b"
 }

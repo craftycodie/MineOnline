@@ -15,5 +15,8 @@
   "optionsVersion": "CLASSIC",
   "useResizePatch": true,
   "hasNetherPortalTexture": false,
-  "downloadURL": "https://launcher.mojang.com/v1/objects/89eab2c1a353707cc00f074dffba9cb7a4f5e304/client.jar"
+  "downloadURL": "https://launcher.mojang.com/v1/objects/89eab2c1a353707cc00f074dffba9cb7a4f5e304/client.jar",
+  "entityRendererClass": "net.minecraft.client.a.e",
+  "hurtEffectFunction": "c",
+  "hurtEffectCallsPerFrame": 3
 }

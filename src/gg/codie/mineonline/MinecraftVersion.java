@@ -41,6 +41,7 @@ public class MinecraftVersion {
     public final String entityRendererClass;
     public final String viewModelFunction;
     public final String hurtEffectFunction;
+    public final int hurtEffectCallsPerFrame;
     public final boolean useFOVPatch;
     public final boolean useTexturepackPatch;
     public final String ingameVersionString;
@@ -87,7 +88,8 @@ public class MinecraftVersion {
             boolean hasNetherPortalTexture,
             URL downloadURL,
             boolean useMineOnlineMenu,
-            String hurtEffectFunction
+            String hurtEffectFunction,
+            int hurtEffectCallsPerFrame
     ) {
         this.sha256 = sha256;
         this.name = name;
@@ -123,6 +125,7 @@ public class MinecraftVersion {
         this.downloadURL = downloadURL;
         this.useMineOnlineMenu = useMineOnlineMenu;
         this.hurtEffectFunction = hurtEffectFunction;
+        this.hurtEffectCallsPerFrame = hurtEffectCallsPerFrame;
     }
 
     public MinecraftVersion(JSONObject object) {
@@ -159,6 +162,7 @@ public class MinecraftVersion {
         hasNetherPortalTexture = object.optBoolean("hasNetherPortalTexture", true);
         useMineOnlineMenu = object.optBoolean("useMineOnlineMenu", true);
         hurtEffectFunction = object.optString("hurtEffectFunction", null);
+        hurtEffectCallsPerFrame = object.optInt("hurtEffectCallsPerFrame", 2);
 
         URL parsedURL = null;
 
@@ -392,7 +396,8 @@ public class MinecraftVersion {
                     true,
                     null,
                     false,
-                    null
+                    null,
+                    2
             );
         } catch (Exception ex) {
             System.err.println("Bad launcher JSON for version " + jarFile);

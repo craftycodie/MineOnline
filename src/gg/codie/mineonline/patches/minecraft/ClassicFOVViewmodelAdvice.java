@@ -13,7 +13,7 @@ public class ClassicFOVViewmodelAdvice {
     // In infdev, it's called multiple times from multiple places.
     // We need to do stuff when it's called from the viewmodel function, so we check the stack.
 
-    public static boolean first = true;
+    public static int callCount = 0;
 
     @Advice.OnMethodExit
     static void intercept() {
@@ -24,12 +24,13 @@ public class ClassicFOVViewmodelAdvice {
                 if (!Thread.currentThread().getStackTrace()[2].getMethodName().equals(viewModelFunction))
                     return;
             } else {
-                boolean first = (boolean) ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.minecraft.ClassicFOVViewmodelAdvice").getField("first").get(null);
-                if (first) {
-                    ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.minecraft.ClassicFOVViewmodelAdvice").getField("first").set(null, false);
+                int callCount = (int) ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.minecraft.ClassicFOVViewmodelAdvice").getField("callCount").get(null);
+                System.out.println(callCount);
+                if (callCount < LegacyGameManager.getVersion().hurtEffectCallsPerFrame - 1) {
+                    ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.minecraft.ClassicFOVViewmodelAdvice").getField("callCount").set(null, callCount + 1);
                     return;
                 } else {
-                    ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.minecraft.ClassicFOVViewmodelAdvice").getField("first").set(null, true);
+                    ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.minecraft.ClassicFOVViewmodelAdvice").getField("callCount").set(null, 0);
                 }
             }
 
