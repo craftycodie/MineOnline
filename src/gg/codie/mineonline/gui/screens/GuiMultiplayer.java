@@ -4,6 +4,7 @@ import com.johnymuffin.BetaEvolutionsUtils;
 import gg.codie.mineonline.MinecraftVersion;
 import gg.codie.mineonline.MinecraftVersionRepository;
 import gg.codie.mineonline.Session;
+import gg.codie.mineonline.Settings;
 import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.mineonline.api.MineOnlineServer;
 import gg.codie.mineonline.api.MineOnlineServerRepository;
@@ -132,8 +133,11 @@ public class GuiMultiplayer extends AbstractGuiScreen
             @Override
             public void onSelect(String path) {
                 try {
-                    String mppas = MineOnlineAPI.getMpPass(Session.session.getAccessToken(), Session.session.getUsername(), Session.session.getUuid(), server.ip, server.port + "");
-                    MinecraftVersion.launchMinecraft(path, server.ip, server.port + "", mppas);
+                    String mppass = MineOnlineAPI.getMpPass(Session.session.getAccessToken(), Session.session.getUsername(), Session.session.getUuid(), server.ip, server.port + "");
+                    MinecraftVersion.launchMinecraft(path, server.ip, server.port + "", mppass);
+
+                    Settings.singleton.setLastServer(server.ip + ":" + server.port);
+                    Settings.singleton.saveSettings();
 
                     if (LegacyGameManager.isInGame()) {
                         if (server.usingBetaEvolutions) {

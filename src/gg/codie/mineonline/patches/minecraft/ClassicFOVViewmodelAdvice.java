@@ -25,7 +25,6 @@ public class ClassicFOVViewmodelAdvice {
                     return;
             } else {
                 int callCount = (int) ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.minecraft.ClassicFOVViewmodelAdvice").getField("callCount").get(null);
-                System.out.println(callCount);
                 if (callCount < LegacyGameManager.getVersion().hurtEffectCallsPerFrame - 1) {
                     ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.minecraft.ClassicFOVViewmodelAdvice").getField("callCount").set(null, callCount + 1);
                     return;
