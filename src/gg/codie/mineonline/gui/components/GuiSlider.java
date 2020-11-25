@@ -1,5 +1,6 @@
 package gg.codie.mineonline.gui.components;
 
+import gg.codie.mineonline.gui.rendering.Renderer;
 import org.lwjgl.opengl.GL11;
 
 public class GuiSlider extends GuiButton
@@ -24,10 +25,6 @@ public class GuiSlider extends GuiButton
 
     protected void mouseDragged(int i, int j)
     {
-        if(!enabled2)
-        {
-            return;
-        }
         if(dragging)
         {
             sliderValue = (float)(i - (xPosition + 4)) / (float)(width - 8);
@@ -42,15 +39,15 @@ public class GuiSlider extends GuiButton
             displayString = sliderListener.onValueChange(sliderValue);
         }
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        drawTexturedModalRect(xPosition + (int)(sliderValue * (float)(width - 8)), yPosition, 0, 66, 4, 20);
-        drawTexturedModalRect(xPosition + (int)(sliderValue * (float)(width - 8)) + 4, yPosition, 196, 66, 4, 20);
+        Renderer.singleton.drawSprite(xPosition + (int)(sliderValue * (float)(width - 8)), yPosition, 0, 66, 4, 20);
+        Renderer.singleton.drawSprite(xPosition + (int)(sliderValue * (float)(width - 8)) + 4, yPosition, 196, 66, 4, 20);
     }
 
-    public boolean mousePressed(int i, int j)
+    public boolean mousePressed(int x, int y)
     {
-        if(super.mousePressed(i, j))
+        if(super.mousePressed(x, y))
         {
-            sliderValue = (float)(i - (xPosition + 4)) / (float)(width - 8);
+            sliderValue = (float)(x - (xPosition + 4)) / (float)(width - 8);
             if(sliderValue < 0.0F)
             {
                 sliderValue = 0.0F;
@@ -68,7 +65,7 @@ public class GuiSlider extends GuiButton
         }
     }
 
-    public void mouseReleased(int i, int j)
+    public void mouseReleased(int x, int y)
     {
         dragging = false;
     }

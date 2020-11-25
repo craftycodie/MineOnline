@@ -3,7 +3,6 @@ package gg.codie.minecraft.server;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.file.Paths;
 
 public class Properties {
     protected static final String WHITELIST = "white-list";

@@ -2,7 +2,6 @@ package gg.codie.mineonline.gui.screens;
 
 import gg.codie.minecraft.api.AuthServer;
 import gg.codie.minecraft.api.MojangAPI;
-import gg.codie.minecraft.client.gui.Tessellator;
 import gg.codie.mineonline.Globals;
 import gg.codie.mineonline.Session;
 import gg.codie.mineonline.gui.MenuManager;
@@ -11,49 +10,26 @@ import gg.codie.mineonline.gui.components.GuiPasswordField;
 import gg.codie.mineonline.gui.components.GuiTextField;
 import gg.codie.mineonline.gui.rendering.FontRenderer;
 import gg.codie.mineonline.gui.rendering.Loader;
-import gg.codie.mineonline.gui.rendering.textures.EGUITexture;
+import gg.codie.mineonline.gui.rendering.Renderer;
 import gg.codie.mineonline.gui.sound.ClickSound;
+import gg.codie.mineonline.gui.textures.EGUITexture;
 import gg.codie.mineonline.utils.LastLogin;
 import org.json.JSONObject;
 import org.lwjgl.opengl.GL11;
 
+import javax.swing.*;
 import java.awt.*;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.URI;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.UUID;
 
 public class GuiLogin extends AbstractGuiScreen
 {
-    String errorText;
-    boolean offline;
+    private String errorText;
+    private boolean offline;
 
     public GuiLogin()
     {
-        try
-        {
-            ArrayList arraylist = new ArrayList();
-            BufferedReader bufferedreader = new BufferedReader(new InputStreamReader((GuiLogin.class).getResourceAsStream("/mineonline/gui/splashes.txt"), Charset.forName("UTF-8")));
-            String s = "";
-            do
-            {
-                String s1;
-                if((s1 = bufferedreader.readLine()) == null)
-                {
-                    break;
-                }
-                s1 = s1.trim();
-                if(s1.length() > 0)
-                {
-                    arraylist.add(s1);
-                }
-            } while(true);
-        }
-        catch(Exception exception) { }
-
         initGui();
     }
 
@@ -71,15 +47,19 @@ public class GuiLogin extends AbstractGuiScreen
             actionPerformed((GuiButton)controlList.get(0));
         }
 
-        ((GuiButton)controlList.get(0)).enabled = usernameField.getText().length() > 0 && passwordField.getText().length() > 0;
+        loginButton.enabled = usernameField.getText().length() > 0 && passwordField.getText().length() > 0;
+
+        if (playOfflineButton != null)
+            playOfflineButton.enabled = usernameField.getText().length() > 0;
+
     }
 
-    protected void mouseClicked(int i, int j, int k)
+    protected void mouseClicked(int x, int y, int button)
     {
-        usernameField.mouseClicked(i, j, k);
-        passwordField.mouseClicked(i, j, k);
-        super.mouseClicked(i, j, k);
-        if (MenuManager.isUpdateAvailable() && j > getHeight() - 20 && j < getHeight() - 10 && i < FontRenderer.minecraftFontRenderer.getStringWidth("Update Available!")) {
+        usernameField.mouseClicked(x, y, button);
+        passwordField.mouseClicked(x, y, button);
+        super.mouseClicked(x, y, button);
+        if (MenuManager.isUpdateAvailable() && y > getHeight() - 20 && y < getHeight() - 10 && x < FontRenderer.minecraftFontRenderer.getStringWidth("Update Available!")) {
             ClickSound.play();
             try {
                 if (Globals.BRANCH.equalsIgnoreCase("release"))
@@ -91,7 +71,7 @@ public class GuiLogin extends AbstractGuiScreen
             }
         }
 
-        if (MenuManager.isUpdateAvailable() && j > getHeight() / 4 + 48 + 96 && j < getHeight() / 4 + 48 + 106 && i > (getWidth() / 2 ) - (FontRenderer.minecraftFontRenderer.getStringWidth("Need Account?")) / 2 && i < (getWidth() / 2 ) + (FontRenderer.minecraftFontRenderer.getStringWidth("Need Account?")) / 2) {
+        if (y > getHeight() / 4 + 48 + 96 && y < getHeight() / 4 + 48 + 106 && x > (getWidth() / 2 ) - (FontRenderer.minecraftFontRenderer.getStringWidth("Need Account?")) / 2 && x < (getWidth() / 2 ) + (FontRenderer.minecraftFontRenderer.getStringWidth("Need Account?")) / 2) {
             ClickSound.play();
             try {
                 Desktop.getDesktop().browse(new URI("https://www.minecraft.net/store/minecraft-java-edition"));
@@ -100,7 +80,7 @@ public class GuiLogin extends AbstractGuiScreen
             }
         }
 
-        if (j > getHeight() - 10 && j < getHeight() && i > getWidth() - FontRenderer.minecraftFontRenderer.getStringWidth("Made by @codieradical <3")) {
+        if (y > getHeight() - 10 && y < getHeight() && x > getWidth() - FontRenderer.minecraftFontRenderer.getStringWidth("Made by @codieradical <3")) {
             ClickSound.play();
             try {
                 Desktop.getDesktop().browse(new URI("https://twitter.com/codieradical"));
@@ -109,6 +89,74 @@ public class GuiLogin extends AbstractGuiScreen
             }
         }
     }
+
+    public void showOfflineButton() {
+        controlList.remove(loginButton);
+        controlList.add(loginButton = new GuiButton(0, getWidth() / 2, getHeight() / 4 + 48 + 72, 100, 20, "Login", loginHandler));
+        controlList.add(playOfflineButton = new GuiButton(0, getWidth() / 2 - 102, getHeight() / 4 + 48 + 72, 100, 20, "Play Offline", new GuiButton.GuiButtonListener() {
+            @Override
+            public void OnButtonPress() {
+                try {
+                    if(usernameField.getText().contains("@")) {
+                        EventQueue.invokeLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                JOptionPane.showMessageDialog(null, "Enter a username to play in offline-mode.");
+                            }
+                        });
+                        return;
+                    }
+
+                    new Session(usernameField.getText());
+                    MenuManager.setMenuScreen(new GuiMainMenu());
+                } catch (Exception ex) {
+                }
+            }
+        }));
+    }
+
+    GuiButton.GuiButtonListener loginHandler =  new GuiButton.GuiButtonListener() {
+        @Override
+        public void OnButtonPress() {
+
+            try {
+                String clientSecret = UUID.randomUUID().toString();
+                JSONObject login = AuthServer.authenticate(usernameField.getText(), passwordField.getText(), clientSecret);
+
+                if (login.has("error"))
+                    throw new Exception(login.getString("error"));
+                if (!login.has("accessToken") || !login.has("selectedProfile"))
+                    throw new Exception("Failed to authenticate!");
+                if (MojangAPI.minecraftProfile(login.getJSONObject("selectedProfile").getString("name")).optBoolean("demo", false))
+                    throw new Exception("Please buy Minecraft to use MineOnline.");
+
+                String sessionToken = login.getString("accessToken");
+                String uuid = login.getJSONObject("selectedProfile").getString("id");
+
+                if (sessionToken != null) {
+                    new Session(login.getJSONObject("selectedProfile").getString("name"), sessionToken, clientSecret, uuid, true);
+                    LastLogin.writeLastLogin(Session.session.getAccessToken(), clientSecret, usernameField.getText(), Session.session.getUsername(), Session.session.getUuid());
+                    MenuManager.setMenuScreen(new GuiMainMenu());
+                } else {
+                    errorText = "Incorrect username or password.";
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+
+                String errorMessage = ex.getMessage();
+                if (errorMessage.startsWith("Bad login")) {
+                    errorMessage = "Incorrect username or password.";
+                }
+
+                if (ex instanceof IOException)
+                    errorMessage = "Bad login.";
+
+                errorText = errorMessage;
+
+                offline = true;
+            }
+        }
+    };
 
     public void initGui()
     {
@@ -122,73 +170,9 @@ public class GuiLogin extends AbstractGuiScreen
 
         usernameField = new GuiTextField(this, getWidth() / 2 - 100, i, 200, 20, username);
         passwordField = new GuiPasswordField(this, getWidth() / 2 - 100, i + 42, 200, 20, "");
-        controlList.add(new GuiButton(0, getWidth() / 2 - 100, i + 72, "Login", new GuiButton.GuiButtonListener() {
-            @Override
-            public void OnButtonPress() {
+        controlList.add(loginButton = new GuiButton(0, getWidth() / 2 - 100, i + 72, "Login", loginHandler));
 
-                try {
-                    String clientSecret = UUID.randomUUID().toString();
-                    JSONObject login = AuthServer.authenticate(usernameField.getText(), passwordField.getText(), clientSecret);
-
-                    if (login.has("error"))
-                        throw new Exception(login.getString("error"));
-                    if (!login.has("accessToken") || !login.has("selectedProfile"))
-                        throw new Exception("Failed to authenticate!");
-                    if (MojangAPI.minecraftProfile(login.getJSONObject("selectedProfile").getString("name")).optBoolean("demo", false))
-                        throw new Exception("Please buy Minecraft to use MineOnline.");
-
-                    String sessionToken = login.getString("accessToken");
-                    String uuid = login.getJSONObject("selectedProfile").getString("id");
-
-                    if (sessionToken != null) {
-                        new Session(login.getJSONObject("selectedProfile").getString("name"), sessionToken, clientSecret, uuid, true);
-                        LastLogin.writeLastLogin(Session.session.getAccessToken(), clientSecret, usernameField.getText(), Session.session.getUsername(), Session.session.getUuid());
-                        MenuManager.setMenuScreen(new GuiMainMenu());
-//                        MenuManager.setMenuScreen(new MainMenuScreen());
-                    } else {
-                        errorText = "Incorrect username or password.";
-                    }
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-
-                    String errorMessage = ex.getMessage();
-                    if (errorMessage.startsWith("Bad login")) {
-                        errorMessage = "Incorrect username or password.";
-                    }
-
-                    if (ex instanceof IOException)
-                        errorMessage = "Bad login.";
-
-                    errorText = errorMessage;
-
-                    offline = true;
-//                    if(playOfflineButton == null)
-//                        playOfflineButton = new LargeButton("Play Offline", new Vector2f((DisplayManager.getDefaultWidth() / 2) - 200, (DisplayManager.getDefaultHeight() / 2) + 172), new IOnClickListener() {
-//                            @Override
-//                            public void onClick() {
-//                                try {
-//                                    if(usernameInput.getValue().contains("@")) {
-//                                        EventQueue.invokeLater(new Runnable() {
-//                                            @Override
-//                                            public void run() {
-//                                                JOptionPane.showMessageDialog(null, "Enter a username to play in offline-mode.");
-//                                            }
-//                                        });
-//                                        return;
-//                                    }
-//
-//                                    new Session(usernameInput.getValue());
-////                                    MenuManager.setMenuScreen(new MainMenuScreen());
-//                                } catch (Exception ex) {
-//                                }
-//                            }
-//                        });
-                }
-            }
-
-        }));
-
-        ((GuiButton)controlList.get(0)).enabled = false;
+        loginButton.enabled = false;
 
         usernameField.isFocused = true;
         usernameField.setMaxStringLength(128);
@@ -197,53 +181,59 @@ public class GuiLogin extends AbstractGuiScreen
         passwordField.setMaxStringLength(128);
     }
 
-    public void resizeGui() {
+    public void resize() {
         usernameField.resize(getWidth() / 2 - 100, getHeight() / 4 + 48);
         passwordField.resize(getWidth() / 2 - 100, getHeight() / 4 + 48 + 42);
-        controlList.get(0).resize(getWidth() / 2 - 100, getHeight() / 4 + 48 + 72);
+        if (playOfflineButton != null) {
+            loginButton.resize(getWidth() / 2 + 2, getHeight() / 4 + 48 + 72);
+            playOfflineButton.resize(getWidth() / 2 - 102, getHeight() / 4 + 48 + 72);
+        } else {
+            loginButton.resize(getWidth() / 2 - 100, getHeight() / 4 + 48 + 72);
+        }
     }
 
-    public void updateScreen()
-    {
-        if(usernameField != null)
-            usernameField.updateCursorCounter();
-
-        if(passwordField != null)
-            passwordField.updateCursorCounter();
+    public void selectNextField() {
+        if (!passwordField.isFocused) {
+            usernameField.setFocused(false);
+            passwordField.setFocused(true);
+        }
     }
 
-    public void drawScreen(int i, int j)
+    public void drawScreen(int mouseX, int mouseY)
     {
-        resizeGui();
+        if (offline && playOfflineButton == null)
+            showOfflineButton();
 
-        Tessellator tessellator = Tessellator.instance;
+        resize();
+
+        Renderer tessellator = Renderer.singleton;
         int k = (int)(((getWidth() / 2) - (90 * 1.6)) / 1.6f);
-//        drawGradientRect(0, 0, getWidth(), getHeight(), 0x55ffffff, 0xffffff);
-//        drawGradientRect(0, 0, getWidth(), getHeight(), 0, 0x55000000);
-        GL11.glBindTexture(3553 /*GL_TEXTURE_2D*/, Loader.singleton.getGuiTexture(EGUITexture.MINEONLINE_LOGO));
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, Loader.singleton.getGuiTexture(EGUITexture.MINEONLINE_LOGO));
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, 10241, GL11.GL_NEAREST);
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, 10240, GL11.GL_NEAREST);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         GL11.glScalef(1.6f, 1.6f, 1);
-        drawTexturedModalRect(k, 22, 0, 0, 180, 180);
+        Renderer.singleton.drawSprite(k, 22, 0, 0, 180, 180);
         GL11.glScalef(0.625f, 0.625f, 1);
-        tessellator.setColorOpaque_I(0xffffff);
+        tessellator.setColorRGBA(255, 255, 255, 255);
         if (MenuManager.isUpdateAvailable())
-            drawString("Update Available!", 2, getHeight() - 20, 0xffff00);
-        drawString("MineOnline " + (Globals.DEV ? "Dev " : "") + Globals.LAUNCHER_VERSION + (!Globals.BRANCH.equalsIgnoreCase("release") ? " (" + Globals.BRANCH + ")" : ""), 2, getHeight() - 10, 0xffffff);
+            FontRenderer.minecraftFontRenderer.drawString("Update Available!", 2, getHeight() - 20, 0xffff00);
+        FontRenderer.minecraftFontRenderer.drawString("MineOnline " + (Globals.DEV ? "Dev " : "") + Globals.LAUNCHER_VERSION + (!Globals.BRANCH.equalsIgnoreCase("release") ? " (" + Globals.BRANCH + ")" : ""), 2, getHeight() - 10, 0xffffff);
         String s = "Made by @codieradical <3";
-        drawString(s, getWidth() - FontRenderer.minecraftFontRenderer.getStringWidth(s) - 2, getHeight() - 10, 0xffffff);
-        drawString("Need Account?", (getWidth() / 2) - FontRenderer.minecraftFontRenderer.getStringWidth("Need Account?") / 2, getHeight() / 4 + 48 + 96, 0xffffff);
-        drawString("Username or E-Mail:", getWidth() / 2 - 100, getHeight() / 4 + 48 - 16, 0xffffff);
-        drawString("Password:", getWidth() / 2 - 100, getHeight() / 4 + 48 + 48 - 22, 0xffffff);
-        drawString(errorText, (getWidth() / 2) - FontRenderer.minecraftFontRenderer.getStringWidth(errorText) / 2, getHeight() / 4 + 48 - 32, 0xFF5555);
+        FontRenderer.minecraftFontRenderer.drawString(s, getWidth() - FontRenderer.minecraftFontRenderer.getStringWidth(s) - 2, getHeight() - 10, 0xffffff);
+        FontRenderer.minecraftFontRenderer.drawString("Need Account?", (getWidth() / 2) - FontRenderer.minecraftFontRenderer.getStringWidth("Need Account?") / 2, getHeight() / 4 + 48 + 96, 0x5555FF);
+        FontRenderer.minecraftFontRenderer.drawString("Username or E-Mail:", getWidth() / 2 - 100, getHeight() / 4 + 48 - 16, 0xffffff);
+        FontRenderer.minecraftFontRenderer.drawString("Password:", getWidth() / 2 - 100, getHeight() / 4 + 48 + 48 - 22, 0xffffff);
+        FontRenderer.minecraftFontRenderer.drawString(errorText, (getWidth() / 2) - FontRenderer.minecraftFontRenderer.getStringWidth(errorText) / 2, getHeight() / 4 + 48 - 32, 0xFF5555);
 
         usernameField.drawTextBox();
         passwordField.drawTextBox();
 
-        super.drawScreen(i, j);
+        super.drawScreen(mouseX, mouseY);
     }
 
     private GuiTextField usernameField;
     private GuiPasswordField passwordField;
+    private GuiButton loginButton;
+    private GuiButton playOfflineButton;
 }

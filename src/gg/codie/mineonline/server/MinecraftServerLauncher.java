@@ -1,13 +1,18 @@
 package gg.codie.mineonline.server;
 
 import gg.codie.common.input.EColorCodeColor;
-import gg.codie.minecraft.server.*;
+import gg.codie.common.utils.MD5Checksum;
+import gg.codie.minecraft.server.AbstractMinecraftColorCodeProvider;
+import gg.codie.minecraft.server.ClassicMinecraftColorCodeProvider;
+import gg.codie.minecraft.server.MinecraftColorCodeProvider;
 import gg.codie.mineonline.MinecraftVersion;
 import gg.codie.mineonline.MinecraftVersionRepository;
 import gg.codie.mineonline.api.MineOnlineAPI;
-import gg.codie.mineonline.discord.*;
+import gg.codie.mineonline.discord.DiscordChatBridge;
+import gg.codie.mineonline.discord.IMessageRecievedListener;
+import gg.codie.mineonline.discord.IShutdownListener;
+import gg.codie.mineonline.discord.MinotarAvatarProvider;
 import gg.codie.mineonline.utils.Logging;
-import gg.codie.common.utils.MD5Checksum;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import javax.imageio.IIOException;

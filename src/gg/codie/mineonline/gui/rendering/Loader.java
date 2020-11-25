@@ -4,14 +4,11 @@ import gg.codie.mineonline.Globals;
 import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.Settings;
 import gg.codie.mineonline.client.LegacyGameManager;
-import gg.codie.mineonline.gui.rendering.textures.EGUITexture;
+import gg.codie.mineonline.gui.textures.EGUITexture;
 import gg.codie.mineonline.patches.HashMapPutAdvice;
 import gg.codie.mineonline.patches.mcpatcher.HDTextureFXHelper;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL15;
-import org.lwjgl.opengl.GL20;
-import org.lwjgl.opengl.GL30;
 import org.newdawn.slick.opengl.*;
 import org.newdawn.slick.opengl.renderer.Renderer;
 import org.newdawn.slick.opengl.renderer.SGL;
@@ -24,14 +21,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
+import java.nio.ByteOrder;
 import java.nio.IntBuffer;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+// TODO: Remove slick-util.
 public class Loader {
     private HashMap<String, Integer> textures = new HashMap<>();
 
@@ -104,12 +100,6 @@ public class Loader {
 
         int textureID = texture.getTextureID();
 
-//        GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureID);
-//        GL11.glTexParameteri(3553 /*GL_TEXTURE_2D*/, 10241 /*GL_TEXTURE_MIN_FILTER*/, 9728 /*GL_NEAREST*/);
-//        GL11.glTexParameteri(3553 /*GL_TEXTURE_2D*/, 10240 /*GL_TEXTURE_MAG_FILTER*/, 9728 /*GL_NEAREST*/);
-//        GL11.glTexParameteri(3553 /*GL_TEXTURE_2D*/, 10242 /*GL_TEXTURE_WRAP_S*/, 10496 /*GL_CLAMP*/);
-//        GL11.glTexParameteri(3553 /*GL_TEXTURE_2D*/, 10243 /*GL_TEXTURE_WRAP_T*/, 10496 /*GL_CLAMP*/);
-
         textures.put(name, textureID);
 
         return textureID;
@@ -119,7 +109,6 @@ public class Loader {
         SGL GL = Renderer.get();
         LoadableImageData imageData = ImageDataFactory.getImageDataFor(resourceName);
         ByteBuffer textureBuffer = imageData.loadImage(new BufferedInputStream(in), false, null);
-//        int textureID = createTextureID();
         TextureImpl texture = new TextureImpl(resourceName, GL11.GL_TEXTURE_2D, textureID);
         GL.glBindTexture(GL11.GL_TEXTURE_2D, textureID);
         int width = imageData.getWidth();
@@ -166,16 +155,16 @@ public class Loader {
 
         if(blur)
         {
-            GL11.glTexParameteri(3553 /*GL_TEXTURE_2D*/, 10241 /*GL_TEXTURE_MIN_FILTER*/, 9729 /*GL_LINEAR*/);
-            GL11.glTexParameteri(3553 /*GL_TEXTURE_2D*/, 10240 /*GL_TEXTURE_MAG_FILTER*/, 9729 /*GL_LINEAR*/);
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
         } else if(clamp)
         {
-            GL11.glTexParameteri(3553 /*GL_TEXTURE_2D*/, 10242 /*GL_TEXTURE_WRAP_S*/, 10496 /*GL_CLAMP*/);
-            GL11.glTexParameteri(3553 /*GL_TEXTURE_2D*/, 10243 /*GL_TEXTURE_WRAP_T*/, 10496 /*GL_CLAMP*/);
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_CLAMP);
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_CLAMP);
         } else
         {
-            GL11.glTexParameteri(3553 /*GL_TEXTURE_2D*/, 10242 /*GL_TEXTURE_WRAP_S*/, 10497 /*GL_REPEAT*/);
-            GL11.glTexParameteri(3553 /*GL_TEXTURE_2D*/, 10243 /*GL_TEXTURE_WRAP_T*/, 10497 /*GL_REPEAT*/);
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_REPEAT);
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_REPEAT);
         }
 
         String texturePack = Settings.singleton.getTexturePack();
@@ -273,6 +262,7 @@ public class Loader {
                 "/misc/dial.png",
                 //"/misc/foliagecolor.png", Needs to be patched separately.
                 //"/misc/grasscolor.png", Needs to be patched separately.
+                //"/misc/watercolor.png", Needs to be patched separately.
                 "/misc/pumpkinblur.png",
                 "/misc/shadow.png",
                 "/misc/vignette.png",
@@ -343,5 +333,16 @@ public class Loader {
             GL11.glDeleteTextures(textures.get(eguiTexture.textureName));
             textures.remove(eguiTexture.textureName);
         }
+    }
+
+    public static synchronized ByteBuffer createDirectByteBuffer(int i)
+    {
+        ByteBuffer bytebuffer = ByteBuffer.allocateDirect(i).order(ByteOrder.nativeOrder());
+        return bytebuffer;
+    }
+
+    public static IntBuffer createDirectIntBuffer(int i)
+    {
+        return createDirectByteBuffer(i << 2).asIntBuffer();
     }
 }

@@ -1,17 +1,19 @@
 package gg.codie.mineonline;
 
-import gg.codie.minecraft.client.EMinecraftOptionsVersion;
-import gg.codie.mineonline.api.MineOnlineAPI;
-import gg.codie.mineonline.client.*;
 import gg.codie.common.utils.JSONUtils;
 import gg.codie.common.utils.MD5Checksum;
 import gg.codie.common.utils.OSUtils;
+import gg.codie.minecraft.client.EMinecraftOptionsVersion;
+import gg.codie.mineonline.api.MineOnlineAPI;
+import gg.codie.mineonline.client.LegacyGameManager;
+import gg.codie.mineonline.client.LegacyMinecraftClientLauncher;
+import gg.codie.mineonline.client.MinecraftClientLauncher;
+import gg.codie.mineonline.client.RubyDungLauncher;
 import org.json.JSONObject;
 
 import java.io.*;
 import java.net.*;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.jar.JarEntry;
@@ -241,11 +243,7 @@ public class MinecraftVersion {
                 return true;
             } else if (className.equals("Minecraft")) {
                 return true;
-            }
-            else if (className.equals("LauncherFrame")) {
-                return true;
-            }
-            else if (className.equals("RubyDung")) {
+            } else if (className.equals("RubyDung")) {
                 return true;
             }
         }
@@ -279,10 +277,6 @@ public class MinecraftVersion {
             if(classCanonicalName.lastIndexOf(".") > -1) {
                 className = classCanonicalName.substring(classCanonicalName.lastIndexOf(".") + 1);
             }
-
-//            else if (className.equals("MinecraftLauncher")) {
-//                return true;
-//            }
             if (className.equals("Main")) {
                 return true;
             }
@@ -434,11 +428,6 @@ public class MinecraftVersion {
         if(minecraftVersion != null) {
             if (minecraftVersion.type.equals("rubydung")) {
                 RubyDungLauncher.startProcess(jarPath);
-                return;
-            }
-
-            if (minecraftVersion.type.equals("launcher")) {
-                new LegacyMinecraftLauncherLauncher(jarPath);
                 return;
             }
 

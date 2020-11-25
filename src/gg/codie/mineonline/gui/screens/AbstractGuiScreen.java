@@ -2,19 +2,23 @@ package gg.codie.mineonline.gui.screens;
 
 import gg.codie.mineonline.client.LegacyGameManager;
 import gg.codie.mineonline.gui.GUIScale;
-import gg.codie.mineonline.gui.input.MouseHandler;
-import gg.codie.mineonline.gui.components.GuiComponent;
 import gg.codie.mineonline.gui.components.GuiButton;
+import gg.codie.mineonline.gui.components.GuiComponent;
+import gg.codie.mineonline.gui.input.MouseHandler;
+import gg.codie.mineonline.gui.rendering.Renderer;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 public abstract class AbstractGuiScreen extends GuiComponent
 {
+    @Override
+    public void resize(int x, int y) {
+        // do nothing.
+    }
 
     public AbstractGuiScreen()
     {
@@ -22,12 +26,12 @@ public abstract class AbstractGuiScreen extends GuiComponent
         selectedButton = null;
     }
 
-    public void drawScreen(int i, int j)
+    public void drawScreen(int mouseX, int mouseY)
     {
-        for(int k = 0; k < controlList.size(); k++)
+        for(int i = 0; i < controlList.size(); i++)
         {
-            GuiButton guibutton = (GuiButton)controlList.get(k);
-            guibutton.drawButton(i, j);
+            GuiButton guibutton = (GuiButton)controlList.get(i);
+            guibutton.drawButton(mouseX, mouseY);
         }
 
     }
@@ -47,14 +51,14 @@ public abstract class AbstractGuiScreen extends GuiComponent
         return null;
     }
 
-    protected void mouseClicked(int i, int j, int k)
+    protected void mouseClicked(int x, int y, int button)
     {
-        if(k == 0)
+        if(button == 0)
         {
             for(int l = 0; l < controlList.size(); l++)
             {
                 GuiButton guibutton = (GuiButton)controlList.get(l);
-                if(guibutton.mousePressed(i, j))
+                if(guibutton.mousePressed(x, y))
                 {
                     guibutton.doClick();
                     selectedButton = guibutton;
@@ -64,11 +68,11 @@ public abstract class AbstractGuiScreen extends GuiComponent
         }
     }
 
-    protected void mouseMovedOrUp(int i, int j, int k)
+    protected void mouseMovedOrUp(int x, int y, int button)
     {
-        if(selectedButton != null && k == 0)
+        if(selectedButton != null && button == 0)
         {
-            selectedButton.mouseReleased(i, j);
+            selectedButton.mouseReleased(x, y);
             selectedButton = null;
         }
     }
@@ -132,15 +136,7 @@ public abstract class AbstractGuiScreen extends GuiComponent
 
     public void drawDefaultBackground()
     {
-        drawWorldBackground(0);
-    }
-
-    public void drawWorldBackground(int i)
-    {
-        // Alpha/Beta
-        drawGradientRect(0, 0, getWidth(), getHeight(), 0xc0101010, 0xd0101010);
-        // Classic
-        //drawGradientRect(0, 0, getWidth(), getHeight(), 1610941696, -1607454624);
+        Renderer.singleton.drawGradient(0, 0, getWidth(), getHeight(), 0xc0, 0x10, 0x10, 0x10, 0xd0, 0x10, 0x10, 0x10);
     }
 
     public void selectNextField()

@@ -6,8 +6,6 @@ import net.bytebuddy.asm.Advice;
 import net.bytebuddy.dynamic.loading.ClassReloadingStrategy;
 import net.bytebuddy.matcher.ElementMatchers;
 
-import java.net.URLClassLoader;
-
 public class ScaledResolutionConstructorPatch {
     public static void useGUIScale(String scaledResolutionClassName) {
         try {

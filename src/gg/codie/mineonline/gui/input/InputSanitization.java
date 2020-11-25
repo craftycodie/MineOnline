@@ -1,9 +1,7 @@
-// Decompiled by Jad v1.5.8g. Copyright 2001 Pavel Kouznetsov.
-// Jad home page: http://www.kpdus.com/jad.html
-// Decompiler options: packimports(3) braces deadcode 
-
 package gg.codie.mineonline.gui.input;
 
+// This used to actually sanitize but it got hastily rewritten to support some funky characters.
+// Maybe rewrite it someday!
 public abstract class InputSanitization
 {
     public static final char allowedCharactersArray[] = {

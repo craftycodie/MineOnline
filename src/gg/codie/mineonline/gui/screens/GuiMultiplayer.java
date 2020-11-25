@@ -1,19 +1,24 @@
 package gg.codie.mineonline.gui.screens;
 
 import com.johnymuffin.BetaEvolutionsUtils;
-import gg.codie.mineonline.*;
+import gg.codie.mineonline.MinecraftVersion;
+import gg.codie.mineonline.MinecraftVersionRepository;
+import gg.codie.mineonline.Session;
 import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.mineonline.api.MineOnlineServer;
 import gg.codie.mineonline.api.MineOnlineServerRepository;
 import gg.codie.mineonline.client.LegacyGameManager;
-import gg.codie.mineonline.server.ThreadPollServers;
 import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.gui.components.GuiButton;
 import gg.codie.mineonline.gui.rendering.DisplayManager;
 import gg.codie.mineonline.gui.rendering.FontRenderer;
+import gg.codie.mineonline.gui.rendering.Renderer;
+import gg.codie.mineonline.server.ThreadPollServers;
 import org.lwjgl.opengl.Display;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.function.Predicate;
 
 public class GuiMultiplayer extends AbstractGuiScreen
@@ -86,23 +91,23 @@ public class GuiMultiplayer extends AbstractGuiScreen
         }
     }
 
-    protected void mouseClicked(int i, int j, int k)
+    protected void mouseClicked(int x, int y, int button)
     {
-        super.mouseClicked(i, j, k);
+        super.mouseClicked(x, y, button);
     }
 
-    public void drawScreen(int i, int j)
+    public void drawScreen(int mouseX, int mouseY)
     {
         initGui();
 
         tooltip = null;
         drawDefaultBackground();
-        guiSlotServer.drawScreen(i, j);
-        drawCenteredString("Play Multiplayer", getWidth() / 2, 20, 0xffffff);
-        super.drawScreen(i, j);
+        guiSlotServer.drawScreen(mouseX, mouseY);
+        FontRenderer.minecraftFontRenderer.drawCenteredString("Play Multiplayer", getWidth() / 2, 20, 0xffffff);
+        super.drawScreen(mouseX, mouseY);
         if(tooltip != null)
         {
-            renderTooltip(tooltip, i, j);
+            Renderer.singleton.renderTooltip(tooltip, mouseX, mouseY);
         }
     }
 
@@ -168,22 +173,6 @@ public class GuiMultiplayer extends AbstractGuiScreen
             LegacyGameManager.setGUIScreen(new GuiVersions(this, selectableVersionPredicate, selectListener, compare, true));
         else
             MenuManager.setMenuScreen(new GuiVersions(this, selectableVersionPredicate, selectListener, compare, true));
-    }
-
-    protected void renderTooltip(String s, int i, int j)
-    {
-        if(s == null)
-        {
-            return;
-        } else
-        {
-            int k = i + 12;
-            int l = j - 12;
-            int i1 = FontRenderer.minecraftFontRenderer.getStringWidth(s);
-            drawGradientRect(k - 3, l - 3, k + i1 + 3, l + 8 + 3, 0xc0000000, 0xc0000000);
-            FontRenderer.minecraftFontRenderer.drawStringWithShadow(s, k, l, -1);
-            return;
-        }
     }
 
     public List<MineOnlineServer> getServers()

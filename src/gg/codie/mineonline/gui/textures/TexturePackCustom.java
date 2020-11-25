@@ -1,7 +1,6 @@
 package gg.codie.mineonline.gui.textures;
 
 import gg.codie.mineonline.gui.rendering.Loader;
-import gg.codie.mineonline.gui.rendering.textures.EGUITexture;
 import org.lwjgl.opengl.GL11;
 
 import javax.imageio.ImageIO;
@@ -28,9 +27,7 @@ public class TexturePackCustom extends TexturePackBase
         return s;
     }
 
-    public void func_6485_a()
-        throws IOException
-    {
+    public void readTexturePack() {
         ZipFile zipfile = null;
         InputStream inputstream = null;
         try
@@ -74,7 +71,7 @@ public class TexturePackCustom extends TexturePackBase
         }
     }
 
-    public void func_6484_b()
+    public void cleanup()
     {
         if(texturePackThumbnail != null)
         {
@@ -93,28 +90,19 @@ public class TexturePackCustom extends TexturePackBase
                 InputStream is = new ByteArrayInputStream(os.toByteArray());
                 texturePackName = Loader.singleton.loadTexture("/texturepacks/" + texturePackFileName + "pack.png", is);
             } catch (Exception ex) {
-                GL11.glBindTexture(3553 /*GL_TEXTURE_2D*/, Loader.singleton.getGuiTexture(EGUITexture.UNKNOWN_PACK));
+                GL11.glBindTexture(GL11.GL_TEXTURE_2D, Loader.singleton.getGuiTexture(EGUITexture.UNKNOWN_PACK));
             }
         }
         if(texturePackThumbnail != null)
         {
-            GL11.glBindTexture(3553 /*GL_TEXTURE_2D*/, texturePackName);
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, texturePackName);
         } else
         {
-            GL11.glBindTexture(3553 /*GL_TEXTURE_2D*/, Loader.singleton.getGuiTexture(EGUITexture.UNKNOWN_PACK));
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, Loader.singleton.getGuiTexture(EGUITexture.UNKNOWN_PACK));
         }
 
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
-    }
-
-    public void func_6482_a()
-    {
-        try
-        {
-            texturePackZipFile = new ZipFile(texturePackFile);
-        }
-        catch(Exception exception) { }
     }
 
     public void closeTexturePackFile()
@@ -125,20 +113,6 @@ public class TexturePackCustom extends TexturePackBase
         }
         catch(Exception exception) { }
         texturePackZipFile = null;
-    }
-
-    public InputStream getResourceAsStream(String s)
-    {
-        try
-        {
-            java.util.zip.ZipEntry zipentry = texturePackZipFile.getEntry(s.substring(1));
-            if(zipentry != null)
-            {
-                return texturePackZipFile.getInputStream(zipentry);
-            }
-        }
-        catch(Exception exception) { }
-        return (TexturePackBase.class).getResourceAsStream(s);
     }
 
     private ZipFile texturePackZipFile;

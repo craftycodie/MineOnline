@@ -1,16 +1,14 @@
 package gg.codie.mineonline.gui.screens;
 
 import gg.codie.minecraft.client.EMinecraftGUIScale;
-import gg.codie.minecraft.client.EMinecraftMainHand;
 import gg.codie.mineonline.Session;
 import gg.codie.mineonline.Settings;
 import gg.codie.mineonline.client.LegacyGameManager;
-import gg.codie.mineonline.gui.GUIScale;
 import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.gui.components.GuiButton;
 import gg.codie.mineonline.gui.components.GuiSlider;
 import gg.codie.mineonline.gui.components.GuiSmallButton;
-import org.lwjgl.input.Mouse;
+import gg.codie.mineonline.gui.rendering.FontRenderer;
 
 public class GuiOptions extends AbstractGuiScreen
 {
@@ -177,7 +175,7 @@ public class GuiOptions extends AbstractGuiScreen
         }
     }
 
-    public void resizeGui() {
+    public void resize() {
         controlList.get(0).resize(getWidth() / 2 - 100, getHeight() / 6 + 168);
         controlList.get(1).resize(getWidth() / 2 - 100, getHeight() / 6 + 120 + 12);
         controlList.get(2).resize(getWidth() / 2 - 155, getHeight() / 6);
@@ -194,13 +192,13 @@ public class GuiOptions extends AbstractGuiScreen
     }
 
     @Override
-    public void drawScreen(int i, int j)
+    public void drawScreen(int mouseX, int mouseY)
     {
-        resizeGui();
+        resize();
 
         drawDefaultBackground();
-        drawCenteredString(screenName, getWidth() / 2, 20, 0xffffff);
-        super.drawScreen(i, j);
+        FontRenderer.minecraftFontRenderer.drawCenteredString(screenName, getWidth() / 2, 20, 0xffffff);
+        super.drawScreen(mouseX, mouseY);
     }
 
     private AbstractGuiScreen parent;

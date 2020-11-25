@@ -1,6 +1,6 @@
 package gg.codie.mineonline.client;
 
-import gg.codie.minecraft.client.EMinecraftMainHand;
+import gg.codie.common.utils.TransferableImage;
 import gg.codie.mineonline.*;
 import gg.codie.mineonline.discord.DiscordRPCHandler;
 import gg.codie.mineonline.gui.GUIScale;
@@ -11,16 +11,17 @@ import gg.codie.mineonline.gui.rendering.FontRenderer;
 import gg.codie.mineonline.gui.rendering.Loader;
 import gg.codie.mineonline.gui.screens.AbstractGuiScreen;
 import gg.codie.mineonline.gui.screens.GuiIngameMenu;
-import gg.codie.mineonline.gui.screens.GuiMainMenu;
 import gg.codie.mineonline.lwjgl.OnCreateListener;
 import gg.codie.mineonline.lwjgl.OnDestroyListener;
 import gg.codie.mineonline.lwjgl.OnUpdateListener;
 import gg.codie.mineonline.patches.*;
-import gg.codie.mineonline.patches.lwjgl.*;
-import gg.codie.mineonline.patches.minecraft.*;
+import gg.codie.mineonline.patches.lwjgl.LWJGLDisplayPatch;
+import gg.codie.mineonline.patches.lwjgl.LWJGLGL11GLOrthoAdvice;
+import gg.codie.mineonline.patches.lwjgl.LWJGLGLUPatch;
+import gg.codie.mineonline.patches.minecraft.FOVViewmodelAdvice;
+import gg.codie.mineonline.patches.minecraft.InputPatch;
 import gg.codie.mineonline.utils.JREUtils;
 import gg.codie.mineonline.utils.Logging;
-import gg.codie.common.utils.TransferableImage;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -309,35 +310,6 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
                 }
 
                 if (Loader.singleton != null) {
-//                    int color1 = 0xFFFFFFFF;
-//                    int color2 = 0xFFFFFFFF;
-//                    float f = (float)(color1 >> 24 & 0xff) / 255F;
-//                    float f1 = (float)(color1 >> 16 & 0xff) / 255F;
-//                    float f2 = (float)(color1 >> 8 & 0xff) / 255F;
-//                    float f3 = (float)(color1 & 0xff) / 255F;
-//                    float f4 = (float)(color2 >> 24 & 0xff) / 255F;
-//                    float f5 = (float)(color2 >> 16 & 0xff) / 255F;
-//                    float f6 = (float)(color2 >> 8 & 0xff) / 255F;
-//                    float f7 = (float)(color2 & 0xff) / 255F;
-//                    GL11.glDisable(3553 /*GL_TEXTURE_2D*/);
-//                    GL11.glEnable(3042 /*GL_BLEND*/);
-//                    GL11.glDisable(3008 /*GL_ALPHA_TEST*/);
-//                    GL11.glBlendFunc(GL11.GL_DST_COLOR, GL11.GL_ONE);
-//                    GL11.glShadeModel(7425 /*GL_SMOOTH*/);
-//                    Tessellator tessellator = Tessellator.instance;
-//                    tessellator.startDrawingQuads();
-//                    tessellator.setColorRGBA_F(f1, f2, f3, f);
-//                    tessellator.addVertex(Display.getWidth(), 0, 0.0D);
-//                    tessellator.addVertex(0, 0, 0.0D);
-//                    tessellator.setColorRGBA_F(f5, f6, f7, f4);
-//                    tessellator.addVertex(0, Display.getHeight(), 0.0D);
-//                    tessellator.addVertex(Display.getWidth(), Display.getHeight(), 0.0D);
-//                    tessellator.draw();
-//                    GL11.glShadeModel(7424 /*GL_FLAT*/);
-//                    GL11.glDisable(3042 /*GL_BLEND*/);
-//                    GL11.glEnable(3008 /*GL_ALPHA_TEST*/);
-//                    GL11.glEnable(3553 /*GL_TEXTURE_2D*/);
-
                     if (!Globals.BRANCH.equalsIgnoreCase("release")) {
                         int ypos = 2;
                         if (minecraftVersion.ingameVersionString != null && !Settings.singleton.getHideVersionString())
@@ -350,7 +322,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
                     GL11.glMatrixMode(GL11.GL_PROJECTION);
                     GL11.glLoadIdentity();
                     GL11.glOrtho(0.0D, scaledresolution.scaledWidth, scaledresolution.scaledHeight, 0.0D, 1000D, 3000D);
-                    GL11.glMatrixMode(5888 /*GL_MODELVIEW0_ARB*/);
+                    GL11.glMatrixMode(GL11.GL_MODELVIEW);
                     GL11.glLoadIdentity();
                     GL11.glTranslatef(0.0F, 0.0F, -2000F);
 
@@ -566,13 +538,13 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
         and we can feasibly cover all builds.
 
         As it stands, this method will first search for the Minecraft class.
-        the minecraftApplet holds an instance of the Minecraft class, and we have the minecraftApplet,
+        the minecraftApplet holds an singleton of the Minecraft class, and we have the minecraftApplet,
         so we can search for it there.
 
         Searching for it involves:
         1. Look for unka field called "minecraft". If it's there use it.
         2. If "minecraft" is not found, find any field within the same package.
-           - In every build I've checked, minecraftApplet only has 1 instance variable from the same package,
+           - In every build I've checked, minecraftApplet only has 1 singleton variable from the same package,
              and it's Minecraft.
 
         Then we find the width and height values.
@@ -739,10 +711,10 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
                 pixelData = new byte[width * height * 3];
                 imageData = new int[width * height];
             }
-            GL11.glPixelStorei(3333 /*GL_PACK_ALIGNMENT*/, 1);
-            GL11.glPixelStorei(3317 /*GL_UNPACK_ALIGNMENT*/, 1);
+            GL11.glPixelStorei(GL11.GL_PACK_ALIGNMENT, 1);
+            GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, 1);
             buffer.clear();
-            GL11.glReadPixels(0, 0, width, height, 6407 /*GL_RGB*/, 5121 /*GL_UNSIGNED_BYTE*/, buffer);
+            GL11.glReadPixels(0, 0, width, height, GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, buffer);
 
 
             buffer.clear();

@@ -1,5 +1,6 @@
 package gg.codie.mineonline.discord;
 
+import gg.codie.common.utils.OSUtils;
 import gg.codie.mineonline.Globals;
 import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.LibraryManager;
@@ -8,7 +9,6 @@ import gg.codie.mineonline.api.MineOnlineServer;
 import gg.codie.mineonline.client.LegacyGameManager;
 import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.utils.JREUtils;
-import gg.codie.common.utils.OSUtils;
 import net.arikia.dev.drpc.DiscordEventHandlers;
 import net.arikia.dev.drpc.DiscordRPC;
 import net.arikia.dev.drpc.DiscordRichPresence;

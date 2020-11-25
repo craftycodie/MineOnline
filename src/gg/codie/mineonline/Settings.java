@@ -3,7 +3,6 @@ package gg.codie.mineonline;
 import gg.codie.minecraft.client.*;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.lwjgl.input.Keyboard;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,7 +15,6 @@ public class Settings implements IMinecraftOptionsHandler {
     private JSONObject settings;
 
     public static final String SETTINGS_VERSION = "settingsVersion";
-    public static final String MINECRAFT_UPDATE_URL = "minecraftUpdateURL";
     public static final String JAVA_HOME = "javaHome";
     public static final String CLIENT_LAUNCH_ARGS = "clientLaunchArgs";
     public static final String HIDE_VERSION_STRING = "hideVersionString";
@@ -106,7 +104,6 @@ public class Settings implements IMinecraftOptionsHandler {
         settings = new JSONObject();
         settings.put(SETTINGS_VERSION, SETTINGS_VERSION_NUMBER);
         settings.put(FULLSCREEN, false);
-        settings.put(MINECRAFT_UPDATE_URL, "");
         settings.put(JAVA_HOME, "");
         settings.put(CLIENT_LAUNCH_ARGS, "");
         settings.put(FOV, 70);
@@ -388,6 +385,8 @@ public class Settings implements IMinecraftOptionsHandler {
             } catch (NoSuchFieldException ex) {
                 // ignore.
             }
+
+            new File(LauncherFiles.MINEONLINE_OPTIONS_PATH).delete();
         } catch (Exception ex) {
             // ignore
         }
@@ -472,7 +471,6 @@ public class Settings implements IMinecraftOptionsHandler {
             } else {
                 switch (settings.getInt(SETTINGS_VERSION)) {
                     case 3:
-                        settings.put(MINECRAFT_UPDATE_URL, "");
                         settings.put(JAVA_HOME, "");
                         settings.put(CLIENT_LAUNCH_ARGS, "");
                     case 4:
@@ -569,10 +567,6 @@ public class Settings implements IMinecraftOptionsHandler {
         } catch (IOException io) {
             io.printStackTrace();
         }
-    }
-
-    public String getMinecraftUpdateURL() {
-        return settings.optString(MINECRAFT_UPDATE_URL, "");
     }
 
     public String getJavaHome() {

@@ -273,7 +273,7 @@ public class RubyDungLauncher implements IMinecraftAppletWrapper {
                         GL11.glMatrixMode(GL11.GL_PROJECTION);
                         GL11.glLoadIdentity();
                         GL11.glOrtho(0.0D, scaledresolution.scaledWidth, scaledresolution.scaledHeight, 0.0D, 1000D, 3000D);
-                        GL11.glMatrixMode(5888 /*GL_MODELVIEW0_ARB*/);
+                        GL11.glMatrixMode(GL11.GL_MODELVIEW);
                         GL11.glLoadIdentity();
                         GL11.glTranslatef(0.0F, 0.0F, -2000F);
 
@@ -439,10 +439,10 @@ public class RubyDungLauncher implements IMinecraftAppletWrapper {
                 pixelData = new byte[width * height * 3];
                 imageData = new int[width * height];
             }
-            GL11.glPixelStorei(3333 /*GL_PACK_ALIGNMENT*/, 1);
-            GL11.glPixelStorei(3317 /*GL_UNPACK_ALIGNMENT*/, 1);
+            GL11.glPixelStorei(GL11.GL_PACK_ALIGNMENT, 1);
+            GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, 1);
             buffer.clear();
-            GL11.glReadPixels(0, 0, width, height, 6407 /*GL_RGB*/, 5121 /*GL_UNSIGNED_BYTE*/, buffer);
+            GL11.glReadPixels(0, 0, width, height, GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, buffer);
 
 
             buffer.clear();

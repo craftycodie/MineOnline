@@ -1,9 +1,8 @@
 package gg.codie.mineonline.gui;
 
-import gg.codie.minecraft.api.AuthServer;
 import com.johnymuffin.BetaEvolutionsUtils;
+import gg.codie.minecraft.api.AuthServer;
 import gg.codie.minecraft.api.MojangAPI;
-import gg.codie.minecraft.client.gui.Tessellator;
 import gg.codie.mineonline.*;
 import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.mineonline.api.MineOnlineServer;
@@ -11,11 +10,12 @@ import gg.codie.mineonline.discord.DiscordRPCHandler;
 import gg.codie.mineonline.gui.input.MouseHandler;
 import gg.codie.mineonline.gui.rendering.DisplayManager;
 import gg.codie.mineonline.gui.rendering.Loader;
-import gg.codie.mineonline.gui.rendering.textures.EGUITexture;
+import gg.codie.mineonline.gui.rendering.Renderer;
 import gg.codie.mineonline.gui.screens.AbstractGuiScreen;
 import gg.codie.mineonline.gui.screens.GuiDirectConnect;
 import gg.codie.mineonline.gui.screens.GuiLogin;
 import gg.codie.mineonline.gui.screens.GuiMainMenu;
+import gg.codie.mineonline.gui.textures.EGUITexture;
 import gg.codie.mineonline.utils.LastLogin;
 import gg.codie.mineonline.utils.Logging;
 import org.json.JSONObject;
@@ -30,7 +30,10 @@ import javax.imageio.ImageIO;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Set;
 
@@ -75,7 +78,7 @@ public class MenuManager {
     {
         float f = 0.00390625F;
         float f1 = 0.00390625F;
-        Tessellator tessellator = Tessellator.instance;
+        Renderer tessellator = Renderer.singleton;
         tessellator.startDrawingQuads();
         tessellator.addVertexWithUV(i + 0, j + j1, 0.0D, (float)(k + 0) * f, (float)(l + j1) * f1);
         tessellator.addVertexWithUV(i + i1, j + j1, 0.0D, (float)(k + i1) * f, (float)(l + j1) * f1);
@@ -317,24 +320,24 @@ public class MenuManager {
             if (MenuManager.guiScreen != null) {
 
 
-                GL11.glEnable(3553 /*GL_TEXTURE_2D*/);
+                GL11.glEnable(GL11.GL_TEXTURE_2D);
 
                 new GUIScale(Display.getParent().getWidth(), Display.getParent().getHeight());
                 GL11.glViewport(0, 0, Display.getParent().getWidth(), Display.getParent().getHeight());
-                GL11.glMatrixMode(5889 /*GL_PROJECTION*/);
+                GL11.glMatrixMode(GL11.GL_PROJECTION);
                 GL11.glLoadIdentity();
-                GL11.glMatrixMode(5888 /*GL_MODELVIEW0_ARB*/);
+                GL11.glMatrixMode(GL11.GL_MODELVIEW);
                 GL11.glLoadIdentity();
                 GL11.glClear(256);
-                GL11.glMatrixMode(5889 /*GL_PROJECTION*/);
+                GL11.glMatrixMode(GL11.GL_PROJECTION);
                 GL11.glLoadIdentity();
                 GL11.glOrtho(0.0D, GUIScale.lastScaledWidth(), GUIScale.lastScaledHeight(), 0.0D, 1000D, 3000D);
-                GL11.glMatrixMode(5888 /*GL_MODELVIEW0_ARB*/);
+                GL11.glMatrixMode(GL11.GL_MODELVIEW);
                 GL11.glLoadIdentity();
                 GL11.glTranslatef(0.0F, 0.0F, -2000F);
                 GL11.glClear(256);
                 MenuManager.guiScreen.updateScreen();
-                panorama_func(i, j, ((float)(System.currentTimeMillis() - startTime) / 1000) * 20, panoramaTexture);
+                panorama_func(((float)(System.currentTimeMillis() - startTime) / 1000) * 20, panoramaTexture);
 
                 MenuManager.guiScreen.drawScreen(k, i1);
 
@@ -359,34 +362,34 @@ public class MenuManager {
 
         new GUIScale(Display.getParent().getWidth(), Display.getParent().getHeight());
 
-        GL11.glEnable(3553 /*GL_TEXTURE_2D*/);
-        GL11.glShadeModel(7425 /*GL_SMOOTH*/);
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+        GL11.glShadeModel(GL11.GL_SMOOTH);
         GL11.glClearDepth(1.0D);
-        GL11.glEnable(2929 /*GL_DEPTH_TEST*/);
+        GL11.glEnable(GL11.GL_DEPTH_TEST);
         GL11.glDepthFunc(515);
-        GL11.glEnable(3008 /*GL_ALPHA_TEST*/);
+        GL11.glEnable(GL11.GL_ALPHA_TEST);
         GL11.glAlphaFunc(516, 0.1F);
-        GL11.glCullFace(1029 /*GL_BACK*/);
-        GL11.glMatrixMode(5889 /*GL_PROJECTION*/);
+        GL11.glCullFace(GL11.GL_BACK);
+        GL11.glMatrixMode(GL11.GL_PROJECTION);
         GL11.glLoadIdentity();
-        GL11.glMatrixMode(5888 /*GL_MODELVIEW0_ARB*/);
+        GL11.glMatrixMode(GL11.GL_MODELVIEW);
 
         GL11.glClear(16640);
-        GL11.glMatrixMode(5889 /*GL_PROJECTION*/);
+        GL11.glMatrixMode(GL11.GL_PROJECTION);
         GL11.glLoadIdentity();
         GL11.glOrtho(0.0D, GUIScale.lastScaledWidth(), GUIScale.lastScaledHeight(), 0.0D, 1000D, 3000D);
-        GL11.glMatrixMode(5888 /*GL_MODELVIEW0_ARB*/);
+        GL11.glMatrixMode(GL11.GL_MODELVIEW);
         GL11.glLoadIdentity();
         GL11.glTranslatef(0.0F, 0.0F, -2000F);
         GL11.glViewport(0, 0, Display.getParent().getWidth(), Display.getParent().getHeight());
         GL11.glClearColor(0.0F, 0.0F, 0.0F, 0.0F);
-        Tessellator tessellator = Tessellator.instance;
-        GL11.glDisable(2896 /*GL_LIGHTING*/);
-        GL11.glEnable(3553 /*GL_TEXTURE_2D*/);
-        GL11.glDisable(2912 /*GL_FOG*/);
-        GL11.glBindTexture(3553 /*GL_TEXTURE_2D*/, Loader.singleton.getGuiTexture(EGUITexture.LOADING));
+        Renderer tessellator = Renderer.singleton;
+        GL11.glDisable(GL11.GL_LIGHTING);
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+        GL11.glDisable(GL11.GL_FOG);
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, Loader.singleton.getGuiTexture(EGUITexture.LOADING));
         tessellator.startDrawingQuads();
-        tessellator.setColorOpaque_I(0xffffff);
+        tessellator.setColorRGBA(255, 255, 255, 255);
         tessellator.addVertexWithUV(0.0D, Display.getParent().getHeight(), 0.0D, 0.0D, 0.0D);
         tessellator.addVertexWithUV(Display.getParent().getWidth(), Display.getParent().getHeight(), 0.0D, 0.0D, 0.0D);
         tessellator.addVertexWithUV(Display.getParent().getWidth(), 0.0D, 0.0D, 0.0D, 0.0D);
@@ -395,11 +398,11 @@ public class MenuManager {
         char c = '\u0100';
         char c1 = '\u0100';
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        tessellator.setColorOpaque_I(0xffffff);
+        tessellator.setColorRGBA(255, 255, 255, 255);
         scaledTessellator((GUIScale.lastScaledWidth() - c) / 2, (GUIScale.lastScaledHeight() - c1) / 2, 0, 0, c, c1);
-        GL11.glDisable(2896 /*GL_LIGHTING*/);
-        GL11.glDisable(2912 /*GL_FOG*/);
-        GL11.glEnable(3008 /*GL_ALPHA_TEST*/);
+        GL11.glDisable(GL11.GL_LIGHTING);
+        GL11.glDisable(GL11.GL_FOG);
+        GL11.glEnable(GL11.GL_ALPHA_TEST);
         GL11.glAlphaFunc(516, 0.1F);
         Display.swapBuffers();
 
@@ -408,21 +411,21 @@ public class MenuManager {
         Keyboard.enableRepeatEvents(true);
     }
 
-    private static void panorama(int i, int j, float f)
+    private static void panorama(float f)
     {
-        Tessellator tessellator = Tessellator.instance;
-        GL11.glMatrixMode(5889 /*GL_PROJECTION*/);
+        Renderer tessellator = Renderer.singleton;
+        GL11.glMatrixMode(GL11.GL_PROJECTION);
         GL11.glPushMatrix();
         GL11.glLoadIdentity();
         GLU.gluPerspective(120F, 1.0F, 0.05F, 10F);
-        GL11.glMatrixMode(5888 /*GL_MODELVIEW0_ARB*/);
+        GL11.glMatrixMode(GL11.GL_MODELVIEW);
         GL11.glPushMatrix();
         GL11.glLoadIdentity();
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         GL11.glRotatef(180F, 1.0F, 0.0F, 0.0F);
-        GL11.glEnable(3042 /*GL_BLEND*/);
-        GL11.glDisable(3008 /*GL_ALPHA_TEST*/);
-        GL11.glDisable(2884 /*GL_CULL_FACE*/);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glDisable(GL11.GL_ALPHA_TEST);
+        GL11.glDisable(GL11.GL_CULL_FACE);
         GL11.glDepthMask(false);
         GL11.glBlendFunc(770, 771);
         int k = 8;
@@ -482,9 +485,9 @@ public class MenuManager {
                         break;
                 }
 
-                GL11.glBindTexture(3553 /*GL_TEXTURE_2D*/, Loader.singleton.getGuiTexture(panoarma));
+                GL11.glBindTexture(GL11.GL_TEXTURE_2D, Loader.singleton.getGuiTexture(panoarma));
                 tessellator.startDrawingQuads();
-                tessellator.setColorRGBA_I(0xffffff, 255 / (l + 1));
+                tessellator.setColorRGBA(255, 255, 255, 255 / (l + 1));
                 float f4 = 0.0F;
                 tessellator.addVertexWithUV(-1D, -1D, 1.0D, 0.0F + f4, 0.0F + f4);
                 tessellator.addVertexWithUV(1.0D, -1D, 1.0D, 1.0F - f4, 0.0F + f4);
@@ -498,31 +501,30 @@ public class MenuManager {
             GL11.glColorMask(true, true, true, false);
         }
 
-        tessellator.setTranslationD(0.0D, 0.0D, 0.0D);
         GL11.glColorMask(true, true, true, true);
-        GL11.glMatrixMode(5889 /*GL_PROJECTION*/);
+        GL11.glMatrixMode(GL11.GL_PROJECTION);
         GL11.glPopMatrix();
-        GL11.glMatrixMode(5888 /*GL_MODELVIEW0_ARB*/);
+        GL11.glMatrixMode(GL11.GL_MODELVIEW);
         GL11.glPopMatrix();
         GL11.glDepthMask(true);
-        GL11.glEnable(2884 /*GL_CULL_FACE*/);
-        GL11.glEnable(3008 /*GL_ALPHA_TEST*/);
-        GL11.glEnable(2929 /*GL_DEPTH_TEST*/);
+        GL11.glEnable(GL11.GL_CULL_FACE);
+        GL11.glEnable(GL11.GL_ALPHA_TEST);
+        GL11.glEnable(GL11.GL_DEPTH_TEST);
     }
 
-    private static void blur_related(float f, int texture)
+    private static void blur_related(int texture)
     {
-        GL11.glBindTexture(3553 /*GL_TEXTURE_2D*/, texture);
-        GL11.glCopyTexSubImage2D(3553 /*GL_TEXTURE_2D*/, 0, 0, 0, 0, 0, 256, 256);
-        GL11.glEnable(3042 /*GL_BLEND*/);
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture);
+        GL11.glCopyTexSubImage2D(GL11.GL_TEXTURE_2D, 0, 0, 0, 0, 0, 256, 256);
+        GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(770, 771);
         GL11.glColorMask(true, true, true, false);
-        Tessellator tessellator = Tessellator.instance;
+        Renderer tessellator = Renderer.singleton;
         tessellator.startDrawingQuads();
         byte byte0 = 3;
         for(int i = 0; i < byte0; i++)
         {
-            tessellator.setColorRGBA_F(1.0F, 1.0F, 1.0F, 1.0F / (float)(i + 1));
+            tessellator.setColorRGBA(255, 255, 255, (int)(255 / (float)(i + 1)));
             int j = GUIScale.lastScaledWidth();
             int k = GUIScale.lastScaledHeight();
             float f1 = (float)(i - byte0 / 2) / 256F;
@@ -536,27 +538,27 @@ public class MenuManager {
         GL11.glColorMask(true, true, true, true);
     }
 
-    private static void panorama_func(int i, int j, float f, int texture)
+    private static void panorama_func(float tick, int texture)
     {
         GL11.glViewport(0, 0, 256, 256);
-        panorama(i, j, f);
-        blur_related(f, texture);
-        blur_related(f, texture);
-        blur_related(f, texture);
-        blur_related(f, texture);
-        blur_related(f, texture);
-        blur_related(f, texture);
-        blur_related(f, texture);
-        blur_related(f, texture);
+        panorama(tick);
+        blur_related(texture);
+        blur_related(texture);
+        blur_related(texture);
+        blur_related(texture);
+        blur_related(texture);
+        blur_related(texture);
+        blur_related(texture);
+        blur_related(texture);
         GL11.glViewport(0, 0, Display.getParent().getWidth(), Display.getParent().getHeight());
-        Tessellator tessellator = Tessellator.instance;
+        Renderer tessellator = Renderer.singleton;
         tessellator.startDrawingQuads();
         float f1 = GUIScale.lastScaledWidth() <= GUIScale.lastScaledHeight() ? 120F / GUIScale.lastScaledHeight() : 120F / GUIScale.lastScaledWidth();
         float f2 = ((float)GUIScale.lastScaledHeight() * f1) / 256F;
         float f3 = ((float)GUIScale.lastScaledWidth() * f1) / 256F;
-        GL11.glTexParameteri(3553 /*GL_TEXTURE_2D*/, 10241 /*GL_TEXTURE_MIN_FILTER*/, 9729 /*GL_LINEAR*/);
-        GL11.glTexParameteri(3553 /*GL_TEXTURE_2D*/, 10240 /*GL_TEXTURE_MAG_FILTER*/, 9729 /*GL_LINEAR*/);
-        tessellator.setColorRGBA_F(1.0F, 1.0F, 1.0F, 1.0F);
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
+        tessellator.setColorRGBA(255, 255, 255, 255);
         int k = GUIScale.lastScaledWidth();
         int l = GUIScale.lastScaledHeight();
         tessellator.addVertexWithUV(0.0D, l, 0, 0.5F - f2, 0.5F + f3);

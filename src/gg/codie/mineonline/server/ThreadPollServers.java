@@ -1,10 +1,10 @@
 package gg.codie.mineonline.server;
 
+import gg.codie.mineonline.api.MineOnlineServer;
+
 import java.io.IOException;
 import java.net.*;
 import java.util.HashMap;
-
-import gg.codie.mineonline.api.MineOnlineServer;
 
 public class ThreadPollServers extends Thread
 {

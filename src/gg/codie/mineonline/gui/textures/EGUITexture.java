@@ -1,4 +1,4 @@
-package gg.codie.mineonline.gui.rendering.textures;
+package gg.codie.mineonline.gui.textures;
 
 public enum  EGUITexture {
     GUI("/gui/gui.png", true),

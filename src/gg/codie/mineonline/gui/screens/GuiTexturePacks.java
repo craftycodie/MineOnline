@@ -1,5 +1,6 @@
 package gg.codie.mineonline.gui.screens;
 
+import gg.codie.common.utils.FolderChangeListener;
 import gg.codie.common.utils.OSUtils;
 import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.Settings;
@@ -8,26 +9,40 @@ import gg.codie.mineonline.client.MinecraftTexturePackRepository;
 import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.gui.components.GuiButton;
 import gg.codie.mineonline.gui.components.GuiSmallButton;
+import gg.codie.mineonline.gui.rendering.FontRenderer;
 import org.lwjgl.Sys;
-import org.lwjgl.input.Mouse;
 
 import java.awt.*;
 import java.io.File;
 
 public class GuiTexturePacks extends AbstractGuiScreen
 {
+    boolean texturePacksChanged;
+    FolderChangeListener texturePackFolderChangeListener = new FolderChangeListener(LauncherFiles.MINECRAFT_TEXTURE_PACKS_PATH, () -> { texturePacksChanged = true; });
+
     public GuiTexturePacks(AbstractGuiScreen guiscreen)
     {
-        field_6454_o = -1;
         parent = guiscreen;
         MinecraftTexturePackRepository.singleton.loadTexturePacks();
         Settings.singleton.loadSettings();
         MinecraftTexturePackRepository.singleton.getTexturePacks();
         guiTexturePackSlot = new GuiTexturePackSlot(this);
+
+        new Thread(texturePackFolderChangeListener).start();
+    }
+
+    @Override
+    public void onGuiClosed() {
+        texturePackFolderChangeListener.stop();
     }
 
     public void initGui()
     {
+        if (texturePacksChanged) {
+            MinecraftTexturePackRepository.singleton.loadTexturePacks();
+            texturePacksChanged = false;
+        }
+
         controlList.clear();
 
         controlList.add(new GuiSmallButton(5, getWidth() / 2 - 154, getHeight() - 48, "Open texture pack folder", new GuiButton.GuiButtonListener() {
@@ -52,39 +67,27 @@ public class GuiTexturePacks extends AbstractGuiScreen
         }));
     }
 
-    protected void mouseClicked(int i, int j, int k)
+    protected void mouseMovedOrUp(int x, int y, int button)
     {
-        super.mouseClicked(i, j, k);
+        super.mouseMovedOrUp(x, y, button);
     }
 
-    protected void mouseMovedOrUp(int i, int j, int k)
-    {
-        super.mouseMovedOrUp(i, j, k);
-    }
-
-    public void drawScreen(int i, int j)
+    public void drawScreen(int mouseX, int mouseY)
     {
         initGui();
 
-        guiTexturePackSlot.drawScreen(i, j);
-        if(field_6454_o <= 0)
-        {
-            MinecraftTexturePackRepository.singleton.getTexturePacks();
-            field_6454_o += 20;
-        }
-        drawCenteredString("Select Texture Pack", getWidth() / 2, 16, 0xffffff);
-        drawCenteredString("(Place texture pack files here)", getWidth() / 2 - 77, getHeight() - 26, 0x808080);
-        super.drawScreen(i, j);
+        guiTexturePackSlot.drawScreen(mouseX, mouseY);
+        FontRenderer.minecraftFontRenderer.drawCenteredString("Select Texture Pack", getWidth() / 2, 16, 0xffffff);
+        FontRenderer.minecraftFontRenderer.drawCenteredString("(Place texture pack files here)", getWidth() / 2 - 77, getHeight() - 26, 0x808080);
+        super.drawScreen(mouseX, mouseY);
     }
 
     public void updateScreen()
     {
         super.updateScreen();
         guiTexturePackSlot.update();
-        field_6454_o--;
     }
 
-    protected AbstractGuiScreen parent;
-    private int field_6454_o;
+    private AbstractGuiScreen parent;
     private GuiTexturePackSlot guiTexturePackSlot;
 }

@@ -1,7 +1,6 @@
 package gg.codie.mineonline.gui.textures;
 
 import gg.codie.mineonline.gui.rendering.Loader;
-import gg.codie.mineonline.gui.rendering.textures.EGUITexture;
 import org.lwjgl.opengl.GL11;
 
 import javax.imageio.ImageIO;
@@ -26,12 +25,9 @@ public class TexturePackDefault extends TexturePackBase
         }
     }
 
-    public void func_6484_b()
+    public void cleanup()
     {
-        if(texturePackThumbnail != null)
-        {
-            //Loader.singleton.unloadTexture(EGUITexture.PACK.textureName);
-        }
+        // do nothing
     }
 
     public void bindThumbnailTexture()
@@ -42,10 +38,10 @@ public class TexturePackDefault extends TexturePackBase
         }
         if(texturePackThumbnail != null)
         {
-            GL11.glBindTexture(3553 /*GL_TEXTURE_2D*/, Loader.singleton.getGuiTexture(EGUITexture.PACK));
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, Loader.singleton.getGuiTexture(EGUITexture.PACK));
         } else
         {
-            GL11.glBindTexture(3553 /*GL_TEXTURE_2D*/, Loader.singleton.getGuiTexture(EGUITexture.UNKNOWN_PACK));
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, Loader.singleton.getGuiTexture(EGUITexture.UNKNOWN_PACK));
         }
 
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);

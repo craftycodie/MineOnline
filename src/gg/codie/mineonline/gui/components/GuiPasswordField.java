@@ -3,21 +3,24 @@ package gg.codie.mineonline.gui.components;
 
 
 import gg.codie.mineonline.gui.input.InputSanitization;
+import gg.codie.mineonline.gui.rendering.FontRenderer;
+import gg.codie.mineonline.gui.rendering.Renderer;
 import gg.codie.mineonline.gui.screens.AbstractGuiScreen;
+import org.lwjgl.input.Keyboard;
 
 public class GuiPasswordField extends GuiComponent
 {
 
-    public GuiPasswordField(AbstractGuiScreen guiscreen, int i, int j, int k, int l, String s)
+    public GuiPasswordField(AbstractGuiScreen guiscreen, int x, int y, int width, int height, String value)
     {
         isFocused = false;
         isEnabled = true;
         parentGuiScreen = guiscreen;
-        xPos = i;
-        yPos = j;
-        width = k;
-        height = l;
-        setText(s);
+        xPos = x;
+        yPos = y;
+        this.width = width;
+        this.height = height;
+        setText(value);
     }
 
     @Override
@@ -36,18 +39,13 @@ public class GuiPasswordField extends GuiComponent
         return text;
     }
 
-    public void updateCursorCounter()
-    {
-        cursorCounter++;
-    }
-
     public void textboxKeyTyped(char c, int i)
     {
         if(!isEnabled || !isFocused)
         {
             return;
         }
-        if(c == '\t')
+        if(i == Keyboard.KEY_TAB)
         {
             parentGuiScreen.selectNextField();
         }
@@ -80,32 +78,28 @@ public class GuiPasswordField extends GuiComponent
         }
     }
 
-    public void mouseClicked(int i, int j, int k)
+    public void mouseClicked(int x, int y, int button)
     {
-        boolean flag = isEnabled && i >= xPos && i < xPos + width && j >= yPos && j < yPos + height;
+        boolean flag = isEnabled && x >= xPos && x < xPos + width && y >= yPos && y < yPos + height;
         setFocused(flag);
     }
 
     public void setFocused(boolean flag)
     {
-        if(flag && !isFocused)
-        {
-            cursorCounter = 0;
-        }
         isFocused = flag;
     }
 
     public void drawTextBox()
     {
-        drawRect(xPos - 1, yPos - 1, xPos + width + 1, yPos + height + 1, 0xffa0a0a0);
-        drawRect(xPos, yPos, xPos + width, yPos + height, 0xff000000);
+        Renderer.singleton.drawRect(xPos - 1, yPos - 1, xPos + width + 1, yPos + height + 1, 0xffa0a0a0);
+        Renderer.singleton.drawRect(xPos, yPos, xPos + width, yPos + height, 0xff000000);
         if(isEnabled)
         {
             boolean flag = isFocused && (System.currentTimeMillis()) % 1000 < 500;
-            drawString((new StringBuilder()).append(text.replaceAll(".", "*")).append(flag ? "_" : "").toString(), xPos + 4, yPos + (height - 8) / 2, 0xe0e0e0);
+            FontRenderer.minecraftFontRenderer.drawString((new StringBuilder()).append(text.replaceAll(".", "*")).append(flag ? "_" : "").toString(), xPos + 4, yPos + (height - 8) / 2, 0xe0e0e0);
         } else
         {
-            drawString(text.replaceAll(".", "*"), xPos + 4, yPos + (height - 8) / 2, 0x707070);
+            FontRenderer.minecraftFontRenderer.drawString(text.replaceAll(".", "*"), xPos + 4, yPos + (height - 8) / 2, 0x707070);
         }
     }
 
@@ -120,7 +114,6 @@ public class GuiPasswordField extends GuiComponent
     private final int height;
     private String text;
     private int maxStringLength;
-    private int cursorCounter;
     public boolean isFocused;
     public boolean isEnabled;
     private AbstractGuiScreen parentGuiScreen;

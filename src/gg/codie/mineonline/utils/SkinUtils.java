@@ -6,7 +6,8 @@ import gg.codie.mineonline.Globals;
 import gg.codie.mineonline.Settings;
 import org.json.JSONObject;
 
-import java.io.*;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;

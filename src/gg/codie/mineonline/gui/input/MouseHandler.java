@@ -34,6 +34,7 @@ public class MouseHandler {
         }
     }
 
+    // Used in reflection
     public static boolean didClickCooldown(int button, long cooldownMS) {
         switch (button) {
             case 1:

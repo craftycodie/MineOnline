@@ -3,6 +3,7 @@ package gg.codie.mineonline.gui.screens;
 import gg.codie.mineonline.client.LegacyGameManager;
 import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.gui.components.GuiButton;
+import gg.codie.mineonline.gui.rendering.FontRenderer;
 
 import java.awt.*;
 import java.net.URI;
@@ -43,8 +44,6 @@ public class GuiAbout extends AbstractGuiScreen
             }
         }));
 
-        AbstractGuiScreen thisScreen = this;
-
         controlList.add(new GuiButton(0, getWidth() / 2 - 100, getHeight() / 4 + 96 + byte0, "Custom Capes", new GuiButton.GuiButtonListener() {
             @Override
             public void OnButtonPress() {
@@ -73,14 +72,14 @@ public class GuiAbout extends AbstractGuiScreen
     }
 
     @Override
-    public void drawScreen(int i, int j)
+    public void drawScreen(int mouseX, int mouseY)
     {
         controlList.clear();
         initGui();
 
         drawDefaultBackground();
 
-        drawCenteredString("About", getWidth() / 2, 20, 0xffffff);
-        super.drawScreen(i, j);
+        FontRenderer.minecraftFontRenderer.drawCenteredString("About", getWidth() / 2, 20, 0xffffff);
+        super.drawScreen(mouseX, mouseY);
     }
 }

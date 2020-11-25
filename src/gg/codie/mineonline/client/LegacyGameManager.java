@@ -11,20 +11,21 @@ import gg.codie.mineonline.Settings;
 import gg.codie.mineonline.discord.DiscordRPCHandler;
 import gg.codie.mineonline.gui.GUIScale;
 import gg.codie.mineonline.gui.rendering.DisplayManager;
-import gg.codie.mineonline.gui.rendering.FontRenderer;
 import gg.codie.mineonline.gui.rendering.Loader;
-import gg.codie.mineonline.gui.rendering.textures.EGUITexture;
 import gg.codie.mineonline.gui.screens.AbstractGuiScreen;
+import gg.codie.mineonline.gui.textures.EGUITexture;
 import gg.codie.mineonline.patches.ClassPatch;
 import gg.codie.mineonline.patches.HashMapPatch;
 import gg.codie.mineonline.patches.StringPatch;
-import gg.codie.mineonline.patches.lwjgl.*;
+import gg.codie.mineonline.patches.lwjgl.LWJGLGL11GLOrthoAdvice;
+import gg.codie.mineonline.patches.lwjgl.LWJGLGL11Patch;
+import gg.codie.mineonline.patches.lwjgl.LWJGLGLUPatch;
+import gg.codie.mineonline.patches.lwjgl.LWJGLGLUPerspectiveAdvice;
 import gg.codie.mineonline.patches.minecraft.*;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 
 import java.awt.*;
-import java.io.IOException;
 
 public class LegacyGameManager {
 
@@ -78,6 +79,12 @@ public class LegacyGameManager {
 
             try {
                 setFOV((int) minecraftOptions.getFOV());
+            } catch (NoSuchFieldException ne) {
+                // ignore
+            }
+
+            try {
+                Settings.singleton.setSoundVolume(minecraftOptions.getSoundVolume());
             } catch (NoSuchFieldException ne) {
                 // ignore
             }

@@ -1,11 +1,9 @@
 package gg.codie.mineonline.patches;
 
 import gg.codie.mineonline.Globals;
-import gg.codie.mineonline.LauncherFiles;
 import net.bytebuddy.asm.Advice;
 
 import java.lang.reflect.Method;
-import java.net.URL;
 
 public class URLConstructAdvice {
     public static String updateURL;
@@ -141,8 +139,6 @@ public class URLConstructAdvice {
 
                 url = (String) findCloakURLForUsername.invoke(null, username);
 
-            } else if (url.contains("/game/getversion.jsp")) {
-                return;
             } else {
                 if (url.endsWith("/MinecraftResources/") || url.endsWith("/resources")|| url.endsWith("/resources/")) {
                     String resourcesVersion = (String) ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.FilePatch").getField("resourcesVersion").get(null);

@@ -1,19 +1,10 @@
 package gg.codie.mineonline.patches;
 
-import gg.codie.mineonline.patches.lwjgl.LWJGLDisplayUpdateAdvice;
-import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.asm.Advice;
-import net.bytebuddy.dynamic.loading.ClassReloadingStrategy;
-import net.bytebuddy.implementation.Implementation;
-import net.bytebuddy.matcher.ElementMatchers;
 
-import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 public class HashMapPutAdvice {
     public static HashMap<String, Integer> textures = new HashMap<>();

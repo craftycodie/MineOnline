@@ -2,8 +2,10 @@ package gg.codie.mineonline.utils;
 
 import gg.codie.mineonline.LauncherFiles;
 
-import java.io.*;
-import java.util.Scanner;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 
 public class Logging {
     public static void deleteLog() {

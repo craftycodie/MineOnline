@@ -8,6 +8,7 @@ import gg.codie.mineonline.gui.components.GuiButton;
 import gg.codie.mineonline.gui.components.GuiToggleButton;
 import gg.codie.mineonline.gui.rendering.DisplayManager;
 import gg.codie.mineonline.gui.rendering.FontRenderer;
+import gg.codie.mineonline.gui.rendering.Renderer;
 import org.lwjgl.input.Keyboard;
 
 import javax.swing.*;
@@ -211,7 +212,7 @@ public class GuiVersions extends AbstractGuiScreen
     {
         Keyboard.enableRepeatEvents(true);
         controlList.clear();
-        func_35337_c();
+        addComponents();
 
         if (MinecraftVersionRepository.getSingleton().isLoadingInstalledVersions())
             guiSlotVersion = new GuiSlotVersion(this, new LinkedList<>(), compare);
@@ -223,7 +224,7 @@ public class GuiVersions extends AbstractGuiScreen
 
     // Keep track of the selection inbetween filtering.
     GuiSlotVersion.SelectableVersion lastSelected = null;
-    public void func_35337_c()
+    public void addComponents()
     {
         controlList.add(new GuiButton(1, getWidth() / 2 - 154, getHeight() - 48, 100, 20, "Back", new GuiButton.GuiButtonListener() {
             @Override
@@ -356,7 +357,7 @@ public class GuiVersions extends AbstractGuiScreen
         }));
     }
 
-    public void resizeGui() {
+    public void resize() {
         controlList.get(0).resize(getWidth() / 2 - 154, getHeight() - 48);
         controlList.get(1).resize(getWidth() / 2 + 54, 12);
         controlList.get(2).resize(getWidth() / 2 + 74, 12);
@@ -376,15 +377,10 @@ public class GuiVersions extends AbstractGuiScreen
         }
     }
 
-    protected void mouseClicked(int i, int j, int k)
-    {
-        super.mouseClicked(i, j, k);
-    }
-
     boolean reloadList;
-    public void drawScreen(int i, int j)
+    public void drawScreen(int mouseX, int mouseY)
     {
-        resizeGui();
+        resize();
 
         tooltip = null;
         drawDefaultBackground();
@@ -392,71 +388,55 @@ public class GuiVersions extends AbstractGuiScreen
         playButton.enabled = guiSlotVersion != null && guiSlotVersion.getSelected() != null;
 
         if (MinecraftVersionRepository.getSingleton().isLoadingInstalledVersions()) {
-            guiSlotVersion.drawScreen(i, j);
-            drawCenteredString("Loading versions...", getWidth() / 2, getHeight() / 2, 0x808080);
+            guiSlotVersion.drawScreen(mouseX, mouseY);
+            FontRenderer.minecraftFontRenderer.drawCenteredString("Loading versions...", getWidth() / 2, getHeight() / 2, 0x808080);
         } else if (!versionsWereLoaded) {
             guiSlotVersion = new GuiSlotVersion(this, filteredVersions(), compare);
-            guiSlotVersion.drawScreen(i, j);
+            guiSlotVersion.drawScreen(mouseX, mouseY);
             versionsWereLoaded = true;
         } else {
             if (reloadList) {
                 guiSlotVersion = new GuiSlotVersion(this, filteredVersions(), compare);
                 reloadList = false;
             }
-            guiSlotVersion.drawScreen(i, j);
+            guiSlotVersion.drawScreen(mouseX, mouseY);
         }
 
         if (guiSlotVersion.getSize() < 1 && versionsWereLoaded) {
-            drawCenteredString("No versions found.", getWidth() / 2, getHeight() / 2, 0x808080);
+            FontRenderer.minecraftFontRenderer.drawCenteredString("No versions found.", getWidth() / 2, getHeight() / 2, 0x808080);
         }
 
-        drawCenteredString("Select Version", getWidth() / 2, 20, 0xffffff);
-        super.drawScreen(i, j);
+        FontRenderer.minecraftFontRenderer.drawCenteredString("Select Version", getWidth() / 2, 20, 0xffffff);
+        super.drawScreen(mouseX, mouseY);
 
-        if (i >= getWidth() / 2 + 54 && j >= 12 && i <= getWidth() / 2 + 74 && j <= 30)
+        if (mouseX >= getWidth() / 2 + 54 && mouseY >= 12 && mouseX <= getWidth() / 2 + 74 && mouseY <= 30)
         {
             setTooltip("Classic / RubyDung");
         }
 
-        if (i >= getWidth() / 2 + 74 && j >= 12 && i <= getWidth() / 2 + 94 && j <= 30)
+        if (mouseX >= getWidth() / 2 + 74 && mouseY >= 12 && mouseX <= getWidth() / 2 + 94 && mouseY <= 30)
         {
             setTooltip("Indev / Infdev");
         }
 
-        if (i >= getWidth() / 2 + 94 && j >= 12 && i <= getWidth() / 2 + 114 && j <= 30)
+        if (mouseX >= getWidth() / 2 + 94 && mouseY >= 12 && mouseX <= getWidth() / 2 + 114 && mouseY <= 30)
         {
             setTooltip("Alpha");
         }
 
-        if (i >= getWidth() / 2 + 114 && j >= 12 && i <= getWidth() / 2 + 134 && j <= 30)
+        if (mouseX >= getWidth() / 2 + 114 && mouseY >= 12 && mouseX <= getWidth() / 2 + 134 && mouseY <= 30)
         {
             setTooltip("Beta");
         }
 
-        if (i >= getWidth() / 2 + 135 && j >= 12 && i <= getWidth() / 2 + 154 && j <= 30)
+        if (mouseX >= getWidth() / 2 + 135 && mouseY >= 12 && mouseX <= getWidth() / 2 + 154 && mouseY <= 30)
         {
-            setTooltip("Release / Other");
+            setTooltip("Other");
         }
 
         if(tooltip != null)
         {
-            renderTooltip(tooltip, i, j);
-        }
-    }
-
-    protected void renderTooltip(String s, int i, int j)
-    {
-        if(s == null)
-        {
-            return;
-        } else
-        {
-            int k = i + 12;
-            int l = j - 12;
-            int i1 = FontRenderer.minecraftFontRenderer.getStringWidth(s);
-            drawGradientRect(k - 3, l - 3, k + i1 + 3, l + 8 + 3, 0xc0000000, 0xc0000000);
-            FontRenderer.minecraftFontRenderer.drawStringWithShadow(s, k, l, -1);
-            return;
+            Renderer.singleton.renderTooltip(tooltip, mouseX, mouseY);
         }
     }
 

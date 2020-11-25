@@ -2,14 +2,14 @@ package gg.codie.mineonline.gui.components;
 
 public class GuiToggleButton extends GuiButton {
 
-    public GuiToggleButton(int i, int xPos, int yPos, int width, int height, String s, GuiButtonListener buttonListener)
+    public GuiToggleButton(int id, int xPos, int yPos, int width, int height, String text, GuiButtonListener buttonListener)
     {
-        super(i, xPos, yPos, width, height, s, buttonListener);
+        super(id, xPos, yPos, width, height, text, buttonListener);
     }
 
-    public boolean mousePressed(int i, int j)
+    public boolean mousePressed(int x, int y)
     {
-        return i >= xPosition && j >= yPosition && i < xPosition + width && j < yPosition + height;
+        return x >= xPosition && y >= yPosition && x < xPosition + width && y < yPosition + height;
     }
 
 }

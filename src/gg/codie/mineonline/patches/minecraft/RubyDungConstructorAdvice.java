@@ -2,7 +2,6 @@ package gg.codie.mineonline.patches.minecraft;
 
 import net.bytebuddy.asm.Advice;
 import net.bytebuddy.implementation.bytecode.assign.Assigner;
-import org.lwjgl.opengl.Display;
 
 public class RubyDungConstructorAdvice {
     public static Object rubyDung;
