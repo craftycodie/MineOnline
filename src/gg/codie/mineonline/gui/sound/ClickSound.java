@@ -1,5 +1,7 @@
 package gg.codie.mineonline.gui.sound;
 
+import gg.codie.mineonline.Settings;
+
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
@@ -12,6 +14,9 @@ public class ClickSound {
 
     public static void play() {
         try {
+            if (Settings.singleton.getSoundVolume() == 0)
+                return;
+
             AudioInputStream audioIn = AudioSystem.getAudioInputStream(url);
             // Get a sound clip resource.
             Clip clip = AudioSystem.getClip();
@@ -19,7 +24,8 @@ public class ClickSound {
             clip.open(audioIn);
             FloatControl gainControl =
                     (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
-            gainControl.setValue(-20.0f); // Reduce volume by 20 decibels.
+            // This isn't perfect but will do for now.
+            gainControl.setValue(-37f + (25 * Settings.singleton.getSoundVolume()));
             clip.start();
         } catch (Exception ex) {
             ex.printStackTrace();
