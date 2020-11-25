@@ -1,7 +1,9 @@
 package gg.codie.mineonline.client;
 
+import gg.codie.common.utils.FileChangeListener;
 import gg.codie.minecraft.client.EMinecraftGUIScale;
 import gg.codie.minecraft.client.EMinecraftMainHand;
+import gg.codie.minecraft.client.EMinecraftOptionsVersion;
 import gg.codie.minecraft.client.Options;
 import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.MinecraftVersion;
@@ -11,6 +13,7 @@ import gg.codie.mineonline.gui.GUIScale;
 import gg.codie.mineonline.gui.rendering.DisplayManager;
 import gg.codie.mineonline.gui.rendering.FontRenderer;
 import gg.codie.mineonline.gui.rendering.Loader;
+import gg.codie.mineonline.gui.rendering.textures.EGUITexture;
 import gg.codie.mineonline.gui.screens.AbstractGuiScreen;
 import gg.codie.mineonline.patches.ClassPatch;
 import gg.codie.mineonline.patches.HashMapPatch;
@@ -30,15 +33,55 @@ public class LegacyGameManager {
 
     private MinecraftVersion version;
     private IMinecraftAppletWrapper appletWrapper;
-
-    private Options minecraftOptions = null;
+    private FileChangeListener optionsListener;
 
     private LegacyGameManager(MinecraftVersion version, IMinecraftAppletWrapper appletWrapper) {
         this.version = version;
         this.appletWrapper = appletWrapper;
+
+        optionsListener = new FileChangeListener(LauncherFiles.MINEONLINE_OPTIONS_PATH, new FileChangeListener.FileChangeEvent() {
+            @Override
+            public void onFileChange(String filePath) {
+                // Let the LWJGL thread handle this.
+                optionsFileChanged = true;
+            }
+        });
+
+        new Thread(optionsListener).start();
+    }
+
+    public static void update() {
+        readOptionChanges();
+    }
+
+    static boolean optionsFileChanged = false;
+    private static void readOptionChanges() {
+        if (!optionsFileChanged)
+            return;
+        else
+            optionsFileChanged = false;
+
         try {
-            minecraftOptions = new Options(LauncherFiles.MINEONLINE_OPTIONS_PATH, version.optionsVersion);
-        } catch (IOException ex) {
+            Options minecraftOptions = new Options(LauncherFiles.MINEONLINE_OPTIONS_PATH, getVersion() != null ? getVersion().optionsVersion : EMinecraftOptionsVersion.DEFAULT);
+
+            try {
+                setTexturePack(minecraftOptions.getTexturePack());
+            } catch (NoSuchFieldException ne) {
+                // ignore.
+            }
+
+            try {
+                setGUIScale(minecraftOptions.getGUIScale());
+            } catch (NoSuchFieldException ne) {
+                // ignore
+            }
+
+            try {
+                setFOV((int) minecraftOptions.getFOV());
+            } catch (NoSuchFieldException ne) {
+                // ignore
+            }
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
@@ -114,6 +157,7 @@ public class LegacyGameManager {
     }
 
     public static void closeGame() {
+        singleton.optionsListener.stop();
         DiscordRPCHandler.stop();
         getAppletWrapper().closeApplet();
     }
@@ -123,6 +167,11 @@ public class LegacyGameManager {
         Settings.singleton.saveSettings();
         ClassPatch.texturePack = texturePack;
         Loader.reloadMinecraftTextures();
+        for(EGUITexture texture : EGUITexture.values()) {
+            if(texture.useTexturePack) {
+                Loader.singleton.unloadTexture(texture);
+            }
+        }
     }
 
     public static void setFOV(int fov) {
@@ -144,7 +193,8 @@ public class LegacyGameManager {
         GuiScreenOpenAdvice.guiScale = guiScale.getIntValue();
         LWJGLGL11GLOrthoAdvice.guiScale = guiScale.getIntValue();
         ScaledResolutionConstructorAdvice.guiScale = guiScale.getIntValue();
-        getGuiScreen().resize(GUIScale.lastScaledWidth(), GUIScale.lastScaledHeight());
+        if (getGuiScreen() != null)
+            getGuiScreen().resize(GUIScale.lastScaledWidth(), GUIScale.lastScaledHeight());
     }
 
     public static void setMainHand(EMinecraftMainHand mainHand) {

@@ -295,6 +295,8 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
                     LegacyGameManager.setGUIScreen(null);
                 }
 
+                LegacyGameManager.update();
+
                 if (firstUpdate) {
                     try {
                         if (fullscreen) {

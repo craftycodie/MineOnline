@@ -31,14 +31,14 @@ class GuiTexturePackSlot extends GuiSlot
     {
         List list = MinecraftTexturePackRepository.singleton.getTexturePacks();
 
-        for(EGUITexture texture : EGUITexture.values()) {
-            if(texture.useTexturePack) {
-                Loader.singleton.unloadTexture(texture);
-            }
-        }
-
         if (LegacyGameManager.isInGame() && !Settings.singleton.getTexturePack().equals(((TexturePackBase)list.get(i)).texturePackFileName)) {
             LegacyGameManager.setTexturePack(((TexturePackBase)list.get(i)).texturePackFileName);
+        } else {
+            for(EGUITexture texture : EGUITexture.values()) {
+                if(texture.useTexturePack) {
+                    Loader.singleton.unloadTexture(texture);
+                }
+            }
         }
 
         Settings.singleton.setTexturePack(((TexturePackBase) list.get(i)).texturePackFileName);
