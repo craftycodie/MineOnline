@@ -82,8 +82,12 @@ public class MinecraftServerProcess {
             } catch (ClassNotFoundException ex) { }
         }
 
-        // Bukkit
+        // Cloth
+        try {
+            mainClass = classLoader.loadClass("net.minecraft.Main");
+        } catch (ClassNotFoundException ex) { }
 
+        // Bukkit
         try {
             mainClass = classLoader.loadClass("org.bukkit.craftbukkit.Main");
         } catch (ClassNotFoundException ex) { }
