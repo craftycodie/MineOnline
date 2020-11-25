@@ -177,7 +177,12 @@ public class GuiVersions extends AbstractGuiScreen
                     filteredVersions.add(selectableVersion);
                 else if (selectableVersion.version.baseVersion.startsWith("b") && betaButton.enabled)
                     filteredVersions.add(selectableVersion);
-                else if (releaseButton.enabled)
+                else if (releaseButton.enabled
+                        && !selectableVersion.version.baseVersion.startsWith("rd")
+                        && !selectableVersion.version.baseVersion.startsWith("c")
+                        && !selectableVersion.version.baseVersion.startsWith("a")
+                        && !selectableVersion.version.baseVersion.startsWith("b")
+                        && !selectableVersion.version.baseVersion.startsWith("in"))
                     filteredVersions.add(selectableVersion);
             }
             else filteredVersions.add(selectableVersion);

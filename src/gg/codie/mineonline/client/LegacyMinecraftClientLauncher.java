@@ -222,7 +222,6 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
         LWJGLDisplayPatch.destroyListener = new OnDestroyListener() {
             @Override
             public void onDestroyEvent() throws Throwable {
-                DisplayManager.getFrame().dispose();
                 System.exit(0);
             }
         };
