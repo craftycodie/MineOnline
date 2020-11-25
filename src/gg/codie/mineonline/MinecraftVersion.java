@@ -152,7 +152,7 @@ public class MinecraftVersion {
         entityRendererClass = object.optString("entityRendererClass", null);
         viewModelFunction = object.optString("viewModelFunction", null);
         useFOVPatch = object.optBoolean("useFOVPatch", false);
-        useTexturepackPatch = object.optBoolean("useTexturepackPatch", true);
+        useTexturepackPatch = object.optBoolean("useTexturepackPatch", false);
         ingameVersionString = object.optString("ingameVersionString", null);
         resourcesVersion = object.optString("resourcesVersion", "default");
         useUsernamesPatch = object.optBoolean("useUsernamesPatch", false);

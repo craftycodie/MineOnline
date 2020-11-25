@@ -154,8 +154,8 @@ public class Loader {
         if (Globals.DEV)
             System.out.println("Loaading Texture " + textureName);
 
-        if (LegacyGameManager.isInGame() && !LegacyGameManager.getVersion().useTexturepackPatch)
-            return;
+//        if (LegacyGameManager.isInGame() && !LegacyGameManager.getVersion().useTexturepackPatch)
+//            return;
 
         boolean clamp = textureName.startsWith("%clamp%");
         boolean blur = textureName.startsWith("%blur%");
@@ -302,8 +302,8 @@ public class Loader {
 //                "/default.png", Needs to be patched separately.
         };
 
-        if (LegacyGameManager.isInGame() && !LegacyGameManager.getVersion().useTexturepackPatch)
-            return;
+//        if (LegacyGameManager.isInGame() && !LegacyGameManager.getVersion().useTexturepackPatch)
+//            return;
 
         for (String textureName : textureNames) {
             reloadMinecraftTexture(textureName);
