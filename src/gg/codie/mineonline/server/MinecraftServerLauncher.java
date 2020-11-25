@@ -9,15 +9,12 @@ import gg.codie.mineonline.discord.*;
 import gg.codie.mineonline.utils.Logging;
 import gg.codie.common.utils.MD5Checksum;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import sun.misc.BASE64Encoder;
 
+import javax.imageio.IIOException;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.Scanner;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -420,21 +417,26 @@ public class MinecraftServerLauncher {
 
                 boolean whitelisted = serverProperties.isWhitelisted();
 
-                BufferedImage serverIconBufferedImage = ImageIO.read(new File(System.getProperty("user.dir") + File.separator + "server-icon.png"));
                 String serverIcon = null;
 
-                if (serverIconBufferedImage.getHeight() <= 64 && serverIconBufferedImage.getWidth() <= 64) {
-                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                    try {
-                        ImageIO.write(serverIconBufferedImage, "png", bos);
-                        byte[] bytes = bos.toByteArray();
-                        BASE64Encoder encoder = new BASE64Encoder();
-                        serverIcon = encoder.encode(bytes);
-                        serverIcon = serverIcon.replace(System.lineSeparator(), "");
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        throw new RuntimeException();
+                try {
+                    BufferedImage serverIconBufferedImage = ImageIO.read(new File(System.getProperty("user.dir") + File.separator + "server-icon.png"));
+
+                    if (serverIconBufferedImage.getHeight() <= 64 && serverIconBufferedImage.getWidth() <= 64) {
+                        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                        try {
+                            ImageIO.write(serverIconBufferedImage, "png", bos);
+                            byte[] bytes = bos.toByteArray();
+                            Base64.Encoder encoder = Base64.getEncoder();
+                            serverIcon = encoder.encodeToString(bytes);
+                            serverIcon = serverIcon.replace(System.lineSeparator(), "");
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            throw new RuntimeException();
+                        }
                     }
+                } catch (IIOException ex) {
+                    // ignore.
                 }
 
                 serverUUID = MineOnlineAPI.listServer(
