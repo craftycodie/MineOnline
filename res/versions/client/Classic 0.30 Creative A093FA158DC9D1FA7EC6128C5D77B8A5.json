@@ -10,6 +10,8 @@
   "baseVersion": "c0.30-c",
   "guiClass": "com.mojang.minecraft.e.m",
   "guiScreenClass": "com.mojang.minecraft.e.o",
+  "entityRendererClass": "com.mojang.minecraft.b.d",
+  "hurtEffectFunction": "b",
   "useFOVPatch": true,
   "useTexturepackPatch": true,
   "ingameVersionString": "0.30",

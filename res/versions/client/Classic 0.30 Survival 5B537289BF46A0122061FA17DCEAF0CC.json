@@ -7,7 +7,6 @@
   "enableCursorPatch": true,
   "legacy": true,
   "baseVersion": "c0.30-s",
-  "guiClass": "com.mojang.minecraft.e.m",
   "useFOVPatch": true,
   "useTexturepackPatch": true,
   "ingameVersionString": "0.30",
@@ -15,5 +14,9 @@
   "optionsVersion": "CLASSIC",
   "useResizePatch": true,
   "hasNetherPortalTexture": false,
-  "downloadURL": "https://mineonline.codie.gg/public/clients/c0.30-s.jar"
+  "downloadURL": "https://mineonline.codie.gg/public/clients/c0.30-s.jar",
+  "guiClass": "com.mojang.minecraft.e.m",
+  "guiScreenClass": "com.mojang.minecraft.e.o",
+  "entityRendererClass": "com.mojang.minecraft.b.d",
+  "hurtEffectFunction": "b"
 }

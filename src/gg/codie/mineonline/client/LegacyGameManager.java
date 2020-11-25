@@ -110,13 +110,8 @@ public class LegacyGameManager {
         LWJGLGLUPatch.useCustomFOV();
 
         if (version != null) {
-            if (version.entityRendererClass != null && version.viewModelFunction != null) {
-                if (version.useFOVPatch)
-                    FOVViewmodelPatch.fixViewmodelFOV(version.entityRendererClass, version.viewModelFunction, Settings.singleton.getMainHand() == EMinecraftMainHand.LEFT);
-                else
-                    FOVViewmodelPatch.fixViewmodelFOV(version.entityRendererClass, version.viewModelFunction, true);
-            }
-
+            if (version.useFOVPatch && version.entityRendererClass != null)
+                FOVViewmodelPatch.fixViewmodelFOV(version.entityRendererClass, version.viewModelFunction, version.hurtEffectFunction, Settings.singleton.getMainHand() == EMinecraftMainHand.LEFT);
             if (version.ingameVersionString != null) {
                 StringPatch.hideVersionNames(version.ingameVersionString);
                 StringPatch.enable = Settings.singleton.getHideVersionString();
@@ -124,11 +119,6 @@ public class LegacyGameManager {
 
             if (version.useTexturepackPatch) {
                 ClassPatch.texturePack = Settings.singleton.getTexturePack();
-            }
-
-            // Screenshotting was officially added at the same time as F1 to hide the HUD / viewmodel.
-            if (version.enableScreenshotPatch && version.viewModelFunction == null) {
-                LWJGLGL11GLEnableAdvice.enableClassicViewmodelPatch = true;
             }
 
             // Fixes various input issues with classic - infdev versions.
