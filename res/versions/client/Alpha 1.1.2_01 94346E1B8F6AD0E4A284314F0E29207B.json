@@ -13,5 +13,8 @@
   "resourcesVersion": "a1.1.2_01",
   "optionsVersion": "PRESKINS",
   "hasNetherPortalTexture": false,
-  "downloadURL": "https://launcher.mojang.com/v1/objects/daa4b9f192d2c260837d3b98c39432324da28e86/client.jar"
+  "downloadURL": "https://launcher.mojang.com/v1/objects/daa4b9f192d2c260837d3b98c39432324da28e86/client.jar",
+  "entityRendererClass": "iq",
+  "hurtEffectFunction": "e",
+  "viewModelFunction": "b"
 }
