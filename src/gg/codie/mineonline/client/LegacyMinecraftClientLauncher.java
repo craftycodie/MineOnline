@@ -462,9 +462,6 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
 
         // Allows c0.0.15a to connect to servers.
         InetSocketAddressPatch.allowCustomServers(serverAddress, serverPort);
-        // Allows c0.0.15a to have a username sent to servers.
-        if (minecraftVersion != null && minecraftVersion.useUsernamesPatch)
-            ByteBufferPatch.enableC0015aUsernames(Session.session.getUsername());
 
         minecraftApplet.init();
 

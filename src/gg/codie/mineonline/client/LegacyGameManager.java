@@ -14,6 +14,7 @@ import gg.codie.mineonline.gui.rendering.DisplayManager;
 import gg.codie.mineonline.gui.rendering.Loader;
 import gg.codie.mineonline.gui.screens.AbstractGuiScreen;
 import gg.codie.mineonline.gui.textures.EGUITexture;
+import gg.codie.mineonline.patches.ByteBufferPatch;
 import gg.codie.mineonline.patches.ClassPatch;
 import gg.codie.mineonline.patches.HashMapPatch;
 import gg.codie.mineonline.patches.StringPatch;
@@ -115,6 +116,7 @@ public class LegacyGameManager {
         ClassPatch.init();
         LWJGLGL11Patch.init();
         LWJGLGLUPatch.useCustomFOV();
+        ByteBufferPatch.init();
 
         if (version != null) {
             if (version.useFOVPatch && version.entityRendererClass != null)
@@ -164,9 +166,11 @@ public class LegacyGameManager {
         Settings.singleton.saveSettings();
         ClassPatch.texturePack = texturePack;
         Loader.reloadMinecraftTextures();
-        for(EGUITexture texture : EGUITexture.values()) {
-            if(texture.useTexturePack) {
-                Loader.singleton.unloadTexture(texture);
+        if (Loader.singleton != null) {
+            for (EGUITexture texture : EGUITexture.values()) {
+                if (texture.useTexturePack) {
+                    Loader.singleton.unloadTexture(texture);
+                }
             }
         }
     }

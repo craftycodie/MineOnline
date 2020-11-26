@@ -23,7 +23,10 @@ import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -139,9 +142,20 @@ public class Loader {
         }
     }
 
+    private static LinkedList<String> ignoredTextures = new LinkedList<>(Arrays.asList(
+            "/font/default.png", //Needs to be patched separately.
+            "/misc/foliagecolor.png", //Needs to be patched separately.
+            "/misc/grasscolor.png", //Needs to be patched separately.
+            "/misc/watercolor.png", //Needs to be patched separately.
+            "/default.png" //Needs to be patched separately.
+    ));
+
     public static void reloadMinecraftTexture(String textureName) {
         if (Globals.DEV)
             System.out.println("Loaading Texture " + textureName);
+
+        if (ignoredTextures.contains(textureName))
+            return;
 
 //        if (LegacyGameManager.isInGame() && !LegacyGameManager.getVersion().useTexturepackPatch)
 //            return;
@@ -251,7 +265,7 @@ public class Loader {
                 "/environment/rain.png",
                 "/environment/snow.png",
 
-//                "/font/default.png", Needs to be patched separately.
+                "/font/default.png",
 
                 "/item/arrows.png",
                 "/item/boat.png",
@@ -260,9 +274,9 @@ public class Loader {
                 "/item/sign.png",
 
                 "/misc/dial.png",
-                //"/misc/foliagecolor.png", Needs to be patched separately.
-                //"/misc/grasscolor.png", Needs to be patched separately.
-                //"/misc/watercolor.png", Needs to be patched separately.
+                "/misc/foliagecolor.png",
+                "/misc/grasscolor.png",
+                "/misc/watercolor.png",
                 "/misc/pumpkinblur.png",
                 "/misc/shadow.png",
                 "/misc/vignette.png",
@@ -289,7 +303,7 @@ public class Loader {
                 "/terrain/moon.png",
                 "/terrain/sun.png",
 
-//                "/default.png", Needs to be patched separately.
+                "/default.png",
         };
 
 //        if (LegacyGameManager.isInGame() && !LegacyGameManager.getVersion().useTexturepackPatch)
