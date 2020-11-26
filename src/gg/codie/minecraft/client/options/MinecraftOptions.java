@@ -1,13 +1,13 @@
-package gg.codie.minecraft.client;
+package gg.codie.minecraft.client.options;
 
 import java.io.*;
 import java.util.LinkedList;
 
-public class Options implements IMinecraftOptionsHandler {
+public class MinecraftOptions implements IMinecraftOptionsHandler {
     String path;
     EMinecraftOptionsVersion optionsVersion;
 
-    public Options(String path, String optionsVersionStr) throws IOException, IllegalArgumentException {
+    public MinecraftOptions(String path, String optionsVersionStr) throws IOException, IllegalArgumentException {
         EMinecraftOptionsVersion optionsVersion = EMinecraftOptionsVersion.valueOf(optionsVersionStr);
 
         if(!new File(path).exists()) {
@@ -17,7 +17,7 @@ public class Options implements IMinecraftOptionsHandler {
         this.optionsVersion = optionsVersion;
     }
 
-    public Options(String path, EMinecraftOptionsVersion optionsVersion) throws IOException {
+    public MinecraftOptions(String path, EMinecraftOptionsVersion optionsVersion) throws IOException {
         if(!new File(path).exists()) {
             new File(path).createNewFile();
         }

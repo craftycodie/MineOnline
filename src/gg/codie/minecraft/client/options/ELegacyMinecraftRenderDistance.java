@@ -1,4 +1,4 @@
-package gg.codie.minecraft.client;
+package gg.codie.minecraft.client.options;
 
 public enum ELegacyMinecraftRenderDistance {
     FAR,

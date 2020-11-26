@@ -27,7 +27,7 @@ public class MinecraftServerLauncher {
 
     public final String jarPath;
     private String md5;
-    protected Properties serverProperties;
+    protected MineOnlineServerProperties serverProperties;
     public String serverlistAddress;
     public String serverlistPort;
     protected MinecraftVersion minecraftVersion;
@@ -49,9 +49,9 @@ public class MinecraftServerLauncher {
         minecraftVersion = MinecraftVersionRepository.getSingleton(true).getVersionByMD5(md5);
 
         try {
-            serverProperties = new Properties(System.getProperty("user.dir"));
+            serverProperties = new MineOnlineServerProperties(System.getProperty("user.dir"));
         } catch (Exception ex) {
-            serverProperties = new Properties(null);
+            serverProperties = new MineOnlineServerProperties(null);
         }
 
         if (serverProperties.versionMD5() != null) {
@@ -410,9 +410,9 @@ public class MinecraftServerLauncher {
             updatedPlayerCount = false;
             try {
                 try {
-                    serverProperties = new Properties(System.getProperty("user.dir"));
+                    serverProperties = new MineOnlineServerProperties(System.getProperty("user.dir"));
                 } catch (Exception ex) {
-                    serverProperties = new Properties(null);
+                    serverProperties = new MineOnlineServerProperties(null);
                 }
 
                 if (!updatingPlayerCount && !(minecraftVersion != null && minecraftVersion.hasHeartbeat)) {

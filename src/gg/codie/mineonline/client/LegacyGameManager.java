@@ -1,10 +1,10 @@
 package gg.codie.mineonline.client;
 
 import gg.codie.common.utils.FileChangeListener;
-import gg.codie.minecraft.client.EMinecraftGUIScale;
-import gg.codie.minecraft.client.EMinecraftMainHand;
-import gg.codie.minecraft.client.EMinecraftOptionsVersion;
-import gg.codie.minecraft.client.Options;
+import gg.codie.minecraft.client.options.EMinecraftGUIScale;
+import gg.codie.minecraft.client.options.EMinecraftMainHand;
+import gg.codie.minecraft.client.options.EMinecraftOptionsVersion;
+import gg.codie.minecraft.client.options.MinecraftOptions;
 import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.MinecraftVersion;
 import gg.codie.mineonline.Settings;
@@ -64,7 +64,7 @@ public class LegacyGameManager {
             optionsFileChanged = false;
 
         try {
-            Options minecraftOptions = new Options(LauncherFiles.MINEONLINE_OPTIONS_PATH, getVersion() != null ? getVersion().optionsVersion : EMinecraftOptionsVersion.DEFAULT);
+            MinecraftOptions minecraftOptions = new MinecraftOptions(LauncherFiles.MINEONLINE_OPTIONS_PATH, getVersion() != null ? getVersion().optionsVersion : EMinecraftOptionsVersion.DEFAULT);
 
             try {
                 setTexturePack(minecraftOptions.getTexturePack());

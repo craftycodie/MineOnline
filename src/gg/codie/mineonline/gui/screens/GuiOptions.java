@@ -1,6 +1,6 @@
 package gg.codie.mineonline.gui.screens;
 
-import gg.codie.minecraft.client.EMinecraftGUIScale;
+import gg.codie.minecraft.client.options.EMinecraftGUIScale;
 import gg.codie.mineonline.Session;
 import gg.codie.mineonline.Settings;
 import gg.codie.mineonline.client.LegacyGameManager;

@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-public class Properties {
+public class MinecraftServerProperties {
     protected static final String WHITELIST = "white-list";
     protected static final String PUBLIC = "public";
     protected static final String MAX_PLAYERS = "max-players";
@@ -17,7 +17,15 @@ public class Properties {
 
     protected java.util.Properties properties;
 
-    public Properties(String serverDir) throws IOException {
+    protected String getString(String key, String defaultValue) {
+        String discordToken = properties.getProperty(key, defaultValue);
+        if (discordToken == null || discordToken.isEmpty())
+            return null;
+        else
+            return discordToken;
+    }
+
+    public MinecraftServerProperties(String serverDir) throws IOException {
         properties = new java.util.Properties();
         if (serverDir != null)
             properties.load(new FileInputStream(new File(serverDir + File.separator + "server.properties")));
@@ -40,7 +48,7 @@ public class Properties {
     }
 
     public String serverName() {
-        return properties.getProperty(SERVER_NAME, "MineOnline Server");
+        return getString(SERVER_NAME, "MineOnline Server");
     }
 
     public boolean onlineMode() {
@@ -48,7 +56,7 @@ public class Properties {
     }
 
     public String serverIP() {
-        return properties.getProperty(SERVER_IP, null);
+        return getString(SERVER_IP, null);
     }
 
     public int serverPort() {

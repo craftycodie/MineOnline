@@ -1,8 +1,10 @@
 package gg.codie.mineonline.server;
 
+import gg.codie.minecraft.server.MinecraftServerProperties;
+
 import java.io.IOException;
 
-public class Properties extends gg.codie.minecraft.server.Properties {
+public class MineOnlineServerProperties extends MinecraftServerProperties {
     protected static final String SERVERLIST_IP = "serverlist-ip";
     protected static final String SERVERLIST_PORT = "serverlist-port";
     protected static final String VERSION_MD5 = "version-md5";
@@ -12,7 +14,7 @@ public class Properties extends gg.codie.minecraft.server.Properties {
     protected static final String DONT_LIST_PLAYERS = "dont-list-players";
     protected static final String SERVERLIST_MOTD = "serverlist-motd";
 
-    public Properties(String serverDir) throws IOException {
+    public MineOnlineServerProperties(String serverDir) throws IOException {
         super(serverDir);
     }
 
@@ -33,31 +35,19 @@ public class Properties extends gg.codie.minecraft.server.Properties {
     }
 
     public String discordToken() {
-        String discordToken = properties.getProperty(DISCORD_TOKEN, null);
-        if (discordToken.isEmpty())
-            return null;
-        else
-            return discordToken;
+        return getString(DISCORD_TOKEN, null);
     }
 
     public String discordChannel() {
-        String discordChannel = properties.getProperty(DISCORD_CHANNEL, null);
-        if (discordChannel.isEmpty())
-            return null;
-        else
-            return discordChannel;
+        return getString(DISCORD_CHANNEL, null);
     }
 
     public String discordWebhookUrl() {
-        String discordWebhookURL = properties.getProperty(DISCORD_WEBHOOK_URL, null);
-        if (discordWebhookURL.isEmpty())
-            return null;
-        else
-            return discordWebhookURL;
+        return getString(DISCORD_WEBHOOK_URL, null);
     }
 
     public String versionMD5() {
-        return properties.getProperty(VERSION_MD5, null);
+        return getString(VERSION_MD5, null);
     }
 
     public boolean dontListPlayers() {
@@ -65,7 +55,7 @@ public class Properties extends gg.codie.minecraft.server.Properties {
     }
 
     public String motd() {
-        return properties.getProperty(SERVERLIST_MOTD, null);
+        return getString(SERVERLIST_MOTD, null);
     }
 
 }

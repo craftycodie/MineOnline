@@ -6,8 +6,9 @@ import java.io.File;
 import java.net.URL;
 
 public class LauncherFiles {
-
-    public static final String MINEONLINE_FOLDER = getOldMinecraftDirectory() + File.separator + "mineonline" + File.separator;
+    public static final String OLD_MINECRAFT_FOLDER = getOldMinecraftDirectory().getPath();
+    public static final String NEW_MINECRAFT_FOLDER = getNewMinecraftDirectory().getPath();
+    public static final String MINEONLINE_FOLDER = getMineOnlineDirectory().getPath() + File.separator;
 
     public static final String MINEONLINE_SETTINGS_FILE = MINEONLINE_FOLDER + "settings.json";
 
@@ -38,45 +39,70 @@ public class LauncherFiles {
     public static final String CACHED_CLOAK_PATH = MINEONLINE_CACHE_FOLDER + "cloak.png";
 
     public static final String LAST_LOGIN_PATH = MINEONLINE_CACHE_FOLDER + "lastlogin";
-    public static final String MINEONLINE_CUSTOM_VERSIONS_FOLDER = MINEONLINE_FOLDER + "custom-versions" + File.separator;
-    public static final String MINEONLINE_VERSIONS_FOLDER = MINEONLINE_FOLDER + "versions" + File.separator;
+    public static final String MINEONLINE_CUSTOM_VERSION_INFO_FOLDER = MINEONLINE_FOLDER + "custom-version-info" + File.separator;
+    public static final String MINEONLINE_VERSION_INFO_FOLDER = MINEONLINE_FOLDER + "version-info" + File.separator;
     public static final String MINEONLINE_LATEST_LOG = MINEONLINE_FOLDER + "latest.log";
     public static final String MINEONLINE_RESOURCES_PATH = MINEONLINE_FOLDER + "resources" + File.separator;
     public static final String MINEONLINE_OPTIONS_PATH = MINEONLINE_FOLDER + "options.txt";
 
-    public static final String MINECRAFT_RESOURCES_PATH = getOldMinecraftDirectory() + File.separator + "resources" + File.separator;
-    public static final String MINECRAFT_TEXTURE_PACKS_PATH = getOldMinecraftDirectory() + File.separator + "texturepacks" + File.separator;
-    public static final String MINECRAFT_ASSETS_PATH = getNewMinecraftDirectory() + File.separator + "assets" + File.separator;
-    public static final String MINECRAFT_SCREENSHOTS_PATH = getOldMinecraftDirectory() + File.separator + "screenshots" + File.separator;
-    public static final String MINECRAFT_BINARIES_PATH = getOldMinecraftDirectory() + File.separator + "bin" + File.separator;
-    public static final String MINECRAFT_OPTIONS_PATH = getOldMinecraftDirectory() + File.separator + "options.txt";
-    public static final String MINECRAFT_VERSIONS_PATH = getNewMinecraftDirectory() + File.separator + "versions" + File.separator;
-    public static final String MINECRAFT_LIBRARIES_PATH = getNewMinecraftDirectory() + File.separator + "libraries" + File.separator;
+    public static final String MINECRAFT_RESOURCES_PATH = OLD_MINECRAFT_FOLDER + File.separator + "resources" + File.separator;
+    public static final String MINECRAFT_TEXTURE_PACKS_PATH = OLD_MINECRAFT_FOLDER + File.separator + "texturepacks" + File.separator;
+    public static final String MINECRAFT_ASSETS_PATH = NEW_MINECRAFT_FOLDER + File.separator + "assets" + File.separator;
+    public static final String MINECRAFT_SCREENSHOTS_PATH = OLD_MINECRAFT_FOLDER + File.separator + "screenshots" + File.separator;
+    public static final String MINECRAFT_BINARIES_PATH = OLD_MINECRAFT_FOLDER + File.separator + "bin" + File.separator;
+    public static final String MINECRAFT_OPTIONS_PATH = OLD_MINECRAFT_FOLDER + File.separator + "options.txt";
+    public static final String MINECRAFT_VERSIONS_PATH = NEW_MINECRAFT_FOLDER + File.separator + "versions" + File.separator;
+    public static final String MINECRAFT_LIBRARIES_PATH = NEW_MINECRAFT_FOLDER + File.separator + "libraries" + File.separator;
 
-    public static final String OLD_MINECRAFT_FOLDER = getOldMinecraftDirectory().getPath();
-    public static final String NEW_MINECRAFT_FOLDER = getNewMinecraftDirectory().getPath();
+
 
     public static final String MINECRAFT_VERSION_FILE = MINECRAFT_BINARIES_PATH + "version";
 
-    public static final URL TEMPLATE_SKIN_PATH = LauncherFiles.class.getResource("/img/skin.png");
-    public static final URL TEMPLATE_CLOAK_PATH = LauncherFiles.class.getResource("/img/cloak.png");
     public static final URL MISSING_TEXTURE = LauncherFiles.class.getResource("/img/missing.png");
 
-    public static File getOldMinecraftDirectory() {
+    private static File getMineOnlineDirectory() {
         File workingDirectory;
         String applicationData, userHome = System.getProperty("user.home", ".");
 
         switch (OSUtils.getPlatform()) {
             case solaris:
-                workingDirectory = new File(userHome, String.valueOf('.') + "minecraft/");
+                workingDirectory = new File(userHome, ".mineonline/");
                 break;
             case windows:
                 applicationData = System.getenv("APPDATA");
                 if (applicationData != null) {
-                    workingDirectory = new File(applicationData, "." + "minecraft/");
+                    workingDirectory = new File(applicationData, "." + "mineonline/");
                     break;
                 }
-                workingDirectory = new File(userHome, String.valueOf('.') + "minecraft/");
+                workingDirectory = new File(userHome, ".mineonline/");
+                break;
+            case macosx:
+                workingDirectory = new File(userHome, "Library/Application Support/mineonline/");
+                break;
+            default:
+                workingDirectory = new File(userHome, "mineonline/"); break;
+        }
+        if (!workingDirectory.exists() && !workingDirectory.mkdirs())
+            throw new RuntimeException("The working directory could not be created: " + workingDirectory);
+
+        return workingDirectory;
+    }
+
+    private static File getOldMinecraftDirectory() {
+        File workingDirectory;
+        String applicationData, userHome = System.getProperty("user.home", ".");
+
+        switch (OSUtils.getPlatform()) {
+            case solaris:
+                workingDirectory = new File(userHome, ".minecraft/");
+                break;
+            case windows:
+                applicationData = System.getenv("APPDATA");
+                if (applicationData != null) {
+                    workingDirectory = new File(applicationData, ".minecraft/");
+                    break;
+                }
+                workingDirectory = new File(userHome, ".minecraft/");
             break;
                 case macosx:
                 workingDirectory = new File(userHome, "Library/Application Support/minecraft/");

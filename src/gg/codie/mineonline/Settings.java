@@ -1,6 +1,6 @@
 package gg.codie.mineonline;
 
-import gg.codie.minecraft.client.*;
+import gg.codie.minecraft.client.options.*;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -167,7 +167,7 @@ public class Settings implements IMinecraftOptionsHandler {
 
             EMinecraftOptionsVersion lastLaunchedOptionsVersion = getLastLaunchedOptionsVersion();
 
-            Options options = new Options(LauncherFiles.MINEONLINE_OPTIONS_PATH, lastLaunchedOptionsVersion);
+            MinecraftOptions options = new MinecraftOptions(LauncherFiles.MINEONLINE_OPTIONS_PATH, lastLaunchedOptionsVersion);
 
             try {
                 // If the player used the classic music toggle, keep volume where possible.
@@ -398,7 +398,7 @@ public class Settings implements IMinecraftOptionsHandler {
             if (!optionsFile.exists())
                 optionsFile.createNewFile();
 
-            Options options = new Options(LauncherFiles.MINEONLINE_OPTIONS_PATH, optionsVersion);
+            MinecraftOptions options = new MinecraftOptions(LauncherFiles.MINEONLINE_OPTIONS_PATH, optionsVersion);
 
             setLastLaunchedOptionsVersion(optionsVersion);
             saveSettings();

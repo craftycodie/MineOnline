@@ -3,7 +3,7 @@ package gg.codie.mineonline;
 import gg.codie.common.utils.JSONUtils;
 import gg.codie.common.utils.MD5Checksum;
 import gg.codie.common.utils.OSUtils;
-import gg.codie.minecraft.client.EMinecraftOptionsVersion;
+import gg.codie.minecraft.client.options.EMinecraftOptionsVersion;
 import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.mineonline.client.LegacyGameManager;
 import gg.codie.mineonline.client.LegacyMinecraftClientLauncher;
