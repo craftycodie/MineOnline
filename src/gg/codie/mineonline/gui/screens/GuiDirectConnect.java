@@ -97,8 +97,6 @@ public class GuiDirectConnect extends AbstractGuiScreen
 
     private void joinServer(String jarPath) {
         String s = textField.getText().trim();
-        Settings.singleton.setLastServer(s);
-        Settings.singleton.saveSettings();
         String as[] = s.split(":");
         if(s.startsWith("["))
         {

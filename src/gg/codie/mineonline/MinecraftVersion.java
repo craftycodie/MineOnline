@@ -16,6 +16,7 @@ import java.net.*;
 import java.nio.file.Paths;
 import java.util.Enumeration;
 import java.util.LinkedList;
+import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -405,12 +406,6 @@ public class MinecraftVersion {
     }
 
     public static void launchMinecraft(String jarPath, String serverIP, String serverPort, String mpPass) throws Exception {
-        try {
-            Settings.singleton.setLastServer(serverIP != null && serverPort != null ? serverIP + ":" + serverPort : (serverIP != null ? serverIP : ""));
-        } catch (Exception ex) {
-            // ignore
-        }
-
         MinecraftVersion minecraftVersion = MinecraftVersionRepository.getSingleton().getVersion(jarPath);
 
         if (serverIP != null) {
@@ -423,6 +418,9 @@ public class MinecraftVersion {
                 serverIP = InetAddress.getLocalHost().getHostAddress();
             }
         }
+
+        Settings.singleton.setLastServer(serverIP + (serverPort != null ? ":" + serverPort : ""));
+        Settings.singleton.saveSettings();
 
         System.out.println("Launching jar " + (minecraftVersion != null ? minecraftVersion.name : jarPath) + " MD5 " + MD5Checksum.getMD5ChecksumForFile(jarPath));
         if (!LegacyGameManager.isInGame())

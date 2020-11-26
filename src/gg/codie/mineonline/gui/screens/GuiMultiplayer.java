@@ -136,9 +136,6 @@ public class GuiMultiplayer extends AbstractGuiScreen
                     String mppass = MineOnlineAPI.getMpPass(Session.session.getAccessToken(), Session.session.getUsername(), Session.session.getUuid(), server.ip, server.port + "");
                     MinecraftVersion.launchMinecraft(path, server.ip, server.port + "", mppass);
 
-                    Settings.singleton.setLastServer(server.ip + ":" + server.port);
-                    Settings.singleton.saveSettings();
-
                     if (LegacyGameManager.isInGame()) {
                         if (server.usingBetaEvolutions) {
                             BetaEvolutionsUtils betaEvolutions = new BetaEvolutionsUtils(true);
