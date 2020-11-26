@@ -1,12 +1,1 @@
-{
-  "name": "Beta 1.6.5",
-  "md5": "2ABA888864B32038C8D22EE5DF71B7C8",
-  "sha256": "B203D6D62F5B97671D262D88C7BF8891B8501B401FE9ABABC9E4EE2D960CD0A8",
-  "type": "client",
-  "legacy": true,
-  "baseVersion": "b1.6.5",
-  "useFOVPatch": true,
-  "resourcesVersion": "b1.7.3",
-  "optionsVersion": "PREFOV",
-  "downloadURL": "https://launcher.mojang.com/v1/objects/90ed9854b43c4d031ed07381ea3ae3071a8bba6f/client.jar"
-}
+{  "name": "Beta 1.6.5",  "md5": "2ABA888864B32038C8D22EE5DF71B7C8",  "sha256": "B203D6D62F5B97671D262D88C7BF8891B8501B401FE9ABABC9E4EE2D960CD0A8",  "type": "client",  "legacy": true,  "baseVersion": "b1.6.5",  "useFOVPatch": true,  "resourcesVersion": "b1.7.3",  "optionsVersion": "PREFOV",  "downloadURL": "https://launcher.mojang.com/v1/objects/90ed9854b43c4d031ed07381ea3ae3071a8bba6f/client.jar"}

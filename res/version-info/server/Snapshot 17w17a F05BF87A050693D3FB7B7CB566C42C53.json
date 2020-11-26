@@ -1,10 +1,1 @@
-{
-  "name": "Snapshot 17w17a",
-  "baseVersion": "17w17a",
-  "type": "server",
-  "clientVersions": [
-    "17w17a"
-  ],
-  "md5": "F05BF87A050693D3FB7B7CB566C42C53",
-  "sha256": "9A6F5985C4612A903B875C09A2AD058440E4C14ECD03B929D1CD83822C536988"
-}
+{  "name": "Snapshot 17w17a",  "baseVersion": "17w17a",  "type": "server",  "clientVersions": [    "17w17a"  ],  "md5": "F05BF87A050693D3FB7B7CB566C42C53",  "sha256": "9A6F5985C4612A903B875C09A2AD058440E4C14ECD03B929D1CD83822C536988"}

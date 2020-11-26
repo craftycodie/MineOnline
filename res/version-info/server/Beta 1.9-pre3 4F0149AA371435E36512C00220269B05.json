@@ -1,9 +1,1 @@
-{
-  "name": "Beta 1.9-pre3",
-  "md5": "4F0149AA371435E36512C00220269B05",
-  "sha256": "FCA6D9C5B9BCB84C2788BD2D0C25196F89EA2066278E28580F34204BCDAD1C34",
-  "type": "server",
-  "clientName": "Beta 1.9-pre3",
-  "baseVersion": "b1.9-pre3",
-  "legacy": true
-}
+{  "name": "Beta 1.9-pre3",  "md5": "4F0149AA371435E36512C00220269B05",  "sha256": "FCA6D9C5B9BCB84C2788BD2D0C25196F89EA2066278E28580F34204BCDAD1C34",  "type": "server",  "clientName": "Beta 1.9-pre3",  "baseVersion": "b1.9-pre3",  "legacy": true}

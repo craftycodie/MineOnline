@@ -64,7 +64,7 @@ public class GuiIngameMenu extends AbstractGuiScreen
             }
         }));
 
-        if (LegacyGameManager.getVersion().useTexturepackPatch) {
+        if (LegacyGameManager.getVersion() == null || LegacyGameManager.getVersion().useTexturepackPatch) {
             controlList.add(new GuiButton(5, getWidth() / 2 - 100, getHeight() / 4 + 48 + byte0, 98, 20, "Multiplayer", new GuiButton.GuiButtonListener() {
                 @Override
                 public void OnButtonPress() {

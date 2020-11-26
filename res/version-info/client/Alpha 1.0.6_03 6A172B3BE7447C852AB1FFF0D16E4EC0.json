@@ -1,15 +1,1 @@
-{
-  "name": "Alpha 1.0.6_03",
-  "md5": "6A172B3BE7447C852AB1FFF0D16E4EC0",
-  "sha256": "F7EC06EF2031E77B32F8CD4D438AC4293A3226423A6D5903CEC8634814FC1948",
-  "type": "client",
-  "enableScreenshotPatch": true,
-  "legacy": true,
-  "baseVersion": "a1.0.6_03",
-  "useFOVPatch": true,
-  "useTexturepackPatch": true,
-  "ingameVersionString": "Minecraft Alpha v1.0.6_03",
-  "resourcesVersion": "a1.0.15",
-  "optionsVersion": "CLASSIC",
-  "hasNetherPortalTexture": false
-}
+{  "name": "Alpha 1.0.6_03",  "md5": "6A172B3BE7447C852AB1FFF0D16E4EC0",  "sha256": "F7EC06EF2031E77B32F8CD4D438AC4293A3226423A6D5903CEC8634814FC1948",  "type": "client",  "enableScreenshotPatch": true,  "legacy": true,  "baseVersion": "a1.0.6_03",  "useFOVPatch": true,  "useTexturepackPatch": true,  "ingameVersionString": "Minecraft Alpha v1.0.6_03",  "resourcesVersion": "a1.0.15",  "optionsVersion": "CLASSIC",  "hasNetherPortalTexture": false}

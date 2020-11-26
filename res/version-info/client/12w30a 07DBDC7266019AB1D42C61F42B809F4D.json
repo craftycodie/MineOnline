@@ -1,8 +1,1 @@
-{
-  "name": "12w30a",
-  "md5": "07DBDC7266019AB1D42C61F42B809F4D",
-  "sha256": "AA8635928443938786503320F9CBDBD8B39704B8FA587DB7773EDC8D294AF33F",
-  "type": "client",
-  "legacy": true,
-  "baseVersion": "12w30a"
-}
+{  "name": "12w30a",  "md5": "07DBDC7266019AB1D42C61F42B809F4D",  "sha256": "AA8635928443938786503320F9CBDBD8B39704B8FA587DB7773EDC8D294AF33F",  "type": "client",  "legacy": true,  "baseVersion": "12w30a"}

@@ -1,9 +1,1 @@
-{
-  "name": "Release 1.3.1",
-  "md5": "266CCBC9798AFD2EADF3D6C01B4C562A",
-  "sha256": "26A5586A1DD5555E918813284AB6CF05AF1FB997F66B99C93035B03CA066CC52",
-  "type": "client",
-  "legacy": true,
-  "baseVersion": "1.3.1",
-  "resourcesVersion": "1.5.2"
-}
+{  "name": "Release 1.3.1",  "md5": "266CCBC9798AFD2EADF3D6C01B4C562A",  "sha256": "26A5586A1DD5555E918813284AB6CF05AF1FB997F66B99C93035B03CA066CC52",  "type": "client",  "legacy": true,  "baseVersion": "1.3.1",  "resourcesVersion": "1.5.2"}

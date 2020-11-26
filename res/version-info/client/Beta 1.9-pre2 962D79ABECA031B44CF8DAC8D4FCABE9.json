@@ -1,10 +1,1 @@
-{
-  "name": "Beta 1.9-pre2",
-  "md5": "962D79ABECA031B44CF8DAC8D4FCABE9",
-  "sha256": "B611440E8FC4BA52B3E551677594C222537B6AF60CF56AE02448E3D519B45D3F",
-  "type": "client",
-  "legacy": true,
-  "baseVersion": "b1.9-pre2",
-  "ingameVersionString": "Minecraft Beta 1.9 Prerelease 2",
-  "resourcesVersion": "b1.9-pre4"
-}
+{  "name": "Beta 1.9-pre2",  "md5": "962D79ABECA031B44CF8DAC8D4FCABE9",  "sha256": "B611440E8FC4BA52B3E551677594C222537B6AF60CF56AE02448E3D519B45D3F",  "type": "client",  "legacy": true,  "baseVersion": "b1.9-pre2",  "ingameVersionString": "Minecraft Beta 1.9 Prerelease 2",  "resourcesVersion": "b1.9-pre4"}

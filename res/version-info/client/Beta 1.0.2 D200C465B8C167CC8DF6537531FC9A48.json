@@ -1,13 +1,1 @@
-{
-  "name": "Beta 1.0.2",
-  "md5": "D200C465B8C167CC8DF6537531FC9A48",
-  "sha256": "82E28D25B493ADE968CC0015E5B1C2E9145BBBE247D7F1EA7D603E7DDFE056BD",
-  "type": "client",
-  "legacy": true,
-  "baseVersion": "b1.0.2",
-  "useFOVPatch": true,
-  "ingameVersionString": "Minecraft Beta 1.0.2",
-  "resourcesVersion": "b1.3_01",
-  "optionsVersion": "PREFOV",
-  "downloadURL": "https://launcher.mojang.com/v1/objects/76d35cb452e739bd4780e835d17faf0785d755f9/client.jar"
-}
+{  "name": "Beta 1.0.2",  "md5": "D200C465B8C167CC8DF6537531FC9A48",  "sha256": "82E28D25B493ADE968CC0015E5B1C2E9145BBBE247D7F1EA7D603E7DDFE056BD",  "type": "client",  "legacy": true,  "baseVersion": "b1.0.2",  "useFOVPatch": true,  "ingameVersionString": "Minecraft Beta 1.0.2",  "resourcesVersion": "b1.3_01",  "optionsVersion": "PREFOV",  "downloadURL": "https://launcher.mojang.com/v1/objects/76d35cb452e739bd4780e835d17faf0785d755f9/client.jar"}

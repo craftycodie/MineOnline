@@ -1,9 +1,2 @@
-{
-  "name": "Release 1.4.2-pre",
-  "md5": "771175C01778EA67395BC6919A5A9DC5",
-  "sha256": "199F44E06DFBC20567F9B6DB0A965776B38208359A62956B43906BDC51118CF2",
-  "type": "client",
-  "legacy": true,
-  "baseVersion": "1.4.2-pre",
-  "resourcesVersion": "1.5.2"
+{  "name": "Release 1.4.2-pre",  "md5": "771175C01778EA67395BC6919A5A9DC5",  "sha256": "199F44E06DFBC20567F9B6DB0A965776B38208359A62956B43906BDC51118CF2",  "type": "client",  "legacy": true,  "baseVersion": "1.4.2-pre",  "resourcesVersion": "1.5.2"}5.2"
 }

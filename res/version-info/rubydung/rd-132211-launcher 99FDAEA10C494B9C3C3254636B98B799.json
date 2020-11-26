@@ -1,15 +1,1 @@
-{
-  "name": "rd-132211-launcher",
-  "md5": "99FDAEA10C494B9C3C3254636B98B799",
-  "sha256": "407460840EAEAB01260B9E7951BD518F7C31E2E3F12A352E436502FA7050A6E7",
-  "type": "rubydung",
-  "enableScreenshotPatch": true,
-  "enableCursorPatch": false,
-  "legacy": true,
-  "baseVersion": "rd-132211-launcher",
-  "useFOVPatch": true,
-  "useTexturepackPatch": true,
-  "useResizePatch": true,
-  "enableFullscreenPatch": true,
-  "downloadURL": "https://launcher.mojang.com/v1/objects/393e8d4b4d708587e2accd7c5221db65365e1075/client.jar"
-}
+{  "name": "rd-132211-launcher",  "md5": "99FDAEA10C494B9C3C3254636B98B799",  "sha256": "407460840EAEAB01260B9E7951BD518F7C31E2E3F12A352E436502FA7050A6E7",  "type": "rubydung",  "enableScreenshotPatch": true,  "enableCursorPatch": false,  "legacy": true,  "baseVersion": "rd-132211-launcher",  "useFOVPatch": true,  "useTexturepackPatch": true,  "useResizePatch": true,  "enableFullscreenPatch": true,  "downloadURL": "https://launcher.mojang.com/v1/objects/393e8d4b4d708587e2accd7c5221db65365e1075/client.jar"}

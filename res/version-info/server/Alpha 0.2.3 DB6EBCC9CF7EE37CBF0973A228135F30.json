@@ -1,15 +1,1 @@
-{
-  "name": "Alpha 0.2.3",
-  "md5": "DB6EBCC9CF7EE37CBF0973A228135F30",
-  "sha256": "3020FE9D90B8BEE2BAAD55416A64ED6051FBB269523C927CEF39EA55A70217BC",
-  "type": "server",
-  "clientName": "Alpha 1.2.1_01",
-  "clientVersions": [
-    "a1.2.1_01",
-    "a1.2.0_02",
-    "a1.2.0_01",
-    "a1.2.0"
-  ],
-  "baseVersion": "a1.2.1_01",
-  "legacy": true
-}
+{  "name": "Alpha 0.2.3",  "md5": "DB6EBCC9CF7EE37CBF0973A228135F30",  "sha256": "3020FE9D90B8BEE2BAAD55416A64ED6051FBB269523C927CEF39EA55A70217BC",  "type": "server",  "clientName": "Alpha 1.2.1_01",  "clientVersions": [    "a1.2.1_01",    "a1.2.0_02",    "a1.2.0_01",    "a1.2.0"  ],  "baseVersion": "a1.2.1_01",  "legacy": true}

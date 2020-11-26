@@ -1,8 +1,1 @@
-{
-  "name": "12w27a",
-  "md5": "A3412D58AA1E5BCB6472FCF1C7E72AC1",
-  "sha256": "0D82BEF8B50068DF124FAD17D82BCBBD342180D9D5BC2D6B55E3CBBF25D6A90F",
-  "type": "client",
-  "legacy": true,
-  "baseVersion": "12w27a"
-}
+{  "name": "12w27a",  "md5": "A3412D58AA1E5BCB6472FCF1C7E72AC1",  "sha256": "0D82BEF8B50068DF124FAD17D82BCBBD342180D9D5BC2D6B55E3CBBF25D6A90F",  "type": "client",  "legacy": true,  "baseVersion": "12w27a"}

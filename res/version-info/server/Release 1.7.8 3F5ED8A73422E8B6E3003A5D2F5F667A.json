@@ -1,10 +1,1 @@
-{
-  "name": "Release 1.7.8",
-  "baseVersion": "1.7.8",
-  "type": "server",
-  "clientVersions": [
-    "1.7.8"
-  ],
-  "md5": "3F5ED8A73422E8B6E3003A5D2F5F667A",
-  "sha256": "5907EF1103ACF15952D6D50CDE3DB01E4FC5A95B9F5FEC0BE25FA56A5EF0D121"
-}
+{  "name": "Release 1.7.8",  "baseVersion": "1.7.8",  "type": "server",  "clientVersions": [    "1.7.8"  ],  "md5": "3F5ED8A73422E8B6E3003A5D2F5F667A",  "sha256": "5907EF1103ACF15952D6D50CDE3DB01E4FC5A95B9F5FEC0BE25FA56A5EF0D121"}

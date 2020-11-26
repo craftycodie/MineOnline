@@ -1,16 +1,1 @@
-{
-  "name": "Alpha 1.0.5_01",
-  "md5": "AE5F606CAA18222E7568819C910EE423",
-  "sha256": "5EF06E9C7E0421505E3CECC732F2D192A9E04B5A55840D91418A301BAE375C70",
-  "type": "client",
-  "enableScreenshotPatch": true,
-  "legacy": true,
-  "baseVersion": "a1.0.5_01",
-  "useFOVPatch": true,
-  "useTexturepackPatch": true,
-  "ingameVersionString": "Minecraft Alpha v1.0.5_01",
-  "resourcesVersion": "a1.0.15",
-  "optionsVersion": "CLASSIC",
-  "hasNetherPortalTexture": false,
-  "downloadURL": "https://launcher.mojang.com/v1/objects/73f569bf5556580979606049204835ae1a54f04d/client.jar"
-}
+{  "name": "Alpha 1.0.5_01",  "md5": "AE5F606CAA18222E7568819C910EE423",  "sha256": "5EF06E9C7E0421505E3CECC732F2D192A9E04B5A55840D91418A301BAE375C70",  "type": "client",  "enableScreenshotPatch": true,  "legacy": true,  "baseVersion": "a1.0.5_01",  "useFOVPatch": true,  "useTexturepackPatch": true,  "ingameVersionString": "Minecraft Alpha v1.0.5_01",  "resourcesVersion": "a1.0.15",  "optionsVersion": "CLASSIC",  "hasNetherPortalTexture": false,  "downloadURL": "https://launcher.mojang.com/v1/objects/73f569bf5556580979606049204835ae1a54f04d/client.jar"}

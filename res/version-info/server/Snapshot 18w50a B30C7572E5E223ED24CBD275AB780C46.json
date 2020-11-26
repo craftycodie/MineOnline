@@ -1,10 +1,1 @@
-{
-  "name": "Snapshot 18w50a",
-  "baseVersion": "18w50a",
-  "type": "server",
-  "clientVersions": [
-    "18w50a"
-  ],
-  "md5": "B30C7572E5E223ED24CBD275AB780C46",
-  "sha256": "A3A6E4519823971B04B8EC719D78443A5B2482161D0DD5D00711CB49CB342FFE"
-}
+{  "name": "Snapshot 18w50a",  "baseVersion": "18w50a",  "type": "server",  "clientVersions": [    "18w50a"  ],  "md5": "B30C7572E5E223ED24CBD275AB780C46",  "sha256": "A3A6E4519823971B04B8EC719D78443A5B2482161D0DD5D00711CB49CB342FFE"}

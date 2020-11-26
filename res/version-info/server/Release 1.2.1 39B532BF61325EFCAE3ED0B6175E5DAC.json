@@ -1,9 +1,1 @@
-{
-  "name": "Release 1.2.1",
-  "md5": "39B532BF61325EFCAE3ED0B6175E5DAC",
-  "sha256": "F705CD0709F2DFC19DA352768903FF0298E0C150B534E7A959398682FE502B8A",
-  "type": "server",
-  "clientName": "Release 1.2.1",
-  "baseVersion": "1.2.1",
-  "legacy": true
-}
+{  "name": "Release 1.2.1",  "md5": "39B532BF61325EFCAE3ED0B6175E5DAC",  "sha256": "F705CD0709F2DFC19DA352768903FF0298E0C150B534E7A959398682FE502B8A",  "type": "server",  "clientName": "Release 1.2.1",  "baseVersion": "1.2.1",  "legacy": true}

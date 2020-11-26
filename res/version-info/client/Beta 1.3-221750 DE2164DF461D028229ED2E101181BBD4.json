@@ -1,12 +1,1 @@
-{
-  "name": "Beta 1.3-221750",
-  "md5": "DE2164DF461D028229ED2E101181BBD4",
-  "sha256": "335ED6E306324BA4B7EB8AE16479839AE5678F0C1DA62757E515D640801E1159",
-  "type": "client",
-  "legacy": true,
-  "baseVersion": "b1.3",
-  "useFOVPatch": true,
-  "ingameVersionString": "Minecraft Beta 1.3",
-  "resourcesVersion": "b1.3_01",
-  "optionsVersion": "PREFOV"
-}
+{  "name": "Beta 1.3-221750",  "md5": "DE2164DF461D028229ED2E101181BBD4",  "sha256": "335ED6E306324BA4B7EB8AE16479839AE5678F0C1DA62757E515D640801E1159",  "type": "client",  "legacy": true,  "baseVersion": "b1.3",  "useFOVPatch": true,  "ingameVersionString": "Minecraft Beta 1.3",  "resourcesVersion": "b1.3_01",  "optionsVersion": "PREFOV"}

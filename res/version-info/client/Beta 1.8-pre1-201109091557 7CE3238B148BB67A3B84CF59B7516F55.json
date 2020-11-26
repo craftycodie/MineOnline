@@ -1,10 +1,1 @@
-{
-  "name": "Beta 1.8-pre1-201109091557",
-  "md5": "7CE3238B148BB67A3B84CF59B7516F55",
-  "sha256": "2E2287EE0946EEB1F72855E915D0E3017E88CB3AE3ABDB332486F46DBE452786",
-  "type": "client",
-  "legacy": true,
-  "baseVersion": "b1.8-pre1",
-  "ingameVersionString": "Minecraft Beta 1.8 Pre-release",
-  "resourcesVersion": "b1.9-pre4"
-}
+{  "name": "Beta 1.8-pre1-201109091557",  "md5": "7CE3238B148BB67A3B84CF59B7516F55",  "sha256": "2E2287EE0946EEB1F72855E915D0E3017E88CB3AE3ABDB332486F46DBE452786",  "type": "client",  "legacy": true,  "baseVersion": "b1.8-pre1",  "ingameVersionString": "Minecraft Beta 1.8 Pre-release",  "resourcesVersion": "b1.9-pre4"}

@@ -1,15 +1,1 @@
-{
-  "name": "Classic 1.8.2",
-  "md5": "211A3711688211CBCA0A0A767EA6516C",
-  "type": "server",
-  "clientName": "Classic 0.0.20a_01",
-  "clientVersions": [
-    "c0.0.23a_01",
-    "c0.0.22a_05",
-    "c0.0.21a",
-    "c0.0.20a_01"
-  ],
-  "hasHeartbeat": true,
-  "baseVersion": "c0.0.23a_01",
-  "legacy": true
-}
+{  "name": "Classic 1.8.2",  "md5": "211A3711688211CBCA0A0A767EA6516C",  "type": "server",  "clientName": "Classic 0.0.20a_01",  "clientVersions": [    "c0.0.23a_01",    "c0.0.22a_05",    "c0.0.21a",    "c0.0.20a_01"  ],  "hasHeartbeat": true,  "baseVersion": "c0.0.23a_01",  "legacy": true}

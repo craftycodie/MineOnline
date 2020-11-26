@@ -183,9 +183,11 @@ public class MinecraftVersion {
         HttpURLConnection httpConnection = (java.net.HttpURLConnection) (downloadURL.openConnection());
         InputStream in = httpConnection.getInputStream();
 
-        File clientJar = new File(LauncherFiles.MINECRAFT_VERSIONS_PATH + baseVersion + File.separator + "client.jar");
+        String path = LauncherFiles.MINEONLINE_VERSIONS_PATH + "clients" + File.separator + name + " " + md5 + File.separator + baseVersion + ".jar";
+
+        File clientJar = new File(path);
         clientJar.getParentFile().mkdirs();
-        OutputStream out = new java.io.FileOutputStream(LauncherFiles.MINECRAFT_VERSIONS_PATH + baseVersion + File.separator + "client.jar", false);
+        OutputStream out = new java.io.FileOutputStream(path, false);
 
         final byte[] data = new byte[1024];
         int count;
@@ -193,7 +195,9 @@ public class MinecraftVersion {
             out.write(data, 0, count);
         }
 
-        return LauncherFiles.MINECRAFT_VERSIONS_PATH + baseVersion + File.separator + "client.jar";
+        MinecraftVersionRepository.getSingleton().addInstalledVersion(path);
+
+        return path;
     }
 
     public static String getAppletClass(String path) throws IOException {
@@ -422,7 +426,7 @@ public class MinecraftVersion {
 
         System.out.println("Launching jar " + (minecraftVersion != null ? minecraftVersion.name : jarPath) + " MD5 " + MD5Checksum.getMD5ChecksumForFile(jarPath));
         if (!LegacyGameManager.isInGame())
-            Settings.singleton.saveMinecraftOptions(minecraftVersion.optionsVersion);
+            Settings.singleton.saveMinecraftOptions(minecraftVersion != null ? minecraftVersion.optionsVersion : EMinecraftOptionsVersion.DEFAULT);
 
 
         if(minecraftVersion != null) {

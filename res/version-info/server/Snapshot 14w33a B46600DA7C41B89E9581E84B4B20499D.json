@@ -1,10 +1,1 @@
-{
-  "name": "Snapshot 14w33a",
-  "baseVersion": "14w33a",
-  "type": "server",
-  "clientVersions": [
-    "14w33a"
-  ],
-  "md5": "B46600DA7C41B89E9581E84B4B20499D",
-  "sha256": "9F6DC04EA65C2404E3C910EFBBA33BA057428C873B55EA21B98ADE7EBAF8B025"
-}
+{  "name": "Snapshot 14w33a",  "baseVersion": "14w33a",  "type": "server",  "clientVersions": [    "14w33a"  ],  "md5": "B46600DA7C41B89E9581E84B4B20499D",  "sha256": "9F6DC04EA65C2404E3C910EFBBA33BA057428C873B55EA21B98ADE7EBAF8B025"}

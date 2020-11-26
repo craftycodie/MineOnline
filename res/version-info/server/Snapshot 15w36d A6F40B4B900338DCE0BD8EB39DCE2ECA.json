@@ -1,10 +1,1 @@
-{
-  "name": "Snapshot 15w36d",
-  "baseVersion": "15w36d",
-  "type": "server",
-  "clientVersions": [
-    "15w36d"
-  ],
-  "md5": "A6F40B4B900338DCE0BD8EB39DCE2ECA",
-  "sha256": "3BCCA5C4B0BC4281FBAF9BB24D64C75F90E003FA742F5DE996AED0B21A19AFD2"
-}
+{  "name": "Snapshot 15w36d",  "baseVersion": "15w36d",  "type": "server",  "clientVersions": [    "15w36d"  ],  "md5": "A6F40B4B900338DCE0BD8EB39DCE2ECA",  "sha256": "3BCCA5C4B0BC4281FBAF9BB24D64C75F90E003FA742F5DE996AED0B21A19AFD2"}

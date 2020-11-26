@@ -1,8 +1,1 @@
-{
-  "name": "12w15a",
-  "md5": "90626A5C36F87AADBC7E79DA1F076E93",
-  "sha256": "2D5DBBDA9DD0EA8F63E6DE189BD949FC5321CF4C24F0BAFF10694DA91E598DAB",
-  "type": "client",
-  "legacy": true,
-  "baseVersion": "12w15a"
-}
+{  "name": "12w15a",  "md5": "90626A5C36F87AADBC7E79DA1F076E93",  "sha256": "2D5DBBDA9DD0EA8F63E6DE189BD949FC5321CF4C24F0BAFF10694DA91E598DAB",  "type": "client",  "legacy": true,  "baseVersion": "12w15a"}

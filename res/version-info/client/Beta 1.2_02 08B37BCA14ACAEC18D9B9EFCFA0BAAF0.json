@@ -1,16 +1,1 @@
-{
-  "name": "Beta 1.2_02",
-  "md5": "08B37BCA14ACAEC18D9B9EFCFA0BAAF0",
-  "sha256": "74676F472031881D12F8685D97CE1DE672202DB8AB5D346066E1AFC3D80826C3",
-  "type": "client",
-  "legacy": true,
-  "baseVersion": "b1.2_02",
-  "useFOVPatch": true,
-  "ingameVersionString": "Minecraft Beta 1.2_02",
-  "entityRendererClass": "ll",
-  "viewModelFunction": "b",
-  "scaledResolutionClass": "lw",
-  "resourcesVersion": "b1.3_01",
-  "optionsVersion": "PREFOV",
-  "downloadURL": "https://launcher.mojang.com/v1/objects/093f371e1a05d89664cfb8068d607953687d5d94/client.jar"
-}
+{  "name": "Beta 1.2_02",  "md5": "08B37BCA14ACAEC18D9B9EFCFA0BAAF0",  "sha256": "74676F472031881D12F8685D97CE1DE672202DB8AB5D346066E1AFC3D80826C3",  "type": "client",  "legacy": true,  "baseVersion": "b1.2_02",  "useFOVPatch": true,  "ingameVersionString": "Minecraft Beta 1.2_02",  "entityRendererClass": "ll",  "viewModelFunction": "b",  "scaledResolutionClass": "lw",  "resourcesVersion": "b1.3_01",  "optionsVersion": "PREFOV",  "downloadURL": "https://launcher.mojang.com/v1/objects/093f371e1a05d89664cfb8068d607953687d5d94/client.jar"}

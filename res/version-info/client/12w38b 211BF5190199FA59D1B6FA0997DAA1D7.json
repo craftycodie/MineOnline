@@ -1,8 +1,1 @@
-{
-  "name": "12w38b",
-  "md5": "211BF5190199FA59D1B6FA0997DAA1D7",
-  "sha256": "AA7B979513AD78844714EA7B4B04B6E195C3468B00E1A89615FBF61AD8D8C84D",
-  "type": "client",
-  "legacy": true,
-  "baseVersion": "12w38b"
-}
+{  "name": "12w38b",  "md5": "211BF5190199FA59D1B6FA0997DAA1D7",  "sha256": "AA7B979513AD78844714EA7B4B04B6E195C3468B00E1A89615FBF61AD8D8C84D",  "type": "client",  "legacy": true,  "baseVersion": "12w38b"}

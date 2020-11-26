@@ -1,10 +1,1 @@
-{
-  "name": "Snapshot 16w05a",
-  "baseVersion": "16w05a",
-  "type": "server",
-  "clientVersions": [
-    "16w05a"
-  ],
-  "md5": "486C9B2DCD8EA7FB061C0657A7ACD4C5",
-  "sha256": "E070B7A3A46EC6BD03D950F745E0D298E68A88B360D242797F50C9295E0F7E41"
-}
+{  "name": "Snapshot 16w05a",  "baseVersion": "16w05a",  "type": "server",  "clientVersions": [    "16w05a"  ],  "md5": "486C9B2DCD8EA7FB061C0657A7ACD4C5",  "sha256": "E070B7A3A46EC6BD03D950F745E0D298E68A88B360D242797F50C9295E0F7E41"}

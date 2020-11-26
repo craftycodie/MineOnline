@@ -74,7 +74,7 @@ public class GuiOptions extends AbstractGuiScreen
         }));
 
         if (LegacyGameManager.isInGame())
-            ((GuiButton)controlList.get(2)).enabled = LegacyGameManager.getVersion().useFOVPatch;
+            ((GuiButton)controlList.get(2)).enabled = LegacyGameManager.getVersion() == null || LegacyGameManager.getVersion().useFOVPatch;
 
         controlList.add(new GuiSmallButton(0, getWidth() / 2 + 5, getHeight() / 6, "GUI Scale: " + Settings.singleton.getGUIScale().getName().toUpperCase(), new GuiButton.GuiButtonListener() {
             @Override
@@ -99,7 +99,7 @@ public class GuiOptions extends AbstractGuiScreen
         }));
 
         if (LegacyGameManager.isInGame())
-            ((GuiButton)controlList.get(3)).enabled = LegacyGameManager.getVersion().scaledResolutionClass != null || LegacyGameManager.getVersion().guiScreenClass != null;
+            ((GuiButton)controlList.get(3)).enabled = LegacyGameManager.getVersion() != null && (LegacyGameManager.getVersion().scaledResolutionClass != null || LegacyGameManager.getVersion().guiScreenClass != null);
 
 
         controlList.add(new GuiSmallButton(0, getWidth() / 2 - 155, getHeight() / 6 + 24, "Hide Version Number: " + (Settings.singleton.getHideVersionString() ? "YES" : "NO"), new GuiButton.GuiButtonListener() {
@@ -116,7 +116,7 @@ public class GuiOptions extends AbstractGuiScreen
         }));
 
         if (LegacyGameManager.isInGame())
-            ((GuiButton)controlList.get(4)).enabled = LegacyGameManager.getVersion().ingameVersionString != null;
+            ((GuiButton)controlList.get(4)).enabled = LegacyGameManager.getVersion() != null && LegacyGameManager.getVersion().ingameVersionString != null;
 
 //        controlList.add(new GuiSmallButton(0, getWidth() / 2 + 5, getHeight() / 6 + 24, "Main Hand: " + Settings.singleton.getMainHand().name(), new GuiButton.GuiButtonListener() {
 //            @Override

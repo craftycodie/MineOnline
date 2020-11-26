@@ -1,10 +1,1 @@
-{
-  "name": "Snapshot 18w10d",
-  "baseVersion": "18w10d",
-  "type": "server",
-  "clientVersions": [
-    "18w10d"
-  ],
-  "md5": "EF4662FA37489830A6ABD3741EEDDCEF",
-  "sha256": "C1B13E09FED92138B04151B65B6144BE42FDF28F71D8A5035980422114302E0F"
-}
+{  "name": "Snapshot 18w10d",  "baseVersion": "18w10d",  "type": "server",  "clientVersions": [    "18w10d"  ],  "md5": "EF4662FA37489830A6ABD3741EEDDCEF",  "sha256": "C1B13E09FED92138B04151B65B6144BE42FDF28F71D8A5035980422114302E0F"}

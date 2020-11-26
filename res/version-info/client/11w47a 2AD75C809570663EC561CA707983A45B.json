@@ -1,8 +1,1 @@
-{
-  "name": "11w47a",
-  "md5": "2AD75C809570663EC561CA707983A45B",
-  "sha256": "B4EFB09090EEA2155E631A1551A7EC2913BA398FCA27F6FFC911A92FC9FDA979",
-  "type": "client",
-  "legacy": true,
-  "baseVersion": "11w47a"
-}
+{  "name": "11w47a",  "md5": "2AD75C809570663EC561CA707983A45B",  "sha256": "B4EFB09090EEA2155E631A1551A7EC2913BA398FCA27F6FFC911A92FC9FDA979",  "type": "client",  "legacy": true,  "baseVersion": "11w47a"}

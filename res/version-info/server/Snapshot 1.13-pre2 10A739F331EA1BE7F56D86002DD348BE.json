@@ -1,10 +1,1 @@
-{
-  "name": "Snapshot 1.13-pre2",
-  "baseVersion": "1.13-pre2",
-  "type": "server",
-  "clientVersions": [
-    "1.13-pre2"
-  ],
-  "md5": "10A739F331EA1BE7F56D86002DD348BE",
-  "sha256": "C3BC9EF540ECB5819252C4AB85CD7BF492A5E077E250D3B4958C8EA0774CC8EE"
-}
+{  "name": "Snapshot 1.13-pre2",  "baseVersion": "1.13-pre2",  "type": "server",  "clientVersions": [    "1.13-pre2"  ],  "md5": "10A739F331EA1BE7F56D86002DD348BE",  "sha256": "C3BC9EF540ECB5819252C4AB85CD7BF492A5E077E250D3B4958C8EA0774CC8EE"}

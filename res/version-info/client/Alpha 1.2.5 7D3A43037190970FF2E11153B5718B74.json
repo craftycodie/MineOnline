@@ -1,13 +1,1 @@
-{
-  "name": "Alpha 1.2.5",
-  "md5": "7D3A43037190970FF2E11153B5718B74",
-  "sha256": "FDDE933363DF3A1D95A76D180DBDB14464F8390F954D272613ED25CE42155787",
-  "type": "client",
-  "legacy": true,
-  "baseVersion": "a1.2.5",
-  "useFOVPatch": true,
-  "ingameVersionString": "Minecraft Alpha v1.2.5",
-  "resourcesVersion": "b1.3_01",
-  "optionsVersion": "PREFOV",
-  "downloadURL": "https://launcher.mojang.com/v1/objects/f48c7b6442ad8d01099ecee1c7c7332f1b1a80da/client.jar"
-}
+{  "name": "Alpha 1.2.5",  "md5": "7D3A43037190970FF2E11153B5718B74",  "sha256": "FDDE933363DF3A1D95A76D180DBDB14464F8390F954D272613ED25CE42155787",  "type": "client",  "legacy": true,  "baseVersion": "a1.2.5",  "useFOVPatch": true,  "ingameVersionString": "Minecraft Alpha v1.2.5",  "resourcesVersion": "b1.3_01",  "optionsVersion": "PREFOV",  "downloadURL": "https://launcher.mojang.com/v1/objects/f48c7b6442ad8d01099ecee1c7c7332f1b1a80da/client.jar"}

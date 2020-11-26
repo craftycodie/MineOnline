@@ -1,10 +1,1 @@
-{
-  "name": "Snapshot 1.8.2-pre1",
-  "baseVersion": "1.8.2-pre1",
-  "type": "server",
-  "clientVersions": [
-    "1.8.2-pre1"
-  ],
-  "md5": "E35A73925D828F1232E00C1B60C18E23",
-  "sha256": "00514AD81D46B19A8B8E066F0F4716C2CB0A3275183CBFF9DB119B01EA5E48FD"
-}
+{  "name": "Snapshot 1.8.2-pre1",  "baseVersion": "1.8.2-pre1",  "type": "server",  "clientVersions": [    "1.8.2-pre1"  ],  "md5": "E35A73925D828F1232E00C1B60C18E23",  "sha256": "00514AD81D46B19A8B8E066F0F4716C2CB0A3275183CBFF9DB119B01EA5E48FD"}

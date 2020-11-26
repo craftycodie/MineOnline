@@ -70,23 +70,7 @@ public class GuiSlotVersion extends GuiSlot
     public String getSelectedPath() throws Exception {
         SelectableVersion version = versions.get(selectedIndex);
         if (version.path == null) {
-            HttpURLConnection httpConnection = (java.net.HttpURLConnection) (version.version.downloadURL.openConnection());
-
-            InputStream in = httpConnection.getInputStream();
-
-            File clientJar = new File(LauncherFiles.MINECRAFT_VERSIONS_PATH + version.version.baseVersion + File.separator + "client.jar");
-            clientJar.getParentFile().mkdirs();
-            OutputStream out = new java.io.FileOutputStream(LauncherFiles.MINECRAFT_VERSIONS_PATH + version.version.baseVersion + File.separator + "client.jar", false);
-
-            final byte[] data = new byte[1024];
-            int count;
-            while ((count = in.read(data, 0, 1024)) != -1) {
-                out.write(data, 0, count);
-            }
-
-            MinecraftVersionRepository.getSingleton().addInstalledVersion(LauncherFiles.MINECRAFT_VERSIONS_PATH + version.version.baseVersion + File.separator + "client.jar");
-
-            return LauncherFiles.MINECRAFT_VERSIONS_PATH + version.version.baseVersion + File.separator + "client.jar";
+            return version.version.download();
         }
 
         return versions.get(selectedIndex).path;

@@ -1,9 +1,1 @@
-{
-  "name": "Alpha 0.2.0_01",
-  "md5": "0F6FC0C1EFD13BFF75567AC3E49B9D61",
-  "sha256": "2903B23CFFAD4A7A7E01F445D416989FF3DD3A0D79C89416BB085CB333836399",
-  "type": "server",
-  "clientName": "Alpha 1.1.0",
-  "baseVersion": "a1.1.0",
-  "legacy": true
-}
+{  "name": "Alpha 0.2.0_01",  "md5": "0F6FC0C1EFD13BFF75567AC3E49B9D61",  "sha256": "2903B23CFFAD4A7A7E01F445D416989FF3DD3A0D79C89416BB085CB333836399",  "type": "server",  "clientName": "Alpha 1.1.0",  "baseVersion": "a1.1.0",  "legacy": true}

@@ -1,8 +1,1 @@
-{
-  "name": "12w25a",
-  "md5": "B904C9D0D976039047E421A66A1A912D",
-  "sha256": "84960A81E965D3738FE4B3BA449E0B7892A3DC4D622B2A173B7768E5B57C42BB",
-  "type": "client",
-  "legacy": true,
-  "baseVersion": "12w25a"
-}
+{  "name": "12w25a",  "md5": "B904C9D0D976039047E421A66A1A912D",  "sha256": "84960A81E965D3738FE4B3BA449E0B7892A3DC4D622B2A173B7768E5B57C42BB",  "type": "client",  "legacy": true,  "baseVersion": "12w25a"}

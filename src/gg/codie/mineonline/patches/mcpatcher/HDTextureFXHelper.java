@@ -101,7 +101,7 @@ public class HDTextureFXHelper {
 
         // classic
         if (x == 224 && y == 0) {
-            if (LegacyGameManager.getVersion().hasNetherPortalTexture)
+            if (LegacyGameManager.getVersion() != null && LegacyGameManager.getVersion().hasNetherPortalTexture)
                 textureName = "/custom_portal.png";
             else
                 textureName = "/custom_water_still.png";

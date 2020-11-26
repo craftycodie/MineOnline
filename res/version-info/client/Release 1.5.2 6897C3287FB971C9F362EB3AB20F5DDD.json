@@ -1,8 +1,1 @@
-{
-  "name": "Release 1.5.2",
-  "md5": "6897C3287FB971C9F362EB3AB20F5DDD",
-  "type": "client",
-  "baseVersion": "1.5.2",
-  "legacy": true,
-  "resourcesVersion": "1.5.2"
-}
+{  "name": "Release 1.5.2",  "md5": "6897C3287FB971C9F362EB3AB20F5DDD",  "type": "client",  "baseVersion": "1.5.2",  "legacy": true,  "resourcesVersion": "1.5.2"}

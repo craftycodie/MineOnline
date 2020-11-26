@@ -1,8 +1,1 @@
-{
-  "name": "12w40b",
-  "md5": "C549B63C7BAFEC08F0B2FA291C881BE6",
-  "sha256": "417F6527E97E084BE9989081D6EFAA89726DA6EB7D28D736EA96D45FBB08D26B",
-  "type": "client",
-  "legacy": true,
-  "baseVersion": "12w40b"
-}
+{  "name": "12w40b",  "md5": "C549B63C7BAFEC08F0B2FA291C881BE6",  "sha256": "417F6527E97E084BE9989081D6EFAA89726DA6EB7D28D736EA96D45FBB08D26B",  "type": "client",  "legacy": true,  "baseVersion": "12w40b"}

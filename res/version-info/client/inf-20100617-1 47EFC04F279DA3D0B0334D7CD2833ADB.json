@@ -1,17 +1,1 @@
-{
-  "name": "inf-20100617-1",
-  "md5": "47EFC04F279DA3D0B0334D7CD2833ADB",
-  "sha256": "2165BEBE20CD54FA67DBE86C8E89D5F597D7A16B45DA7AD794325110DCE5C12A",
-  "type": "client",
-  "enableScreenshotPatch": true,
-  "legacy": true,
-  "baseVersion": "inf-20100617-1",
-  "useFOVPatch": true,
-  "useTexturepackPatch": true,
-  "ingameVersionString": "Minecraft Infdev",
-  "enableCursorPatch": true,
-  "resourcesVersion": "a1.0.1_01",
-  "optionsVersion": "CLASSIC",
-  "useResizePatch": true,
-  "hasNetherPortalTexture": false
-}
+{  "name": "inf-20100617-1",  "md5": "47EFC04F279DA3D0B0334D7CD2833ADB",  "sha256": "2165BEBE20CD54FA67DBE86C8E89D5F597D7A16B45DA7AD794325110DCE5C12A",  "type": "client",  "enableScreenshotPatch": true,  "legacy": true,  "baseVersion": "inf-20100617-1",  "useFOVPatch": true,  "useTexturepackPatch": true,  "ingameVersionString": "Minecraft Infdev",  "enableCursorPatch": true,  "resourcesVersion": "a1.0.1_01",  "optionsVersion": "CLASSIC",  "useResizePatch": true,  "hasNetherPortalTexture": false}

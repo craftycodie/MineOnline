@@ -1,10 +1,1 @@
-{
-  "name": "Snapshot 18w46a",
-  "baseVersion": "18w46a",
-  "type": "server",
-  "clientVersions": [
-    "18w46a"
-  ],
-  "md5": "152F5F58EC42D79DBEB7C6611DA3060F",
-  "sha256": "0D1688A0AA0E5CCD5689949138FDE0585E2039B775A1665E762F9A98D8D3860F"
-}
+{  "name": "Snapshot 18w46a",  "baseVersion": "18w46a",  "type": "server",  "clientVersions": [    "18w46a"  ],  "md5": "152F5F58EC42D79DBEB7C6611DA3060F",  "sha256": "0D1688A0AA0E5CCD5689949138FDE0585E2039B775A1665E762F9A98D8D3860F"}

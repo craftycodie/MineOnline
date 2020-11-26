@@ -79,7 +79,8 @@ public class LegacyGameManager {
             }
 
             try {
-                setFOV((int) minecraftOptions.getFOV());
+                if (getVersion() == null || getVersion().useFOVPatch)
+                    setFOV((int) minecraftOptions.getFOV());
             } catch (NoSuchFieldException ne) {
                 // ignore
             }
@@ -221,7 +222,7 @@ public class LegacyGameManager {
     }
 
     public static void setGUIScreen(AbstractGuiScreen guiScreen) {
-        if (!getVersion().useMineOnlineMenu)
+        if (getVersion() != null && !getVersion().useMineOnlineMenu)
             return;
 
         if (LegacyGameManager.guiScreen == null) {

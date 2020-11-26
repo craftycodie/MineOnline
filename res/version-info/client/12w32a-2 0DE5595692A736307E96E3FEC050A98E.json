@@ -1,8 +1,1 @@
-{
-  "name": "12w32a-2",
-  "md5": "0DE5595692A736307E96E3FEC050A98E",
-  "sha256": "580226B5F3FB576D18153D842D15E77902420CB26E683D1FEF3B653BDC4F0809",
-  "type": "client",
-  "legacy": true,
-  "baseVersion": "12w32a-2"
-}
+{  "name": "12w32a-2",  "md5": "0DE5595692A736307E96E3FEC050A98E",  "sha256": "580226B5F3FB576D18153D842D15E77902420CB26E683D1FEF3B653BDC4F0809",  "type": "client",  "legacy": true,  "baseVersion": "12w32a-2"}
