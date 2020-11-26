@@ -147,7 +147,8 @@ public class Loader {
             "/misc/foliagecolor.png", //Needs to be patched separately.
             "/misc/grasscolor.png", //Needs to be patched separately.
             "/misc/watercolor.png", //Needs to be patched separately.
-            "/default.png" //Needs to be patched separately.
+            "/default.png", //Needs to be patched separately.
+            "/pack.png"
     ));
 
     public static void reloadMinecraftTexture(String textureName) {
@@ -160,7 +161,7 @@ public class Loader {
 //        if (LegacyGameManager.isInGame() && !LegacyGameManager.getVersion().useTexturepackPatch)
 //            return;
 
-        boolean clamp = textureName.startsWith("%clamp%");
+        boolean clamp = textureName.startsWith("%clamp%") || textureName.startsWith("%%");
         boolean blur = textureName.startsWith("%blur%");
 
         // These can probably be handled better.
@@ -353,10 +354,5 @@ public class Loader {
     {
         ByteBuffer bytebuffer = ByteBuffer.allocateDirect(i).order(ByteOrder.nativeOrder());
         return bytebuffer;
-    }
-
-    public static IntBuffer createDirectIntBuffer(int i)
-    {
-        return createDirectByteBuffer(i << 2).asIntBuffer();
     }
 }
