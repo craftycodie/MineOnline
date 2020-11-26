@@ -1,5 +1,6 @@
 package gg.codie.mineonline.client;
 
+import gg.codie.common.utils.OSUtils;
 import gg.codie.mineonline.*;
 import gg.codie.mineonline.discord.DiscordRPCHandler;
 import gg.codie.mineonline.patches.SocketPatch;
@@ -8,7 +9,6 @@ import gg.codie.mineonline.patches.minecraft.PropertiesSignaturePatch;
 import gg.codie.mineonline.patches.minecraft.YggdrasilMinecraftSessionServicePatch;
 import gg.codie.mineonline.utils.JREUtils;
 import gg.codie.mineonline.utils.Logging;
-import gg.codie.common.utils.OSUtils;
 
 import javax.swing.*;
 import java.io.File;
@@ -47,6 +47,7 @@ public class MinecraftClientLauncher {
 
             libraries.add(new File(MinecraftClientLauncher.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath());
             libraries.add(jarPath);
+            libraries.add(LauncherFiles.DISCORD_RPC_JAR);
 
             LinkedList<String> launchArgs = new LinkedList();
             launchArgs.add(JREUtils.getJavaExecutable());
@@ -85,8 +86,6 @@ public class MinecraftClientLauncher {
             processBuilder.redirectInput(ProcessBuilder.Redirect.INHERIT);
 
             processBuilder.inheritIO().start();
-
-            Runtime.getRuntime().halt(0);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

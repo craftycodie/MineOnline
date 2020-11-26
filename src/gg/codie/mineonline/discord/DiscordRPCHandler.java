@@ -1,13 +1,14 @@
 package gg.codie.mineonline.discord;
 
+import gg.codie.common.utils.OSUtils;
 import gg.codie.mineonline.Globals;
 import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.LibraryManager;
 import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.mineonline.api.MineOnlineServer;
+import gg.codie.mineonline.client.LegacyGameManager;
 import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.utils.JREUtils;
-import gg.codie.common.utils.OSUtils;
 import net.arikia.dev.drpc.DiscordEventHandlers;
 import net.arikia.dev.drpc.DiscordRPC;
 import net.arikia.dev.drpc.DiscordRichPresence;
@@ -144,10 +145,12 @@ public class DiscordRPCHandler {
 
     static String externalIP;
 
+    private static Thread discordThread;
+
     public static void initialize(){
         externalIP = MineOnlineAPI.getExternalIP();
 
-        Thread discordThread = new Thread(() -> {
+        discordThread = new Thread(() -> {
             DiscordEventHandlers handlers = new DiscordEventHandlers.Builder().setReadyEventHandler((user) -> {
                 System.out.println("Discord logged in " + user.username + "#" + user.discriminator + "!");
                 DiscordRichPresence.Builder presence = new DiscordRichPresence.Builder("In the launcher.");
@@ -182,7 +185,11 @@ public class DiscordRPCHandler {
 
                         processBuilder.inheritIO().start();
 
-                        Runtime.getRuntime().halt(0);
+                        if (LegacyGameManager.isInGame()) {
+                            LegacyGameManager.closeGame();
+                        }
+
+                        System.exit(0);
                     } catch (Exception ex) {
                         JOptionPane.showMessageDialog(null, "Failed to join game.");
                     }
@@ -209,8 +216,10 @@ public class DiscordRPCHandler {
             while (!Thread.currentThread().isInterrupted()) {
                 DiscordRPC.discordRunCallbacks();
 
-                if (hasUpdate || DiscordRPCHandler.serverIP != null &&  System.currentTimeMillis() - DiscordRPCHandler.lastServerUpdate > 60000)
+                if (hasUpdate || DiscordRPCHandler.serverIP != null &&  System.currentTimeMillis() - DiscordRPCHandler.lastServerUpdate > 60000) {
                     play(DiscordRPCHandler.versionName, DiscordRPCHandler.serverIP, DiscordRPCHandler.serverPort, DiscordRPCHandler.username, DiscordRPCHandler.uuid);
+                    hasUpdate = false;
+                }
 
                 try {
                     Thread.sleep(2000);
@@ -221,5 +230,10 @@ public class DiscordRPCHandler {
         discordThread.start();
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> discordThread.interrupt()));
+    }
+
+    public static void stop() {
+        if (discordThread != null && !discordThread.isInterrupted())
+            discordThread.interrupt();
     }
 }

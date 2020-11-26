@@ -1,7 +1,10 @@
 package gg.codie.mineonline.server;
 
 import gg.codie.common.input.EColorCodeColor;
-import gg.codie.minecraft.server.*;
+import gg.codie.common.utils.MD5Checksum;
+import gg.codie.minecraft.server.AbstractMinecraftColorCodeProvider;
+import gg.codie.minecraft.server.ClassicMinecraftColorCodeProvider;
+import gg.codie.minecraft.server.MinecraftColorCodeProvider;
 import gg.codie.mineonline.MinecraftVersion;
 import gg.codie.mineonline.MinecraftVersionRepository;
 import gg.codie.mineonline.api.MineOnlineAPI;
@@ -10,14 +13,13 @@ import gg.codie.mineonline.discord.IMessageRecievedListener;
 import gg.codie.mineonline.discord.IShutdownListener;
 import gg.codie.mineonline.discord.MinotarAvatarProvider;
 import gg.codie.mineonline.utils.Logging;
-import gg.codie.common.utils.MD5Checksum;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
+import javax.imageio.IIOException;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.*;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.Scanner;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,7 +27,7 @@ public class MinecraftServerLauncher {
 
     public final String jarPath;
     private String md5;
-    protected Properties serverProperties;
+    protected MineOnlineServerProperties serverProperties;
     public String serverlistAddress;
     public String serverlistPort;
     protected MinecraftVersion minecraftVersion;
@@ -47,9 +49,9 @@ public class MinecraftServerLauncher {
         minecraftVersion = MinecraftVersionRepository.getSingleton(true).getVersionByMD5(md5);
 
         try {
-            serverProperties = new Properties(jarPath);
+            serverProperties = new MineOnlineServerProperties(System.getProperty("user.dir"));
         } catch (Exception ex) {
-            serverProperties = new Properties(null);
+            serverProperties = new MineOnlineServerProperties(null);
         }
 
         if (serverProperties.versionMD5() != null) {
@@ -141,9 +143,9 @@ public class MinecraftServerLauncher {
             }
         };
 
-        if (serverProperties.discordToken() != null && serverProperties.discordChan() != null) { // Create the discord bot if token and channel are present
+        if (serverProperties.discordToken() != null && serverProperties.discordChannel() != null) { // Create the discord bot if token and channel are present
             try {
-                discord = new DiscordChatBridge(new MinotarAvatarProvider(), serverProperties.discordChan(), serverProperties.discordToken(), serverProperties.discordWebhookUrl(), messageRecievedListener, shutdownListener);
+                discord = new DiscordChatBridge(new MinotarAvatarProvider(), serverProperties.discordChannel(), serverProperties.discordToken(), serverProperties.discordWebhookUrl(), messageRecievedListener, shutdownListener);
             } catch (Exception ex) {
                 System.out.println("Failed to start discord bridge.");
                 ex.printStackTrace();
@@ -172,7 +174,7 @@ public class MinecraftServerLauncher {
 
         Thread closeLauncher = new Thread() {
             public void run() {
-                Runtime.getRuntime().halt(0);
+                System.exit(0);
             }
         };
 
@@ -408,9 +410,9 @@ public class MinecraftServerLauncher {
             updatedPlayerCount = false;
             try {
                 try {
-                    serverProperties = new Properties(jarPath);
+                    serverProperties = new MineOnlineServerProperties(System.getProperty("user.dir"));
                 } catch (Exception ex) {
-                    serverProperties = new Properties(null);
+                    serverProperties = new MineOnlineServerProperties(null);
                 }
 
                 if (!updatingPlayerCount && !(minecraftVersion != null && minecraftVersion.hasHeartbeat)) {
@@ -419,6 +421,28 @@ public class MinecraftServerLauncher {
                 }
 
                 boolean whitelisted = serverProperties.isWhitelisted();
+
+                String serverIcon = null;
+
+                try {
+                    BufferedImage serverIconBufferedImage = ImageIO.read(new File(System.getProperty("user.dir") + File.separator + "server-icon.png"));
+
+                    if (serverIconBufferedImage.getHeight() <= 64 && serverIconBufferedImage.getWidth() <= 64) {
+                        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                        try {
+                            ImageIO.write(serverIconBufferedImage, "png", bos);
+                            byte[] bytes = bos.toByteArray();
+                            Base64.Encoder encoder = Base64.getEncoder();
+                            serverIcon = encoder.encodeToString(bytes);
+                            serverIcon = serverIcon.replace(System.lineSeparator(), "");
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            throw new RuntimeException();
+                        }
+                    }
+                } catch (IIOException ex) {
+                    // ignore.
+                }
 
                 serverUUID = MineOnlineAPI.listServer(
                         serverProperties.serverIP(),
@@ -429,7 +453,10 @@ public class MinecraftServerLauncher {
                         serverProperties.onlineMode(),
                         md5,
                         whitelisted,
-                        playerNames
+                        playerNames,
+                        serverProperties.motd(),
+                        serverProperties.dontListPlayers(),
+                        serverIcon
                 );
             } catch (Exception e) {
                 e.printStackTrace();

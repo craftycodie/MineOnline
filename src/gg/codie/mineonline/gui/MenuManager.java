@@ -1,62 +1,58 @@
 package gg.codie.mineonline.gui;
 
+import com.johnymuffin.BetaEvolutionsUtils;
 import gg.codie.minecraft.api.AuthServer;
-import gg.codie.minecraft.api.LauncherAPI;
 import gg.codie.minecraft.api.MojangAPI;
 import gg.codie.mineonline.*;
 import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.mineonline.api.MineOnlineServer;
 import gg.codie.mineonline.discord.DiscordRPCHandler;
-import gg.codie.mineonline.gui.font.GUIText;
+import gg.codie.mineonline.gui.input.MouseHandler;
+import gg.codie.mineonline.gui.rendering.DisplayManager;
+import gg.codie.mineonline.gui.rendering.Loader;
 import gg.codie.mineonline.gui.rendering.Renderer;
-import gg.codie.mineonline.gui.rendering.*;
-import gg.codie.mineonline.gui.rendering.animation.IdlePlayerAnimation;
-import gg.codie.mineonline.gui.rendering.font.TextMaster;
-import gg.codie.mineonline.gui.rendering.models.RawModel;
-import gg.codie.mineonline.gui.rendering.models.TexturedModel;
-import gg.codie.mineonline.gui.rendering.shaders.StaticShader;
-import gg.codie.mineonline.gui.rendering.textures.ModelTexture;
+import gg.codie.mineonline.gui.screens.AbstractGuiScreen;
+import gg.codie.mineonline.gui.screens.GuiDirectConnect;
+import gg.codie.mineonline.gui.screens.GuiLogin;
+import gg.codie.mineonline.gui.screens.GuiMainMenu;
+import gg.codie.mineonline.gui.textures.EGUITexture;
 import gg.codie.mineonline.utils.LastLogin;
 import gg.codie.mineonline.utils.Logging;
 import org.json.JSONObject;
+import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
-import org.lwjgl.util.vector.Vector2f;
-import org.lwjgl.util.vector.Vector3f;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.util.glu.GLU;
 
-import javax.swing.*;
+import javax.imageio.ImageIO;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.util.Random;
+import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Set;
 
 public class MenuManager {
 
     public static boolean formopen = false;
 
-    private static GUIText playerName;
-    public static void setMenuScreen(IMenuScreen menuScreen) {
-
-        if(MenuManager.menuScreen != null)
-            MenuManager.menuScreen.cleanUp();
-
-        MenuManager.menuScreen = menuScreen;
-
-        if(playerName != null)
-            playerName.remove();
-
-        if(menuScreen.showPlayer())
-            playerName = new GUIText(Session.session.getUsername(), 1.5f, TextMaster.minecraftFont, new Vector2f(168, 100), 160, true, true);
+    public static void setMenuScreen(AbstractGuiScreen guiScreen) {
+        if(MenuManager.guiScreen != null)
+            MenuManager.guiScreen.onGuiClosed();
+        MenuManager.guiScreen = guiScreen;
     }
 
     public static void resizeMenu() {
-        if(menuScreen != null)
-            menuScreen.resize();
+        if(guiScreen != null)
+            guiScreen.resize(Display.getParent().getWidth(), Display.getParent().getHeight());
     }
 
-    private static IMenuScreen menuScreen;
+    private static AbstractGuiScreen guiScreen;
 
     static WindowAdapter closeListener = new WindowAdapter(){
         public void windowClosing(WindowEvent e){
@@ -72,45 +68,51 @@ public class MenuManager {
         }
     };
 
-    private static GameObject playerScale;
 
     static boolean updateAvailable = false;
     public static boolean isUpdateAvailable() {
         return updateAvailable;
     }
 
+    public static void scaledTessellator(int i, int j, int k, int l, int i1, int j1)
+    {
+        float f = 0.00390625F;
+        float f1 = 0.00390625F;
+        Renderer tessellator = Renderer.singleton;
+        tessellator.startDrawingQuads();
+        tessellator.addVertexWithUV(i + 0, j + j1, 0.0D, (float)(k + 0) * f, (float)(l + j1) * f1);
+        tessellator.addVertexWithUV(i + i1, j + j1, 0.0D, (float)(k + i1) * f, (float)(l + j1) * f1);
+        tessellator.addVertexWithUV(i + i1, j + 0, 0.0D, (float)(k + i1) * f, (float)(l + 0) * f1);
+        tessellator.addVertexWithUV(i + 0, j + 0, 0.0D, (float)(k + 0) * f, (float)(l + 0) * f1);
+        tessellator.draw();
+    }
+
+    static boolean skipUpdates = false;
     public static void main(String[] args) throws Exception {
         Logging.enableLogging();
 
         DiscordRPCHandler.initialize();
 
-        ProgressDialog.showProgress("Loading MineOnline", closeListener);
-        ProgressDialog.setMessage("Loading LWJGL");
+        if(Arrays.stream(args).anyMatch(arg -> arg.equals("-skipupdates")))
+            skipUpdates = true;
 
         LibraryManager.updateNativesPath();
 
-        ProgressDialog.setMessage("Checking for updates");
-        ProgressDialog.setProgress(20);
-
         formopen = true;
 
-        try {
-            updateAvailable = !MineOnlineAPI.getLauncherVersion().replaceAll("\\s","").equals(Globals.LAUNCHER_VERSION);
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        if (!skipUpdates) {
+            try {
+                updateAvailable = !MineOnlineAPI.getLauncherVersion().replaceAll("\\s", "").equals(Globals.LAUNCHER_VERSION);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
-
-        ProgressDialog.setMessage("Loading Minecraft versions");
-        ProgressDialog.setProgress(40);
-
-        // Load this before showing the display.
-        MinecraftVersionRepository.getSingleton();
 
         boolean multiinstance = false;
         String quicklaunch = null;
         String joinserver = null;
 
-        // If a user drags a jar onto the launcher, it'll be at arg 1, quicklaunch it.
+        // If a user drags a jar onto the launcher, it'll be at arg 1, quicklaunch it.jo
         if(args.length > 0) {
             File acceptedFile = new File(args[0]);
             if (acceptedFile.exists() && MinecraftVersion.isPlayableJar(acceptedFile.getPath())) {
@@ -131,13 +133,20 @@ public class MenuManager {
                 if(args.length > i + 1 && new File(args[i + 1]).exists())  {
                     quicklaunch = args[i + 1];
                 } else {
-                    if (MinecraftVersionRepository.getSingleton().getLastSelectedJarPath() != null) {
-                        quicklaunch = MinecraftVersionRepository.getSingleton().getLastSelectedJarPath();
+                    if (MinecraftVersionRepository.getSingleton(skipUpdates).getLastSelectedJarPath() != null) {
+                        quicklaunch = MinecraftVersionRepository.getSingleton(skipUpdates).getLastSelectedJarPath();
                     }
                 }
 
             }
         }
+
+        if (quicklaunch == null && !skipUpdates) {
+            showLoadingScreen();
+        }
+
+        // Load this before showing the display.
+        MinecraftVersionRepository.getSingleton(skipUpdates, quicklaunch);
 
         if(quicklaunch != null) {
             MinecraftVersion version = MinecraftVersionRepository.getSingleton().getVersion(quicklaunch);
@@ -147,9 +156,6 @@ public class MenuManager {
                 return;
             }
         }
-
-        ProgressDialog.setMessage("Logging in");
-        ProgressDialog.setProgress(60);
 
         LastLogin lastLogin = null;
 
@@ -179,32 +185,14 @@ public class MenuManager {
             }
         }
 
-        ProgressDialog.setMessage("Preparing MineOnline");
-        ProgressDialog.setProgress(80);
-
         Settings.singleton.loadSettings(true);
-
-        DisplayManager.init();
-
-        ProgressDialog.setMessage("Loading done.");
-        ProgressDialog.setProgress(100);
-
-        DisplayManager.createDisplay();
-
-        DisplayManager.getFrame().addWindowListener(closeListener);
-
-        Keyboard.enableRepeatEvents(true);
-
-        Renderer renderer = new Renderer();
-        Loader loader = new Loader();
-        TextMaster.init(loader);
 
         if (sessionToken != null && username != null) {
             new Session(username, sessionToken, lastLogin.clientToken, uuid, true);
             LastLogin.writeLastLogin(sessionToken, lastLogin.clientToken, lastLogin.loginUsername, username, uuid);
         }
 
-        if (Session.session != null && Session.session.isOnline() && joinserver != null) {
+        if (Session.session != null && Session.session.isOnline() && joinserver != null && quicklaunch == null) {
             String ip;
             String port;
 
@@ -229,27 +217,32 @@ public class MenuManager {
                                     mppass = MineOnlineAPI.getMpPass(Session.session.getAccessToken(), Session.session.getUsername(), Session.session.getUuid(), mineOnlineServer.ip, "" + mineOnlineServer.port);
                                 }
 
+                                if (mineOnlineServer.usingBetaEvolutions) {
+                                    BetaEvolutionsUtils betaEvolutions = new BetaEvolutionsUtils(false);
+                                    BetaEvolutionsUtils.VerificationResults verificationResults = betaEvolutions.authenticateUser(Session.session.getUsername(), Session.session.getAccessToken());
+                                    System.out.println("[Beta Evolutions] Authenticated with " + verificationResults.getSuccessful() + "/" + verificationResults.getTotal() + " BetaEVO nodes.");
+                                }
+
                                 MinecraftVersion.launchMinecraft(path, mineOnlineServer.ip, "" + mineOnlineServer.port, mppass);
                                 return;
                             }
                         }
 
                         try {
-                            File clientJar = new File(LauncherFiles.MINECRAFT_VERSIONS_PATH + compatibleClientBaseVersion + File.separator + "client.jar");
-                            try {
-                                MineOnlineAPI.downloadVersion(compatibleClientBaseVersion);
-                            } catch (Exception ex) {
-                                // ignore
-                            }
-                            if (!clientJar.exists())
-                                LauncherAPI.downloadVersion(compatibleClientBaseVersion);
+                            String path = serverVersion.download();
 
-                            MinecraftVersionRepository.getSingleton().addInstalledVersion(clientJar.getPath());
                             String mppass = null;
                             if(serverVersion != null && serverVersion.hasHeartbeat) {
                                 mppass = MineOnlineAPI.getMpPass(Session.session.getAccessToken(), Session.session.getUsername(), Session.session.getUuid(), mineOnlineServer.ip, "" + mineOnlineServer.port);
                             }
-                            MinecraftVersion.launchMinecraft(clientJar.getPath(), mineOnlineServer.ip, "" + mineOnlineServer.port, mppass);
+
+                            if (mineOnlineServer.usingBetaEvolutions) {
+                                BetaEvolutionsUtils betaEvolutions = new BetaEvolutionsUtils(false);
+                                BetaEvolutionsUtils.VerificationResults verificationResults = betaEvolutions.authenticateUser(Session.session.getUsername(), Session.session.getAccessToken());
+                                System.out.println("[Beta Evolutions] Authenticated with " + verificationResults.getSuccessful() + "/" + verificationResults.getTotal() + " BetaEVO nodes.");
+                            }
+
+                            MinecraftVersion.launchMinecraft(path, mineOnlineServer.ip, "" + mineOnlineServer.port, mppass);
                             return;
                         } catch (Exception ex) {
                             ex.printStackTrace();
@@ -280,115 +273,299 @@ public class MenuManager {
             return;
         }
 
-        GameObject playerPivot = new GameObject("player_origin", new Vector3f(), new Vector3f(0, 30, 0), new Vector3f(1, 1, 1));
-        PlayerGameObject playerGameObject = new PlayerGameObject("player", loader, new Vector3f(0, -21, 0), new Vector3f(), new Vector3f(1, 1, 1));
-        playerPivot.addChild(playerGameObject);
-
-        playerScale = new GameObject("player scale", new Vector3f(-20, 0, -65), new Vector3f(), new Vector3f(1, 1, 1));
-        playerScale.addChild(playerPivot);
-
-        playerGameObject.setPlayerAnimation(new IdlePlayerAnimation());
-        Camera camera = new Camera();
-
-        String[] panoramaNames = new String[] {"beta5", "beta6", "sunset", "midnight"};
-        //String[] panoramaNames = new String[] {"beta2"};
-
-        RawModel model = loader.loadBoxToVAO(new Vector3f(-1, -1, -1), new Vector3f(1, 1, 1), TextureHelper.getCubeTextureCoords(new Vector2f(8192, 4096),
-                new Vector2f(4161, 0), new Vector2f(1387, 1387),
-                new Vector2f(1387, 0), new Vector2f(1387, 1387),
-                new Vector2f(2774, 0), new Vector2f(1387, 1387),
-                new Vector2f(0, 0), new Vector2f(1387, 1387),
-                new Vector2f(0, 1387), new Vector2f(1387, 1387),
-                new Vector2f(1387, 1387), new Vector2f(1387, 1387)
-        ));
-        ModelTexture modelTexture = new ModelTexture(loader.loadTexture(MenuManager.class.getResource("/img/panorama_" + panoramaNames[new Random().nextInt(panoramaNames.length)] + ".png")));
-        TexturedModel texturedModel =  new TexturedModel(model, modelTexture);
-        GameObject backgroundImage = new GUIObject("Background", texturedModel, new Vector3f(), new Vector3f(0, 180, 0), new Vector3f(75f, 75f, 75f));
-
-        if (Globals.DEV) {
-            new GUIText("MineOnline Dev " + Globals.LAUNCHER_VERSION, 1.5f, TextMaster.minecraftFont, new Vector2f(2, 2), DisplayManager.getDefaultWidth(), false, true);
-        }
+        if (DisplayManager.getFrame() == null)
+            showLoadingScreen();
 
         if(Session.session != null && Session.session.isOnline())
             if(joinserver != null)
-                setMenuScreen(new JoinServerScreen(joinserver));
+                setMenuScreen(new GuiDirectConnect(null, joinserver));
             else
-                setMenuScreen(new MainMenuScreen());
+                setMenuScreen(new GuiMainMenu());
         else
-            setMenuScreen(new LoginMenuScreen(false));
+            setMenuScreen(new GuiLogin());
 
         int lastWidth = Display.getWidth();
         int lastHeight = Display.getHeight();
 
-        Vector3f rotation = new Vector3f();
+        long startTime = System.currentTimeMillis();
+
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        ImageIO.write(new java.awt.image.BufferedImage(256, 256, BufferedImage.TYPE_INT_ARGB), "png", os);                          // Passing: ​(RenderedImage im, String formatName, OutputStream output)
+        InputStream is = new ByteArrayInputStream(os.toByteArray());
+
+        int panoramaTexture = Loader.singleton.loadTexture("panorama buffer", is);
 
         // Game Loop
         while(!Display.isCloseRequested() && formopen) {
             MouseHandler.update();
-            renderer.prepare();
+//            renderer.prepare();
 
-            if(Display.getWidth() != lastWidth || Display.getHeight() != lastHeight) {
-                menuScreen.resize();
+            if(Display.getParent().getWidth() != lastWidth || Display.getParent().getHeight() != lastHeight) {
+                guiScreen.resize(Display.getParent().getWidth(), Display.getParent().getHeight());
             }
 
-            lastWidth = Display.getWidth();
-            lastHeight = Display.getHeight();
+            lastWidth = Display.getParent().getWidth();
+            lastHeight = Display.getParent().getHeight();
 
-            backgroundImage.increaseRotation(new Vector3f(0, 0.025f, 0));
-
-            // Handle player resizing.
-            float maxScale = 1;
-            if(DisplayManager.isTall()){
-                maxScale = Display.getWidth() / (float)DisplayManager.getDefaultWidth();
-            } else {
-                maxScale = Display.getHeight() / (float)DisplayManager.getDefaultHeight();
-            }
-            if(maxScale > 1) {
-                playerScale.setScale(new Vector3f((1 / maxScale) * (float)DisplayManager.getScale(), (1 / maxScale) * (float)DisplayManager.getScale(), (1 / maxScale) * (float)DisplayManager.getScale()));
-            }
-            float xScale = Display.getWidth() / (float)DisplayManager.getDefaultWidth();
-            if(xScale > 1) {
-                playerScale.setLocalPosition(new Vector3f(-20 * (1 / xScale) * (float)DisplayManager.getScale(), 0, -65));
-            }
-
-            if(Mouse.isButtonDown(0)) {
-                rotation.y = Mouse.getDX() * 0.5f;
-            } else if (!Mouse.isButtonDown(0)) {
-                rotation.y *= .97f;
-            }
-
-            if (rotation.y != 0 && menuScreen.showPlayer())
-                playerPivot.increaseRotation(rotation);
-
-            playerGameObject.update();
-            menuScreen.update();
 
             if(!formopen) return;
 
-            StaticShader.singleton.start();
-            StaticShader.singleton.loadViewMatrix(camera);
+            GUIScale scaledresolution = new GUIScale(Display.getParent().getWidth(), Display.getParent().getHeight());
 
-            renderer.render(backgroundImage, StaticShader.singleton);
+            int i = (int)scaledresolution.getScaledWidth();
+            int j = (int)scaledresolution.getScaledHeight();
+            int k = (Mouse.getX() * i) / Display.getParent().getWidth();
+            int i1 = j - (Mouse.getY() * j) / Display.getParent().getHeight() - 1;
 
-            if (menuScreen.showPlayer()) {
-                renderer.render(playerGameObject, StaticShader.singleton);
+            if (MenuManager.guiScreen != null) {
+
+
+                GL11.glEnable(GL11.GL_TEXTURE_2D);
+
+                new GUIScale(Display.getParent().getWidth(), Display.getParent().getHeight());
+                GL11.glViewport(0, 0, Display.getParent().getWidth(), Display.getParent().getHeight());
+                GL11.glMatrixMode(GL11.GL_PROJECTION);
+                GL11.glLoadIdentity();
+                GL11.glMatrixMode(GL11.GL_MODELVIEW);
+                GL11.glLoadIdentity();
+                GL11.glClear(256);
+                GL11.glMatrixMode(GL11.GL_PROJECTION);
+                GL11.glLoadIdentity();
+                GL11.glOrtho(0.0D, GUIScale.lastScaledWidth(), GUIScale.lastScaledHeight(), 0.0D, 1000D, 3000D);
+                GL11.glMatrixMode(GL11.GL_MODELVIEW);
+                GL11.glLoadIdentity();
+                GL11.glTranslatef(0.0F, 0.0F, -2000F);
+                GL11.glClear(256);
+                MenuManager.guiScreen.updateScreen();
+                panorama_func(((float)(System.currentTimeMillis() - startTime) / 1000) * 20, panoramaTexture);
+
+                MenuManager.guiScreen.drawScreen(k, i1);
+
+                MenuManager.guiScreen.handleInput();
             }
-
-            StaticShader.singleton.stop();
-
-            menuScreen.render(renderer);
-
-            TextMaster.render();
 
             DisplayManager.updateDisplay();
         }
 
-        StaticShader.singleton.cleanUp();
-        loader.cleanUp();
-        TextMaster.cleanUp();
         DisplayManager.closeDisplay();
 
         DisplayManager.getFrame().removeWindowListener(closeListener);
+    }
+
+    private static void showLoadingScreen() throws LWJGLException {
+        DisplayManager.init();
+        DisplayManager.createDisplay();
+        Mouse.create();
+        Keyboard.create();
+
+        new Loader();
+
+        new GUIScale(Display.getParent().getWidth(), Display.getParent().getHeight());
+
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+        GL11.glShadeModel(GL11.GL_SMOOTH);
+        GL11.glClearDepth(1.0D);
+        GL11.glEnable(GL11.GL_DEPTH_TEST);
+        GL11.glDepthFunc(515);
+        GL11.glEnable(GL11.GL_ALPHA_TEST);
+        GL11.glAlphaFunc(516, 0.1F);
+        GL11.glCullFace(GL11.GL_BACK);
+        GL11.glMatrixMode(GL11.GL_PROJECTION);
+        GL11.glLoadIdentity();
+        GL11.glMatrixMode(GL11.GL_MODELVIEW);
+
+        GL11.glClear(16640);
+        GL11.glMatrixMode(GL11.GL_PROJECTION);
+        GL11.glLoadIdentity();
+        GL11.glOrtho(0.0D, GUIScale.lastScaledWidth(), GUIScale.lastScaledHeight(), 0.0D, 1000D, 3000D);
+        GL11.glMatrixMode(GL11.GL_MODELVIEW);
+        GL11.glLoadIdentity();
+        GL11.glTranslatef(0.0F, 0.0F, -2000F);
+        GL11.glViewport(0, 0, Display.getParent().getWidth(), Display.getParent().getHeight());
+        GL11.glClearColor(0.0F, 0.0F, 0.0F, 0.0F);
+        Renderer tessellator = Renderer.singleton;
+        GL11.glDisable(GL11.GL_LIGHTING);
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+        GL11.glDisable(GL11.GL_FOG);
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, Loader.singleton.getGuiTexture(EGUITexture.LOADING));
+        tessellator.startDrawingQuads();
+        tessellator.setColorRGBA(255, 255, 255, 255);
+        tessellator.addVertexWithUV(0.0D, Display.getParent().getHeight(), 0.0D, 0.0D, 0.0D);
+        tessellator.addVertexWithUV(Display.getParent().getWidth(), Display.getParent().getHeight(), 0.0D, 0.0D, 0.0D);
+        tessellator.addVertexWithUV(Display.getParent().getWidth(), 0.0D, 0.0D, 0.0D, 0.0D);
+        tessellator.addVertexWithUV(0.0D, 0.0D, 0.0D, 0.0D, 0.0D);
+        tessellator.draw();
+        char c = '\u0100';
+        char c1 = '\u0100';
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        tessellator.setColorRGBA(255, 255, 255, 255);
+        scaledTessellator((GUIScale.lastScaledWidth() - c) / 2, (GUIScale.lastScaledHeight() - c1) / 2, 0, 0, c, c1);
+        GL11.glDisable(GL11.GL_LIGHTING);
+        GL11.glDisable(GL11.GL_FOG);
+        GL11.glEnable(GL11.GL_ALPHA_TEST);
+        GL11.glAlphaFunc(516, 0.1F);
+        Display.swapBuffers();
+
+        DisplayManager.getFrame().addWindowListener(closeListener);
+
+        Keyboard.enableRepeatEvents(true);
+    }
+
+    private static void panorama(float f)
+    {
+        Renderer tessellator = Renderer.singleton;
+        GL11.glMatrixMode(GL11.GL_PROJECTION);
+        GL11.glPushMatrix();
+        GL11.glLoadIdentity();
+        GLU.gluPerspective(120F, 1.0F, 0.05F, 10F);
+        GL11.glMatrixMode(GL11.GL_MODELVIEW);
+        GL11.glPushMatrix();
+        GL11.glLoadIdentity();
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GL11.glRotatef(180F, 1.0F, 0.0F, 0.0F);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glDisable(GL11.GL_ALPHA_TEST);
+        GL11.glDisable(GL11.GL_CULL_FACE);
+        GL11.glDepthMask(false);
+        GL11.glBlendFunc(770, 771);
+        int k = 8;
+        for(int l = 0; l < k * k; l++)
+        {
+            GL11.glPushMatrix();
+            float f1 = ((float)(l % k) / (float)k - 0.5F) / 64F;
+            float f2 = ((float)(l / k) / (float)k - 0.5F) / 64F;
+            float f3 = 0.0F;
+            GL11.glTranslatef(f1, f2, f3);
+            GL11.glRotatef((float)Math.sin(((float)0 + f) / 400F) * 25F + 20F, 1.0F, 0.0F, 0.0F);
+            GL11.glRotatef(-((float)0 + f) * 0.1F, 0.0F, 1.0F, 0.0F);
+            for(int i1 = 0; i1 < 6; i1++)
+            {
+                GL11.glPushMatrix();
+                if(i1 == 1)
+                {
+                    GL11.glRotatef(90F, 0.0F, 1.0F, 0.0F);
+                }
+                if(i1 == 2)
+                {
+                    GL11.glRotatef(180F, 0.0F, 1.0F, 0.0F);
+                }
+                if(i1 == 3)
+                {
+                    GL11.glRotatef(-90F, 0.0F, 1.0F, 0.0F);
+                }
+                if(i1 == 4)
+                {
+                    GL11.glRotatef(90F, 1.0F, 0.0F, 0.0F);
+                }
+                if(i1 == 5)
+                {
+                    GL11.glRotatef(-90F, 1.0F, 0.0F, 0.0F);
+                }
+
+                EGUITexture panoarma;
+                switch(i1) {
+                    case 5:
+                        panoarma = EGUITexture.PANORAMA5;
+                        break;
+                    case 4:
+                        panoarma = EGUITexture.PANORAMA4;
+                        break;
+                    case 3:
+                        panoarma = EGUITexture.PANORAMA3;
+                        break;
+                    case 2:
+                        panoarma = EGUITexture.PANORAMA2;
+                        break;
+                    case 1:
+                        panoarma = EGUITexture.PANORAMA1;
+                        break;
+                    case 0:
+                    default:
+                        panoarma = EGUITexture.PANORAMA0;
+                        break;
+                }
+
+                GL11.glBindTexture(GL11.GL_TEXTURE_2D, Loader.singleton.getGuiTexture(panoarma));
+                tessellator.startDrawingQuads();
+                tessellator.setColorRGBA(255, 255, 255, 255 / (l + 1));
+                float f4 = 0.0F;
+                tessellator.addVertexWithUV(-1D, -1D, 1.0D, 0.0F + f4, 0.0F + f4);
+                tessellator.addVertexWithUV(1.0D, -1D, 1.0D, 1.0F - f4, 0.0F + f4);
+                tessellator.addVertexWithUV(1.0D, 1.0D, 1.0D, 1.0F - f4, 1.0F - f4);
+                tessellator.addVertexWithUV(-1D, 1.0D, 1.0D, 0.0F + f4, 1.0F - f4);
+                tessellator.draw();
+                GL11.glPopMatrix();
+            }
+
+            GL11.glPopMatrix();
+            GL11.glColorMask(true, true, true, false);
+        }
+
+        GL11.glColorMask(true, true, true, true);
+        GL11.glMatrixMode(GL11.GL_PROJECTION);
+        GL11.glPopMatrix();
+        GL11.glMatrixMode(GL11.GL_MODELVIEW);
+        GL11.glPopMatrix();
+        GL11.glDepthMask(true);
+        GL11.glEnable(GL11.GL_CULL_FACE);
+        GL11.glEnable(GL11.GL_ALPHA_TEST);
+        GL11.glEnable(GL11.GL_DEPTH_TEST);
+    }
+
+    private static void blur_related(int texture)
+    {
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture);
+        GL11.glCopyTexSubImage2D(GL11.GL_TEXTURE_2D, 0, 0, 0, 0, 0, 256, 256);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(770, 771);
+        GL11.glColorMask(true, true, true, false);
+        Renderer tessellator = Renderer.singleton;
+        tessellator.startDrawingQuads();
+        byte byte0 = 3;
+        for(int i = 0; i < byte0; i++)
+        {
+            tessellator.setColorRGBA(255, 255, 255, (int)(255 / (float)(i + 1)));
+            int j = GUIScale.lastScaledWidth();
+            int k = GUIScale.lastScaledHeight();
+            float f1 = (float)(i - byte0 / 2) / 256F;
+            tessellator.addVertexWithUV(j, k, 0, 0.0F + f1, 0.0D);
+            tessellator.addVertexWithUV(j, 0.0D, 0, 1.0F + f1, 0.0D);
+            tessellator.addVertexWithUV(0.0D, 0.0D, 0, 1.0F + f1, 1.0D);
+            tessellator.addVertexWithUV(0.0D, k, 0, 0.0F + f1, 1.0D);
+        }
+
+        tessellator.draw();
+        GL11.glColorMask(true, true, true, true);
+    }
+
+    private static void panorama_func(float tick, int texture)
+    {
+        GL11.glViewport(0, 0, 256, 256);
+        panorama(tick);
+        blur_related(texture);
+        blur_related(texture);
+        blur_related(texture);
+        blur_related(texture);
+        blur_related(texture);
+        blur_related(texture);
+        blur_related(texture);
+        blur_related(texture);
+        GL11.glViewport(0, 0, Display.getParent().getWidth(), Display.getParent().getHeight());
+        Renderer tessellator = Renderer.singleton;
+        tessellator.startDrawingQuads();
+        float f1 = GUIScale.lastScaledWidth() <= GUIScale.lastScaledHeight() ? 120F / GUIScale.lastScaledHeight() : 120F / GUIScale.lastScaledWidth();
+        float f2 = ((float)GUIScale.lastScaledHeight() * f1) / 256F;
+        float f3 = ((float)GUIScale.lastScaledWidth() * f1) / 256F;
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
+        tessellator.setColorRGBA(255, 255, 255, 255);
+        int k = GUIScale.lastScaledWidth();
+        int l = GUIScale.lastScaledHeight();
+        tessellator.addVertexWithUV(0.0D, l, 0, 0.5F - f2, 0.5F + f3);
+        tessellator.addVertexWithUV(k, l, 0, 0.5F - f2, 0.5F - f3);
+        tessellator.addVertexWithUV(k, 0.0D, 0, 0.5F + f2, 0.5F - f3);
+        tessellator.addVertexWithUV(0.0D, 0.0D, 0, 0.5F + f2, 0.5F + f3);
+        tessellator.draw();
     }
 
 }

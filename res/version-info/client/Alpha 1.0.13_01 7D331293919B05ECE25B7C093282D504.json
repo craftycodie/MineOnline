@@ -1,0 +1,15 @@
+{
+  "name": "Alpha 1.0.13_01",
+  "md5": "7D331293919B05ECE25B7C093282D504",
+  "sha256": "B29612EE5DC54B1282379ADE828EC74FA40F048BEFB307BF7C50528812B6808D",
+  "type": "client",
+  "enableScreenshotPatch": true,
+  "legacy": true,
+  "baseVersion": "a1.0.13_01",
+  "useFOVPatch": true,
+  "useTexturepackPatch": true,
+  "ingameVersionString": "Minecraft Alpha v1.0.13_01",
+  "resourcesVersion": "a1.0.15",
+  "optionsVersion": "CLASSIC",
+  "hasNetherPortalTexture": false
+}

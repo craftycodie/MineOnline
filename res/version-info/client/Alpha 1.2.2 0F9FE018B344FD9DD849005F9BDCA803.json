@@ -1,0 +1,14 @@
+{
+  "name": "Alpha 1.2.2",
+  "info": "Launcher Version A",
+  "md5": "0F9FE018B344FD9DD849005F9BDCA803",
+  "sha256": "054C311B6AC2181F8D362D579AB8D3992EBFF1867F19C480191E417C030E531A",
+  "type": "client",
+  "legacy": true,
+  "baseVersion": "a1.2.2",
+  "useFOVPatch": true,
+  "ingameVersionString": "Minecraft Alpha v1.2.2",
+  "resourcesVersion": "b1.3_01",
+  "optionsVersion": "PREFOV",
+  "downloadURL": "https://launcher.mojang.com/v1/objects/7d9d85eaca9627d3a40e6d122182f2d22d39dbf9/client.jar"
+}

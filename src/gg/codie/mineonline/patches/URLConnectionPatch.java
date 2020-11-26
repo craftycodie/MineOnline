@@ -6,9 +6,7 @@ import net.bytebuddy.dynamic.loading.ClassReloadingStrategy;
 import net.bytebuddy.implementation.Implementation;
 import net.bytebuddy.matcher.ElementMatchers;
 
-import java.net.ContentHandler;
 import java.net.HttpURLConnection;
-import java.net.URLConnection;
 
 public class URLConnectionPatch {
     public static void patchResponses() {

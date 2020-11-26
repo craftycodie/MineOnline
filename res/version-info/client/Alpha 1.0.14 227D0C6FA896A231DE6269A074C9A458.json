@@ -1,0 +1,17 @@
+{
+  "name": "Alpha 1.0.14",
+  "info": "Launcher Version",
+  "md5": "227D0C6FA896A231DE6269A074C9A458",
+  "sha256": "0859315D26DAB43E004454F19F51301351E826ACF3FFAED636D7D2A5F6D5A584",
+  "type": "client",
+  "enableScreenshotPatch": true,
+  "legacy": true,
+  "baseVersion": "a1.0.14",
+  "useFOVPatch": true,
+  "useTexturepackPatch": true,
+  "ingameVersionString": "Minecraft Alpha v1.0.14",
+  "resourcesVersion": "a1.0.15",
+  "optionsVersion": "CLASSIC",
+  "hasNetherPortalTexture": false,
+  "downloadURL": "https://launcher.mojang.com/v1/objects/9b4b90d8def2a680b7c9eca40dd03e2266c8977a/client.jar"
+}

@@ -9,11 +9,11 @@ import net.bytebuddy.matcher.ElementMatchers;
 public class LWJGLGLUPatch {
     public static void useCustomFOV() {
         try {
-            LWJGLPerspectiveAdvice.customFOV = Settings.singleton.getFOV();
+            LWJGLGLUPerspectiveAdvice.customFOV = Settings.singleton.getFOV();
 
             new ByteBuddy()
                     .redefine(LWJGLGLUPatch.class.getClassLoader().loadClass("org.lwjgl.util.glu.GLU"))
-                    .visit(Advice.to(LWJGLPerspectiveAdvice.class).on(ElementMatchers.named("gluPerspective")))
+                    .visit(Advice.to(LWJGLGLUPerspectiveAdvice.class).on(ElementMatchers.named("gluPerspective")))
                     .make()
                     .load(Class.forName("org.lwjgl.util.glu.GLU").getClassLoader(), ClassReloadingStrategy.fromInstalledAgent());
         } catch (ClassNotFoundException ex) {
@@ -23,13 +23,13 @@ public class LWJGLGLUPatch {
 
     public static void zoom(){
         try {
-            LWJGLPerspectiveAdvice.customFOV = 20;
+            LWJGLGLUPerspectiveAdvice.zoom = true;
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
 
     public static void unZoom(){
-        LWJGLPerspectiveAdvice.customFOV = Settings.singleton.getFOV();
+        LWJGLGLUPerspectiveAdvice.zoom = false;
     }
 }

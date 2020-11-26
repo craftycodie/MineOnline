@@ -1,35 +1,46 @@
 package gg.codie.mineonline.client;
 
+import gg.codie.common.utils.TransferableImage;
 import gg.codie.mineonline.*;
 import gg.codie.mineonline.discord.DiscordRPCHandler;
+import gg.codie.mineonline.gui.GUIScale;
+import gg.codie.mineonline.gui.input.MouseHandler;
 import gg.codie.mineonline.gui.rendering.DisplayManager;
-import gg.codie.mineonline.gui.rendering.Renderer;
+import gg.codie.mineonline.gui.rendering.FontRenderer;
+import gg.codie.mineonline.gui.rendering.Loader;
+import gg.codie.mineonline.gui.screens.AbstractGuiScreen;
+import gg.codie.mineonline.gui.screens.GuiIngameMenu;
 import gg.codie.mineonline.lwjgl.OnCreateListener;
+import gg.codie.mineonline.lwjgl.OnDestroyListener;
 import gg.codie.mineonline.lwjgl.OnUpdateListener;
-import gg.codie.mineonline.patches.ClassPatch;
-import gg.codie.mineonline.patches.StringPatch;
 import gg.codie.mineonline.patches.URLPatch;
 import gg.codie.mineonline.patches.lwjgl.LWJGLDisplayPatch;
-import gg.codie.mineonline.patches.lwjgl.LWJGLMouseSetNativeCursorAdvice;
+import gg.codie.mineonline.patches.lwjgl.LWJGLGL11GLOrthoAdvice;
 import gg.codie.mineonline.patches.lwjgl.LWJGLGLUPatch;
-import gg.codie.mineonline.patches.minecraft.MousePatch;
+import gg.codie.mineonline.patches.minecraft.FOVViewmodelAdvice;
+import gg.codie.mineonline.patches.minecraft.InputPatch;
+import gg.codie.mineonline.patches.minecraft.RubyDungConstructorAdvice;
+import gg.codie.mineonline.patches.minecraft.RubyDungPatch;
 import gg.codie.mineonline.utils.JREUtils;
 import gg.codie.mineonline.utils.Logging;
-import gg.codie.common.utils.OSUtils;
-import gg.codie.common.utils.TransferableImage;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.util.vector.Vector2f;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
@@ -42,13 +53,23 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.Map;
 
-public class RubyDungLauncher {
+public class RubyDungLauncher implements IMinecraftAppletWrapper {
 
     private final String jarPath;
     private final MinecraftVersion minecraftVersion;
 
+    boolean f1WasDown = false;
     boolean f2wasDown = false;
-    Renderer renderer;
+    boolean f11WasDown = false;
+    boolean zoomWasDown = false;
+    boolean menuWasDown = false;
+    boolean firstUpdate = false;
+    Class rubyDungClass;
+
+    int startWidth;
+    int startHeight;
+
+    AbstractGuiScreen ingameMenu = new GuiIngameMenu();
 
     public static void startProcess(String jarPath) {
         try {
@@ -67,10 +88,13 @@ public class RubyDungLauncher {
             launchArgs.add("-cp");
             launchArgs.add(LibraryManager.getClasspath(true, new String[] {
                     new File(RubyDungLauncher.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath(),
-                    jarPath
+                    jarPath,
+                    LauncherFiles.DISCORD_RPC_JAR
             }));
             launchArgs.add(RubyDungLauncher.class.getCanonicalName());
             launchArgs.add(jarPath);
+            launchArgs.add("" + Settings.singleton.getGameWidth());
+            launchArgs.add("" + Settings.singleton.getGameHeight());
 
             ProcessBuilder processBuilder = new ProcessBuilder(launchArgs.toArray(new String[0]));
 
@@ -83,12 +107,10 @@ public class RubyDungLauncher {
             processBuilder.redirectErrorStream(true);
             processBuilder.redirectInput(ProcessBuilder.Redirect.INHERIT);
 
-            DisplayManager.getFrame().setVisible(false);
+            if (DisplayManager.getFrame() != null)
+                DisplayManager.getFrame().setVisible(false);
 
             processBuilder.inheritIO().start();
-
-            Runtime.getRuntime().halt(0);
-
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -99,17 +121,45 @@ public class RubyDungLauncher {
 
         Logging.enableLogging();
         DiscordRPCHandler.initialize();
-        new RubyDungLauncher(args[0]).startRubyDung();
+        new RubyDungLauncher(args[0], Integer.parseInt(args[1]), Integer.parseInt(args[2])).startRubyDung();
     }
 
-    public RubyDungLauncher(String jarPath) {
+    public RubyDungLauncher(String jarPath, int width, int height) {
         this.jarPath = jarPath;
         minecraftVersion = MinecraftVersionRepository.getSingleton(true).getVersion(jarPath);
         Settings.singleton.saveMinecraftOptions(minecraftVersion.optionsVersion);
+        this.startWidth = width;
+        this.startHeight = height;
+
+        boolean premium = System.getProperty("mineonline.token") != null;
+        new Session(System.getProperty("mineonline.username"), System.getProperty("mineonline.token"), System.getProperty("mineonline.uuid"), premium);
     }
 
     public void startRubyDung() throws Exception {
         URLClassLoader classLoader = new URLClassLoader(new URL[] { Paths.get(jarPath).toUri().toURL() });
+
+        LegacyGameManager.createGameManager(minecraftVersion, this);
+
+        DisplayManager.init();
+        DisplayManager.getCanvas().setPreferredSize(new Dimension(startWidth, startHeight));
+        DisplayManager.getFrame().setPreferredSize(new Dimension(startWidth + DisplayManager.getFrame().getInsets().left + DisplayManager.getFrame().getInsets().right, startHeight + DisplayManager.getFrame().getInsets().top + DisplayManager.getFrame().getInsets().bottom));
+        DisplayManager.getCanvas().setSize(startWidth, startHeight);
+        DisplayManager.getFrame().setSize(startWidth + DisplayManager.getFrame().getInsets().left + DisplayManager.getFrame().getInsets().right, startHeight + DisplayManager.getFrame().getInsets().top + DisplayManager.getFrame().getInsets().bottom);
+        DisplayManager.getFrame().pack();
+        DisplayManager.getFrame().setVisible(true);
+        Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+        int x = (int) ((dimension.getWidth() - DisplayManager.getFrame().getWidth()) / 2);
+        int y = (int) ((dimension.getHeight() - DisplayManager.getFrame().getHeight()) / 2);
+        DisplayManager.getFrame().setLocation(x, y);
+
+        DisplayManager.getFrame().addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                closeApplet();
+            }
+        });
+
+//        DisplayManager.getCanvas().setVisible(false);
 
         try {
             LinkedList<String> args = new LinkedList<>();
@@ -118,48 +168,132 @@ public class RubyDungLauncher {
 
             LWJGLDisplayPatch.hijackLWJGLThreadPatch(minecraftVersion != null && minecraftVersion.useGreyScreenPatch);
 
-            if (minecraftVersion != null && minecraftVersion.enableCursorPatch && OSUtils.isMac())
-                MousePatch.fixMouseIssues();
+            LegacyGameManager.createGameManager(minecraftVersion, this);
 
-            Class rubyDungClass;
             try {
                 rubyDungClass = classLoader.loadClass("com.mojang.rubydung.RubyDung");
             } catch (ClassNotFoundException ex) {
                 rubyDungClass = classLoader.loadClass("com.mojang.minecraft.RubyDung");
             }
 
+            RubyDungPatch.getRubyDungInstance(rubyDungClass.getName());
+
             Method main = rubyDungClass.getMethod("main", String[].class);
+
+            Field widthField = rubyDungClass.getDeclaredField("width");
+            Field heightField = rubyDungClass.getDeclaredField("height");
+
+            widthField.setAccessible(true);
+            heightField.setAccessible(true);
+
+            DisplayManager.getFrame().addComponentListener(new ComponentListener() {
+                @Override
+                public void componentResized(ComponentEvent e) {
+                    try {
+                        int w = DisplayManager.getFrame().getWidth() - (DisplayManager.getFrame().getInsets().left + DisplayManager.getFrame().getInsets().right);
+                        int h = DisplayManager.getFrame().getHeight() - (DisplayManager.getFrame().getInsets().top + DisplayManager.getFrame().getInsets().bottom);
+                        widthField.set(RubyDungConstructorAdvice.rubyDung, w);
+                        heightField.set(RubyDungConstructorAdvice.rubyDung, h);
+                    } catch (Exception ex) {
+
+                    }
+                }
+
+                @Override
+                public void componentMoved(ComponentEvent e) {
+                }
+
+                @Override
+                public void componentShown(ComponentEvent e) {
+                }
+
+                @Override
+                public void componentHidden(ComponentEvent e) {
+                }
+            });
 
 
             LWJGLDisplayPatch.createListener = new OnCreateListener() {
                 @Override
                 public void onCreateEvent() {
                     DisplayManager.checkGLError("minecraft create hook start");
-                    renderer = new Renderer();
                     // The game doesn't scale so until that's fixed, there's no point in doing this.
                     // Display.setResizable(true);
+                    new Loader();
+                    InputPatch.isFocused = true;
+                    try {
+                        Display.setDisplayMode(new DisplayMode(startWidth, startHeight));
+                    } catch (Exception ex) {
+
+                    }
                     DisplayManager.checkGLError("minecraft create hook end");
+                }
+            };
+
+            LWJGLDisplayPatch.destroyListener = new OnDestroyListener() {
+                @Override
+                public void onDestroyEvent() throws Throwable {
+                    closeApplet();
                 }
             };
 
             LWJGLDisplayPatch.updateListener = new OnUpdateListener() {
                 @Override
                 public void onUpdateEvent() {
-                    DisplayManager.checkGLError("minecraft update hook start");
+                    MouseHandler.update();
 
-                    if (!OSUtils.isWindows() && minecraftVersion != null && minecraftVersion.enableCursorPatch) {
-                        if (Mouse.isGrabbed() != LWJGLMouseSetNativeCursorAdvice.isFocused)
-                            Mouse.setGrabbed(LWJGLMouseSetNativeCursorAdvice.isFocused);
+                    if (!Display.isActive() && LegacyGameManager.mineonlineMenuOpen()) {
+                        LegacyGameManager.setGUIScreen(null);
                     }
 
-                    // DEBUG: Frees the cursor when pressing tab.
-//                    if (Keyboard.getEventKey() == Keyboard.KEY_TAB) {
-//                        Mouse.setGrabbed(false);
+//                    if (firstUpdate) {
+//                        try {
+//                            if (fullscreen) {
+//                                if (minecraftVersion != null && minecraftVersion.enableFullscreenPatch) {
+//                                    setFullscreen(true);
+//                                }
+//                            }
+//                        } catch (Exception ex) {
+//
+//                        }
 //                    }
 
-                    if (renderer != null) {
-                        if (Globals.DEV) {
-                            //renderer.renderStringIngame(new Vector2f(1, 1), 8, "MineOnline Dev " + Globals.LAUNCHER_VERSION, org.newdawn.slick.Color.white);
+                    GL11.glViewport(0, 0, DisplayManager.getCanvas().getWidth(), DisplayManager.getCanvas().getHeight());
+
+                    if (Loader.singleton != null) {
+                        if (!Globals.BRANCH.equalsIgnoreCase("release")) {
+                            int ypos = 2;
+                            if (minecraftVersion.ingameVersionString != null && !Settings.singleton.getHideVersionString())
+                                ypos = 12;
+                            FontRenderer.minecraftFontRenderer.drawStringWithShadow("MineOnline " + (Globals.DEV ? "Dev " : "") + Globals.LAUNCHER_VERSION + " (" + Globals.BRANCH + ")", 2, ypos, 0xffffff);
+                        }
+
+                        GUIScale scaledresolution = new GUIScale(getWidth(), getHeight());
+//                    GL11.glClear(256);
+                        GL11.glMatrixMode(GL11.GL_PROJECTION);
+                        GL11.glLoadIdentity();
+                        GL11.glOrtho(0.0D, scaledresolution.scaledWidth, scaledresolution.scaledHeight, 0.0D, 1000D, 3000D);
+                        GL11.glMatrixMode(GL11.GL_MODELVIEW);
+                        GL11.glLoadIdentity();
+                        GL11.glTranslatef(0.0F, 0.0F, -2000F);
+
+                        int i = (int) scaledresolution.getScaledWidth();
+                        int j = (int) scaledresolution.getScaledHeight();
+                        int k = (Mouse.getX() * i) / getWidth();
+                        int i1 = j - (Mouse.getY() * j) / Display.getHeight() - 1;
+
+                        if (LegacyGameManager.getGuiScreen() != null) {
+                            LegacyGameManager.getGuiScreen().updateScreen();
+                            LegacyGameManager.getGuiScreen().drawScreen(k, i1);
+
+                            LegacyGameManager.getGuiScreen().handleInput();
+                        }
+
+                        DisplayManager.checkGLError("minecraft update hook start");
+
+                        if (minecraftVersion != null && minecraftVersion.enableCursorPatch) {
+                            if (Mouse.isGrabbed() != InputPatch.isFocused)
+                                Mouse.setGrabbed(InputPatch.isFocused);
                         }
 
                         if (minecraftVersion != null) {
@@ -175,12 +309,29 @@ public class RubyDungLauncher {
                                     }
 
                                     if (opacityMultiplier > 0) {
-                                        renderer.renderStringIngame(new Vector2f(2, 190), 8, "Saved screenshot as " + lastScreenshotName, new org.newdawn.slick.Color(1, 1, 1, 1 * opacityMultiplier));
+                                        FontRenderer.minecraftFontRenderer.drawStringWithShadow("Saved screenshot as " + lastScreenshotName, 2, GUIScale.lastScaledHeight() - 100, 0xffffff + ((int) (0xff * opacityMultiplier) << 24));
                                     }
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
                             }
+
+                            if (Keyboard.getEventKey() == Keyboard.KEY_F1 && !Keyboard.isRepeatEvent() && Keyboard.getEventKeyState() && !f1WasDown) {
+                                if (minecraftVersion.enableScreenshotPatch) {
+                                    LWJGLGL11GLOrthoAdvice.hideHud = true;
+                                    FOVViewmodelAdvice.hideViewModel = true;
+                                }
+
+                                f1WasDown = true;
+                            }
+                            if (Keyboard.getEventKey() == Keyboard.KEY_F1 && !Keyboard.isRepeatEvent() && !Keyboard.getEventKeyState()) {
+                                if (!zoomWasDown) {
+                                    LWJGLGL11GLOrthoAdvice.hideHud = false;
+                                    FOVViewmodelAdvice.hideViewModel = false;
+                                }
+                                f1WasDown = false;
+                            }
+
 
                             if (Keyboard.getEventKey() == Keyboard.KEY_F2 && !Keyboard.isRepeatEvent() && Keyboard.getEventKeyState() && !f2wasDown) {
                                 screenshot();
@@ -189,30 +340,72 @@ public class RubyDungLauncher {
                             if (Keyboard.getEventKey() == Keyboard.KEY_F2 && !Keyboard.isRepeatEvent() && !Keyboard.getEventKeyState()) {
                                 f2wasDown = false;
                             }
-                        }
-                    }
 
-                    DisplayManager.checkGLError("minecraft update hook end");
+                            if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE && !Keyboard.isRepeatEvent() && Keyboard.getEventKeyState()) {
+                                closeApplet();
+                            }
+
+                            if (Settings.singleton.getZoomKeyCode() != 0) {
+                                if (Mouse.isGrabbed() && Keyboard.getEventKey() == Settings.singleton.getZoomKeyCode() && !Keyboard.isRepeatEvent() && Keyboard.getEventKeyState() && !zoomWasDown) {
+                                    LWJGLGLUPatch.zoom();
+                                    LWJGLGL11GLOrthoAdvice.hideHud = true;
+                                    FOVViewmodelAdvice.hideViewModel = true;
+                                    zoomWasDown = true;
+                                } else if (Keyboard.getEventKey() == Settings.singleton.getZoomKeyCode() && !Keyboard.isRepeatEvent() && !Keyboard.getEventKeyState()) {
+                                    LWJGLGLUPatch.unZoom();
+                                    if (!f1WasDown) {
+                                        LWJGLGL11GLOrthoAdvice.hideHud = false;
+                                        FOVViewmodelAdvice.hideViewModel = false;
+                                    }
+                                    zoomWasDown = false;
+                                }
+                            }
+
+                            if (Settings.singleton.getMineonlineMenuKeyCode() != 0) {
+                                if (Keyboard.getEventKey() == Settings.singleton.getMineonlineMenuKeyCode() && !Keyboard.isRepeatEvent() && Keyboard.getEventKeyState() && !menuWasDown) {
+                                    if (LegacyGameManager.getGuiScreen() == null) {
+                                        LegacyGameManager.setGUIScreen(ingameMenu);
+                                    } else if (LegacyGameManager.getGuiScreen() != null) {
+                                        LegacyGameManager.setGUIScreen(null);
+                                    }
+
+                                    menuWasDown = true;
+                                } else if (Keyboard.getEventKey() == Settings.singleton.getMineonlineMenuKeyCode() && !Keyboard.isRepeatEvent() && !Keyboard.getEventKeyState()) {
+                                    menuWasDown = false;
+                                }
+                            }
+                        }
+                        if (minecraftVersion != null && minecraftVersion.enableFullscreenPatch) {
+                            if (Keyboard.getEventKey() == Keyboard.KEY_F11 && !Keyboard.isRepeatEvent() && Keyboard.getEventKeyState() && !f11WasDown) {
+                                setFullscreen(!fullscreen);
+                                f11WasDown = true;
+                            }
+                            if (Keyboard.getEventKey() == Keyboard.KEY_F11 && !Keyboard.isRepeatEvent() && !Keyboard.getEventKeyState()) {
+                                f11WasDown = false;
+                            }
+                        }
+
+                        if (firstUpdate) {
+                            firstUpdate = false;
+                        }
+
+                        DisplayManager.checkGLError("minecraft update hook end");
+                    }
                 }
             };
 
 
-
-
             URLPatch.redefineURL();
-            // Allow texture packs in versions before Alpha 1.2.2
-            if (minecraftVersion != null && minecraftVersion.useTexturepackPatch)
-                ClassPatch.useTexturePacks(Settings.singleton.getTexturePack());
-            if (minecraftVersion != null && minecraftVersion.useFOVPatch)
-                LWJGLGLUPatch.useCustomFOV();
 
-            // Hide version strings from the HUD
-            if (minecraftVersion != null && minecraftVersion.ingameVersionString != null && Settings.singleton.getHideVersionString())
-                StringPatch.hideVersionNames(minecraftVersion.ingameVersionString);
+            try {
+                Display.setParent(DisplayManager.getCanvas());
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
 
             main.invoke(null, new Object[] {args.toArray(new String[0])});
 
-            //System.exit(0);
+            //closeApplet();
         } catch (InvocationTargetException ex) {
             ex.printStackTrace();
             ex.getTargetException().printStackTrace();
@@ -246,10 +439,10 @@ public class RubyDungLauncher {
                 pixelData = new byte[width * height * 3];
                 imageData = new int[width * height];
             }
-            GL11.glPixelStorei(3333 /*GL_PACK_ALIGNMENT*/, 1);
-            GL11.glPixelStorei(3317 /*GL_UNPACK_ALIGNMENT*/, 1);
+            GL11.glPixelStorei(GL11.GL_PACK_ALIGNMENT, 1);
+            GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, 1);
             buffer.clear();
-            GL11.glReadPixels(0, 0, width, height, 6407 /*GL_RGB*/, 5121 /*GL_UNSIGNED_BYTE*/, buffer);
+            GL11.glReadPixels(0, 0, width, height, GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, buffer);
 
 
             buffer.clear();
@@ -296,5 +489,63 @@ public class RubyDungLauncher {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+
+    boolean fullscreen;
+
+    int widthBeforeFullscreen;
+    int heightBeforeFullscreen;
+
+    void setFullscreen(boolean newFullscreen) {
+        if(!fullscreen && newFullscreen) {
+            widthBeforeFullscreen = Display.getWidth();
+            heightBeforeFullscreen = Display.getHeight();
+        }
+        DisplayManager.fullscreen(newFullscreen);
+        fullscreen = newFullscreen;
+        if(!fullscreen) {
+            Display.getParent().setPreferredSize(new Dimension(widthBeforeFullscreen, heightBeforeFullscreen));
+            Display.getParent().resize(new Dimension(widthBeforeFullscreen , heightBeforeFullscreen));
+            DisplayManager.getFrame().setSize(widthBeforeFullscreen + DisplayManager.getFrame().getInsets().left + DisplayManager.getFrame().getInsets().right, heightBeforeFullscreen + DisplayManager.getFrame().getInsets().top + DisplayManager.getFrame().getInsets().bottom);
+        } else {
+            Display.getParent().setPreferredSize(new Dimension(Display.getDesktopDisplayMode().getWidth(), Display.getDesktopDisplayMode().getHeight()));
+            Display.getParent().resize(new Dimension(Display.getDesktopDisplayMode().getWidth(), Display.getDesktopDisplayMode().getHeight()));
+            DisplayManager.getFrame().setPreferredSize(new Dimension(Display.getDesktopDisplayMode().getWidth(), Display.getDesktopDisplayMode().getHeight()));
+        }
+
+        DisplayManager.getFrame().pack();
+    }
+
+    @Override
+    public int getWidth() {
+        int width = Display.getWidth();
+
+        if (Display.isFullscreen()) {
+            width = Display.getDisplayMode().getWidth();
+        }
+
+        return width;
+    }
+
+    @Override
+    public int getHeight() {
+        int height = Display.getHeight();
+
+        if (Display.isFullscreen() ) {
+            height = Display.getDisplayMode().getHeight();
+        }
+
+        return height;
+    }
+
+    @Override
+    public void closeApplet() {
+        Runtime.getRuntime().halt(0);
+    }
+
+    @Override
+    public Class getMinecraftAppletClass() {
+        return rubyDungClass;
     }
 }

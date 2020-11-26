@@ -1,203 +1,265 @@
 package gg.codie.mineonline.gui.rendering;
 
-import gg.codie.mineonline.gui.rendering.models.RawModel;
-import gg.codie.mineonline.gui.rendering.models.TexturedModel;
-import gg.codie.mineonline.gui.rendering.shaders.StaticShader;
-import org.lwjgl.opengl.*;
-import org.lwjgl.util.vector.Matrix4f;
-import org.lwjgl.util.vector.Vector2f;
-import org.newdawn.slick.TrueTypeFont;
-import org.newdawn.slick.util.ResourceLoader;
+import gg.codie.mineonline.utils.MathUtils;
+import org.lwjgl.opengl.GL11;
 
-import java.awt.*;
-import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 
-public class Renderer {
-
-    private static final float FOV = 73;
-    private static final float NEAR_PLANE = 0.1f;
-    private static final float FAR_PLANE = 1000;
-
-    private Matrix4f projectionMatrix;
-
-    TrueTypeFont font;
-    Font awtFont;
-
-    public Renderer() {
-        InputStream inputStream = ResourceLoader.getResourceAsStream("font/Minecraft.ttf");
-
-        try {
-            awtFont = Font.createFont(Font.TRUETYPE_FONT, inputStream);
-            font = new TrueTypeFont(awtFont.deriveFont(8), false);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+public class Renderer
+{
+    private Renderer(int i)
+    {
+        vertexCount = 0;
+        hasColor = false;
+        hasTexture = false;
+        rawBufferIndex = 0;
+        addedVertices = 0;
+        bufferSize = i;
+        byteBuffer = Loader.createDirectByteBuffer(i * 4);
+        intBuffer = byteBuffer.asIntBuffer();
+        floatBuffer = byteBuffer.asFloatBuffer();
+        rawBuffer = new int[i];
     }
 
-    public void prepare() {
-        createProjectionMatrix();
-
-        GL11.glViewport(0, 0, Display.getWidth(), Display.getHeight());
-        //GL11.glMatrixMode(GL11.GL_PROJECTION);
-
-        //GL11.glLoadIdentity();
-        //GLU.gluPerspective(45, (float) Display.getWidth() / Display.getHeight(), 0.1f, 5000.0f);
-
-        //GL11.glMatrixMode(GL11.GL_MODELVIEW);
-        //GL11.glLoadIdentity();
-
-        GL11.glEnable(GL11.GL_DEPTH_TEST);
-        GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
-        //GL11.glClearColor(0.93f, 0.93f, 0.93f, 0);
-
-        //GL11.glScaled(DisplayManager.getScale(), DisplayManager.getScale(), 0);
-
-    }
-
-    public void prepareGUI() {
-        GL11.glViewport(0, 0, Display.getWidth(), Display.getHeight());
-        //GL11.glMatrixMode(GL11.GL_PROJECTION);
-        //GL11.glLoadIdentity();
-
-        //GLU.gluOrtho2D(0.0f, DisplayManager.scaledWidth(DisplayManager.getDefaultWidth()), DisplayManager.scaledHeight(DisplayManager.getDefaultHeight()), 0.0f);
-
-        //GL11.glMatrixMode(GL11.GL_MODELVIEW);
-        //GL11.glLoadIdentity();
-        //GL11.glTranslatef(0.375f, 0.375f, 0.0f);
-
-        GL11.glDisable(GL11.GL_DEPTH_TEST);
-
-        //GL11.glScaled(DisplayManager.getScale(), DisplayManager.getScale(), 0);
-
-
-    }
-
-    public void render(GameObject gameObject, StaticShader shader) {
-        for(GameObject child : gameObject.getChildren()) {
-            render(child, shader);
-        }
-        shader.start();
-
-        shader.loadProjectionMatrix(projectionMatrix);
-
-        TexturedModel texturedModel = gameObject.getModel();
-
-        if(texturedModel == null || texturedModel.getDontRender()) {
+    public void renderTooltip(String tooltipText, int mouseX, int mouseY)
+    {
+        if(tooltipText == null)
+        {
+            return;
+        } else
+        {
+            int tooltipX = mouseX + 12;
+            int tooltipY = mouseY - 12;
+            int tooltipWidth = FontRenderer.minecraftFontRenderer.getStringWidth(tooltipText);
+            Renderer.singleton.drawGradient(tooltipX - 3, tooltipY - 3, tooltipX + tooltipWidth + 3, tooltipY + 8 + 3, 0xc0, 0, 0, 0, 0xc0, 0, 0, 0);
+            FontRenderer.minecraftFontRenderer.drawStringWithShadow(tooltipText, tooltipX, tooltipY, -1);
             return;
         }
-
-        RawModel rawModel = texturedModel.getRawModel();
-
-        GL30.glBindVertexArray(rawModel.getVaoID());
-        GL20.glEnableVertexAttribArray(0);
-        GL20.glEnableVertexAttribArray(1);
-        Matrix4f transformationMatrix = gameObject.getTransformationMatrix();
-        shader.loadTransformationMatrix(transformationMatrix);
-
-//        GL11.glEnable(GL11.GL_TEXTURE_2D);
-        GL13.glActiveTexture(GL13.GL_TEXTURE0);
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, texturedModel.getTexture().getTextureID());
-
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
-
-
-        GL11.glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_NICEST);
-        GL11.glEnable(GL13.GL_MULTISAMPLE);
-        //GL11.glEnable(GL11.GL_BLEND);
-        GL11.glEnable(GL13.GL_SAMPLE_ALPHA_TO_COVERAGE);
-        //GL11.glEnable(GL11.GL_ALPHA_TEST);
-        GL11.glBlendFunc ( GL11.GL_SRC_ALPHA, GL11.GL_ONE );
-        //GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-
-        try {
-            GL11.glDrawElements(GL11.GL_TRIANGLES, rawModel.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
-        } catch (Exception e) {}
-
-        GL20.glDisableVertexAttribArray(0);
-        GL20.glDisableVertexAttribArray(1);
-        GL30.glBindVertexArray(0);
-
-        //renderString(new Vector2f(MathUtils.getPosition(Matrix4f.mul(Matrix4f.mul(gameObject.localMatrix, MathUtils.createViewMatrix(Camera.singleton), null), projectionMatrix, null))), gameObject.name, org.newdawn.slick.Color.white);
-
-        shader.stop();
     }
 
-    public void renderGUI(GUIObject guiObject, StaticShader shader) {
-        shader.start();
-
-        TexturedModel texturedModel = guiObject.getModel();
-
-        if(texturedModel == null || texturedModel.getDontRender()) {
-            return;
-        };
-
-        RawModel rawModel = texturedModel.getRawModel();
-
-        GL30.glBindVertexArray(rawModel.getVaoID());
-        GL20.glEnableVertexAttribArray(0);
-        GL20.glEnableVertexAttribArray(1);
-        Matrix4f transformationMatrix = guiObject.getTransformationMatrix();
-        shader.loadTransformationMatrix(transformationMatrix);
-
-        GL13.glActiveTexture(GL13.GL_TEXTURE0);
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, texturedModel.getTexture().getTextureID());
-
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
-
-
-        GL11.glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_NICEST);
-        GL11.glEnable(GL13.GL_MULTISAMPLE);
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glEnable(GL13.GL_SAMPLE_ALPHA_TO_COVERAGE);
-        //GL11.glEnable(GL11.GL_ALPHA_TEST);
-        GL11.glBlendFunc ( GL11.GL_SRC_ALPHA, GL11.GL_ONE );
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-
-        try {
-            GL11.glDrawElements(GL11.GL_TRIANGLES, rawModel.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        GL20.glDisableVertexAttribArray(0);
-        GL20.glDisableVertexAttribArray(1);
-        GL30.glBindVertexArray(0);
-
-        shader.stop();
-
-        for(GUIObject child : guiObject.getGUIChildren()) {
-            renderGUI(child, shader);
-        }
+    public void drawSprite(int x, int y, int atlasX, int atlasY, int width, int height)
+    {
+        float atlasUnit = 0.00390625F;
+        startDrawingQuads();
+        addVertexWithUV(x, y + height, 0, atlasX * atlasUnit, (float)(atlasY + height) * atlasUnit);
+        addVertexWithUV(x + width, y + height, 0, (float)(atlasX + width) * atlasUnit, (float)(atlasY + height) * atlasUnit);
+        addVertexWithUV(x + width, y, 0, (float)(atlasX + width) * atlasUnit, atlasY * atlasUnit);
+        addVertexWithUV(x, y, 0, atlasX * atlasUnit, atlasY * atlasUnit);
+        draw();
     }
 
-    public void renderStringIngame(Vector2f position, float size, String text, org.newdawn.slick.Color color) {
+    public void drawGradient(int x, int y, int width, int height, int a1, int r1, int g1, int b1, int a2, int r2, int g2, int b2)
+    {
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
         GL11.glEnable(GL11.GL_BLEND);
+        GL11.glDisable(GL11.GL_ALPHA_TEST);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        //TODO: This is very slow and needs to be replaced.
-        font = new TrueTypeFont(awtFont.deriveFont(size), false);
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
-        GL11.glPushMatrix();
-        font.drawString(position.x + 1, position.y + 1, text, new org.newdawn.slick.Color(0, 0, 0, 0.7f * color.a)); //x, y, string to draw, color
-        font.drawString(position.x, position.y, text, color); //x, y, string to draw, color
-        GL11.glPopMatrix();
+        GL11.glShadeModel(GL11.GL_SMOOTH);
+        Renderer tessellator = Renderer.singleton;
+        tessellator.startDrawingQuads();
+        tessellator.setColorRGBA(r1, g1, b1, a1);
+        tessellator.addVertex(width, y, 0.0D);
+        tessellator.addVertex(x, y, 0.0D);
+        tessellator.setColorRGBA(r2, g2, b2, a2);
+        tessellator.addVertex(x, height, 0.0D);
+        tessellator.addVertex(width, height, 0.0D);
+        tessellator.draw();
+        GL11.glShadeModel(GL11.GL_FLAT);
+        GL11.glDisable(GL11.GL_BLEND);
+        GL11.glEnable(GL11.GL_ALPHA_TEST);
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+    }
+
+    public void drawRect(int x, int y, int width, int height, int color)
+    {
+        if(x < width)
+        {
+            int j1 = x;
+            x = width;
+            width = j1;
+        }
+        if(y < height)
+        {
+            int k1 = y;
+            y = height;
+            height = k1;
+        }
+        float f = (float)(color >> 24 & 0xff) / 255F;
+        float f1 = (float)(color >> 16 & 0xff) / 255F;
+        float f2 = (float)(color >> 8 & 0xff) / 255F;
+        float f3 = (float)(color & 0xff) / 255F;
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        GL11.glBlendFunc(770, 771);
+        GL11.glColor4f(f1, f2, f3, f);
+        startDrawingQuads();
+        addVertex(x, height, 0.0D);
+        addVertex(width, height, 0.0D);
+        addVertex(width, y, 0.0D);
+        addVertex(x, y, 0.0D);
+        draw();
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glDisable(GL11.GL_BLEND);
     }
 
-    private void createProjectionMatrix() {
-        float aspectRatio = (float) Display.getWidth() / (float) Display.getHeight();
-        float y_scale = (float) ((1f / Math.tan(Math.toRadians(FOV / 2f))) * aspectRatio);
-        float x_scale = y_scale / aspectRatio;
-        float frustum_length = FAR_PLANE - NEAR_PLANE;
-
-        projectionMatrix = new Matrix4f();
-        projectionMatrix.m00 = x_scale;
-        projectionMatrix.m11 = y_scale;
-        projectionMatrix.m22 = -((FAR_PLANE + NEAR_PLANE) / frustum_length);
-        projectionMatrix.m23 = -1;
-        projectionMatrix.m32 = -((2 * NEAR_PLANE * FAR_PLANE) / frustum_length);
-        projectionMatrix.m33 = 0;
+    public void draw()
+    {
+        if(vertexCount > 0)
+        {
+            intBuffer.clear();
+            intBuffer.put(rawBuffer, 0, rawBufferIndex);
+            byteBuffer.position(0);
+            byteBuffer.limit(rawBufferIndex * 4);
+            if(hasTexture)
+            {
+                floatBuffer.position(3);
+                GL11.glTexCoordPointer(2, 32, floatBuffer);
+                GL11.glEnableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
+            }
+            if(hasColor)
+            {
+                byteBuffer.position(20);
+                GL11.glColorPointer(4, true, 32, byteBuffer);
+                GL11.glEnableClientState(GL11.GL_COLOR_ARRAY);
+            }
+            floatBuffer.position(0);
+            GL11.glVertexPointer(3, 32, floatBuffer);
+            GL11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
+            if(drawMode == 7 && convertQuadsToTriangles)
+            {
+                GL11.glDrawArrays(4, 0, vertexCount);
+            } else
+            {
+                GL11.glDrawArrays(drawMode, 0, vertexCount);
+            }
+            GL11.glDisableClientState(GL11.GL_VERTEX_ARRAY);
+            if(hasTexture)
+            {
+                GL11.glDisableClientState(GL11.GL_COLOR_ARRAY);
+            }
+            if(hasColor)
+            {
+                GL11.glDisableClientState(GL11.GL_COLOR_ARRAY);
+            }
+        }
+        reset();
     }
+
+    private void reset()
+    {
+        vertexCount = 0;
+        byteBuffer.clear();
+        rawBufferIndex = 0;
+        addedVertices = 0;
+    }
+
+    public void startDrawingQuads()
+    {
+        startDrawing(7);
+    }
+
+    public void startDrawing(int i)
+    {
+        reset();
+        drawMode = i;
+        hasColor = false;
+        hasTexture = false;
+        return;
+    }
+
+    public void setTextureUV(double d, double d1)
+    {
+        hasTexture = true;
+        textureU = d;
+        textureV = d1;
+    }
+
+    public void setColorRGBA(int r, int g, int b, int a)
+    {
+        r = MathUtils.clamp(r, 0, 255);
+        g = MathUtils.clamp(g, 0, 255);
+        b = MathUtils.clamp(b, 0, 255);
+        a = MathUtils.clamp(a, 0, 255);
+
+        hasColor = true;
+        if(ByteOrder.nativeOrder() == ByteOrder.LITTLE_ENDIAN)
+        {
+            color = a << 24 | b << 16 | g << 8 | r;
+        } else
+        {
+            color = r << 24 | g << 16 | b << 8 | a;
+        }
+    }
+
+    public void addVertexWithUV(double d, double d1, double d2, double d3, double d4)
+    {
+        setTextureUV(d3, d4);
+        addVertex(d, d1, d2);
+    }
+
+    public void addVertex(double d, double d1, double d2)
+    {
+        addedVertices++;
+        if(drawMode == 7 && convertQuadsToTriangles && addedVertices % 4 == 0)
+        {
+            for(int i = 0; i < 2; i++)
+            {
+                int j = 8 * (3 - i);
+                if(hasTexture)
+                {
+                    rawBuffer[rawBufferIndex + 3] = rawBuffer[(rawBufferIndex - j) + 3];
+                    rawBuffer[rawBufferIndex + 4] = rawBuffer[(rawBufferIndex - j) + 4];
+                }
+                if(hasColor)
+                {
+                    rawBuffer[rawBufferIndex + 5] = rawBuffer[(rawBufferIndex - j) + 5];
+                }
+                rawBuffer[rawBufferIndex + 0] = rawBuffer[(rawBufferIndex - j) + 0];
+                rawBuffer[rawBufferIndex + 1] = rawBuffer[(rawBufferIndex - j) + 1];
+                rawBuffer[rawBufferIndex + 2] = rawBuffer[(rawBufferIndex - j) + 2];
+                vertexCount++;
+                rawBufferIndex += 8;
+            }
+
+        }
+        if(hasTexture)
+        {
+            rawBuffer[rawBufferIndex + 3] = Float.floatToRawIntBits((float)textureU);
+            rawBuffer[rawBufferIndex + 4] = Float.floatToRawIntBits((float)textureV);
+        }
+        if(hasColor)
+        {
+            rawBuffer[rawBufferIndex + 5] = color;
+        }
+        rawBuffer[rawBufferIndex + 0] = Float.floatToRawIntBits((float)(d));
+        rawBuffer[rawBufferIndex + 1] = Float.floatToRawIntBits((float)(d1));
+        rawBuffer[rawBufferIndex + 2] = Float.floatToRawIntBits((float)(d2));
+        rawBufferIndex += 8;
+        vertexCount++;
+        if(vertexCount % 4 == 0 && rawBufferIndex >= bufferSize - 32)
+        {
+            draw();
+        }
+    }
+
+    private static boolean convertQuadsToTriangles = true;
+    private ByteBuffer byteBuffer;
+    private IntBuffer intBuffer;
+    private FloatBuffer floatBuffer;
+    private int rawBuffer[];
+    private int vertexCount;
+    private double textureU;
+    private double textureV;
+    private int color;
+    private boolean hasColor;
+    private boolean hasTexture;
+    private int rawBufferIndex;
+    private int addedVertices;
+    private int drawMode;
+    public static final Renderer singleton = new Renderer(0x200000);
+    private int bufferSize;
+
 }

@@ -1,0 +1,19 @@
+{
+  "name": "Classic 0.0.13a",
+  "info": "Launcher Version",
+  "md5": "3617FBF5FBFD2B837EBF5CEB63584908",
+  "sha256": "B3B5A88834C2351C948950C6D60C822D0D1D60F88C5ADAD4794F8AD6FE5B3A33",
+  "type": "client",
+  "enableScreenshotPatch": true,
+  "enableCursorPatch": true,
+  "legacy": true,
+  "baseVersion": "c0.0.13a",
+  "useFOVPatch": true,
+  "useTexturepackPatch": true,
+  "ingameVersionString": "0.0.13a",
+  "resourcesVersion": "c0.0.14a_08",
+  "optionsVersion": "CLASSIC",
+  "useResizePatch": true,
+  "hasNetherPortalTexture": false,
+  "downloadURL": "https://launcher.mojang.com/v1/objects/936d575b1ab1a04a341ad43d76e441e88d2cd987/client.jar"
+}

@@ -8,6 +8,23 @@ public class PointerInfoGetLocationAdvice {
     @Advice.OnMethodExit
     static void intercept(@Advice.Return(readOnly = false) Point returnPoint) {
         try {
+            if (!(boolean) ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.minecraft.InputPatch").getField("enableClassicFixes").get(null))
+                return;
+
+            Canvas mcCanvas = (Canvas) ClassLoader.getSystemClassLoader().loadClass("org.lwjgl.opengl.Display").getMethod("getParent").invoke(null);
+
+            // If the MineOnline menu is open, just return center screen.
+            if (
+                    (boolean) ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.client.LegacyGameManager").getMethod("mineonlineMenuOpen").invoke(null)
+                            && !(boolean) ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.lwjgl.LWJGLDisplayUpdateAdvice").getField("inUpdateHook").get(null)
+            ) {
+                returnPoint = new Point(
+                        mcCanvas.getLocationOnScreen().x + (mcCanvas.getWidth() / 2),
+                        mcCanvas.getLocationOnScreen().y + (mcCanvas.getHeight() / 2)
+                );
+                return;
+            }
+
             ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.lwjgl.LWJGLMouseGetDXAdvice").getField("lock").set(null, false);
             ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.lwjgl.LWJGLMouseGetDYAdvice").getField("lock").set(null, false);
 
@@ -18,13 +35,11 @@ public class PointerInfoGetLocationAdvice {
             ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.lwjgl.LWJGLMouseGetDXAdvice").getField("lock").set(null, true);
             ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.lwjgl.LWJGLMouseGetDYAdvice").getField("lock").set(null, true);
 
-            Canvas mcCanvas = (Canvas) ClassLoader.getSystemClassLoader().loadClass("org.lwjgl.opengl.Display").getMethod("getParent").invoke(null);
-
             x += mcCanvas.getLocationOnScreen().x + (mcCanvas.getWidth() / 2);
             y += mcCanvas.getLocationOnScreen().y + (mcCanvas.getHeight() / 2);
             returnPoint = new Point(x, y);
         } catch (Exception ex) {
-
+            ex.printStackTrace();
         }
     }
 }

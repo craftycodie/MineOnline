@@ -70,7 +70,7 @@ public class MinecraftServerProcess {
 
         URLClassLoader classLoader = new URLClassLoader(new URL[] { Paths.get(args[0]).toUri().toURL() });
 
-        Properties serverProperties = new Properties(args[0]);
+        MineOnlineServerProperties serverProperties = new MineOnlineServerProperties(System.getProperty("user.dir"));
         URLPatch.redefineURL(serverProperties.serverIP(), "" + serverProperties.serverPort());
 
         Class mainClass = null;
@@ -82,8 +82,12 @@ public class MinecraftServerProcess {
             } catch (ClassNotFoundException ex) { }
         }
 
-        // Bukkit
+        // Cloth
+        try {
+            mainClass = classLoader.loadClass("net.minecraft.Main");
+        } catch (ClassNotFoundException ex) { }
 
+        // Bukkit
         try {
             mainClass = classLoader.loadClass("org.bukkit.craftbukkit.Main");
         } catch (ClassNotFoundException ex) { }

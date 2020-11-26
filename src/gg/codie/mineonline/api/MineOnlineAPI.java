@@ -1,10 +1,8 @@
 package gg.codie.mineonline.api;
 
+import gg.codie.common.utils.SHA1Utils;
 import gg.codie.minecraft.api.SessionServer;
 import gg.codie.mineonline.Globals;
-import gg.codie.mineonline.LauncherFiles;
-import gg.codie.mineonline.gui.ProgressDialog;
-import gg.codie.common.utils.SHA1Utils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -17,42 +15,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 
 public class MineOnlineAPI {
-
-    public static void downloadVersion(String baseVersion) throws IOException {
-        try {
-            URL jarUrl = new URL(Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/clients/" + baseVersion + ".jar");
-
-//            ProgressDialog.showProgress("Downloading", null);
-//            ProgressDialog.setMessage("Minecraft " + baseVersion);
-
-            HttpURLConnection httpConnection = (java.net.HttpURLConnection) (jarUrl.openConnection());
-
-            long completeFileSize = httpConnection.getContentLength();
-            InputStream in = httpConnection.getInputStream();
-
-            File clientJar = new File(LauncherFiles.MINECRAFT_VERSIONS_PATH + baseVersion + File.separator + "client.jar");
-            clientJar.getParentFile().mkdirs();
-            OutputStream out = new java.io.FileOutputStream(LauncherFiles.MINECRAFT_VERSIONS_PATH + baseVersion + File.separator + "client.jar", false);
-
-            final byte[] data = new byte[1024];
-            long downloadedFileSize = 0;
-            int count;
-            while ((count = in.read(data, 0, 1024)) != -1) {
-                downloadedFileSize += count;
-
-                final int currentProgress = (int) (((double) downloadedFileSize) / ((double) completeFileSize) * 100d);
-
-                ProgressDialog.setProgress(currentProgress);
-
-                out.write(data, 0, count);
-            }
-            ProgressDialog.setProgress(100);
-        } catch (Exception ex) {
-            ProgressDialog.setProgress(100);
-            throw ex;
-        }
-    }
-
     public static String getMpPass(String accessToken, String username, String userID, String serverIP, String serverPort) {
 
         try {
@@ -275,7 +237,10 @@ public class MineOnlineAPI {
             boolean onlineMode,
             String md5,
             boolean whitelisted,
-            String[] playerNames
+            String[] playerNames,
+            String motd,
+            boolean dontListPlayers,
+            String serverIcon
     ) {
         HttpURLConnection connection = null;
 
@@ -284,14 +249,18 @@ public class MineOnlineAPI {
             if (ip != null)
                 jsonObject.put("ip", ip);
             jsonObject.put("port", port);
-            if (users > -1)
+            if (users > -1 && !dontListPlayers)
                 jsonObject.put("users", users);
             jsonObject.put("max", maxUsers);
             jsonObject.put("name", name);
             jsonObject.put("onlinemode", onlineMode);
             jsonObject.put("md5", md5);
             jsonObject.put("whitelisted", whitelisted);
-            jsonObject.put("players", playerNames);
+            if (!dontListPlayers)
+                jsonObject.put("players", playerNames);
+            jsonObject.put("motd", motd);
+            jsonObject.put("dontListPlayers", dontListPlayers);
+            jsonObject.put("serverIcon", serverIcon);
 
             String json = jsonObject.toString();
 
@@ -333,7 +302,7 @@ public class MineOnlineAPI {
     public static String getLauncherVersion() throws IOException {
         HttpURLConnection connection;
 
-        URL url = new URL(Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/launcherversion");
+        URL url = new URL(Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/version-" + Globals.BRANCH);
         connection = (HttpURLConnection) url.openConnection();
         connection.connect();
 

@@ -1,9 +1,0 @@
-{
-  "name": "Release 1.2.4",
-  "md5": "25423EAB6D8707F96CC6AD8A21A7250A",
-  "sha256": "ECE050B625D1836A035197ED312DC59CAF26429F4B386C81BDD84CDFF3CA80CB",
-  "type": "client",
-  "legacy": true,
-  "baseVersion": "1.2.4",
-  "resourcesVersion": "1.2.5"
-}

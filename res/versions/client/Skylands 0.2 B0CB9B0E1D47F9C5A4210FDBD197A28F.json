@@ -1,9 +1,0 @@
-{
-  "name": "Skylands 0.2",
-  "md5": "B0CB9B0E1D47F9C5A4210FDBD197A28F",
-  "type": "client",
-  "info": "Beta 1.7.3 mod",
-  "baseVersion": "b1.7.3-skylands0.2",
-  "legacy": true,
-  "useFOVPatch": true
-}

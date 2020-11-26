@@ -1,6 +1,7 @@
 package gg.codie.mineonline;
 
-import gg.codie.minecraft.client.*;
+import gg.codie.minecraft.client.options.*;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -14,7 +15,6 @@ public class Settings implements IMinecraftOptionsHandler {
     private JSONObject settings;
 
     public static final String SETTINGS_VERSION = "settingsVersion";
-    public static final String MINECRAFT_UPDATE_URL = "minecraftUpdateURL";
     public static final String JAVA_HOME = "javaHome";
     public static final String CLIENT_LAUNCH_ARGS = "clientLaunchArgs";
     public static final String HIDE_VERSION_STRING = "hideVersionString";
@@ -66,9 +66,10 @@ public class Settings implements IMinecraftOptionsHandler {
     public static final String SKIN_LAYER_LEFT_LEG = "skinLayerLeftLeg";
     public static final String SKIN_LAYER_RIGHT_LEG = "skinLayerRightLeg";
     public static final String AUTO_JUMP = "autoJump";
+    public static final String KEY_CODE_INGAME_MENU = "keyCodeIngameMenu";
 
 
-    private static final int SETTINGS_VERSION_NUMBER = 10;
+    private static final int SETTINGS_VERSION_NUMBER = 12;
 
     private static boolean readonly = true;
 
@@ -84,9 +85,14 @@ public class Settings implements IMinecraftOptionsHandler {
 
             singleton = new Settings();
 
-            if (new File(LauncherFiles.MINEONLINE_SETTINGS_FILE).exists()) {
-                singleton.loadSettings();
-            } else {
+            try {
+                if (new File(LauncherFiles.MINEONLINE_SETTINGS_FILE).exists()) {
+                    singleton.loadSettings();
+                } else {
+                    singleton.resetSettings();
+                }
+            } catch (JSONException ex) {
+                System.err.println("Bad settings file, resetting.");
                 singleton.resetSettings();
             }
         } catch (ClassNotFoundException ex) {
@@ -98,7 +104,6 @@ public class Settings implements IMinecraftOptionsHandler {
         settings = new JSONObject();
         settings.put(SETTINGS_VERSION, SETTINGS_VERSION_NUMBER);
         settings.put(FULLSCREEN, false);
-        settings.put(MINECRAFT_UPDATE_URL, "");
         settings.put(JAVA_HOME, "");
         settings.put(CLIENT_LAUNCH_ARGS, "");
         settings.put(FOV, 70);
@@ -148,6 +153,7 @@ public class Settings implements IMinecraftOptionsHandler {
         settings.put(KEY_CODE_ZOOM, 0);
         settings.put(LAST_LAUNCHED_OPTIONS_VERSION, "DEFAULT");
         settings.put(AUTO_JUMP, false);
+        settings.put(KEY_CODE_INGAME_MENU, 19);
 
         saveSettings();
         loadSettings();
@@ -161,7 +167,7 @@ public class Settings implements IMinecraftOptionsHandler {
 
             EMinecraftOptionsVersion lastLaunchedOptionsVersion = getLastLaunchedOptionsVersion();
 
-            Options options = new Options(LauncherFiles.MINEONLINE_OPTIONS_PATH, lastLaunchedOptionsVersion);
+            MinecraftOptions options = new MinecraftOptions(LauncherFiles.MINEONLINE_OPTIONS_PATH, lastLaunchedOptionsVersion);
 
             try {
                 // If the player used the classic music toggle, keep volume where possible.
@@ -379,6 +385,8 @@ public class Settings implements IMinecraftOptionsHandler {
             } catch (NoSuchFieldException ex) {
                 // ignore.
             }
+
+            new File(LauncherFiles.MINEONLINE_OPTIONS_PATH).delete();
         } catch (Exception ex) {
             // ignore
         }
@@ -390,7 +398,7 @@ public class Settings implements IMinecraftOptionsHandler {
             if (!optionsFile.exists())
                 optionsFile.createNewFile();
 
-            Options options = new Options(LauncherFiles.MINEONLINE_OPTIONS_PATH, optionsVersion);
+            MinecraftOptions options = new MinecraftOptions(LauncherFiles.MINEONLINE_OPTIONS_PATH, optionsVersion);
 
             setLastLaunchedOptionsVersion(optionsVersion);
             saveSettings();
@@ -463,7 +471,6 @@ public class Settings implements IMinecraftOptionsHandler {
             } else {
                 switch (settings.getInt(SETTINGS_VERSION)) {
                     case 3:
-                        settings.put(MINECRAFT_UPDATE_URL, "");
                         settings.put(JAVA_HOME, "");
                         settings.put(CLIENT_LAUNCH_ARGS, "");
                     case 4:
@@ -518,6 +525,8 @@ public class Settings implements IMinecraftOptionsHandler {
                         settings.put(LAST_LAUNCHED_OPTIONS_VERSION, EMinecraftOptionsVersion.DEFAULT);
                     case 10:
                         settings.put(AUTO_JUMP, false);
+                    case 11:
+                        settings.put(KEY_CODE_INGAME_MENU, 19);
                 }
                 settings.put(SETTINGS_VERSION, SETTINGS_VERSION_NUMBER);
             }
@@ -528,6 +537,8 @@ public class Settings implements IMinecraftOptionsHandler {
             saveSettings();
         } catch (IOException ex) {
             saveSettings();
+        } catch (JSONException ex) {
+            resetSettings();
         }
     }
 
@@ -556,10 +567,6 @@ public class Settings implements IMinecraftOptionsHandler {
         } catch (IOException io) {
             io.printStackTrace();
         }
-    }
-
-    public String getMinecraftUpdateURL() {
-        return settings.optString(MINECRAFT_UPDATE_URL, "");
     }
 
     public String getJavaHome() {
@@ -608,6 +615,18 @@ public class Settings implements IMinecraftOptionsHandler {
 
     public int getZoomKeyCode() {
         return settings.optInt(KEY_CODE_ZOOM, 0);
+    }
+
+    public int getMineonlineMenuKeyCode() {
+        return settings.optInt(KEY_CODE_INGAME_MENU, 19);
+    }
+
+    public void setZoomKeyCode(int keyCode) {
+        settings.put(KEY_CODE_ZOOM, keyCode);
+    }
+
+    public void setMineonlineMenuKeyCode(int keyCode) {
+        settings.put(KEY_CODE_INGAME_MENU, keyCode);
     }
 
     public EMinecraftOptionsVersion getLastLaunchedOptionsVersion() {

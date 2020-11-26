@@ -1,0 +1,1 @@
+{  "name": "Alpha 0.1.2_01",  "md5": "BD8EB5DEAB5893DDA3F15786AFEE4E19",  "sha256": "ACA8C47CCE80B6FD1569C4B94C84DC2E21D1E45B4C9AF15E25126135B27DE24A",  "type": "server",  "clientName": "Alpha 1.0.16_01",  "clientVersions": [    "a1.0.16_01",    "a1.0.16_02",    "a1.0.16"  ],  "baseVersion": "a1.0.16_01",  "legacy": true}

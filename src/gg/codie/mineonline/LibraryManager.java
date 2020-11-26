@@ -1,8 +1,8 @@
 package gg.codie.mineonline;
 
-import gg.codie.mineonline.gui.ProgressDialog;
-import gg.codie.mineonline.gui.rendering.utils.MathUtils;
 import gg.codie.common.utils.OSUtils;
+import gg.codie.mineonline.gui.ProgressDialog;
+import gg.codie.mineonline.utils.MathUtils;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;

@@ -1,9 +1,0 @@
-{
-  "name": "Beta 1.9-pre4-10131625",
-  "md5": "28F244B0443915F9BA88ADB4FA9BBC75",
-  "sha256": "076060429765A661812B920A2875D7CF9D3CE9B31139235B9B320EDC8E261139",
-  "type": "server",
-  "clientName": "Beta 1.9-pre4",
-  "baseVersion": "b1.9-pre4",
-  "legacy": true
-}

@@ -8,7 +8,6 @@ import net.bytebuddy.implementation.Implementation;
 import net.bytebuddy.matcher.ElementMatchers;
 
 import java.io.File;
-import java.net.URL;
 
 public class FilePatch {
     public static String resourcesVersion;

@@ -7,12 +7,9 @@ import net.bytebuddy.implementation.Implementation;
 import net.bytebuddy.matcher.ElementMatchers;
 
 public class ClassPatch {
-    public static void useTexturePacks(String texturePack) {
-        if (texturePack == null || texturePack.isEmpty() || texturePack.equalsIgnoreCase("Default"))
-            return;
+    public static String texturePack;
 
-        ClassGetResourceAdvice.texturePack = texturePack;
-
+    public static void init() {
         new ByteBuddy()
                 .with(Implementation.Context.Disabled.Factory.INSTANCE)
                 .redefine(Class.class)

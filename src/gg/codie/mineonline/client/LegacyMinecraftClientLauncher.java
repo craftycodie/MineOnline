@@ -1,33 +1,33 @@
 package gg.codie.mineonline.client;
 
-import gg.codie.minecraft.client.EMinecraftGUIScale;
-import gg.codie.minecraft.client.EMinecraftMainHand;
+import gg.codie.common.utils.TransferableImage;
+import gg.codie.minecraft.client.options.EMinecraftOptionsVersion;
 import gg.codie.mineonline.*;
 import gg.codie.mineonline.discord.DiscordRPCHandler;
+import gg.codie.mineonline.gui.GUIScale;
 import gg.codie.mineonline.gui.MenuManager;
+import gg.codie.mineonline.gui.input.MouseHandler;
 import gg.codie.mineonline.gui.rendering.DisplayManager;
-import gg.codie.mineonline.gui.rendering.Renderer;
+import gg.codie.mineonline.gui.rendering.FontRenderer;
+import gg.codie.mineonline.gui.rendering.Loader;
+import gg.codie.mineonline.gui.screens.AbstractGuiScreen;
+import gg.codie.mineonline.gui.screens.GuiIngameMenu;
 import gg.codie.mineonline.lwjgl.OnCreateListener;
+import gg.codie.mineonline.lwjgl.OnDestroyListener;
 import gg.codie.mineonline.lwjgl.OnUpdateListener;
 import gg.codie.mineonline.patches.*;
 import gg.codie.mineonline.patches.lwjgl.LWJGLDisplayPatch;
-import gg.codie.mineonline.patches.lwjgl.LWJGLMouseSetNativeCursorAdvice;
-import gg.codie.mineonline.patches.lwjgl.LWJGLGL11Patch;
+import gg.codie.mineonline.patches.lwjgl.LWJGLGL11GLOrthoAdvice;
 import gg.codie.mineonline.patches.lwjgl.LWJGLGLUPatch;
-import gg.codie.mineonline.patches.minecraft.FOVViewmodelPatch;
-import gg.codie.mineonline.patches.minecraft.GuiScreenPatch;
-import gg.codie.mineonline.patches.minecraft.MousePatch;
-import gg.codie.mineonline.patches.minecraft.ScaledResolutionConstructorPatch;
+import gg.codie.mineonline.patches.minecraft.FOVViewmodelAdvice;
+import gg.codie.mineonline.patches.minecraft.InputPatch;
 import gg.codie.mineonline.utils.JREUtils;
 import gg.codie.mineonline.utils.Logging;
-import gg.codie.common.utils.OSUtils;
-import gg.codie.common.utils.TransferableImage;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.util.vector.Vector2f;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -53,7 +53,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.Map;
 
-public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
+public class LegacyMinecraftClientLauncher extends Applet implements AppletStub, IMinecraftAppletWrapper {
     Applet minecraftApplet;
 
     String jarPath;
@@ -61,12 +61,12 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
     String serverPort;
     String MPPass;
 
-    Renderer renderer;
-
     MinecraftVersion minecraftVersion;
 
     int startWidth;
     int startHeight;
+
+    AbstractGuiScreen ingameMenu = new GuiIngameMenu();
 
 
     public static void startProcess(String jarPath, String serverIP, String serverPort, String mpPass) {
@@ -111,7 +111,8 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
             }
             processBuilder.directory(new File(System.getProperty("user.dir")));
 
-            DisplayManager.getFrame().setVisible(false);
+            if (DisplayManager.getFrame() != null)
+                DisplayManager.getFrame().setVisible(false);
 
             Process gameProcess = processBuilder.inheritIO().start();
 
@@ -125,7 +126,6 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
                     // ignore.
                 }
             }
-            Runtime.getRuntime().halt(0);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -145,6 +145,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
         try {
             new LegacyMinecraftClientLauncher(args[0], Integer.parseInt(args[1]), Integer.parseInt(args[2]), serverAddress, serverPort, mpPass).startMinecraft();
         } catch (Exception ex) {
+            ex.printStackTrace();
             JOptionPane.showMessageDialog(null, "Failed to launch Minecraft.");
         }
     }
@@ -164,8 +165,8 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
         if(serverAddress != null && serverPort == null)
             this.serverPort = "25565";
 
-        minecraftVersion = MinecraftVersionRepository.getSingleton(true).getVersion(jarPath);
-        Settings.singleton.saveMinecraftOptions(minecraftVersion.optionsVersion);
+        minecraftVersion = MinecraftVersionRepository.getSingleton(true, jarPath).getVersion(jarPath);
+        Settings.singleton.saveMinecraftOptions(minecraftVersion != null ? minecraftVersion.optionsVersion : EMinecraftOptionsVersion.DEFAULT);
     }
 
     boolean firstUpdate = true;
@@ -174,8 +175,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
 
         LWJGLDisplayPatch.hijackLWJGLThreadPatch(minecraftVersion != null && minecraftVersion.useGreyScreenPatch);
 
-        if (minecraftVersion != null && minecraftVersion.enableCursorPatch && OSUtils.isMac())
-            MousePatch.fixMouseIssues();
+        LegacyGameManager.createGameManager(minecraftVersion, this);
 
         if(minecraftVersion != null)
             DiscordRPCHandler.play(minecraftVersion.name, serverAddress, serverPort);
@@ -197,8 +197,13 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
         DisplayManager.getFrame().addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                DisplayManager.getFrame().setVisible(false);
-                super.windowClosed(e);
+                LegacyGameManager.closeGame();
+            }
+        });
+
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            public void run() {
+                LegacyGameManager.closeGame();
             }
         });
 
@@ -210,8 +215,16 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
             @Override
             public void onCreateEvent() {
                 DisplayManager.checkGLError("minecraft create hook start");
-                renderer = new Renderer();
+                new Loader();
+                FontRenderer.reloadFont();
                 DisplayManager.checkGLError("minecraft create hook end");
+            }
+        };
+
+        LWJGLDisplayPatch.destroyListener = new OnDestroyListener() {
+            @Override
+            public void onDestroyEvent() throws Throwable {
+                System.exit(0);
             }
         };
 
@@ -248,16 +261,13 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
 
         DisplayManager.getCanvas().setVisible(false);
 
-
-        frame.addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent e) {
-                closeApplet();
-            }
-        });
         frame.addComponentListener(new ComponentListener() {
             @Override
             public void componentResized(ComponentEvent e) {
-                appletResize(frame.getWidth(), frame.getHeight());
+                int w = DisplayManager.getFrame().getWidth() - (DisplayManager.getFrame().getInsets().left + DisplayManager.getFrame().getInsets().right);
+                int h = DisplayManager.getFrame().getHeight() - (DisplayManager.getFrame().getInsets().top + DisplayManager.getFrame().getInsets().bottom);
+                appletResize(w, h);
+                //minecraftApplet.resize(w, h);
             }
 
             @Override
@@ -280,12 +290,13 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
         LWJGLDisplayPatch.updateListener = new OnUpdateListener() {
             @Override
             public void onUpdateEvent() {
-                DisplayManager.checkGLError("minecraft update hook start");
+                MouseHandler.update();
 
-                if (!OSUtils.isWindows() && minecraftVersion != null && minecraftVersion.enableCursorPatch) {
-                    if (Mouse.isGrabbed() != LWJGLMouseSetNativeCursorAdvice.isFocused)
-                        Mouse.setGrabbed(LWJGLMouseSetNativeCursorAdvice.isFocused);
+                if (!Display.isActive() && LegacyGameManager.mineonlineMenuOpen()) {
+                    LegacyGameManager.setGUIScreen(null);
                 }
+
+                LegacyGameManager.update();
 
                 if (firstUpdate) {
                     try {
@@ -299,15 +310,46 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
                     }
                 }
 
-                if (renderer != null) {
-                    if (Globals.DEV) {
-                        //renderer.renderStringIngame(new Vector2f(1, 1), 8, "MineOnline Dev " + Globals.LAUNCHER_VERSION, org.newdawn.slick.Color.white);
+                if (Loader.singleton != null) {
+                    if (!Globals.BRANCH.equalsIgnoreCase("release")) {
+                        int ypos = 2;
+                        if (minecraftVersion.ingameVersionString != null && !Settings.singleton.getHideVersionString())
+                            ypos = 12;
+                        FontRenderer.minecraftFontRenderer.drawStringWithShadow("MineOnline " + (Globals.DEV ? "Dev " : "") + Globals.LAUNCHER_VERSION + " (" + Globals.BRANCH + ")", 2, ypos, 0xffffff);
+                    }
+
+                    GUIScale scaledresolution = new GUIScale(getWidth(), getHeight());
+//                    GL11.glClear(256);
+                    GL11.glMatrixMode(GL11.GL_PROJECTION);
+                    GL11.glLoadIdentity();
+                    GL11.glOrtho(0.0D, scaledresolution.scaledWidth, scaledresolution.scaledHeight, 0.0D, 1000D, 3000D);
+                    GL11.glMatrixMode(GL11.GL_MODELVIEW);
+                    GL11.glLoadIdentity();
+                    GL11.glTranslatef(0.0F, 0.0F, -2000F);
+
+                    int i = (int) scaledresolution.getScaledWidth();
+                    int j = (int) scaledresolution.getScaledHeight();
+                    int k = (Mouse.getX() * i) / getWidth();
+                    int i1 = j - (Mouse.getY() * j) / Display.getParent().getHeight() - 1;
+
+                    if (LegacyGameManager.getGuiScreen() != null) {
+                        LegacyGameManager.getGuiScreen().updateScreen();
+                        LegacyGameManager.getGuiScreen().drawScreen(k, i1);
+
+                        LegacyGameManager.getGuiScreen().handleInput();
+                    }
+
+                    DisplayManager.checkGLError("minecraft update hook start");
+
+                    if (minecraftVersion != null && minecraftVersion.enableCursorPatch) {
+                        if (Mouse.isGrabbed() != InputPatch.isFocused)
+                            Mouse.setGrabbed(InputPatch.isFocused);
                     }
 
                     if (minecraftVersion != null) {
                         // Make sure classic is behaving
                         if (minecraftVersion.guiClass != null)
-                            appletResize(DisplayManager.getFrame().getWidth(), DisplayManager.getFrame().getHeight());
+                            appletResize(Display.getParent().getWidth(), Display.getParent().getHeight());
 
                         if (minecraftVersion.enableScreenshotPatch) {
                             try {
@@ -321,29 +363,76 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
                                 }
 
                                 if (opacityMultiplier > 0) {
-                                    renderer.renderStringIngame(new Vector2f(2, 190), 8, "Saved screenshot as " + lastScreenshotName, new org.newdawn.slick.Color(1, 1, 1, 1 * opacityMultiplier));
+                                    FontRenderer.minecraftFontRenderer.drawStringWithShadow("Saved screenshot as " + lastScreenshotName, 2, GUIScale.lastScaledHeight() - 100, 0xffffff + ((int) (0xff * opacityMultiplier) << 24));
                                 }
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
                         }
 
-                        if (Keyboard.getEventKey() == Keyboard.KEY_F2 && !Keyboard.isRepeatEvent() && Keyboard.getEventKeyState() && !f2wasDown) {
-                            screenshot();
-                            f2wasDown = true;
-                        }
-                        if (Keyboard.getEventKey() == Keyboard.KEY_F2 && !Keyboard.isRepeatEvent() && !Keyboard.getEventKeyState()) {
-                            f2wasDown = false;
-                        }
+                        if (Keyboard.getEventKey() == Keyboard.KEY_F1 && !Keyboard.isRepeatEvent() && Keyboard.getEventKeyState() && !f1WasDown) {
+                            if (minecraftVersion.enableScreenshotPatch) {
+                                LWJGLGL11GLOrthoAdvice.hideHud = true;
+                                FOVViewmodelAdvice.hideViewModel = true;
+                            }
 
-                        if (Keyboard.getEventKey() == zoomKeyCode && !Keyboard.isRepeatEvent() && Keyboard.getEventKeyState() && !zoomWasDown) {
+                            f1WasDown = true;
+                        }
+                    }
+
+                    if (Keyboard.getEventKey() == Keyboard.KEY_F1 && !Keyboard.isRepeatEvent() && !Keyboard.getEventKeyState()) {
+                        if (!zoomWasDown) {
+                            LWJGLGL11GLOrthoAdvice.hideHud = false;
+                            FOVViewmodelAdvice.hideViewModel = false;
+                        }
+                        f1WasDown = false;
+                    }
+
+
+                    if (Keyboard.getEventKey() == Keyboard.KEY_F2 && !Keyboard.isRepeatEvent() && Keyboard.getEventKeyState() && !f2wasDown) {
+                        screenshot();
+                        f2wasDown = true;
+                    }
+                    if (Keyboard.getEventKey() == Keyboard.KEY_F2 && !Keyboard.isRepeatEvent() && !Keyboard.getEventKeyState()) {
+                        f2wasDown = false;
+                    }
+
+                    if (Settings.singleton.getZoomKeyCode() != 0) {
+                        if (Mouse.isGrabbed() && Keyboard.getEventKey() == Settings.singleton.getZoomKeyCode() && !Keyboard.isRepeatEvent() && Keyboard.getEventKeyState() && !zoomWasDown) {
                             LWJGLGLUPatch.zoom();
+                            LWJGLGL11GLOrthoAdvice.hideHud = true;
+                            FOVViewmodelAdvice.hideViewModel = true;
                             zoomWasDown = true;
-                        } else if (Keyboard.getEventKey() == zoomKeyCode && !Keyboard.isRepeatEvent() && !Keyboard.getEventKeyState()) {
+                        } else if (Keyboard.getEventKey() == Settings.singleton.getZoomKeyCode() && !Keyboard.isRepeatEvent() && !Keyboard.getEventKeyState()) {
                             LWJGLGLUPatch.unZoom();
+                            if (!f1WasDown) {
+                                LWJGLGL11GLOrthoAdvice.hideHud = false;
+                                FOVViewmodelAdvice.hideViewModel = false;
+                            }
                             zoomWasDown = false;
                         }
                     }
+
+                    if (Settings.singleton.getMineonlineMenuKeyCode() != 0) {
+                        if (Keyboard.getEventKey() == Settings.singleton.getMineonlineMenuKeyCode() && !Keyboard.isRepeatEvent() && Keyboard.getEventKeyState() && !menuWasDown) {
+                            if (LegacyGameManager.getGuiScreen() == null && Mouse.isGrabbed()) {
+                                LegacyGameManager.setGUIScreen(ingameMenu);
+                            } else if (LegacyGameManager.getGuiScreen() != null) {
+                                LegacyGameManager.setGUIScreen(null);
+                            }
+
+                            menuWasDown = true;
+                        } else if (Keyboard.getEventKey() == Settings.singleton.getMineonlineMenuKeyCode() && !Keyboard.isRepeatEvent() && !Keyboard.getEventKeyState()) {
+                            menuWasDown = false;
+                        }
+                    }
+
+                    if (Keyboard.getEventKey() == 1 && !Keyboard.isRepeatEvent() && Keyboard.getEventKeyState()) {
+                        if (LegacyGameManager.getGuiScreen() != null) {
+                            LegacyGameManager.setGUIScreen(null);
+                        }
+                    }
+
                     if (minecraftVersion != null && minecraftVersion.enableFullscreenPatch) {
                         if (Keyboard.getEventKey() == Keyboard.KEY_F11 && !Keyboard.isRepeatEvent() && Keyboard.getEventKeyState() && !f11WasDown) {
                             setFullscreen(!fullscreen);
@@ -353,19 +442,20 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
                             f11WasDown = false;
                         }
                     }
-                }
 
-                if (firstUpdate) {
-                    firstUpdate = false;
-                }
 
-                DisplayManager.checkGLError("minecraft update hook end");
+                    if (firstUpdate) {
+                        firstUpdate = false;
+                    }
+
+                    DisplayManager.checkGLError("minecraft update hook end");
+                }
             }
         };
 
         DisplayManager.getFrame().setTitle("Minecraft");
 
-        Settings.singleton.saveMinecraftOptions(minecraftVersion.optionsVersion);
+        Settings.singleton.saveMinecraftOptions(minecraftVersion != null ? minecraftVersion.optionsVersion : EMinecraftOptionsVersion.DEFAULT);
 
         // Patches
         SocketPatch.watchSockets();
@@ -373,35 +463,8 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
         FilePatch.relocateFiles(minecraftVersion != null ? minecraftVersion.resourcesVersion : "default");
         URLConnectionPatch.patchResponses();
 
-        if (minecraftVersion != null && minecraftVersion.useFOVPatch) {
-            LWJGLGLUPatch.useCustomFOV();
-            if (minecraftVersion.entityRendererClass != null && minecraftVersion.viewModelFunction != null)
-                FOVViewmodelPatch.fixViewmodelFOV(minecraftVersion.entityRendererClass, minecraftVersion.viewModelFunction, Settings.singleton.getMainHand() == EMinecraftMainHand.LEFT);
-        } else if (minecraftVersion != null && Settings.singleton.getMainHand() == EMinecraftMainHand.LEFT) {
-            if (minecraftVersion.entityRendererClass != null && minecraftVersion.viewModelFunction != null)
-                FOVViewmodelPatch.fixViewmodelFOV(minecraftVersion.entityRendererClass, minecraftVersion.viewModelFunction, true);
-        }
-
-        if (Settings.singleton.getGUIScale() != EMinecraftGUIScale.AUTO && minecraftVersion != null) {
-            if (minecraftVersion.scaledResolutionClass != null) {
-                ScaledResolutionConstructorPatch.useGUIScale(minecraftVersion.scaledResolutionClass);
-                LWJGLGL11Patch.useGuiScale();
-            } else if (minecraftVersion.guiClass != null && minecraftVersion.guiScreenClass != null) {
-                GuiScreenPatch.useGUIScale(minecraftVersion.guiScreenClass);
-                LWJGLGL11Patch.useGuiScale();
-            }
-        }
         // Allows c0.0.15a to connect to servers.
         InetSocketAddressPatch.allowCustomServers(serverAddress, serverPort);
-        // Allows c0.0.15a to have a username sent to servers.
-        if (minecraftVersion != null && minecraftVersion.useUsernamesPatch)
-            ByteBufferPatch.enableC0015aUsernames(Session.session.getUsername());
-        // Allow texture packs in versions before Alpha 1.2.2
-        if (minecraftVersion != null && minecraftVersion.useTexturepackPatch)
-            ClassPatch.useTexturePacks(Settings.singleton.getTexturePack());
-        // Hide version strings from the HUD
-        if (minecraftVersion != null && minecraftVersion.ingameVersionString != null && Settings.singleton.getHideVersionString())
-            StringPatch.hideVersionNames(minecraftVersion.ingameVersionString);
 
         minecraftApplet.init();
 
@@ -412,23 +475,46 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
         minecraftApplet.start();
     }
 
+    boolean f1WasDown = false;
     boolean f2wasDown = false;
     boolean f11WasDown = false;
     boolean zoomWasDown = false;
-    int zoomKeyCode = Settings.singleton.getZoomKeyCode();
+    boolean menuWasDown = false;
 
-    void closeApplet(){
-        if(minecraftApplet != null) {
-            minecraftApplet.stop();
-            minecraftApplet.destroy();
-        }
-        try {
-            DisplayManager.closeDisplay();
-        } catch (IllegalStateException e) {
+    @Override
+    public int getWidth() {
+        int width = Display.getParent().getWidth();
 
+        if (Display.isFullscreen() || fullscreen) {
+            width = Display.getDisplayMode().getWidth();
+        } else if (minecraftApplet != null) {
+            width = minecraftApplet.getWidth();
         }
-        DisplayManager.getFrame().dispose();
-        System.exit(0);
+
+        return width;
+    }
+
+    @Override
+    public int getHeight() {
+        int height = Display.getParent().getHeight();
+
+        if (Display.isFullscreen() || fullscreen) {
+            height = Display.getDisplayMode().getHeight();
+        } else if (minecraftApplet != null) {
+            height = minecraftApplet.getHeight();
+        }
+
+        return height;
+    }
+
+    @Override
+    public void closeApplet(){
+        Runtime.getRuntime().halt(0);
+    }
+
+    @Override
+    public Class getMinecraftAppletClass() {
+        return minecraftApplet.getClass();
     }
 
 
@@ -452,13 +538,13 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
         and we can feasibly cover all builds.
 
         As it stands, this method will first search for the Minecraft class.
-        the minecraftApplet holds an instance of the Minecraft class, and we have the minecraftApplet,
+        the minecraftApplet holds an singleton of the Minecraft class, and we have the minecraftApplet,
         so we can search for it there.
 
         Searching for it involves:
         1. Look for unka field called "minecraft". If it's there use it.
         2. If "minecraft" is not found, find any field within the same package.
-           - In every build I've checked, minecraftApplet only has 1 instance variable from the same package,
+           - In every build I've checked, minecraftApplet only has 1 singleton variable from the same package,
              and it's Minecraft.
 
         Then we find the width and height values.
@@ -467,8 +553,11 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
 
         If any of these searches fail, resizing should just do nothing.
     */
+    @Override
     public void appletResize(int width, int height){
         try {
+            new GUIScale(width, height);
+
             Field minecraftField = null;
 
             try {
@@ -476,6 +565,16 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
             } catch (NoSuchFieldException ne) {
                 for(Field field : minecraftApplet.getClass().getDeclaredFields()) {
                     if(field.getType().getPackage() == minecraftApplet.getClass().getPackage()) {
+                        minecraftField = field;
+                        break;
+                    }
+                }
+            }
+
+            // If it's not in the same package as the applet, it might be in the default package.
+            if (minecraftField == null) {
+                for (Field field : minecraftApplet.getClass().getDeclaredFields()) {
+                    if (field.getType().getPackage() == Package.getPackage("")) {
                         minecraftField = field;
                         break;
                     }
@@ -542,55 +641,23 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
 
             Object gui = guiField != null & minecraft != null ? guiField.get(minecraft) : null;
 
-            if (fullscreen){
-                heightField.setInt(minecraft, Display.getDisplayMode().getHeight());
-                widthField.setInt(minecraft, Display.getDisplayMode().getWidth());
-
-                if(gui != null && guiHeightField != null && guiWidthField != null) {
-                    int h = Display.getDisplayMode().getHeight();
-                    guiHeightField.setInt(gui, h * 240 / h);
-                    guiWidthField.setInt(gui, Display.getDisplayMode().getWidth() * 240 / h);
-                }
-            }
-            else {
-                heightField.setInt(minecraft, height - DisplayManager.getFrame().getInsets().top - DisplayManager.getFrame().getInsets().bottom);
+            if (minecraftVersion.useResizePatch) {
                 widthField.setInt(minecraft, width);
-
-                if(gui != null && guiHeightField != null && guiWidthField != null) {
-                    int h = (height - DisplayManager.getFrame().getInsets().top - DisplayManager.getFrame().getInsets().bottom);
-                    guiHeightField.setInt(gui, h * 240 / h);
-                    guiWidthField.setInt(gui, width * 240 / h);
-                }
+                heightField.setInt(minecraft, height);
             }
 
-            int guiScale = Settings.singleton.getGUIScale().getIntValue();
-
-            if (gui != null && guiHeightField != null && guiWidthField != null && guiScale != 0 && minecraftVersion != null && minecraftVersion.guiScreenClass != null) {
-                int scaledWidth;
-                int scaledHeight;
-                int scaleFactor;
-
-                scaledWidth = Display.getWidth();
-                scaledHeight = Display.getHeight();
-                scaleFactor = 1;
-                int k = guiScale;
-                if(k == 0)
-                {
-                    k = 1000;
-                }
-                for(; scaleFactor < k && scaledWidth / (scaleFactor + 1) >= 320 && scaledHeight / (scaleFactor + 1) >= 240; scaleFactor++) { }
-                scaledWidth = (int)Math.ceil((double)scaledWidth / (double)scaleFactor);
-                scaledHeight = (int)Math.ceil((double)scaledHeight / (double)scaleFactor);
-
-                int h = scaledHeight;
-                guiHeightField.setInt(gui, h * 240 / h);
-                guiWidthField.setInt(gui, scaledWidth * 240 / h);
-
-                guiHeightField.setInt(gui, scaledHeight);
-                guiWidthField.setInt(gui, scaledWidth);
+            if(gui != null && guiHeightField != null && guiWidthField != null) {
+                guiHeightField.setInt(gui, height * 240 / height);
+                guiWidthField.setInt(gui, width * 240 / height);
             }
 
-            //screenshotLabel.setBounds(30, (AppletH - 16) - 30, 204, 20);
+            if (gui != null && guiHeightField != null && guiWidthField != null && minecraftVersion != null && minecraftVersion.guiScreenClass != null) {
+                guiWidthField.setInt(gui, GUIScale.lastScaledWidth());
+                guiHeightField.setInt(gui, GUIScale.lastScaledHeight());
+            }
+
+            // Resizable versions of Minecraft check the canvas size against the game size, if it changes the game is resized.
+            Display.getParent().setSize(width, height);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -610,17 +677,17 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
         DisplayManager.fullscreen(newFullscreen);
         fullscreen = newFullscreen;
         if(!fullscreen) {
-            appletResize(widthBeforeFullscreen, heightBeforeFullscreen);
             minecraftApplet.setPreferredSize(new Dimension(widthBeforeFullscreen, heightBeforeFullscreen));
             minecraftApplet.resize(new Dimension(widthBeforeFullscreen , heightBeforeFullscreen));
+            DisplayManager.getFrame().setSize(widthBeforeFullscreen + DisplayManager.getFrame().getInsets().left + DisplayManager.getFrame().getInsets().right, heightBeforeFullscreen + DisplayManager.getFrame().getInsets().top + DisplayManager.getFrame().getInsets().bottom);
         } else {
-            appletResize(Display.getDesktopDisplayMode().getWidth(), Display.getDesktopDisplayMode().getHeight());
             minecraftApplet.setPreferredSize(new Dimension(Display.getDesktopDisplayMode().getWidth(), Display.getDesktopDisplayMode().getHeight()));
             minecraftApplet.resize(new Dimension(Display.getDesktopDisplayMode().getWidth(), Display.getDesktopDisplayMode().getHeight()));
             DisplayManager.getFrame().setPreferredSize(new Dimension(Display.getDesktopDisplayMode().getWidth(), Display.getDesktopDisplayMode().getHeight()));
         }
 
         DisplayManager.getFrame().pack();
+        appletResize(Display.getParent().getWidth(), Display.getParent().getHeight());
     }
 
     private static ByteBuffer buffer;
@@ -632,16 +699,8 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
     // this MUST be called from the OpenGL thread.
     public void screenshot() {
         try {
-            int width = Display.getWidth();
-            int height = Display.getHeight();
-
-            if (Display.isFullscreen() || fullscreen) {
-                width = Display.getDisplayMode().getWidth();
-                height = Display.getDisplayMode().getHeight();
-            } else if (minecraftApplet != null) {
-                width = minecraftApplet.getWidth();
-                height = minecraftApplet.getHeight();
-            }
+            int width = getWidth();
+            int height = getHeight();
 
             if(buffer == null || buffer.capacity() != width * height)
             {
@@ -652,10 +711,10 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
                 pixelData = new byte[width * height * 3];
                 imageData = new int[width * height];
             }
-            GL11.glPixelStorei(3333 /*GL_PACK_ALIGNMENT*/, 1);
-            GL11.glPixelStorei(3317 /*GL_UNPACK_ALIGNMENT*/, 1);
+            GL11.glPixelStorei(GL11.GL_PACK_ALIGNMENT, 1);
+            GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, 1);
             buffer.clear();
-            GL11.glReadPixels(0, 0, width, height, 6407 /*GL_RGB*/, 5121 /*GL_UNSIGNED_BYTE*/, buffer);
+            GL11.glReadPixels(0, 0, width, height, GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, buffer);
 
 
             buffer.clear();
@@ -755,6 +814,10 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub{
             case "mppass":
                 value = MPPass;
                 break;
+
+            // Only used by the NFC mod.
+            case "uuid":
+                value = Session.session.getUuid();
             default:
                 //don't do anything
         }

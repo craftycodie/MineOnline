@@ -1,9 +1,0 @@
-{
-  "name": "Release 1.2.3",
-  "md5": "D58815C6FB5BB8D20181AF6DA51AF23D",
-  "sha256": "FB7ED00C46D5CC909B049F7414913AD05E5764790E479B20387D462BFDE22EFA",
-  "type": "server",
-  "clientName": "Release 1.2.3",
-  "baseVersion": "1.2.3",
-  "legacy": true
-}

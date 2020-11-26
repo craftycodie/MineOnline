@@ -9,6 +9,7 @@ public class LWJGLDisplayCreateAdvice {
     public static int sampleCount = 0;
     public static int stencilCount = 0;
     public static int coverageSampleCount = 0;
+    public static Thread minecraftThread;
 
     @Advice.OnMethodEnter
     static void entry(@Advice.Argument(value = 0, readOnly = false, typing = Assigner.Typing.DYNAMIC) Object pixelFormat,
@@ -22,6 +23,7 @@ public class LWJGLDisplayCreateAdvice {
             int sampleCount = (int)thisClass.getField("sampleCount").get(null);
             int stencilCount = (int)thisClass.getField("stencilCount").get(null);
             int coverageSampleCount = (int)thisClass.getField("coverageSampleCount").get(null);
+            thisClass.getField("minecraftThread").set(null, Thread.currentThread());
 
             Method withSamples = pixelFormatClass.getMethod("withSamples", int.class);
             pixelFormat = withSamples.invoke(pixelFormat, sampleCount);

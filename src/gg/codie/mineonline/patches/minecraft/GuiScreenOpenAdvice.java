@@ -3,9 +3,6 @@ package gg.codie.mineonline.patches.minecraft;
 import net.bytebuddy.asm.Advice;
 import org.lwjgl.opengl.Display;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-
 public class GuiScreenOpenAdvice {
     public static int guiScale;
 

@@ -1,5 +1,6 @@
 package gg.codie.mineonline.api;
 
+import gg.codie.common.utils.JSONUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,8 +19,14 @@ public class MineOnlineServer {
     public final String md5;
     public final boolean isMineOnline;
     public final boolean onlineMode;
+    public final String[] players;
+    public final String motd;
+    public final boolean dontListPlayers;
+    public final boolean featured;
+    public final boolean usingBetaEvolutions;
+    public final String serverIcon;
 
-    MineOnlineServer(String createdAt, String connectAddress, String ip, int port, int users, int maxUsers, String name, String md5, boolean isMineOnline, boolean onlineMode) {
+    MineOnlineServer(String createdAt, String connectAddress, String ip, int port, int users, int maxUsers, String name, String md5, boolean isMineOnline, boolean onlineMode, String[] players, String motd, boolean dontListPlayers, boolean featured, boolean usingBetaEvolutions, String serverIcon) {
         this.createdAt = createdAt;
         this.connectAddress = connectAddress;
         this.ip = ip;
@@ -30,6 +37,12 @@ public class MineOnlineServer {
         this.md5 = md5;
         this.isMineOnline = isMineOnline;
         this.onlineMode = onlineMode;
+        this.players = players;
+        this.motd = motd;
+        this.dontListPlayers = dontListPlayers;
+        this.featured = featured;
+        this.usingBetaEvolutions = usingBetaEvolutions;
+        this.serverIcon = serverIcon;
     }
 
     public static LinkedList<MineOnlineServer> parseServers(JSONArray jsonArray) {
@@ -62,7 +75,13 @@ public class MineOnlineServer {
                 object.getString("name"),
                 object.getString("md5"),
                 object.getBoolean("isMineOnline"),
-                object.getBoolean("onlinemode")
+                object.getBoolean("onlinemode"),
+                object.has("players") ? JSONUtils.getStringArray(object.getJSONArray("players")) : new String[0],
+                object.optString("motd", null),
+                object.optBoolean("dontListPlayers", false),
+                object.optBoolean("featured", false),
+                object.getBoolean("useBetaEvolutionsAuth"),
+                object.optString("serverIcon", null)
         );
     }
 }

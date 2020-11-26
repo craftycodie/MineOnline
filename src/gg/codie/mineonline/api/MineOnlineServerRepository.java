@@ -1,7 +1,5 @@
 package gg.codie.mineonline.api;
 
-import gg.codie.mineonline.Session;
-
 import java.util.LinkedList;
 import java.util.concurrent.CompletableFuture;
 
