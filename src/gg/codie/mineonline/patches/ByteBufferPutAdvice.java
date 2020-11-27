@@ -14,11 +14,11 @@ public class ByteBufferPutAdvice {
             return;
 
         byte[] guestBytes = new byte[64];
-        guestBytes[0] = 0x67;
-        guestBytes[1] = 0x75;
-        guestBytes[2] = 0x65;
-        guestBytes[3] = 0x73;
-        guestBytes[4] = 0x74;
+        guestBytes[0] = 0x67; //g
+        guestBytes[1] = 0x75; //u
+        guestBytes[2] = 0x65; //e
+        guestBytes[3] = 0x73; //s
+        guestBytes[4] = 0x74; //t
 
         for (int i = 5; i < 64; i++)
             guestBytes[i] = 0x20;

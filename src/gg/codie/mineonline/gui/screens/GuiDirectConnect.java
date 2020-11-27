@@ -61,9 +61,9 @@ public class GuiDirectConnect extends AbstractGuiScreen
                 };
 
                 if (LegacyGameManager.isInGame())
-                    LegacyGameManager.setGUIScreen(new GuiVersions(thisScreen, null, selectListener, compare, false));
+                    LegacyGameManager.setGUIScreen(new GuiVersions(thisScreen, null, selectListener, compare, false, false));
                 else
-                    MenuManager.setMenuScreen(new GuiVersions(thisScreen, null, selectListener, compare, false));
+                    MenuManager.setMenuScreen(new GuiVersions(thisScreen, null, selectListener, compare, false, false));
             }
         }));
         controlList.add(new GuiButton(1, getWidth() / 2 - 100, (getHeight() / 4 - 10) + 50 + 18, "Cancel", new GuiButton.GuiButtonListener() {

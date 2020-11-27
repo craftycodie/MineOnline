@@ -171,9 +171,9 @@ public class GuiMultiplayer extends AbstractGuiScreen
         };
 
         if (LegacyGameManager.isInGame())
-            LegacyGameManager.setGUIScreen(new GuiVersions(this, selectableVersionPredicate, selectListener, compare, true));
+            LegacyGameManager.setGUIScreen(new GuiVersions(this, selectableVersionPredicate, selectListener, compare, true, serverVersion != null && !serverVersion.legacy));
         else
-            MenuManager.setMenuScreen(new GuiVersions(this, selectableVersionPredicate, selectListener, compare, true));
+            MenuManager.setMenuScreen(new GuiVersions(this, selectableVersionPredicate, selectListener, compare, true, serverVersion != null && !serverVersion.legacy));
     }
 
     public List<MineOnlineServer> getServers()
