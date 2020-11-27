@@ -161,7 +161,7 @@ public class Loader {
 //        if (LegacyGameManager.isInGame() && !LegacyGameManager.getVersion().useTexturepackPatch)
 //            return;
 
-        boolean clamp = textureName.startsWith("%clamp%") || textureName.startsWith("%%");
+        boolean clamp = textureName.startsWith("%clamp%") || textureName.startsWith("%%") || textureName.equals("/shadow.png");
         boolean blur = textureName.startsWith("%blur%");
 
         // These can probably be handled better.
