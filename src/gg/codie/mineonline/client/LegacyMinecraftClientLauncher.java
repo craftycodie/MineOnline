@@ -635,7 +635,8 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
                         }
                     }
                 } catch (Exception ex) {
-                    System.err.println("Couldn't find GUI class " + minecraftVersion.guiClass);
+                    if (Globals.DEV)
+                        System.err.println("Couldn't find GUI class " + minecraftVersion.guiClass);
                 }
             }
 
