@@ -93,7 +93,7 @@ public class GuiMainMenu extends AbstractGuiScreen
                         return MinecraftVersionRepository.getSingleton().getLastSelectedJarPath() != null && MinecraftVersionRepository.getSingleton().getLastSelectedJarPath().equals(selectableVersion.path);
                     }
                 },
-                    false));
+                    false, false));
             }
         }));
         controlList.add(multiplayerButton = new GuiButton(2, getWidth() / 2 - 100, i + 24, "Multiplayer", new GuiButton.GuiButtonListener() {

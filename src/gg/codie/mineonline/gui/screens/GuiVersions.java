@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
 public class GuiVersions extends AbstractGuiScreen
 {
     DropTargetAdapter dropTargetAdapter;
+    boolean showReleaseOnOpen;
 
     public interface IVersionSelectListener {
         void onSelect(String path);
@@ -40,8 +41,10 @@ public class GuiVersions extends AbstractGuiScreen
         Keyboard.enableRepeatEvents(false);
     }
 
-    public GuiVersions(AbstractGuiScreen guiscreen, Predicate<GuiSlotVersion.SelectableVersion> filter, IVersionSelectListener onSelect, GuiSlotVersion.ISelectableVersionCompare compare, boolean autoSelectSingleJar)
+    public GuiVersions(AbstractGuiScreen guiscreen, Predicate<GuiSlotVersion.SelectableVersion> filter, IVersionSelectListener onSelect, GuiSlotVersion.ISelectableVersionCompare compare, boolean autoSelectSingleJar, boolean showReleaseOnOpen)
     {
+        this.showReleaseOnOpen = showReleaseOnOpen;
+
         dropTarget.setComponent(DisplayManager.getCanvas());
 
         dropTargetAdapter = new DropTargetAdapter() {
@@ -313,7 +316,7 @@ public class GuiVersions extends AbstractGuiScreen
                 guiSlotVersion = new GuiSlotVersion(thisScreen, filteredVersions(), compare);
             }
         }));
-        releaseButton.enabled = false;
+        releaseButton.enabled = showReleaseOnOpen;
         controlList.add(playButton = new GuiButton(3, getWidth() / 2 + 4 + 50, getHeight() - 48, 100, 20, "Play", new GuiButton.GuiButtonListener() {
             @Override
             public void OnButtonPress() {

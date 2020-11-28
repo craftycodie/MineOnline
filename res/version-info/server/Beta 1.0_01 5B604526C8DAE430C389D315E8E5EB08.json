@@ -5,5 +5,5 @@
   "type": "server",
   "clientName": "Beta 1.0_01",
   "baseVersion": "b1.0_01",
-  "legacy": true,
+  "legacy": true
 }

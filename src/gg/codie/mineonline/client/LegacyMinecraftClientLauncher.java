@@ -635,7 +635,8 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
                         }
                     }
                 } catch (Exception ex) {
-                    System.err.println("Couldn't find GUI class " + minecraftVersion.guiClass);
+                    if (Globals.DEV)
+                        System.err.println("Couldn't find GUI class " + minecraftVersion.guiClass);
                 }
             }
 
@@ -699,8 +700,8 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
     // this MUST be called from the OpenGL thread.
     public void screenshot() {
         try {
-            int width = getWidth();
-            int height = getHeight();
+            int width = Display.getWidth();
+            int height = Display.getHeight();
 
             if(buffer == null || buffer.capacity() != width * height)
             {

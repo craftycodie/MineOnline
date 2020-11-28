@@ -11,5 +11,7 @@
   "ingameVersionString": "Minecraft Alpha v1.0.13_01",
   "resourcesVersion": "a1.0.15",
   "optionsVersion": "CLASSIC",
-  "hasNetherPortalTexture": false
+  "hasNetherPortalTexture": false,
+  "info": "Reupload",
+  "downloadURL": "https://mineonline.codie.gg/clients/a1.0.13_01-2.jar"
 }
