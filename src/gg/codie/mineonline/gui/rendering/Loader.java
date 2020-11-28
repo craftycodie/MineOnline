@@ -8,7 +8,10 @@ import gg.codie.mineonline.gui.textures.EGUITexture;
 import gg.codie.mineonline.patches.HashMapPutAdvice;
 import gg.codie.mineonline.patches.mcpatcher.HDTextureFXHelper;
 import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.EXTTextureFilterAnisotropic;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL14;
+import org.lwjgl.opengl.GLContext;
 import org.newdawn.slick.opengl.*;
 import org.newdawn.slick.opengl.renderer.Renderer;
 import org.newdawn.slick.opengl.renderer.SGL;
@@ -151,6 +154,14 @@ public class Loader {
             "/pack.png"
     ));
 
+    private static LinkedList<String> mipmappedTextures = new LinkedList<>(Arrays.asList(
+            "/rock.png",
+            "/water.png",
+            "/dirt.png",
+            "/grass.png",
+            "/terrain.png"
+    ));
+
     public static void reloadMinecraftTexture(String textureName) {
         if (Globals.DEV)
             System.out.println("Loaading Texture " + textureName);
@@ -181,6 +192,23 @@ public class Loader {
             GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_REPEAT);
             GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_REPEAT);
         }
+
+//        if (Settings.singleton.getMipmaps() && mipmappedTextures.contains(textureName)) {
+            System.out.println(textureName + Settings.singleton.getAnisotropicFiltering());
+
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL14.GL_GENERATE_MIPMAP, GL11.GL_TRUE);
+            // Enable mipmaps.
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST_MIPMAP_LINEAR);
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
+            if (Settings.singleton.getAnisotropicFiltering() > 0 && mipmappedTextures.contains(textureName)) {
+                // Enable anisotropic filtering
+                if (GLContext.getCapabilities().GL_EXT_texture_filter_anisotropic) {
+                    float amount = Math.min(Settings.singleton.getAnisotropicFiltering(),
+                            GL11.glGetFloat(EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT));
+                    GL11.glTexParameterf(GL11.GL_TEXTURE_2D, EXTTextureFilterAnisotropic.GL_TEXTURE_MAX_ANISOTROPY_EXT, amount);
+                }
+            }
+//        }
 
         String texturePack = Settings.singleton.getTexturePack();
 

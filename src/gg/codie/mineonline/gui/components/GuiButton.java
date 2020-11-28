@@ -64,8 +64,8 @@ public class GuiButton extends GuiComponent
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        boolean flag = i >= xPosition && j >= yPosition && i < xPosition + width && j < yPosition + height;
-        int k = getHoverState(flag);
+        boolean hover = i >= xPosition && j >= yPosition && i < xPosition + width && j < yPosition + height;
+        int k = getHoverState(hover);
         Renderer.singleton.drawSprite(xPosition, yPosition, 0, 46 + k * 20, width / 2, height);
         Renderer.singleton.drawSprite(xPosition + width / 2, yPosition, 200 - width / 2, 46 + k * 20, width / 2, height);
         mouseDragged(i, j);
@@ -73,13 +73,20 @@ public class GuiButton extends GuiComponent
         {
             FontRenderer.minecraftFontRenderer.drawCenteredString(displayString, xPosition + width / 2, yPosition + (height - 8) / 2, 0xffa0a0a0);
         } else
-        if(flag)
+        if(hover)
         {
             FontRenderer.minecraftFontRenderer.drawCenteredString(displayString, xPosition + width / 2, yPosition + (height - 8) / 2, 0xffffa0);
+            if (tooltip != null) {
+                Renderer.singleton.renderTooltip(tooltip, i, j);
+            }
         } else
         {
             FontRenderer.minecraftFontRenderer.drawCenteredString(displayString, xPosition + width / 2, yPosition + (height - 8) / 2, 0xe0e0e0);
         }
+    }
+
+    public void setTooltip(String tooltip) {
+        this.tooltip = tooltip;
     }
 
     protected void mouseDragged(int i, int j)
@@ -103,4 +110,5 @@ public class GuiButton extends GuiComponent
     public int id;
     public boolean enabled;
     private GuiButtonListener buttonListener;
+    private String tooltip;
 }

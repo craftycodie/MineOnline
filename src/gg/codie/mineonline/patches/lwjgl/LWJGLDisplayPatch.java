@@ -18,9 +18,7 @@ public class LWJGLDisplayPatch {
     public static void hijackLWJGLThreadPatch(boolean enableGreyScreenPatch) {
         Settings.singleton.loadSettings();
 
-        LWJGLDisplayCreateAdvice.sampleCount = Settings.singleton.getSampleCount();
-        LWJGLDisplayCreateAdvice.coverageSampleCount = Settings.singleton.getCoverageSampleCount();
-        LWJGLDisplayCreateAdvice.stencilCount = Settings.singleton.getStencilCount();
+        LWJGLDisplayCreateAdvice.antialiasingCount = Settings.singleton.getAntiAliasing().getIntValue();
 
         try {
             if(enableGreyScreenPatch) {

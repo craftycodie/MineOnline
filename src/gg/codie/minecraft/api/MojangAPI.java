@@ -1,5 +1,6 @@
 package gg.codie.minecraft.api;
 
+import gg.codie.mineonline.Globals;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -36,6 +37,8 @@ public class MojangAPI {
         try {
             return new JSONObject(response.toString());
         } catch (Exception ex) {
+            if (Globals.DEV)
+                System.out.println(response.toString());
             ex.printStackTrace();
             JSONObject errorObject = new JSONObject();
             errorObject.put("error", response.toString());

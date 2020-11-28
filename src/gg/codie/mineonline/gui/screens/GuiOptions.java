@@ -39,7 +39,7 @@ public class GuiOptions extends AbstractGuiScreen
     {
         AbstractGuiScreen thisScreen = this;
 
-        controlList.add(new GuiButton(200, getWidth() / 2 - 100, getHeight() / 6 + 168, "Done", new GuiButton.GuiButtonListener() {
+        controlList.add(doneButton = new GuiButton(200, getWidth() / 2 - 100, getHeight() / 6 + 168, "Done", new GuiButton.GuiButtonListener() {
             @Override
             public void OnButtonPress() {
                 Settings.singleton.saveSettings();
@@ -49,7 +49,7 @@ public class GuiOptions extends AbstractGuiScreen
                     MenuManager.setMenuScreen(parent);
             }
         }));
-        controlList.add(new GuiButton(100, getWidth() / 2 - 100, getHeight() / 6 + 120 + 12, "Controls", new GuiButton.GuiButtonListener() {
+        controlList.add(controlsButton = new GuiButton(100, getWidth() / 2 - 100, getHeight() / 6 + 120 + 12, "Controls...", new GuiButton.GuiButtonListener() {
             @Override
             public void OnButtonPress() {
                 if (LegacyGameManager.isInGame())
@@ -59,7 +59,7 @@ public class GuiOptions extends AbstractGuiScreen
             }
         }));
 
-        controlList.add(new GuiSlider(0, getWidth() / 2 - 155, getHeight() / 6, getFOVLabel((int)Settings.singleton.getFOV()), (Settings.singleton.getFOV() - 40) / 70, new GuiSlider.SliderListener() {
+        controlList.add(fovSlider = new GuiSlider(0, getWidth() / 2 - 155, getHeight() / 6, getFOVLabel((int)Settings.singleton.getFOV()), (Settings.singleton.getFOV() - 40) / 70, new GuiSlider.SliderListener() {
             @Override
             public String onValueChange(float sliderValue) {
                 int fov = (int)(sliderValue * 70) + 40;
@@ -74,9 +74,9 @@ public class GuiOptions extends AbstractGuiScreen
         }));
 
         if (LegacyGameManager.isInGame())
-            ((GuiButton)controlList.get(2)).enabled = LegacyGameManager.getVersion() == null || LegacyGameManager.getVersion().useFOVPatch;
+            fovSlider.enabled = LegacyGameManager.getVersion() == null || LegacyGameManager.getVersion().useFOVPatch;
 
-        controlList.add(new GuiSmallButton(0, getWidth() / 2 + 5, getHeight() / 6, "GUI Scale: " + Settings.singleton.getGUIScale().getName().toUpperCase(), new GuiButton.GuiButtonListener() {
+        controlList.add(guiScaleButton = new GuiSmallButton(0, getWidth() / 2 + 5, getHeight() / 6, "GUI Scale: " + Settings.singleton.getGUIScale().getName().toUpperCase(), new GuiButton.GuiButtonListener() {
             @Override
             public void OnButtonPress() {
                 EMinecraftGUIScale newGuiScale;
@@ -99,10 +99,10 @@ public class GuiOptions extends AbstractGuiScreen
         }));
 
         if (LegacyGameManager.isInGame())
-            ((GuiButton)controlList.get(3)).enabled = LegacyGameManager.getVersion() != null && (LegacyGameManager.getVersion().scaledResolutionClass != null || LegacyGameManager.getVersion().guiScreenClass != null);
+            guiScaleButton.enabled = LegacyGameManager.getVersion() != null && (LegacyGameManager.getVersion().scaledResolutionClass != null || LegacyGameManager.getVersion().guiScreenClass != null);
 
 
-        controlList.add(new GuiSmallButton(0, getWidth() / 2 - 155, getHeight() / 6 + 24, "Hide Version Number: " + (Settings.singleton.getHideVersionString() ? "YES" : "NO"), new GuiButton.GuiButtonListener() {
+        controlList.add(hideVersionNumberButton = new GuiSmallButton(0, getWidth() / 2 - 155, getHeight() / 6 + 24, "Hide Version Number: " + (Settings.singleton.getHideVersionString() ? "YES" : "NO"), new GuiButton.GuiButtonListener() {
             @Override
             public void OnButtonPress() {
                 if (LegacyGameManager.isInGame()) {
@@ -116,7 +116,7 @@ public class GuiOptions extends AbstractGuiScreen
         }));
 
         if (LegacyGameManager.isInGame())
-            ((GuiButton)controlList.get(4)).enabled = LegacyGameManager.getVersion() != null && LegacyGameManager.getVersion().ingameVersionString != null;
+            hideVersionNumberButton.enabled = LegacyGameManager.getVersion() != null && LegacyGameManager.getVersion().ingameVersionString != null;
 
 //        controlList.add(new GuiSmallButton(0, getWidth() / 2 + 5, getHeight() / 6 + 24, "Main Hand: " + Settings.singleton.getMainHand().name(), new GuiButton.GuiButtonListener() {
 //            @Override
@@ -138,18 +138,18 @@ public class GuiOptions extends AbstractGuiScreen
 //            }
 //        }));
 
-        controlList.add(new GuiButton(101, getWidth() / 2 - 100, getHeight() / 6 + 96 + 12, "About", new GuiButton.GuiButtonListener() {
+        controlList.add(videoSettingsButton = new GuiButton(101, getWidth() / 2 - 100, getHeight() / 6 + 96 + 12, "Video Settings...", new GuiButton.GuiButtonListener() {
             @Override
             public void OnButtonPress() {
                 if (LegacyGameManager.isInGame())
-                    LegacyGameManager.setGUIScreen(new GuiAbout(thisScreen));
+                    LegacyGameManager.setGUIScreen(new GuiVideoSettings(thisScreen));
                 else
-                    MenuManager.setMenuScreen(new GuiAbout(thisScreen));
+                    MenuManager.setMenuScreen(new GuiVideoSettings(thisScreen));
             }
         }));
 
         if (!LegacyGameManager.isInGame()) {
-            controlList.add(new GuiSmallButton(0, getWidth() / 2 + 5, getHeight() / 6 + 24, "Fullscreen: " + (Settings.singleton.getFullscreen() ? "ON" : "OFF"), new GuiButton.GuiButtonListener() {
+            controlList.add(fullscreenButton = new GuiSmallButton(0, getWidth() / 2 + 5, getHeight() / 6 + 24, "Fullscreen: " + (Settings.singleton.getFullscreen() ? "ON" : "OFF"), new GuiButton.GuiButtonListener() {
                 @Override
                 public void OnButtonPress() {
                     Settings.singleton.setFullscreen(!Settings.singleton.getFullscreen());
@@ -157,7 +157,7 @@ public class GuiOptions extends AbstractGuiScreen
                 }
             }));
 
-            controlList.add(new GuiSmallButton(0, getWidth() / 2 - 155, getHeight() / 6 + 48, "Custom Capes: " + (Settings.singleton.getHideVersionString() ? "YES" : "NO"), new GuiButton.GuiButtonListener() {
+            controlList.add(customCapesButton = new GuiSmallButton(0, getWidth() / 2 - 155, getHeight() / 6 + 48, "Custom Capes: " + (Settings.singleton.getHideVersionString() ? "YES" : "NO"), new GuiButton.GuiButtonListener() {
                 @Override
                 public void OnButtonPress() {
                     Settings.singleton.setCustomCapes(!Settings.singleton.getCustomCapes());
@@ -165,29 +165,31 @@ public class GuiOptions extends AbstractGuiScreen
                 }
             }));
 
-            controlList.add(new GuiSmallButton(0, getWidth() / 2 + 5, getHeight() / 6 + 48, "Logout", new GuiButton.GuiButtonListener() {
+            controlList.add(logoutButton = new GuiSmallButton(0, getWidth() / 2 + 5, getHeight() / 6 + 48, "Logout", new GuiButton.GuiButtonListener() {
                 @Override
                 public void OnButtonPress() {
                     MenuManager.setMenuScreen(new GuiLogin());
                     Session.session.logout();
                 }
             }));
+        } else {
+            videoSettingsButton.enabled = false;
+            videoSettingsButton.setTooltip("Accessible in launcher.");
         }
     }
 
     public void resize() {
-        controlList.get(0).resize(getWidth() / 2 - 100, getHeight() / 6 + 168);
-        controlList.get(1).resize(getWidth() / 2 - 100, getHeight() / 6 + 120 + 12);
-        controlList.get(2).resize(getWidth() / 2 - 155, getHeight() / 6);
-        controlList.get(3).resize(getWidth() / 2 + 5, getHeight() / 6);
-        controlList.get(4).resize(getWidth() / 2 - 155, getHeight() / 6 + 24);
-//        controlList.get(5).resize(getWidth() / 2 + 5, getHeight() / 6 + 24);
-        controlList.get(5).resize(getWidth() / 2 - 100, getHeight() / 6 + 96 + 12);
+        doneButton.resize(getWidth() / 2 - 100, getHeight() / 6 + 168);
+        controlsButton.resize(getWidth() / 2 - 100, getHeight() / 6 + 120 + 12);
+        fovSlider.resize(getWidth() / 2 - 155, getHeight() / 6);
+        guiScaleButton.resize(getWidth() / 2 + 5, getHeight() / 6);
+        hideVersionNumberButton.resize(getWidth() / 2 - 155, getHeight() / 6 + 24);
 
         if (!LegacyGameManager.isInGame()) {
-            controlList.get(6).resize(getWidth() / 2 + 5, getHeight() / 6 + 24);
-            controlList.get(7).resize(getWidth() / 2 - 155, getHeight() / 6 + 48);
-            controlList.get(8).resize(getWidth() / 2 + 5, getHeight() / 6 + 48);
+            videoSettingsButton.resize(getWidth() / 2 - 100, getHeight() / 6 + 96 + 12);
+            fullscreenButton.resize(getWidth() / 2 + 5, getHeight() / 6 + 24);
+            customCapesButton.resize(getWidth() / 2 - 155, getHeight() / 6 + 48);
+            logoutButton.resize(getWidth() / 2 + 5, getHeight() / 6 + 48);
         }
     }
 
@@ -203,4 +205,14 @@ public class GuiOptions extends AbstractGuiScreen
 
     private AbstractGuiScreen parent;
     private String screenName;
+
+    private GuiButton doneButton;
+    private GuiButton controlsButton;
+    private GuiSlider fovSlider;
+    private GuiButton guiScaleButton;
+    private GuiButton hideVersionNumberButton;
+    private GuiButton videoSettingsButton;
+    private GuiButton customCapesButton;
+    private GuiButton fullscreenButton;
+    private GuiButton logoutButton;
 }

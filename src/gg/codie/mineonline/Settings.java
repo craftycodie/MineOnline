@@ -1,6 +1,8 @@
 package gg.codie.mineonline;
 
 import gg.codie.minecraft.client.options.*;
+import gg.codie.mineonline.client.options.EMineOnlineAntiAliasing;
+import gg.codie.mineonline.utils.MathUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -14,62 +16,62 @@ public class Settings implements IMinecraftOptionsHandler {
     public static Settings singleton;
     private JSONObject settings;
 
-    public static final String SETTINGS_VERSION = "settingsVersion";
+    private static final String SETTINGS_VERSION = "settingsVersion";
     public static final String JAVA_HOME = "javaHome";
-    public static final String CLIENT_LAUNCH_ARGS = "clientLaunchArgs";
-    public static final String HIDE_VERSION_STRING = "hideVersionString";
-    public static final String GAME_WIDTH = "gameWidth";
-    public static final String GAME_HEIGHT = "gameHeight";
-    public static final String CUSTOM_CAPES = "customCapes";
-    public static final String KEY_CODE_ZOOM = "keyCodeZoom";
-    public static final String SAMPLE_COUNT = "sampleCount";
-    public static final String STENCIL_COUNT = "stencilCount";
-    public static final String COVERAGE_SAMPLE_COUNT = "coverageSampleCount";
-    public static final String LAST_LAUNCHED_OPTIONS_VERSION = "lastLaunchedOptionsVersion";
+    private static final String CLIENT_LAUNCH_ARGS = "clientLaunchArgs";
+    private static final String HIDE_VERSION_STRING = "hideVersionString";
+    private static final String GAME_WIDTH = "gameWidth";
+    private static final String GAME_HEIGHT = "gameHeight";
+    private static final String CUSTOM_CAPES = "customCapes";
+    private static final String KEY_CODE_ZOOM = "keyCodeZoom";
+    private static final String LAST_LAUNCHED_OPTIONS_VERSION = "lastLaunchedOptionsVersion";
+    private static final String KEY_CODE_INGAME_MENU = "keyCodeIngameMenu";
+    private static final String ANTI_ALIASING = "antiAliasing";
+    private static final String MIPMAPS = "mipmaps";
+    private static final String ANISOTROPIC_FILTERING = "anisotropicFiltering";
 
-    public static final String FULLSCREEN = "fullscreen";
-    public static final String GUI_SCALE = "guiScale";
-    public static final String FOV = "fov";
-    public static final String MAIN_HAND = "mainHand";
-    public static final String TEXTURE_PACK = "texturePack";
-    public static final String MUSIC = "music";
-    public static final String SOUND = "sound";
-    public static final String INVERT_Y_MOUSE = "invertYMouse";
-    public static final String MOUSE_SENSITIVITY = "mouseSensitivity";
-    public static final String RENDER_DISTANCE = "viewDistance";
-    public static final String VIEW_BOBBING = "viewBobbing";
-    public static final String ANAGLYPH_3D = "anaglyph3d";
-    public static final String ADVANCED_OPEN_GL = "advancedOpengl";
-    public static final String PERFORMANCE = "performance";
-    public static final String DIFFICULTY = "difficulty";
-    public static final String FANCY_GRAPHICS = "fancyGraphics";
-    public static final String SMOOTH_LIGHTING = "smoothLighting";
-    public static final String LAST_SERVER = "lastServer";
-    public static final String SHOW_FPS = "showFPS";
-    public static final String KEY_CODE_FORWARD = "keyCodeForward";
-    public static final String KEY_CODE_LEFT = "keyCodeLeft";
-    public static final String KEY_CODE_BACK = "keyCodeBack";
-    public static final String KEY_CODE_RIGHT = "keyCodeRight";
-    public static final String KEY_CODE_JUMP = "keyCodeJump";
-    public static final String KEY_CODE_SNEAK = "keyCodeSneak";
-    public static final String KEY_CODE_DROP = "keyCodeDrop";
-    public static final String KEY_CODE_INVENTORY = "keyCodeInventory";
-    public static final String KEY_CODE_CHAT = "keyCodeChat";
-    public static final String KEY_CODE_FOG = "keyCodeFog";
-    public static final String KEY_CODE_SAVE_LOCATION = "keyCodeSaveLocation";
-    public static final String KEY_CODE_LOAD_LOCATION = "keyCodeLoadLocation";
-    public static final String KEY_CODE_BUILD_MENU = "keyCodeBuildMenu";
-    public static final String SKIN_LAYER_HEAD = "skinLayerHead";
-    public static final String SKIN_LAYER_TORSO = "skinLayerTorso";
-    public static final String SKIN_LAYER_LEFT_ARM = "skinLayerLeftArm";
-    public static final String SKIN_LAYER_RIGHT_ARM = "skinLayerRightArm";
-    public static final String SKIN_LAYER_LEFT_LEG = "skinLayerLeftLeg";
-    public static final String SKIN_LAYER_RIGHT_LEG = "skinLayerRightLeg";
-    public static final String AUTO_JUMP = "autoJump";
-    public static final String KEY_CODE_INGAME_MENU = "keyCodeIngameMenu";
+    private static final String FULLSCREEN = "fullscreen";
+    private static final String GUI_SCALE = "guiScale";
+    private static final String FOV = "fov";
+    private static final String MAIN_HAND = "mainHand";
+    private static final String TEXTURE_PACK = "texturePack";
+    private static final String MUSIC = "music";
+    private static final String SOUND = "sound";
+    private static final String INVERT_Y_MOUSE = "invertYMouse";
+    private static final String MOUSE_SENSITIVITY = "mouseSensitivity";
+    private static final String RENDER_DISTANCE = "viewDistance";
+    private static final String VIEW_BOBBING = "viewBobbing";
+    private static final String ANAGLYPH_3D = "anaglyph3d";
+    private static final String ADVANCED_OPEN_GL = "advancedOpengl";
+    private static final String PERFORMANCE = "performance";
+    private static final String DIFFICULTY = "difficulty";
+    private static final String FANCY_GRAPHICS = "fancyGraphics";
+    private static final String SMOOTH_LIGHTING = "smoothLighting";
+    private static final String LAST_SERVER = "lastServer";
+    private static final String SHOW_FPS = "showFPS";
+    private static final String KEY_CODE_FORWARD = "keyCodeForward";
+    private static final String KEY_CODE_LEFT = "keyCodeLeft";
+    private static final String KEY_CODE_BACK = "keyCodeBack";
+    private static final String KEY_CODE_RIGHT = "keyCodeRight";
+    private static final String KEY_CODE_JUMP = "keyCodeJump";
+    private static final String KEY_CODE_SNEAK = "keyCodeSneak";
+    private static final String KEY_CODE_DROP = "keyCodeDrop";
+    private static final String KEY_CODE_INVENTORY = "keyCodeInventory";
+    private static final String KEY_CODE_CHAT = "keyCodeChat";
+    private static final String KEY_CODE_FOG = "keyCodeFog";
+    private static final String KEY_CODE_SAVE_LOCATION = "keyCodeSaveLocation";
+    private static final String KEY_CODE_LOAD_LOCATION = "keyCodeLoadLocation";
+    private static final String KEY_CODE_BUILD_MENU = "keyCodeBuildMenu";
+    private static final String SKIN_LAYER_HEAD = "skinLayerHead";
+    private static final String SKIN_LAYER_TORSO = "skinLayerTorso";
+    private static final String SKIN_LAYER_LEFT_ARM = "skinLayerLeftArm";
+    private static final String SKIN_LAYER_RIGHT_ARM = "skinLayerRightArm";
+    private static final String SKIN_LAYER_LEFT_LEG = "skinLayerLeftLeg";
+    private static final String SKIN_LAYER_RIGHT_LEG = "skinLayerRightLeg";
+    private static final String AUTO_JUMP = "autoJump";
 
 
-    private static final int SETTINGS_VERSION_NUMBER = 12;
+    private static final int SETTINGS_VERSION_NUMBER = 13;
 
     private static boolean readonly = true;
 
@@ -113,9 +115,6 @@ public class Settings implements IMinecraftOptionsHandler {
         settings.put(GAME_WIDTH, 854);
         settings.put(GAME_HEIGHT, 480);
         settings.put(CUSTOM_CAPES, true);
-        settings.put(SAMPLE_COUNT, 0);
-        settings.put(STENCIL_COUNT, 0);
-        settings.put(COVERAGE_SAMPLE_COUNT, 0);
         settings.put(KEY_CODE_INVENTORY, 18);
         settings.put(KEY_CODE_CHAT, 20);
         settings.put(KEY_CODE_DROP, 16);
@@ -154,6 +153,9 @@ public class Settings implements IMinecraftOptionsHandler {
         settings.put(LAST_LAUNCHED_OPTIONS_VERSION, "DEFAULT");
         settings.put(AUTO_JUMP, false);
         settings.put(KEY_CODE_INGAME_MENU, 19);
+        settings.put(ANTI_ALIASING, 0);
+        settings.put(MIPMAPS, false);
+        settings.put(ANISOTROPIC_FILTERING, 0);
 
         saveSettings();
         loadSettings();
@@ -485,12 +487,6 @@ public class Settings implements IMinecraftOptionsHandler {
                         settings.put(GAME_HEIGHT, 480);
                         settings.put(CUSTOM_CAPES, true);
                     case 9:
-                        settings.put(SAMPLE_COUNT, 0);
-                        settings.put(STENCIL_COUNT, 0);
-                        settings.put(COVERAGE_SAMPLE_COUNT, 0);
-                        settings.put(SAMPLE_COUNT, 0);
-                        settings.put(STENCIL_COUNT, 0);
-                        settings.put(COVERAGE_SAMPLE_COUNT, 0);
                         settings.put(KEY_CODE_INVENTORY, 18);
                         settings.put(KEY_CODE_CHAT, 20);
                         settings.put(KEY_CODE_DROP, 16);
@@ -527,6 +523,10 @@ public class Settings implements IMinecraftOptionsHandler {
                         settings.put(AUTO_JUMP, false);
                     case 11:
                         settings.put(KEY_CODE_INGAME_MENU, 19);
+                    case 12:
+                        settings.put(ANTI_ALIASING, 0);
+                        settings.put(MIPMAPS, false);
+                        settings.put(ANISOTROPIC_FILTERING, 0);
                 }
                 settings.put(SETTINGS_VERSION, SETTINGS_VERSION_NUMBER);
             }
@@ -601,16 +601,45 @@ public class Settings implements IMinecraftOptionsHandler {
         settings.put(CUSTOM_CAPES, customCapes);
     }
 
-    public int getSampleCount() {
-        return settings.optInt(SAMPLE_COUNT, 0);
+    public EMineOnlineAntiAliasing getAntiAliasing() {
+        int value = settings.optInt(ANTI_ALIASING, 0);
+        switch (value) {
+            case 16:
+                return EMineOnlineAntiAliasing.SIXTEEN;
+            case 8:
+                return EMineOnlineAntiAliasing.EIGHT;
+            case 4:
+                return EMineOnlineAntiAliasing.FOUR;
+            case 2:
+                return EMineOnlineAntiAliasing.TWO;
+            default:
+            case 0:
+                return EMineOnlineAntiAliasing.OFF;
+        }
     }
 
-    public int getStencilCount() {
-        return settings.optInt(STENCIL_COUNT, 0);
+    public boolean getMipmaps() {
+        return settings.optBoolean(MIPMAPS, false);
     }
 
-    public int getCoverageSampleCount() {
-        return settings.optInt(COVERAGE_SAMPLE_COUNT, 0);
+    public int getAnisotropicFiltering() {
+        int value = settings.optInt(ANISOTROPIC_FILTERING, 0);
+        if (value < 0)
+            return 0;
+        return value;
+    }
+
+    public void setAntiAliasing(EMineOnlineAntiAliasing antiAliasing) {
+        settings.put(ANTI_ALIASING, antiAliasing.getIntValue());
+    }
+
+    public void setMipmaps(boolean mipmaps) {
+        settings.put(MIPMAPS, mipmaps);
+    }
+
+    public void setAnisotropicFiltering(int anisotropicFiltering) {
+        if (anisotropicFiltering < 0) anisotropicFiltering = 0;
+        settings.put(ANISOTROPIC_FILTERING, anisotropicFiltering);
     }
 
     public int getZoomKeyCode() {
