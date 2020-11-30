@@ -417,10 +417,10 @@ public class MinecraftVersion {
             if (serverIP != null && serverIP.equals(externalIP)) {
                 serverIP = InetAddress.getLocalHost().getHostAddress();
             }
-        }
 
-        Settings.singleton.setLastServer(serverIP + (serverPort != null ? ":" + serverPort : ""));
-        Settings.singleton.saveSettings();
+            Settings.singleton.setLastServer(serverIP + (serverPort != null ? ":" + serverPort : ""));
+            Settings.singleton.saveSettings();
+        }
 
         System.out.println("Launching jar " + (minecraftVersion != null ? minecraftVersion.name : jarPath) + " MD5 " + MD5Checksum.getMD5ChecksumForFile(jarPath));
         if (!LegacyGameManager.isInGame())
