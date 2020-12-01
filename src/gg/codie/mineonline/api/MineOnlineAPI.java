@@ -8,78 +8,12 @@ import org.json.JSONObject;
 
 import java.io.*;
 import java.net.HttpURLConnection;
-import java.net.InetAddress;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 
 public class MineOnlineAPI {
-    public static String getMpPass(String accessToken, String username, String userID, String serverIP, String serverPort) {
-
-        try {
-            InetAddress inetAddress = InetAddress.getByName(serverIP);
-            serverIP = inetAddress.getHostAddress();
-
-            if (inetAddress.isAnyLocalAddress()) {
-                serverIP = getExternalIP();
-            }
-        } catch (Exception ex) {
-            //ignore.
-        }
-
-        HttpURLConnection connection = null;
-
-        try {
-            if(!SessionServer.joinGame(
-                    accessToken,
-                    userID,
-                    SHA1Utils.sha1(serverIP + ":" + serverPort)
-            )) {
-                if (Globals.DEV) {
-                    System.out.println("Bad server join.");
-                }
-                return null;
-            }
-
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("accessToken", accessToken);
-            jsonObject.put("serverIP", serverIP);
-            jsonObject.put("serverPort", serverPort);
-            jsonObject.put("userID", userID);
-            jsonObject.put("username", username);
-
-            String json = jsonObject.toString();
-
-            URL url = new URL(Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/servertoken");
-            connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestProperty("Content-Type", "application/json");
-            connection.setRequestMethod("POST");
-            connection.setDoInput(true);
-            connection.setDoOutput(true);
-
-            connection.getOutputStream().write(json.getBytes(StandardCharsets.UTF_8));
-            connection.getOutputStream().flush();
-            connection.getOutputStream().close();
-            InputStream is = connection.getInputStream();
-            BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-
-            String mpPass = rd.readLine();
-
-            rd.close();
-
-            return mpPass;
-        } catch (Exception e) {
-            if (e.getClass() != FileNotFoundException.class)
-                e.printStackTrace();
-            return "0";
-        } finally {
-
-            if (connection != null)
-                connection.disconnect();
-        }
-    }
-
     public static String getExternalIP() {
         HttpURLConnection connection = null;
 

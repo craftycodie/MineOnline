@@ -5,7 +5,6 @@ import gg.codie.mineonline.MinecraftVersion;
 import gg.codie.mineonline.MinecraftVersionRepository;
 import gg.codie.mineonline.Session;
 import gg.codie.mineonline.Settings;
-import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.mineonline.api.MineOnlineServer;
 import gg.codie.mineonline.api.MineOnlineServerRepository;
 import gg.codie.mineonline.client.LegacyGameManager;
@@ -16,6 +15,7 @@ import gg.codie.mineonline.gui.rendering.FontRenderer;
 import gg.codie.mineonline.gui.rendering.Renderer;
 import gg.codie.mineonline.server.ThreadPollServers;
 import org.lwjgl.opengl.Display;
+import gg.codie.mineonline.api.ClassicAuthService;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -125,7 +125,7 @@ public class GuiMultiplayer extends AbstractGuiScreen
 
         if (serverVersion != null) {
             selectableVersionPredicate = (GuiSlotVersion.SelectableVersion selectableVersion) -> {
-                return selectableVersion.version != null && (serverVersion.baseVersion == selectableVersion.version.baseVersion || Arrays.stream(serverVersion.clientVersions).anyMatch(selectableVersion.version.baseVersion::equals));
+                return selectableVersion.version != null && (serverVersion.baseVersion.equals(selectableVersion.version.baseVersion) || Arrays.stream(serverVersion.clientVersions).anyMatch(selectableVersion.version.baseVersion::equals));
             };
         }
 
@@ -133,7 +133,7 @@ public class GuiMultiplayer extends AbstractGuiScreen
             @Override
             public void onSelect(String path) {
                 try {
-                    String mppass = MineOnlineAPI.getMpPass(Session.session.getAccessToken(), Session.session.getUsername(), Session.session.getUuid(), server.ip, server.port + "");
+                    String mppass = classicAuthService.getMPPass(server.ip, server.port + "", Session.session.getAccessToken(), Session.session.getUuid(), Session.session.getUsername());
                     MinecraftVersion.launchMinecraft(path, server.ip, server.port + "", mppass);
 
                     if (LegacyGameManager.isInGame()) {
@@ -213,4 +213,5 @@ public class GuiMultiplayer extends AbstractGuiScreen
     private GuiButton connectButton;
     private String tooltip;
     private MineOnlineServerRepository serverRepository = new MineOnlineServerRepository();
+    private ClassicAuthService classicAuthService = new ClassicAuthService();
 }

@@ -4,6 +4,7 @@ import com.johnymuffin.BetaEvolutionsUtils;
 import gg.codie.minecraft.api.AuthServer;
 import gg.codie.minecraft.api.MojangAPI;
 import gg.codie.mineonline.*;
+import gg.codie.mineonline.api.ClassicAuthService;
 import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.mineonline.api.MineOnlineServer;
 import gg.codie.mineonline.discord.DiscordRPCHandler;
@@ -40,6 +41,7 @@ import java.util.Set;
 public class MenuManager {
 
     public static boolean formopen = false;
+    private static ClassicAuthService classicAuthService = new ClassicAuthService();
 
     public static void setMenuScreen(AbstractGuiScreen guiScreen) {
         if(MenuManager.guiScreen != null)
@@ -214,7 +216,7 @@ public class MenuManager {
                             if (clientVersion != null && clientVersion.baseVersion.equals(compatibleClientBaseVersion)) {
                                 String mppass = null;
                                 if(serverVersion != null && serverVersion.hasHeartbeat) {
-                                    mppass = MineOnlineAPI.getMpPass(Session.session.getAccessToken(), Session.session.getUsername(), Session.session.getUuid(), mineOnlineServer.ip, "" + mineOnlineServer.port);
+                                    mppass = classicAuthService.getMPPass(Session.session.getAccessToken(), Session.session.getUsername(), Session.session.getUuid(), mineOnlineServer.ip, "" + mineOnlineServer.port);
                                 }
 
                                 if (mineOnlineServer.usingBetaEvolutions) {
@@ -233,7 +235,7 @@ public class MenuManager {
 
                             String mppass = null;
                             if(serverVersion != null && serverVersion.hasHeartbeat) {
-                                mppass = MineOnlineAPI.getMpPass(Session.session.getAccessToken(), Session.session.getUsername(), Session.session.getUuid(), mineOnlineServer.ip, "" + mineOnlineServer.port);
+                                mppass = classicAuthService.getMPPass(Session.session.getAccessToken(), Session.session.getUsername(), Session.session.getUuid(), mineOnlineServer.ip, "" + mineOnlineServer.port);
                             }
 
                             if (mineOnlineServer.usingBetaEvolutions) {
@@ -267,7 +269,7 @@ public class MenuManager {
                     ip = ipAndPort[0];
                     port = "25565";
                 }
-                mppass = MineOnlineAPI.getMpPass(Session.session.getAccessToken(), Session.session.getUsername(), Session.session.getUuid(), ip, port);
+                mppass = classicAuthService.getMPPass(ip, port, Session.session.getAccessToken(), Session.session.getUuid(), Session.session.getUsername());
             }
             MinecraftVersion.launchMinecraft(quicklaunch, ip, port, mppass);
             return;

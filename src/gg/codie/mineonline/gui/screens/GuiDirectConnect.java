@@ -5,6 +5,7 @@ import gg.codie.mineonline.MinecraftVersion;
 import gg.codie.mineonline.MinecraftVersionRepository;
 import gg.codie.mineonline.Session;
 import gg.codie.mineonline.Settings;
+import gg.codie.mineonline.api.ClassicAuthService;
 import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.mineonline.api.MineOnlineServer;
 import gg.codie.mineonline.client.LegacyGameManager;
@@ -128,7 +129,7 @@ public class GuiDirectConnect extends AbstractGuiScreen
             try {
                 String ip = as[0];
                 String port = as.length > 1 ? as[1] : "25565";
-                String mppass = MineOnlineAPI.getMpPass(Session.session.getAccessToken(), Session.session.getUsername(), Session.session.getUuid(), ip, port);
+                String mppass = classicAuthService.getMPPass(ip, port, Session.session.getAccessToken(), Session.session.getUuid(), Session.session.getUsername());
                 MinecraftVersion.launchMinecraft(jarPath, as[0], (as.length <= 1 ? "25565" : as[1]), mppass);
 
                 boolean usingBetaEvolutions = false;
@@ -203,4 +204,5 @@ public class GuiDirectConnect extends AbstractGuiScreen
 
     private AbstractGuiScreen parentScreen;
     private GuiTextField textField;
+    private ClassicAuthService classicAuthService = new ClassicAuthService();
 }

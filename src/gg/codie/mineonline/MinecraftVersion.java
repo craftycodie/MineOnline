@@ -47,6 +47,9 @@ public class MinecraftVersion {
     public final int hurtEffectCallsPerFrame;
     public final boolean useFOVPatch;
     public final boolean useTexturepackPatch;
+    public final String waterColorizerClass;
+    public final String grassColorizerClass;
+    public final String foliageColorizerClass;
     public final String ingameVersionString;
     public final String resourcesVersion;
     public final boolean useUsernamesPatch;
@@ -92,7 +95,10 @@ public class MinecraftVersion {
             URL downloadURL,
             boolean useMineOnlineMenu,
             String hurtEffectFunction,
-            int hurtEffectCallsPerFrame
+            int hurtEffectCallsPerFrame,
+            String waterColorizerClass,
+            String grassColorizerClass,
+            String foliageColorizerClass
     ) {
         this.sha256 = sha256;
         this.name = name;
@@ -129,6 +135,9 @@ public class MinecraftVersion {
         this.useMineOnlineMenu = useMineOnlineMenu;
         this.hurtEffectFunction = hurtEffectFunction;
         this.hurtEffectCallsPerFrame = hurtEffectCallsPerFrame;
+        this.waterColorizerClass = waterColorizerClass;
+        this.grassColorizerClass = grassColorizerClass;
+        this.foliageColorizerClass = foliageColorizerClass;
     }
 
     public MinecraftVersion(JSONObject object) {
@@ -166,6 +175,9 @@ public class MinecraftVersion {
         useMineOnlineMenu = object.optBoolean("useMineOnlineMenu", true);
         hurtEffectFunction = object.optString("hurtEffectFunction", null);
         hurtEffectCallsPerFrame = object.optInt("hurtEffectCallsPerFrame", 2);
+        waterColorizerClass = object.optString("waterColorizerClass", null);
+        grassColorizerClass = object.optString("grassColorizerClass", null);
+        foliageColorizerClass = object.optString("foliageColorizerClass", null);
 
         URL parsedURL = null;
 
@@ -396,7 +408,10 @@ public class MinecraftVersion {
                     null,
                     false,
                     null,
-                    2
+                    2,
+                    null,
+                    null,
+                    null
             );
         } catch (Exception ex) {
             System.err.println("Bad launcher JSON for version " + jarFile);
@@ -417,10 +432,10 @@ public class MinecraftVersion {
             if (serverIP != null && serverIP.equals(externalIP)) {
                 serverIP = InetAddress.getLocalHost().getHostAddress();
             }
-        }
 
-        Settings.singleton.setLastServer(serverIP + (serverPort != null ? ":" + serverPort : ""));
-        Settings.singleton.saveSettings();
+            Settings.singleton.setLastServer(serverIP + (serverPort != null ? ":" + serverPort : ""));
+            Settings.singleton.saveSettings();
+        }
 
         System.out.println("Launching jar " + (minecraftVersion != null ? minecraftVersion.name : jarPath) + " MD5 " + MD5Checksum.getMD5ChecksumForFile(jarPath));
         if (!LegacyGameManager.isInGame())

@@ -118,6 +118,7 @@ public class LegacyGameManager {
         LWJGLGL11Patch.init();
         LWJGLGLUPatch.useCustomFOV();
         ByteBufferPatch.init();
+        ColorizerPatch.init();
 
         if (version != null) {
             if (version.useFOVPatch && version.entityRendererClass != null)
@@ -174,6 +175,7 @@ public class LegacyGameManager {
                 }
             }
         }
+        ColorizerPatch.updateColorizers();
     }
 
     public static void setFOV(int fov) {

@@ -3,6 +3,8 @@ package gg.codie.mineonline.patches.mcpatcher;
 import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.Settings;
 import gg.codie.mineonline.client.LegacyGameManager;
+import gg.codie.mineonline.patches.HashMapPutAdvice;
+import org.lwjgl.opengl.GL11;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -113,6 +115,10 @@ public class HDTextureFXHelper {
             textureName = "/custom_water_still.png";
         else if (x == 208 && y == 224)
             textureName = "/custom_lava_still.png";
+
+        // Indev animated border water.
+        else if (GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D) == HashMapPutAdvice.textures.getOrDefault("/water.png", -1))
+            textureName = "/custom_water_still.png";
 
 //        else if (x == 96 && y == 48) // Compass
 //            textureName = "/custom_fire_e_w.png";
