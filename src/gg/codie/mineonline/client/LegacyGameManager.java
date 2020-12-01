@@ -174,6 +174,7 @@ public class LegacyGameManager {
                 }
             }
         }
+        ColorizerPatch.updateColorizers();
     }
 
     public static void setFOV(int fov) {
