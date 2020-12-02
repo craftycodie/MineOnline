@@ -38,7 +38,6 @@ public class BetaCraftMPPassProvider implements IMPPassProvider {
             StringBuilder response = new StringBuilder();
             String line;
             while ((line = rd.readLine()) != null) {
-                System.out.println(line);
                 response.append(line);
             }
             rd.close();
