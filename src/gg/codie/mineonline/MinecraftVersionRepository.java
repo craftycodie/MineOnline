@@ -294,6 +294,7 @@ public class MinecraftVersionRepository {
                         Exception exception = (Exception) download.getData();
                         System.out.println("Bad version " + download.getVersion());
                         exception.printStackTrace();
+                        continue;
                     }
 
                     //Version downloaded successfully
