@@ -5,6 +5,7 @@ import gg.codie.common.utils.JSONUtils;
 import gg.codie.common.utils.MD5Checksum;
 import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.mineonline.gui.ProgressDialog;
+import gg.codie.mineonline.utils.DownloadHandlerThread;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -220,9 +221,11 @@ public class MinecraftVersionRepository {
 
     private void downloadVersionInfo() {
         MinecraftVersion[] cachedVersions = getVersions(LauncherFiles.MINEONLINE_VERSION_INFO_FOLDER);
+        ArrayList<DownloadHandlerThread> downloadHandlers = new ArrayList<>();
         try {
             JSONObject index = MineOnlineAPI.getVersionIndex();
             JSONArray versionsPaths = index.getJSONArray("versions");
+            int maximumDownloadThreads = 8;
             for(Object versionPathObject : versionsPaths) {
                 try {
                     String filename = ((JSONObject) versionPathObject).getString("name");
@@ -250,10 +253,52 @@ public class MinecraftVersionRepository {
                     if (alreadyDownloaded)
                         continue;
 
+                    //Limit the number of download threads. Basically sleep the main thread while waiting for threads to finish.
+                    int runningThreads = 0;
+                    for (DownloadHandlerThread downloadThread : downloadHandlers) {
+                        if (!downloadThread.isCompleted()) {
+                            runningThreads = runningThreads + 1;
+                        }
+                    }
+                    //Join threads and wait for them to finish. This isn't the most effective system, but it works.
+                    if(runningThreads > maximumDownloadThreads) {
+                        for (DownloadHandlerThread downloadThread : downloadHandlers) {
+                            if (!downloadThread.isCompleted()) {
+                                downloadThread.join();
+                            }
+                        }
+                    }
 
-                    System.out.println("Downloaded new version info " + ((JSONObject) versionPathObject).getString("name"));
 
-                    String downloadVersionText = MineOnlineAPI.getVersionInfo(((JSONObject) versionPathObject).getString("url"));
+                    System.out.println("Queueing version " + ((JSONObject) versionPathObject).getString("name") + " for download.");
+                    DownloadHandlerThread download = new DownloadHandlerThread(((JSONObject) versionPathObject).getString("url"), ((JSONObject) versionPathObject).getString("name"));
+                    download.start();
+                    downloadHandlers.add(download);
+                    
+                } catch (Exception ex) {
+                    System.out.println("Bad version " + versionPathObject);
+                    ex.printStackTrace();
+                }
+            }
+
+            //Retrieve manifests from threads
+            boolean isCompleted = false;
+            while (!isCompleted) {
+                isCompleted = true;
+                for (DownloadHandlerThread download : downloadHandlers) {
+                    if (!download.isCompleted()) {
+                        isCompleted = false;
+                        continue;
+                    }
+                    if (download.getData() instanceof Exception) {
+                        Exception exception = (Exception) download.getData();
+                        System.out.println("Bad version " + download.getVersion());
+                        exception.printStackTrace();
+                        continue;
+                    }
+
+                    //Version downloaded successfully
+                    String downloadVersionText = (String) download.getData();
                     MinecraftVersion downloadVersion = new MinecraftVersion(new JSONObject(downloadVersionText));
 
                     Path target = Paths.get(LauncherFiles.MINEONLINE_VERSION_INFO_FOLDER + downloadVersion.type + File.separator + downloadVersion.name + " " + downloadVersion.md5 + ".json");
@@ -264,10 +309,10 @@ public class MinecraftVersionRepository {
 
                     Files.write(target, downloadVersionText.getBytes(), StandardOpenOption.WRITE);
 
-                } catch (Exception ex) {
-                    System.out.println("Bad version " + versionPathObject);
-                    ex.printStackTrace();
+
                 }
+
+
             }
 
             // If a version has been removed from the API, delete it.

@@ -126,6 +126,12 @@ public class GuiSlotServer extends GuiSlot
         else if (server.onlineMode)
             Renderer.singleton.drawSprite(xPos + slotWidth - 29, yPos, 20, 176, 10, 8);
 
+        if (server.whitelisted)
+            if (server.featured || server.onlineMode)
+                Renderer.singleton.drawSprite(xPos + slotWidth - 44, yPos, 20, 192, 10, 8);
+            else
+                Renderer.singleton.drawSprite(xPos + slotWidth - 29, yPos, 20, 192, 10, 8);
+
 
         int connectionIconTypeIndex;
         int connectionIconIndex;
@@ -187,6 +193,14 @@ public class GuiSlotServer extends GuiSlot
                 guiMultiplayer.setTooltip("Featured");
             else if (server.onlineMode)
                 guiMultiplayer.setTooltip("Online Mode");
+            else if (server.whitelisted)
+                guiMultiplayer.setTooltip("Whitelisted");
+        }
+
+        if (mouseX >= (xPos + slotWidth - 44) - byte0 && mouseY >= yPos - byte0 && mouseX <= xPos + (slotWidth - 44) + 10 + byte0 && mouseY <= yPos + 8 + byte0)
+        {
+            if (server.whitelisted && (server.onlineMode || server.featured))
+                guiMultiplayer.setTooltip("Whitelisted");
         }
         // TODO: Players Tooltip
 //        if(mouseX >= (j + 205) - byte0 && mouseY >= k && mouseX <= j + 205 + 10 + byte0 && mouseY <= k + 12 + byte0)

@@ -21,7 +21,7 @@ public class MineOnlineMPPassProvider implements IMPPassProvider {
 
             String json = jsonObject.toString();
 
-            URL url = new URL(Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/servertoken");
+            URL url = new URL(Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/mppass");
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestProperty("Content-Type", "application/json");
             connection.setRequestMethod("POST");
@@ -42,9 +42,10 @@ public class MineOnlineMPPassProvider implements IMPPassProvider {
             }
             rd.close();
 
-//            JSONObject resObject = new JSONObject(response.toString());
-//            return resObject.has("mppass") ? resObject.getString("mppass") : null;
-            return response.toString();
+            JSONObject resObject = new JSONObject(response.toString());
+
+            System.out.println(resObject);
+            return resObject.has("mpPass") ? resObject.getString("mpPass") : null;
         } catch (Exception ex) {
             ex.printStackTrace();
             return null;
