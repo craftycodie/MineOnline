@@ -118,6 +118,8 @@ public class MinecraftClientLauncher {
     }
 
     public void startMinecraft() throws Exception {
+        System.setProperty("apple.awt.application.name", "MineOnline");
+
         URLClassLoader classLoader = new URLClassLoader(new URL[] { Paths.get(jarPath).toUri().toURL() });
 
         if(minecraftVersion != null)
