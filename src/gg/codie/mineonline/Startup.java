@@ -13,6 +13,8 @@ import java.util.Map;
 
 public class Startup {
     public static void main(String[] args) throws IOException, URISyntaxException {
+        System.setProperty("apple.awt.application.name", "MineOnline");
+
         Logging.deleteLog();
         Logging.enableLogging();
 

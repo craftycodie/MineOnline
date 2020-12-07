@@ -467,6 +467,8 @@ public class MinecraftServerLauncher {
     }
 
     public static void main(String[] args) throws Exception{
+        System.setProperty("apple.awt.application.name", "MineOnline Server");
+
         Logging.enableLogging();
 
         File jarFile = new File(args[0]);

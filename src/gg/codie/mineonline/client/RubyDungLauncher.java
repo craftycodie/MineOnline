@@ -136,6 +136,8 @@ public class RubyDungLauncher implements IMinecraftAppletWrapper {
     }
 
     public void startRubyDung() throws Exception {
+        System.setProperty("apple.awt.application.name", "MineOnline");
+
         URLClassLoader classLoader = new URLClassLoader(new URL[] { Paths.get(jarPath).toUri().toURL() });
 
         LegacyGameManager.createGameManager(minecraftVersion, this);

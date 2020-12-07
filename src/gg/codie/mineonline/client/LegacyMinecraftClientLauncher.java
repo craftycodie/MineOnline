@@ -171,6 +171,8 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
 
     boolean firstUpdate = true;
     public void startMinecraft() throws Exception {
+        System.setProperty("apple.awt.application.name", "MineOnline");
+
         LibraryManager.updateNativesPath();
 
         LWJGLDisplayPatch.hijackLWJGLThreadPatch(minecraftVersion != null && minecraftVersion.useGreyScreenPatch);
