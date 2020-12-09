@@ -104,6 +104,13 @@ public class MinecraftServerProcess {
             } catch (ClassNotFoundException ex1) { }
         }
 
+        // Alpha SMP Test Remakes
+        if(mainClass == null) {
+            try {
+                mainClass = classLoader.loadClass("MinecraftServer");
+            } catch (ClassNotFoundException ex1) { }
+        }
+
         // Classic
         if(mainClass == null) {
             try {
