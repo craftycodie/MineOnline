@@ -112,7 +112,7 @@ public class MinecraftServerLauncher {
                     But since we don't have that server and probably never will, it's set to /say. */
 
                 // If classic, limit to 30 characters per line.
-                if(minecraftVersion.hasHeartbeat) {
+                if (minecraftVersion != null && minecraftVersion.hasHeartbeat) {
                     int maxLength = 60 - colorCodeProvider.getColorCode(EColorCodeColor.White).length();
                     Pattern p = Pattern.compile("\\G\\s*(.{1," + maxLength + "})(?=\\s|$)", Pattern.DOTALL);
                     Matcher m = p.matcher(message);
