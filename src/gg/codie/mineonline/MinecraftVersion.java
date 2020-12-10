@@ -422,6 +422,7 @@ public class MinecraftVersion {
 
     public static void launchMinecraft(String jarPath, String serverIP, String serverPort, String mpPass) throws Exception {
         MinecraftVersion minecraftVersion = MinecraftVersionRepository.getSingleton().getVersion(jarPath);
+        MinecraftVersionRepository.getSingleton().selectJar(jarPath);
 
         if (serverIP != null) {
             InetAddress address = InetAddress.getByName(serverIP);
