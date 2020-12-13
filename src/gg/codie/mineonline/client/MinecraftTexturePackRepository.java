@@ -52,8 +52,9 @@ public class MinecraftTexturePackRepository {
                 texturePacks.add(texturepackbase1);
             }
 
-        }
-//        texturePacks.removeAll(texturePacks);
+        } else
+            texturePacksDir.mkdirs();
+
         TexturePackBase texturepackbase;
         for(Iterator iterator = texturePacks.iterator(); iterator.hasNext(); customTexturePacks.remove(texturepackbase.key))
         {
