@@ -212,6 +212,6 @@ public class GuiMultiplayer extends AbstractGuiScreen
     private int selectedIndex;
     private GuiButton connectButton;
     private String tooltip;
-    private MineOnlineServerRepository serverRepository = new MineOnlineServerRepository();
+    public MineOnlineServerRepository serverRepository = new MineOnlineServerRepository();
     private ClassicAuthService classicAuthService = new ClassicAuthService();
 }

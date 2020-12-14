@@ -15,6 +15,10 @@ public class MineOnlineServerRepository {
         return failed;
     }
 
+    public boolean gotServers() {
+        return servers != null;
+    }
+
     public void loadServers() {
         servers = null;
         failed = false;

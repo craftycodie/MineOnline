@@ -122,7 +122,7 @@ public class DiscordRPCHandler {
                     ex.printStackTrace();
             }
 
-            DiscordRichPresence.Builder presence = new DiscordRichPresence.Builder(server != null ? server.name : (DiscordRPCHandler.serverIP + ":" + (!DiscordRPCHandler.serverPort.equals("25565") ? DiscordRPCHandler.serverPort : "")));
+            DiscordRichPresence.Builder presence = new DiscordRichPresence.Builder(server != null ? server.name : (DiscordRPCHandler.serverIP + (!DiscordRPCHandler.serverPort.equals("25565") ? (":" + DiscordRPCHandler.serverPort) : "")));
             presence.setDetails(DiscordRPCHandler.versionName);
             presence.setStartTimestamps(startTimestamp);
             presence.setSecrets(DiscordRPCHandler.serverIP + ", " + DiscordRPCHandler.serverPort, null);

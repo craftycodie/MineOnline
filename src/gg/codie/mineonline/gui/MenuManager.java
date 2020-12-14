@@ -91,6 +91,8 @@ public class MenuManager {
 
     static boolean skipUpdates = false;
     public static void main(String[] args) throws Exception {
+        System.setProperty("apple.awt.application.name", "MineOnline");
+
         Logging.enableLogging();
 
         DiscordRPCHandler.initialize();
