@@ -74,10 +74,10 @@ If you don't want your server to appear on the list, set `public: false` in `ser
 You can optionally provide a "serverlist-ip" and or "serverlist-port" in your server.properties, if you'd like a different IP/port to be listed.
 
 ## For Modders
-You can add custom version information to the launcher by creating a version info file at `.minecraft\mineonline\custom-versions\`.
+You can add custom version information to the launcher by creating a version info file at `.mineonline\custom-version-info\`.
 The file should be in a directory named client or server, and it's name should contain the version name and md5.
 For example:
-`.minecraft\mineonline\custom-versions\client\Skylands 0.1 F8F78A4ED4033547CC1EA28C776DA7AE.json`
+`.mineonline\custom-version-info\client\Skylands 0.1 F8F78A4ED4033547CC1EA28C776DA7AE.json`
 This file should contain an array of JSON versions, like this:
 
 ```json
