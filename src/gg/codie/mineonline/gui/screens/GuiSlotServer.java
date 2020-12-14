@@ -3,6 +3,7 @@ package gg.codie.mineonline.gui.screens;
 import gg.codie.mineonline.MinecraftVersion;
 import gg.codie.mineonline.MinecraftVersionRepository;
 import gg.codie.mineonline.api.MineOnlineServer;
+import gg.codie.mineonline.api.MineOnlineServerRepository;
 import gg.codie.mineonline.gui.rendering.FontRenderer;
 import gg.codie.mineonline.gui.rendering.Loader;
 import gg.codie.mineonline.gui.rendering.Renderer;
@@ -29,6 +30,9 @@ public class GuiSlotServer extends GuiSlot
 
     protected int getSize()
     {
+        if (MinecraftVersionRepository.getSingleton().isLoadingInstalledVersions())
+            return 0;
+
         return guiMultiplayer != null ? guiMultiplayer.getServers().size() : 0;
     }
 
@@ -50,12 +54,24 @@ public class GuiSlotServer extends GuiSlot
 
     protected int getContentHeight()
     {
-        return guiMultiplayer.getServers().size() * 36;
+        return getSize() * 36;
     }
 
     protected void drawBackground()
     {
         guiMultiplayer.drawDefaultBackground();
+    }
+
+    @Override
+    public void drawScreen(int mousex, int mousey) {
+        super.drawScreen(mouseX, mouseY);
+
+        if (MinecraftVersionRepository.getSingleton().isLoadingInstalledVersions())
+            FontRenderer.minecraftFontRenderer.drawCenteredString("Loading versions...", guiMultiplayer.getWidth() / 2, guiMultiplayer.getHeight() / 2, 0x808080);
+        else if (guiMultiplayer.serverRepository.didFail())
+            FontRenderer.minecraftFontRenderer.drawCenteredString("Failed to load servers.", guiMultiplayer.getWidth() / 2, guiMultiplayer.getHeight() / 2, 0x808080);
+        else if (!guiMultiplayer.serverRepository.gotServers())
+            FontRenderer.minecraftFontRenderer.drawCenteredString("Loading servers...", guiMultiplayer.getWidth() / 2, guiMultiplayer.getHeight() / 2, 0x808080);
     }
 
     protected void drawSlot(int slotIndex, int xPos, int yPos, int zPos)
