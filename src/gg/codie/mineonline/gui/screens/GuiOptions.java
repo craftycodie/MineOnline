@@ -1,16 +1,14 @@
 package gg.codie.mineonline.gui.screens;
 
-import gg.codie.minecraft.client.EMinecraftGUIScale;
-import gg.codie.minecraft.client.EMinecraftMainHand;
+import gg.codie.minecraft.client.options.EMinecraftGUIScale;
 import gg.codie.mineonline.Session;
 import gg.codie.mineonline.Settings;
 import gg.codie.mineonline.client.LegacyGameManager;
-import gg.codie.mineonline.gui.GUIScale;
 import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.gui.components.GuiButton;
 import gg.codie.mineonline.gui.components.GuiSlider;
 import gg.codie.mineonline.gui.components.GuiSmallButton;
-import org.lwjgl.input.Mouse;
+import gg.codie.mineonline.gui.rendering.FontRenderer;
 
 public class GuiOptions extends AbstractGuiScreen
 {
@@ -76,7 +74,7 @@ public class GuiOptions extends AbstractGuiScreen
         }));
 
         if (LegacyGameManager.isInGame())
-            ((GuiButton)controlList.get(2)).enabled = LegacyGameManager.getVersion().useFOVPatch;
+            ((GuiButton)controlList.get(2)).enabled = LegacyGameManager.getVersion() == null || LegacyGameManager.getVersion().useFOVPatch;
 
         controlList.add(new GuiSmallButton(0, getWidth() / 2 + 5, getHeight() / 6, "GUI Scale: " + Settings.singleton.getGUIScale().getName().toUpperCase(), new GuiButton.GuiButtonListener() {
             @Override
@@ -101,7 +99,7 @@ public class GuiOptions extends AbstractGuiScreen
         }));
 
         if (LegacyGameManager.isInGame())
-            ((GuiButton)controlList.get(3)).enabled = LegacyGameManager.getVersion().scaledResolutionClass != null || LegacyGameManager.getVersion().guiScreenClass != null;
+            ((GuiButton)controlList.get(3)).enabled = LegacyGameManager.getVersion() != null && (LegacyGameManager.getVersion().scaledResolutionClass != null || LegacyGameManager.getVersion().guiScreenClass != null);
 
 
         controlList.add(new GuiSmallButton(0, getWidth() / 2 - 155, getHeight() / 6 + 24, "Hide Version Number: " + (Settings.singleton.getHideVersionString() ? "YES" : "NO"), new GuiButton.GuiButtonListener() {
@@ -118,7 +116,7 @@ public class GuiOptions extends AbstractGuiScreen
         }));
 
         if (LegacyGameManager.isInGame())
-            ((GuiButton)controlList.get(4)).enabled = LegacyGameManager.getVersion().ingameVersionString != null;
+            ((GuiButton)controlList.get(4)).enabled = LegacyGameManager.getVersion() != null && LegacyGameManager.getVersion().ingameVersionString != null;
 
 //        controlList.add(new GuiSmallButton(0, getWidth() / 2 + 5, getHeight() / 6 + 24, "Main Hand: " + Settings.singleton.getMainHand().name(), new GuiButton.GuiButtonListener() {
 //            @Override
@@ -177,7 +175,7 @@ public class GuiOptions extends AbstractGuiScreen
         }
     }
 
-    public void resizeGui() {
+    public void resize() {
         controlList.get(0).resize(getWidth() / 2 - 100, getHeight() / 6 + 168);
         controlList.get(1).resize(getWidth() / 2 - 100, getHeight() / 6 + 120 + 12);
         controlList.get(2).resize(getWidth() / 2 - 155, getHeight() / 6);
@@ -194,13 +192,13 @@ public class GuiOptions extends AbstractGuiScreen
     }
 
     @Override
-    public void drawScreen(int i, int j)
+    public void drawScreen(int mouseX, int mouseY)
     {
-        resizeGui();
+        resize();
 
         drawDefaultBackground();
-        drawCenteredString(screenName, getWidth() / 2, 20, 0xffffff);
-        super.drawScreen(i, j);
+        FontRenderer.minecraftFontRenderer.drawCenteredString(screenName, getWidth() / 2, 20, 0xffffff);
+        super.drawScreen(mouseX, mouseY);
     }
 
     private AbstractGuiScreen parent;

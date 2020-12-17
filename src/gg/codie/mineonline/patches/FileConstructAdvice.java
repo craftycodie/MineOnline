@@ -29,7 +29,7 @@ public class FileConstructAdvice {
 
             if (path.startsWith(MINECRAFT_RESOURCES_PATH) || path.substring(1).startsWith(MINECRAFT_RESOURCES_PATH)) {
                 path = path.replace(MINECRAFT_RESOURCES_PATH, MINEONLINE_RESOURCES_PATH + resourcesVersion + File.separator);
-            } else if ((path.startsWith(OLD_MINECRAFT_FOLDER) || path.startsWith(NEW_MINECRAFT_FOLDER)) && path.endsWith("options.txt")) {
+            } else if ((path.startsWith(OLD_MINECRAFT_FOLDER) || path.startsWith(NEW_MINECRAFT_FOLDER)) && path.endsWith("options.txt") && !path.equals(MINEONLINE_OPTIONS_PATH)) {
                 path = MINEONLINE_OPTIONS_PATH;
                 File file = new File(path);
             }

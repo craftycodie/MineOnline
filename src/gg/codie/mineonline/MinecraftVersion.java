@@ -1,24 +1,22 @@
 package gg.codie.mineonline;
 
-import gg.codie.minecraft.client.EMinecraftOptionsVersion;
-import gg.codie.mineonline.api.MineOnlineAPI;
-import gg.codie.mineonline.client.*;
 import gg.codie.common.utils.JSONUtils;
 import gg.codie.common.utils.MD5Checksum;
 import gg.codie.common.utils.OSUtils;
+import gg.codie.minecraft.client.options.EMinecraftOptionsVersion;
+import gg.codie.mineonline.api.MineOnlineAPI;
+import gg.codie.mineonline.client.LegacyGameManager;
+import gg.codie.mineonline.client.LegacyMinecraftClientLauncher;
+import gg.codie.mineonline.client.MinecraftClientLauncher;
+import gg.codie.mineonline.client.RubyDungLauncher;
 import org.json.JSONObject;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
+import java.io.*;
+import java.net.*;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.LinkedList;
+import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -45,8 +43,13 @@ public class MinecraftVersion {
     public final String scaledResolutionClass;
     public final String entityRendererClass;
     public final String viewModelFunction;
+    public final String hurtEffectFunction;
+    public final int hurtEffectCallsPerFrame;
     public final boolean useFOVPatch;
     public final boolean useTexturepackPatch;
+    public final String waterColorizerClass;
+    public final String grassColorizerClass;
+    public final String foliageColorizerClass;
     public final String ingameVersionString;
     public final String resourcesVersion;
     public final boolean useUsernamesPatch;
@@ -55,6 +58,7 @@ public class MinecraftVersion {
     public final boolean useResizePatch;
     public final boolean hasNetherPortalTexture;
     public final URL downloadURL;
+    public final boolean useMineOnlineMenu;
 
     public MinecraftVersion(
             String sha256,
@@ -88,7 +92,13 @@ public class MinecraftVersion {
             EMinecraftOptionsVersion optionsVersion,
             boolean useResizePatch,
             boolean hasNetherPortalTexture,
-            URL downloadURL
+            URL downloadURL,
+            boolean useMineOnlineMenu,
+            String hurtEffectFunction,
+            int hurtEffectCallsPerFrame,
+            String waterColorizerClass,
+            String grassColorizerClass,
+            String foliageColorizerClass
     ) {
         this.sha256 = sha256;
         this.name = name;
@@ -122,6 +132,12 @@ public class MinecraftVersion {
         this.useResizePatch = useResizePatch;
         this.hasNetherPortalTexture = hasNetherPortalTexture;
         this.downloadURL = downloadURL;
+        this.useMineOnlineMenu = useMineOnlineMenu;
+        this.hurtEffectFunction = hurtEffectFunction;
+        this.hurtEffectCallsPerFrame = hurtEffectCallsPerFrame;
+        this.waterColorizerClass = waterColorizerClass;
+        this.grassColorizerClass = grassColorizerClass;
+        this.foliageColorizerClass = foliageColorizerClass;
     }
 
     public MinecraftVersion(JSONObject object) {
@@ -148,7 +164,7 @@ public class MinecraftVersion {
         entityRendererClass = object.optString("entityRendererClass", null);
         viewModelFunction = object.optString("viewModelFunction", null);
         useFOVPatch = object.optBoolean("useFOVPatch", false);
-        useTexturepackPatch = object.optBoolean("useTexturepackPatch", true);
+        useTexturepackPatch = object.optBoolean("useTexturepackPatch", false);
         ingameVersionString = object.optString("ingameVersionString", null);
         resourcesVersion = object.optString("resourcesVersion", "default");
         useUsernamesPatch = object.optBoolean("useUsernamesPatch", false);
@@ -156,6 +172,12 @@ public class MinecraftVersion {
         optionsVersion = object.optEnum(EMinecraftOptionsVersion.class, "optionsVersion", EMinecraftOptionsVersion.DEFAULT);
         useResizePatch = object.optBoolean("useResizePatch", false);
         hasNetherPortalTexture = object.optBoolean("hasNetherPortalTexture", true);
+        useMineOnlineMenu = object.optBoolean("useMineOnlineMenu", true);
+        hurtEffectFunction = object.optString("hurtEffectFunction", null);
+        hurtEffectCallsPerFrame = object.optInt("hurtEffectCallsPerFrame", 2);
+        waterColorizerClass = object.optString("waterColorizerClass", null);
+        grassColorizerClass = object.optString("grassColorizerClass", null);
+        foliageColorizerClass = object.optString("foliageColorizerClass", null);
 
         URL parsedURL = null;
 
@@ -169,6 +191,27 @@ public class MinecraftVersion {
         downloadURL = parsedURL;
     }
 
+
+    public String download() throws IOException {
+        HttpURLConnection httpConnection = (java.net.HttpURLConnection) (downloadURL.openConnection());
+        InputStream in = httpConnection.getInputStream();
+
+        String path = LauncherFiles.MINEONLINE_VERSIONS_PATH + "clients" + File.separator + name + " " + md5 + File.separator + baseVersion + ".jar";
+
+        File clientJar = new File(path);
+        clientJar.getParentFile().mkdirs();
+        OutputStream out = new java.io.FileOutputStream(path, false);
+
+        final byte[] data = new byte[1024];
+        int count;
+        while ((count = in.read(data, 0, 1024)) != -1) {
+            out.write(data, 0, count);
+        }
+
+        MinecraftVersionRepository.getSingleton().addInstalledVersion(path);
+
+        return path;
+    }
 
     public static String getAppletClass(String path) throws IOException {
         JarFile jarFile = new JarFile(path);
@@ -217,11 +260,7 @@ public class MinecraftVersion {
                 return true;
             } else if (className.equals("Minecraft")) {
                 return true;
-            }
-            else if (className.equals("LauncherFrame")) {
-                return true;
-            }
-            else if (className.equals("RubyDung")) {
+            } else if (className.equals("RubyDung")) {
                 return true;
             }
         }
@@ -255,10 +294,6 @@ public class MinecraftVersion {
             if(classCanonicalName.lastIndexOf(".") > -1) {
                 className = classCanonicalName.substring(classCanonicalName.lastIndexOf(".") + 1);
             }
-
-//            else if (className.equals("MinecraftLauncher")) {
-//                return true;
-//            }
             if (className.equals("Main")) {
                 return true;
             }
@@ -370,6 +405,12 @@ public class MinecraftVersion {
                     EMinecraftOptionsVersion.DEFAULT,
                     false,
                     true,
+                    null,
+                    false,
+                    null,
+                    2,
+                    null,
+                    null,
                     null
             );
         } catch (Exception ex) {
@@ -380,13 +421,8 @@ public class MinecraftVersion {
     }
 
     public static void launchMinecraft(String jarPath, String serverIP, String serverPort, String mpPass) throws Exception {
-        try {
-            Settings.singleton.setLastServer(serverIP != null && serverPort != null ? serverIP + ":" + serverPort : (serverIP != null ? serverIP : ""));
-        } catch (Exception ex) {
-            // ignore
-        }
-
         MinecraftVersion minecraftVersion = MinecraftVersionRepository.getSingleton().getVersion(jarPath);
+        MinecraftVersionRepository.getSingleton().selectJar(jarPath);
 
         if (serverIP != null) {
             InetAddress address = InetAddress.getByName(serverIP);
@@ -397,21 +433,19 @@ public class MinecraftVersion {
             if (serverIP != null && serverIP.equals(externalIP)) {
                 serverIP = InetAddress.getLocalHost().getHostAddress();
             }
+
+            Settings.singleton.setLastServer(serverIP + (serverPort != null ? ":" + serverPort : ""));
+            Settings.singleton.saveSettings();
         }
 
         System.out.println("Launching jar " + (minecraftVersion != null ? minecraftVersion.name : jarPath) + " MD5 " + MD5Checksum.getMD5ChecksumForFile(jarPath));
         if (!LegacyGameManager.isInGame())
-            Settings.singleton.saveMinecraftOptions(minecraftVersion.optionsVersion);
+            Settings.singleton.saveMinecraftOptions(minecraftVersion != null ? minecraftVersion.optionsVersion : EMinecraftOptionsVersion.DEFAULT);
 
 
         if(minecraftVersion != null) {
             if (minecraftVersion.type.equals("rubydung")) {
                 RubyDungLauncher.startProcess(jarPath);
-                return;
-            }
-
-            if (minecraftVersion.type.equals("launcher")) {
-                new LegacyMinecraftLauncherLauncher(jarPath);
                 return;
             }
 

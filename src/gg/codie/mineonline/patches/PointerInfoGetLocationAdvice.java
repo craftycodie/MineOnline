@@ -1,6 +1,5 @@
 package gg.codie.mineonline.patches;
 
-import gg.codie.mineonline.gui.rendering.DisplayManager;
 import net.bytebuddy.asm.Advice;
 
 import java.awt.*;

@@ -1,13 +1,10 @@
 package gg.codie.mineonline.patches;
 
-import gg.codie.mineonline.LauncherFiles;
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.asm.Advice;
 import net.bytebuddy.dynamic.loading.ClassReloadingStrategy;
 import net.bytebuddy.implementation.Implementation;
 import net.bytebuddy.matcher.ElementMatchers;
-
-import java.io.File;
 
 public class ThreadPatch {
     public static void interruptJoins() {

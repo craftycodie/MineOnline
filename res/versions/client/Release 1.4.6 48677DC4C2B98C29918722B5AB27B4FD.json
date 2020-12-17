@@ -1,9 +1,0 @@
-{
-  "name": "Release 1.4.6",
-  "md5": "48677DC4C2B98C29918722B5AB27B4FD",
-  "sha256": "C4BB5FD8F98AC7160B34FFF7A65F809E0930EE39C5D94F463F0884A6477B25CA",
-  "type": "client",
-  "legacy": true,
-  "baseVersion": "1.4.6",
-  "resourcesVersion": "1.5.2"
-}

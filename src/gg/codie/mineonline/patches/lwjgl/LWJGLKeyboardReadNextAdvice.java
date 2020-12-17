@@ -2,10 +2,8 @@ package gg.codie.mineonline.patches.lwjgl;
 
 import net.bytebuddy.asm.Advice;
 import net.bytebuddy.implementation.bytecode.assign.Assigner;
-import org.lwjgl.input.Keyboard;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 
 public class LWJGLKeyboardReadNextAdvice {
     public static int position = 0;

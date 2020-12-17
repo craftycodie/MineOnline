@@ -5,6 +5,7 @@ import gg.codie.mineonline.LibraryManager;
 import gg.codie.mineonline.client.LegacyGameManager;
 import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.gui.components.GuiButton;
+import gg.codie.mineonline.gui.rendering.FontRenderer;
 import gg.codie.mineonline.utils.JREUtils;
 
 import java.io.File;
@@ -13,15 +14,8 @@ import java.util.Map;
 
 public class GuiIngameMenu extends AbstractGuiScreen
 {
-    public GuiIngameMenu()
-    {
-        updateCounter2 = 0;
-        updateCounter = 0;
-    }
-
     public void initGui()
     {
-        updateCounter2 = 0;
         controlList.clear();
         byte byte0 = -16;
         controlList.add(new GuiButton(1, getWidth() / 2 - 100, getHeight() / 4 + 120 + byte0, "Save and quit to launcher", new GuiButton.GuiButtonListener() {
@@ -70,7 +64,7 @@ public class GuiIngameMenu extends AbstractGuiScreen
             }
         }));
 
-        if (LegacyGameManager.getVersion().useTexturepackPatch) {
+        if (LegacyGameManager.getVersion() == null || LegacyGameManager.getVersion().useTexturepackPatch) {
             controlList.add(new GuiButton(5, getWidth() / 2 - 100, getHeight() / 4 + 48 + byte0, 98, 20, "Multiplayer", new GuiButton.GuiButtonListener() {
                 @Override
                 public void OnButtonPress() {
@@ -97,20 +91,16 @@ public class GuiIngameMenu extends AbstractGuiScreen
     public void updateScreen()
     {
         super.updateScreen();
-        updateCounter++;
     }
 
     @Override
-    public void drawScreen(int i, int j)
+    public void drawScreen(int mouseX, int mouseY)
     {
         controlList.clear();
         initGui();
 
         drawDefaultBackground();
-        drawCenteredString("MineOnline menu", getWidth() / 2, 40, 0xffffff);
-        super.drawScreen(i, j);
+        FontRenderer.minecraftFontRenderer.drawCenteredString("MineOnline menu", getWidth() / 2, 40, 0xffffff);
+        super.drawScreen(mouseX, mouseY);
     }
-
-    private int updateCounter2;
-    private int updateCounter;
 }

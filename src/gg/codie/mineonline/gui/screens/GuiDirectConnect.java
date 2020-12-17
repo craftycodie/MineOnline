@@ -1,26 +1,23 @@
-// Decompiled by Jad v1.5.8g. Copyright 2001 Pavel Kouznetsov.
-// Jad home page: http://www.kpdus.com/jad.html
-// Decompiler options: packimports(3) braces deadcode 
-
 package gg.codie.mineonline.gui.screens;
 
-import gg.codie.mineonline.*;
+import com.johnymuffin.BetaEvolutionsUtils;
+import gg.codie.mineonline.MinecraftVersion;
+import gg.codie.mineonline.MinecraftVersionRepository;
+import gg.codie.mineonline.Session;
+import gg.codie.mineonline.Settings;
+import gg.codie.mineonline.api.ClassicAuthService;
 import gg.codie.mineonline.api.MineOnlineAPI;
+import gg.codie.mineonline.api.MineOnlineServer;
 import gg.codie.mineonline.client.LegacyGameManager;
 import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.gui.components.GuiButton;
-import gg.codie.mineonline.gui.components.GuiComponent;
 import gg.codie.mineonline.gui.components.GuiTextField;
 import gg.codie.mineonline.gui.rendering.DisplayManager;
-import gg.codie.mineonline.utils.JREUtils;
+import gg.codie.mineonline.gui.rendering.FontRenderer;
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 
-import java.io.File;
-import java.nio.file.Paths;
-import java.util.LinkedList;
-import java.util.Map;
+import java.io.IOException;
 
 // Referenced classes of package net.minecraft.src:
 //            GuiScreen, GuiTextField, StringTranslate, GuiButton, 
@@ -38,12 +35,6 @@ public class GuiDirectConnect extends AbstractGuiScreen
     public GuiDirectConnect(AbstractGuiScreen guiscreen)
     {
         this(guiscreen, null);
-    }
-
-    public void updateScreen()
-    {
-        if(textField != null)
-            textField.updateCursorCounter();
     }
 
     public void initGui(String serverString)
@@ -71,9 +62,9 @@ public class GuiDirectConnect extends AbstractGuiScreen
                 };
 
                 if (LegacyGameManager.isInGame())
-                    LegacyGameManager.setGUIScreen(new GuiVersions(thisScreen, null, selectListener, compare, false));
+                    LegacyGameManager.setGUIScreen(new GuiVersions(thisScreen, null, selectListener, compare, false, false));
                 else
-                    MenuManager.setMenuScreen(new GuiVersions(thisScreen, null, selectListener, compare, false));
+                    MenuManager.setMenuScreen(new GuiVersions(thisScreen, null, selectListener, compare, false, false));
             }
         }));
         controlList.add(new GuiButton(1, getWidth() / 2 - 100, (getHeight() / 4 - 10) + 50 + 18, "Cancel", new GuiButton.GuiButtonListener() {
@@ -94,7 +85,7 @@ public class GuiDirectConnect extends AbstractGuiScreen
         textField.setMaxStringLength(128);
     }
 
-    public void resizeGui() {
+    public void resize() {
         controlList.get(0).resize(getWidth() / 2 - 100, getHeight() / 4 + 96 + 12);
         controlList.get(1).resize(getWidth() / 2 - 100, getHeight() / 4 + 120 + 12);
         textField.resize(getWidth() / 2 - 100, (getHeight() / 4 - 10) + 50 + 18);
@@ -107,8 +98,6 @@ public class GuiDirectConnect extends AbstractGuiScreen
 
     private void joinServer(String jarPath) {
         String s = textField.getText().trim();
-        Settings.singleton.setLastServer(s.replaceAll(":", "_"));
-        Settings.singleton.saveSettings();
         String as[] = s.split(":");
         if(s.startsWith("["))
         {
@@ -138,13 +127,36 @@ public class GuiDirectConnect extends AbstractGuiScreen
 
         try {
             try {
-                String mppass = MineOnlineAPI.getMpPass(Session.session.getAccessToken(), Session.session.getUsername(), Session.session.getUuid(), as[0], (as.length <= 1 ? 25565 : parseIntWithDefault(as[1], 25565)) + "");
+                String ip = as[0];
+                String port = as.length > 1 ? as[1] : "25565";
+                String mppass = classicAuthService.getMPPass(ip, port, Session.session.getAccessToken(), Session.session.getUuid(), Session.session.getUsername());
                 MinecraftVersion.launchMinecraft(jarPath, as[0], (as.length <= 1 ? "25565" : as[1]), mppass);
 
-                if (LegacyGameManager.isInGame())
+                boolean usingBetaEvolutions = false;
+
+                try {
+                    MineOnlineServer server = MineOnlineAPI.getServer(ip, port);
+                    usingBetaEvolutions = server.usingBetaEvolutions;
+                } catch (IOException ex) {
+                    // ignore
+                }
+
+
+                if (LegacyGameManager.isInGame()) {
+                    if (usingBetaEvolutions) {
+                        BetaEvolutionsUtils betaEvolutions = new BetaEvolutionsUtils(true);
+                        BetaEvolutionsUtils.VerificationResults verificationResults = betaEvolutions.authenticateUser(Session.session.getUsername(), Session.session.getAccessToken());
+                        System.out.println("[Beta Evolutions] Authenticated with " + verificationResults.getSuccessful() + "/" + verificationResults.getTotal() + " BetaEVO nodes.");
+                    }
                     LegacyGameManager.closeGame();
-                else {
+                } else {
                     Display.destroy();
+                    DisplayManager.getFrame().setVisible(false);
+                    if(usingBetaEvolutions) {
+                        BetaEvolutionsUtils betaEvolutions = new BetaEvolutionsUtils(true);
+                        BetaEvolutionsUtils.VerificationResults verificationResults = betaEvolutions.authenticateUser(Session.session.getUsername(), Session.session.getAccessToken());
+                        System.out.println("[Beta Evolutions] Authenticated with " + verificationResults.getSuccessful() + "/" + verificationResults.getTotal() + " BetaEVO nodes.");
+                    }
                     DisplayManager.getFrame().dispose();
                     System.exit(0);
                 }
@@ -158,18 +170,6 @@ public class GuiDirectConnect extends AbstractGuiScreen
         }
     }
 
-    private int parseIntWithDefault(String s, int i)
-    {
-        try
-        {
-            return Integer.parseInt(s.trim());
-        }
-        catch(Exception exception)
-        {
-            return i;
-        }
-    }
-
     protected void keyTyped(char c, int i)
     {
         textField.textboxKeyTyped(c, i);
@@ -180,26 +180,29 @@ public class GuiDirectConnect extends AbstractGuiScreen
         ((GuiButton)controlList.get(0)).enabled = textField.getText().length() > 0;
     }
 
-    protected void mouseClicked(int i, int j, int k)
+    protected void mouseClicked(int x, int y, int button)
     {
-        super.mouseClicked(i, j, k);
-        textField.mouseClicked(i, j, k);
+        super.mouseClicked(x, y, button);
+        textField.mouseClicked(x, y, button);
     }
 
     @Override
-    public void drawScreen(int i, int j)
+    public void drawScreen(int mouseX, int mouseY)
     {
-        resizeGui();
+        resize();
 
         drawDefaultBackground();
-        drawCenteredString("Play Multiplayer", getWidth() / 2, (getHeight() / 4 - 60) + 20, 0xffffff);
-        drawString("Minecraft Multiplayer is currently not finished, but there", getWidth() / 2 - 140, (getHeight() / 4 - 60) + 60, 0xa0a0a0);
-        drawString("is some buggy early testing going on.", getWidth() / 2 - 140, (getHeight() / 4 - 60) + 60 + 9, 0xa0a0a0);
-        drawString("Enter the IP of a server to connect to it:", getWidth() / 2 - 140, (getHeight() / 4 - 60) + 60 + 36, 0xa0a0a0);
+        FontRenderer.minecraftFontRenderer.drawCenteredString("Play Multiplayer", getWidth() / 2, (getHeight() / 4 - 60) + 20, 0xffffff);
+        FontRenderer.minecraftFontRenderer.drawString("Enter the IP of a server to connect to it:", getWidth() / 2 - 140, (getHeight() / 4 - 60) + 60, 0xa0a0a0);
+
+//        FontRenderer.minecraftFontRenderer.drawString("Minecraft Multiplayer is currently not finished, but there", getWidth() / 2 - 140, (getHeight() / 4 - 60) + 60, 0xa0a0a0);
+//        FontRenderer.minecraftFontRenderer.drawString("is some buggy early testing going on.", getWidth() / 2 - 140, (getHeight() / 4 - 60) + 60 + 9, 0xa0a0a0);
+//        FontRenderer.minecraftFontRenderer.drawString("Enter the IP of a server to connect to it:", getWidth() / 2 - 140, (getHeight() / 4 - 60) + 60 + 36, 0xa0a0a0);
         textField.drawTextBox();
-        super.drawScreen(i, j);
+        super.drawScreen(mouseX, mouseY);
     }
 
     private AbstractGuiScreen parentScreen;
     private GuiTextField textField;
+    private ClassicAuthService classicAuthService = new ClassicAuthService();
 }

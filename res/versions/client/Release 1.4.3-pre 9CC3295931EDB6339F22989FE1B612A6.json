@@ -1,9 +1,0 @@
-{
-  "name": "Release 1.4.3-pre",
-  "md5": "9CC3295931EDB6339F22989FE1B612A6",
-  "sha256": "06D60D55D1C16F60884F0DEF32FA249145BF7E0B8F5058AD885E3AEAECF798FB",
-  "type": "client",
-  "legacy": true,
-  "baseVersion": "1.4.3-pre",
-  "resourcesVersion": "1.5.2"
-}

@@ -1,22 +1,25 @@
 package gg.codie.mineonline.gui.screens;
 
-import gg.codie.minecraft.api.LauncherAPI;
-import gg.codie.mineonline.*;
-import gg.codie.mineonline.api.MineOnlineAPI;
+import com.johnymuffin.BetaEvolutionsUtils;
+import gg.codie.mineonline.MinecraftVersion;
+import gg.codie.mineonline.MinecraftVersionRepository;
+import gg.codie.mineonline.Session;
+import gg.codie.mineonline.Settings;
 import gg.codie.mineonline.api.MineOnlineServer;
 import gg.codie.mineonline.api.MineOnlineServerRepository;
 import gg.codie.mineonline.client.LegacyGameManager;
-import gg.codie.mineonline.gui.events.IOnClickListener;
-import gg.codie.mineonline.server.ThreadPollServers;
 import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.gui.components.GuiButton;
 import gg.codie.mineonline.gui.rendering.DisplayManager;
 import gg.codie.mineonline.gui.rendering.FontRenderer;
-import gg.codie.mineonline.utils.JREUtils;
+import gg.codie.mineonline.gui.rendering.Renderer;
+import gg.codie.mineonline.server.ThreadPollServers;
 import org.lwjgl.opengl.Display;
+import gg.codie.mineonline.api.ClassicAuthService;
 
-import java.io.File;
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.function.Predicate;
 
 public class GuiMultiplayer extends AbstractGuiScreen
@@ -89,23 +92,23 @@ public class GuiMultiplayer extends AbstractGuiScreen
         }
     }
 
-    protected void mouseClicked(int i, int j, int k)
+    protected void mouseClicked(int x, int y, int button)
     {
-        super.mouseClicked(i, j, k);
+        super.mouseClicked(x, y, button);
     }
 
-    public void drawScreen(int i, int j)
+    public void drawScreen(int mouseX, int mouseY)
     {
         initGui();
 
         tooltip = null;
         drawDefaultBackground();
-        guiSlotServer.drawScreen(i, j);
-        drawCenteredString("Play Multiplayer", getWidth() / 2, 20, 0xffffff);
-        super.drawScreen(i, j);
+        guiSlotServer.drawScreen(mouseX, mouseY);
+        FontRenderer.minecraftFontRenderer.drawCenteredString("Play Multiplayer", getWidth() / 2, 20, 0xffffff);
+        super.drawScreen(mouseX, mouseY);
         if(tooltip != null)
         {
-            renderTooltip(tooltip, i, j);
+            Renderer.singleton.renderTooltip(tooltip, mouseX, mouseY);
         }
     }
 
@@ -122,7 +125,7 @@ public class GuiMultiplayer extends AbstractGuiScreen
 
         if (serverVersion != null) {
             selectableVersionPredicate = (GuiSlotVersion.SelectableVersion selectableVersion) -> {
-                return selectableVersion.version != null && (serverVersion.baseVersion == selectableVersion.version.baseVersion || Arrays.stream(serverVersion.clientVersions).anyMatch(selectableVersion.version.baseVersion::equals));
+                return selectableVersion.version != null && (serverVersion.baseVersion.equals(selectableVersion.version.baseVersion) || Arrays.stream(serverVersion.clientVersions).anyMatch(selectableVersion.version.baseVersion::equals));
             };
         }
 
@@ -130,13 +133,24 @@ public class GuiMultiplayer extends AbstractGuiScreen
             @Override
             public void onSelect(String path) {
                 try {
-                    String mppas = MineOnlineAPI.getMpPass(Session.session.getAccessToken(), Session.session.getUsername(), Session.session.getUuid(), server.ip, server.port + "");
-                    MinecraftVersion.launchMinecraft(path, server.ip, server.port + "", mppas);
+                    String mppass = classicAuthService.getMPPass(server.ip, server.port + "", Session.session.getAccessToken(), Session.session.getUuid(), Session.session.getUsername());
+                    MinecraftVersion.launchMinecraft(path, server.ip, server.port + "", mppass);
 
-                    if (LegacyGameManager.isInGame())
+                    if (LegacyGameManager.isInGame()) {
+                        if (server.usingBetaEvolutions) {
+                            BetaEvolutionsUtils betaEvolutions = new BetaEvolutionsUtils(true);
+                            BetaEvolutionsUtils.VerificationResults verificationResults = betaEvolutions.authenticateUser(Session.session.getUsername(), Session.session.getAccessToken());
+                            System.out.println("[Beta Evolutions] Authenticated with " + verificationResults.getSuccessful() + "/" + verificationResults.getTotal() + " BetaEVO nodes.");
+                        }
                         LegacyGameManager.closeGame();
-                    else {
+                    } else {
                         Display.destroy();
+                        DisplayManager.getFrame().setVisible(false);
+                        if(server.usingBetaEvolutions) {
+                            BetaEvolutionsUtils betaEvolutions = new BetaEvolutionsUtils(true);
+                            BetaEvolutionsUtils.VerificationResults verificationResults = betaEvolutions.authenticateUser(Session.session.getUsername(), Session.session.getAccessToken());
+                            System.out.println("[Beta Evolutions] Authenticated with " + verificationResults.getSuccessful() + "/" + verificationResults.getTotal() + " BetaEVO nodes.");
+                        }
                         DisplayManager.getFrame().dispose();
                         System.exit(0);
                     }
@@ -150,30 +164,16 @@ public class GuiMultiplayer extends AbstractGuiScreen
         GuiSlotVersion.ISelectableVersionCompare compare = new GuiSlotVersion.ISelectableVersionCompare() {
             @Override
             public boolean isDefault(GuiSlotVersion.SelectableVersion selectableVersion) {
+                if (serverVersion == null)
+                    return false;
                 return selectableVersion.version != null && selectableVersion.version.baseVersion.equals(serverVersion.clientVersions[0]);
             }
         };
 
         if (LegacyGameManager.isInGame())
-            LegacyGameManager.setGUIScreen(new GuiVersions(this, selectableVersionPredicate, selectListener, compare, true));
+            LegacyGameManager.setGUIScreen(new GuiVersions(this, selectableVersionPredicate, selectListener, compare, true, serverVersion != null && !serverVersion.legacy));
         else
-            MenuManager.setMenuScreen(new GuiVersions(this, selectableVersionPredicate, selectListener, compare, true));
-    }
-
-    protected void renderTooltip(String s, int i, int j)
-    {
-        if(s == null)
-        {
-            return;
-        } else
-        {
-            int k = i + 12;
-            int l = j - 12;
-            int i1 = FontRenderer.minecraftFontRenderer.getStringWidth(s);
-            drawGradientRect(k - 3, l - 3, k + i1 + 3, l + 8 + 3, 0xc0000000, 0xc0000000);
-            FontRenderer.minecraftFontRenderer.drawStringWithShadow(s, k, l, -1);
-            return;
-        }
+            MenuManager.setMenuScreen(new GuiVersions(this, selectableVersionPredicate, selectListener, compare, true, serverVersion != null && !serverVersion.legacy));
     }
 
     public List<MineOnlineServer> getServers()
@@ -212,5 +212,6 @@ public class GuiMultiplayer extends AbstractGuiScreen
     private int selectedIndex;
     private GuiButton connectButton;
     private String tooltip;
-    private MineOnlineServerRepository serverRepository = new MineOnlineServerRepository();
+    public MineOnlineServerRepository serverRepository = new MineOnlineServerRepository();
+    private ClassicAuthService classicAuthService = new ClassicAuthService();
 }

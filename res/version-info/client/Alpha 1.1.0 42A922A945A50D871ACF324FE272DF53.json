@@ -1,0 +1,16 @@
+{
+  "name": "Alpha 1.1.0",
+  "md5": "42A922A945A50D871ACF324FE272DF53",
+  "sha256": "38E2E42CB49F5CF1E31A561A3EB6FB969ADC94196722FD45CE535FD18319DF7F",
+  "type": "client",
+  "enableScreenshotPatch": true,
+  "legacy": true,
+  "baseVersion": "a1.1.0",
+  "useFOVPatch": true,
+  "useTexturepackPatch": true,
+  "ingameVersionString": "Minecraft Alpha v1.1.0",
+  "resourcesVersion": "a1.1.0",
+  "optionsVersion": "CLASSIC",
+  "hasNetherPortalTexture": false,
+  "downloadURL": "https://mineonline.codie.gg/clients/a1.1.0-1.jar"
+}

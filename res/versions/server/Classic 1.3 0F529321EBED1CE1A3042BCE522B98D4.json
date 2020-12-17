@@ -1,9 +1,0 @@
-{
-  "name": "Classic 1.3",
-  "md5": "0F529321EBED1CE1A3042BCE522B98D4",
-  "type": "server",
-  "hasHeartbeat": true,
-  "clientName": "Classic 0.0.17a",
-  "baseVersion": "c0.0.17a",
-  "legacy": true
-}

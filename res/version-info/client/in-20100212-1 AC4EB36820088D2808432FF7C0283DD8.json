@@ -1,0 +1,19 @@
+{
+  "name": "in-20100212-1",
+  "md5": "AC4EB36820088D2808432FF7C0283DD8",
+  "sha256": "C31ED7CA82D5715909F89968CC4C28A45EE10E38C5D8305BD74D21E4D0A43D18",
+  "type": "client",
+  "enableScreenshotPatch": true,
+  "baseURLHasNoPort": true,
+  "legacy": true,
+  "baseVersion": "in-20100212-1",
+  "useFOVPatch": true,
+  "useTexturepackPatch": true,
+  "ingameVersionString": "Minecraft Indev",
+  "enableCursorPatch": true,
+  "resourcesVersion": "a1.0.1_01",
+  "optionsVersion": "CLASSIC",
+  "useResizePatch": true,
+  "hasNetherPortalTexture": false,
+  "downloadURL": "https://mineonline.codie.gg/clients/in-20100212-2.jar"
+}

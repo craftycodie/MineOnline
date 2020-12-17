@@ -1,9 +1,0 @@
-{
-  "name": "Classic 0.0.15a mp-test 1 Remake",
-  "md5": "3FE34969AE9D028AF97AD3FBE3C02E05",
-  "type": "server",
-  "clientName": "Classic 0.0.15a",
-  "hasHeartbeat": true,
-  "baseVersion": "c0.0.15a",
-  "legacy": true
-}

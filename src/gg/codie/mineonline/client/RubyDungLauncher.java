@@ -14,7 +14,6 @@ import gg.codie.mineonline.lwjgl.OnCreateListener;
 import gg.codie.mineonline.lwjgl.OnDestroyListener;
 import gg.codie.mineonline.lwjgl.OnUpdateListener;
 import gg.codie.mineonline.patches.URLPatch;
-import gg.codie.mineonline.patches.lwjgl.LWJGLDisplayDestroyAdvice;
 import gg.codie.mineonline.patches.lwjgl.LWJGLDisplayPatch;
 import gg.codie.mineonline.patches.lwjgl.LWJGLGL11GLOrthoAdvice;
 import gg.codie.mineonline.patches.lwjgl.LWJGLGLUPatch;
@@ -108,12 +107,10 @@ public class RubyDungLauncher implements IMinecraftAppletWrapper {
             processBuilder.redirectErrorStream(true);
             processBuilder.redirectInput(ProcessBuilder.Redirect.INHERIT);
 
-            DisplayManager.getFrame().setVisible(false);
+            if (DisplayManager.getFrame() != null)
+                DisplayManager.getFrame().setVisible(false);
 
             processBuilder.inheritIO().start();
-
-            Runtime.getRuntime().halt(0);
-
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -139,6 +136,8 @@ public class RubyDungLauncher implements IMinecraftAppletWrapper {
     }
 
     public void startRubyDung() throws Exception {
+        System.setProperty("apple.awt.application.name", "MineOnline");
+
         URLClassLoader classLoader = new URLClassLoader(new URL[] { Paths.get(jarPath).toUri().toURL() });
 
         LegacyGameManager.createGameManager(minecraftVersion, this);
@@ -276,7 +275,7 @@ public class RubyDungLauncher implements IMinecraftAppletWrapper {
                         GL11.glMatrixMode(GL11.GL_PROJECTION);
                         GL11.glLoadIdentity();
                         GL11.glOrtho(0.0D, scaledresolution.scaledWidth, scaledresolution.scaledHeight, 0.0D, 1000D, 3000D);
-                        GL11.glMatrixMode(5888 /*GL_MODELVIEW0_ARB*/);
+                        GL11.glMatrixMode(GL11.GL_MODELVIEW);
                         GL11.glLoadIdentity();
                         GL11.glTranslatef(0.0F, 0.0F, -2000F);
 
@@ -399,8 +398,6 @@ public class RubyDungLauncher implements IMinecraftAppletWrapper {
 
 
             URLPatch.redefineURL();
-            if (minecraftVersion != null && minecraftVersion.useFOVPatch)
-                LWJGLGLUPatch.useCustomFOV();
 
             try {
                 Display.setParent(DisplayManager.getCanvas());
@@ -444,10 +441,10 @@ public class RubyDungLauncher implements IMinecraftAppletWrapper {
                 pixelData = new byte[width * height * 3];
                 imageData = new int[width * height];
             }
-            GL11.glPixelStorei(3333 /*GL_PACK_ALIGNMENT*/, 1);
-            GL11.glPixelStorei(3317 /*GL_UNPACK_ALIGNMENT*/, 1);
+            GL11.glPixelStorei(GL11.GL_PACK_ALIGNMENT, 1);
+            GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, 1);
             buffer.clear();
-            GL11.glReadPixels(0, 0, width, height, 6407 /*GL_RGB*/, 5121 /*GL_UNSIGNED_BYTE*/, buffer);
+            GL11.glReadPixels(0, 0, width, height, GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, buffer);
 
 
             buffer.clear();

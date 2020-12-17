@@ -1,6 +1,5 @@
 package gg.codie.mineonline.patches.lwjgl;
 
-import gg.codie.mineonline.gui.input.MouseHandler;
 import net.bytebuddy.asm.Advice;
 
 public class LWJGLMouseIsButtonDownAdvice {

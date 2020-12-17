@@ -1,10 +1,11 @@
 package gg.codie.mineonline;
 
-import gg.codie.mineonline.api.MineOnlineAPI;
-import gg.codie.mineonline.gui.ProgressDialog;
 import gg.codie.common.utils.ArrayUtils;
 import gg.codie.common.utils.JSONUtils;
 import gg.codie.common.utils.MD5Checksum;
+import gg.codie.mineonline.api.MineOnlineAPI;
+import gg.codie.mineonline.gui.ProgressDialog;
+import gg.codie.mineonline.utils.DownloadHandlerThread;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -122,42 +123,26 @@ public class MinecraftVersionRepository {
 
     // This is kinda heavy, that's why it's cached. So avoid it as much as possible.
     private void loadInstalledVersions() {
-        try (FileInputStream input = new FileInputStream(MINEONLINE_JARS_JSON_FILE)) {
-            // load a settings file
-            byte[] buffer = new byte[8096];
-            int bytes_read = 0;
-            StringBuffer stringBuffer = new StringBuffer();
-            while ((bytes_read = input.read(buffer, 0, 8096)) != -1) {
-                for (int i = 0; i < bytes_read; i++) {
-                    stringBuffer.append((char) buffer[i]);
-                }
-            }
+        String[] jarPaths = installedVersionJSON.has(INSTALLED_VERSIONS) ? JSONUtils.getStringArray(installedVersionJSON.getJSONArray(INSTALLED_VERSIONS)) : new String[0];
 
-            installedVersionJSON = new JSONObject(stringBuffer.toString());
+        for(String jarPath : jarPaths) {
+            File jar = new File(jarPath);
+            if (!jar.exists())
+                continue;
 
-            String[] jarPaths = installedVersionJSON.has(INSTALLED_VERSIONS) ? JSONUtils.getStringArray(installedVersionJSON.getJSONArray(INSTALLED_VERSIONS)) : new String[0];
+            MinecraftVersion version = getVersion(jarPath);
 
-            for(String jarPath : jarPaths) {
-                File jar = new File(jarPath);
-                if (!jar.exists())
-                    continue;
-
-                MinecraftVersion version = getVersion(jarPath);
-
-                if(version == null) {
-                    try {
-                        if (!MinecraftVersion.isPlayableJar(jarPath)) {
-                            continue;
-                        }
-                    } catch (Exception ex) {
+            if(version == null) {
+                try {
+                    if (!MinecraftVersion.isPlayableJar(jarPath)) {
                         continue;
                     }
+                } catch (Exception ex) {
+                    continue;
                 }
-
-                installedVersions.put(jarPath, version);
             }
-        } catch (IOException ex) {
-            saveInstalledVersions();
+
+            installedVersions.put(jarPath, version);
         }
     }
 
@@ -235,10 +220,12 @@ public class MinecraftVersionRepository {
     }
 
     private void downloadVersionInfo() {
-        MinecraftVersion[] cachedVersions = getVersions(LauncherFiles.MINEONLINE_VERSIONS_FOLDER);
+        MinecraftVersion[] cachedVersions = getVersions(LauncherFiles.MINEONLINE_VERSION_INFO_FOLDER);
+        ArrayList<DownloadHandlerThread> downloadHandlers = new ArrayList<>();
         try {
             JSONObject index = MineOnlineAPI.getVersionIndex();
             JSONArray versionsPaths = index.getJSONArray("versions");
+            int maximumDownloadThreads = 8;
             for(Object versionPathObject : versionsPaths) {
                 try {
                     String filename = ((JSONObject) versionPathObject).getString("name");
@@ -250,7 +237,7 @@ public class MinecraftVersionRepository {
                     for (MinecraftVersion cachedVersion : cachedVersions) {
                         if (cachedVersion != null && cachedVersion.md5.equals(jarMd5)) {
                             long infoModified = ((JSONObject) versionPathObject).getLong("modified");
-                            File cachedInfo = new File(LauncherFiles.MINEONLINE_VERSIONS_FOLDER + existingVersion.type + File.separator + existingVersion.name + " " + existingVersion.md5 + ".json");
+                            File cachedInfo = new File(LauncherFiles.MINEONLINE_VERSION_INFO_FOLDER + existingVersion.type + File.separator + existingVersion.name + " " + existingVersion.md5 + ".json");
 
                             if (cachedInfo.exists()) {
                                 if (infoModified > cachedInfo.lastModified() / 1000) {
@@ -266,14 +253,55 @@ public class MinecraftVersionRepository {
                     if (alreadyDownloaded)
                         continue;
 
+                    //Limit the number of download threads. Basically sleep the main thread while waiting for threads to finish.
+                    int runningThreads = 0;
+                    for (DownloadHandlerThread downloadThread : downloadHandlers) {
+                        if (!downloadThread.isCompleted()) {
+                            runningThreads = runningThreads + 1;
+                        }
+                    }
+                    //Join threads and wait for them to finish. This isn't the most effective system, but it works.
+                    if(runningThreads > maximumDownloadThreads) {
+                        for (DownloadHandlerThread downloadThread : downloadHandlers) {
+                            if (!downloadThread.isCompleted()) {
+                                downloadThread.join();
+                            }
+                        }
+                    }
 
-                    ProgressDialog.setSubMessage("Downloading new version info for " + ((JSONObject) versionPathObject).getString("name"));
-                    System.out.println("Downloaded new version info " + ((JSONObject) versionPathObject).getString("name"));
 
-                    String downloadVersionText = MineOnlineAPI.getVersionInfo(((JSONObject) versionPathObject).getString("url"));
+                    System.out.println("Queueing version " + ((JSONObject) versionPathObject).getString("name") + " for download.");
+                    DownloadHandlerThread download = new DownloadHandlerThread(((JSONObject) versionPathObject).getString("url"), ((JSONObject) versionPathObject).getString("name"));
+                    download.start();
+                    downloadHandlers.add(download);
+                    
+                } catch (Exception ex) {
+                    System.out.println("Bad version " + versionPathObject);
+                    ex.printStackTrace();
+                }
+            }
+
+            //Retrieve manifests from threads
+            boolean isCompleted = false;
+            while (!isCompleted) {
+                isCompleted = true;
+                for (DownloadHandlerThread download : downloadHandlers) {
+                    if (!download.isCompleted()) {
+                        isCompleted = false;
+                        continue;
+                    }
+                    if (download.getData() instanceof Exception) {
+                        Exception exception = (Exception) download.getData();
+                        System.out.println("Bad version " + download.getVersion());
+                        exception.printStackTrace();
+                        continue;
+                    }
+
+                    //Version downloaded successfully
+                    String downloadVersionText = (String) download.getData();
                     MinecraftVersion downloadVersion = new MinecraftVersion(new JSONObject(downloadVersionText));
 
-                    Path target = Paths.get(LauncherFiles.MINEONLINE_VERSIONS_FOLDER + downloadVersion.type + File.separator + downloadVersion.name + " " + downloadVersion.md5 + ".json");
+                    Path target = Paths.get(LauncherFiles.MINEONLINE_VERSION_INFO_FOLDER + downloadVersion.type + File.separator + downloadVersion.name + " " + downloadVersion.md5 + ".json");
                     File targetFile = new File(target.toUri());
                     targetFile.getParentFile().mkdirs();
                     if(!targetFile.exists())
@@ -281,9 +309,34 @@ public class MinecraftVersionRepository {
 
                     Files.write(target, downloadVersionText.getBytes(), StandardOpenOption.WRITE);
 
-                } catch (Exception ex) {
-                    System.out.println("Bad version " + versionPathObject);
-                    ex.printStackTrace();
+
+                }
+
+
+            }
+
+            // If a version has been removed from the API, delete it.
+            for (MinecraftVersion cachedVersion : cachedVersions) {
+                boolean foundMatch = false;
+
+                for(Object versionPathObject : versionsPaths) {
+                    try {
+                        String filename = ((JSONObject) versionPathObject).getString("name");
+                        String jarMd5 = filename.substring(filename.length() - 37, filename.length() - 5);
+                        if (jarMd5.equals(cachedVersion.md5) && filename.equals(cachedVersion.name + " " + cachedVersion.md5 + ".json")) {
+                            foundMatch = true;
+                            break;
+                        }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+
+                if (!foundMatch) {
+                    System.out.println("Deleting old version info " + cachedVersion.name + " " + cachedVersion.md5 + ".json");
+                    File versionFile = new File(LauncherFiles.MINEONLINE_VERSION_INFO_FOLDER + cachedVersion.type + File.separator + cachedVersion.name + " " + cachedVersion.md5 + ".json");
+                    if (versionFile.exists())
+                        versionFile.delete();
                 }
             }
 
@@ -294,19 +347,35 @@ public class MinecraftVersionRepository {
     }
 
     private void loadVersions(boolean onlyKnownVersionInfo, String loadJarPath) {
+        try (FileInputStream input = new FileInputStream(MINEONLINE_JARS_JSON_FILE)) {
+            // load a settings file
+            byte[] buffer = new byte[8096];
+            int bytes_read = 0;
+            StringBuffer stringBuffer = new StringBuffer();
+            while ((bytes_read = input.read(buffer, 0, 8096)) != -1) {
+                for (int i = 0; i < bytes_read; i++) {
+                    stringBuffer.append((char) buffer[i]);
+                }
+            }
+
+            installedVersionJSON = new JSONObject(stringBuffer.toString());
+        } catch (IOException ex) {
+            saveInstalledVersions();
+        }
+
         if (!onlyKnownVersionInfo) {
             // If there's a resource version that's not in the cache, extract it.
             ProgressDialog.setSubMessage("Extracting version information...");
             ProgressDialog.setProgress(40);
-            MinecraftVersion[] cachedVersions = getVersions(LauncherFiles.MINEONLINE_VERSIONS_FOLDER);
+            MinecraftVersion[] cachedVersions = getVersions(LauncherFiles.MINEONLINE_VERSION_INFO_FOLDER);
             for (MinecraftVersion version : getResourceVersions()) {
                 if (getVersionByMD5(version.md5, cachedVersions) == null) {
                     try {
                         System.out.println("Extracting version " + version.name + " " + version.md5);
-                        File target = new File(LauncherFiles.MINEONLINE_VERSIONS_FOLDER + version.type + File.separator + version.name + " " + version.md5 + ".json");
+                        File target = new File(LauncherFiles.MINEONLINE_VERSION_INFO_FOLDER + version.type + File.separator + version.name + " " + version.md5 + ".json");
                         target.getParentFile().mkdirs();
-                        Files.copy(MinecraftVersionRepository.class.getResourceAsStream("/versions/" + version.type + "/" + version.name + " " + version.md5 + ".json"), Paths.get(target.toURI()), StandardCopyOption.REPLACE_EXISTING);
-                        target.setLastModified(MinecraftVersionRepository.class.getResource("/versions/" + version.type + "/" + version.name + " " + version.md5 + ".json").openConnection().getLastModified());
+                        Files.copy(MinecraftVersionRepository.class.getResourceAsStream("/version-info/" + version.type + "/" + version.name + " " + version.md5 + ".json"), Paths.get(target.toURI()), StandardCopyOption.REPLACE_EXISTING);
+                        target.setLastModified(MinecraftVersionRepository.class.getResource("/version-info/" + version.type + "/" + version.name + " " + version.md5 + ".json").openConnection().getLastModified());
                     } catch (Exception ex) {
                         System.out.println("Failed to extract version " + version.md5);
                         ex.printStackTrace();
@@ -315,19 +384,13 @@ public class MinecraftVersionRepository {
             }
 //            if (!Globals.DEV) {
             // Fetch latest versions from the API
-            ProgressDialog.setSubMessage("Downloading latest version information...");
-            ProgressDialog.setProgress(44);
             downloadVersionInfo();
 //            }
         }
         // Load cached versions
-        ProgressDialog.setSubMessage("Reading version information...");
-        ProgressDialog.setProgress(48);
-        versions = getVersions(LauncherFiles.MINEONLINE_VERSIONS_FOLDER);
+        versions = getVersions(LauncherFiles.MINEONLINE_VERSION_INFO_FOLDER);
         // Load custom versions
-        ProgressDialog.setSubMessage("Reading custom version information......");
-        ProgressDialog.setProgress(52);
-        customVersions = getVersions(LauncherFiles.MINEONLINE_CUSTOM_VERSIONS_FOLDER);
+        customVersions = getVersions(LauncherFiles.MINEONLINE_CUSTOM_VERSION_INFO_FOLDER);
         //Load installed versions
         if (loadJarPath != null)
             loadJar(loadJarPath);
@@ -337,8 +400,6 @@ public class MinecraftVersionRepository {
             @Override
             public void run() {
                 // Load installed versions
-                ProgressDialog.setSubMessage("Loading installed versions...");
-                ProgressDialog.setProgress(56);
                 loadInstalledVersions();
                 // Load official launcher installed versions
                 loadOfficialLauncherVersions();
@@ -416,7 +477,7 @@ public class MinecraftVersionRepository {
 
             while (enumEntries.hasMoreElements()) {
                 java.util.jar.JarEntry file = (java.util.jar.JarEntry) enumEntries.nextElement();
-                if (!file.getName().startsWith("versions")) {
+                if (!file.getName().startsWith("version-info")) {
                     continue;
                 }
 

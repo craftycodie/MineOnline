@@ -1,50 +1,60 @@
 package gg.codie.mineonline.gui.screens;
 
-import gg.codie.minecraft.client.gui.Tessellator;
 import gg.codie.mineonline.MinecraftVersion;
 import gg.codie.mineonline.MinecraftVersionRepository;
 import gg.codie.mineonline.api.MineOnlineServer;
-import gg.codie.mineonline.server.ThreadPollServers;
+import gg.codie.mineonline.api.MineOnlineServerRepository;
 import gg.codie.mineonline.gui.rendering.FontRenderer;
 import gg.codie.mineonline.gui.rendering.Loader;
-import gg.codie.mineonline.gui.rendering.textures.EGUITexture;
+import gg.codie.mineonline.gui.rendering.Renderer;
+import gg.codie.mineonline.gui.textures.EGUITexture;
+import gg.codie.mineonline.server.ThreadPollServers;
 import org.lwjgl.opengl.GL11;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.util.Arrays;
+import java.util.Base64;
 
 public class GuiSlotServer extends GuiSlot
 {
 
     public GuiSlotServer(GuiMultiplayer guimultiplayer)
     {
-        super(guimultiplayer.getWidth(), guimultiplayer.getHeight(), 32, guimultiplayer.getHeight() - 55, 36);
+        super(guimultiplayer.getWidth(), guimultiplayer.getHeight(), 32, guimultiplayer.getHeight() - 55, 36, 304);
         guiMultiplayer = guimultiplayer;
     }
 
     protected int getSize()
     {
+        if (MinecraftVersionRepository.getSingleton().isLoadingInstalledVersions())
+            return 0;
+
         return guiMultiplayer != null ? guiMultiplayer.getServers().size() : 0;
     }
 
-    protected void elementClicked(int i, boolean flag)
+    protected void elementClicked(int slotIndex, boolean doubleClicked)
     {
-        guiMultiplayer.select(i);
+        guiMultiplayer.select(slotIndex);
         boolean flag1 = guiMultiplayer.getSelectedIndex() >= 0 && guiMultiplayer.getSelectedIndex() < getSize();
         guiMultiplayer.getConnectButton().enabled = flag1;
-        if(flag && flag1)
+        if(doubleClicked && flag1)
         {
-            guiMultiplayer.joinServer(i);
+            guiMultiplayer.joinServer(slotIndex);
         }
     }
 
-    protected boolean isSelected(int i)
+    protected boolean isSelected(int slotIndex)
     {
-        return i == guiMultiplayer.getSelectedIndex();
+        return slotIndex == guiMultiplayer.getSelectedIndex();
     }
 
     protected int getContentHeight()
     {
-        return guiMultiplayer.getServers().size() * 36;
+        return getSize() * 36;
     }
 
     protected void drawBackground()
@@ -52,11 +62,23 @@ public class GuiSlotServer extends GuiSlot
         guiMultiplayer.drawDefaultBackground();
     }
 
-    protected void drawSlot(int i, int j, int k, int l, Tessellator tessellator)
+    @Override
+    public void drawScreen(int mousex, int mousey) {
+        super.drawScreen(mousex, mousey);
+
+        if (MinecraftVersionRepository.getSingleton().isLoadingInstalledVersions())
+            FontRenderer.minecraftFontRenderer.drawCenteredString("Loading versions...", guiMultiplayer.getWidth() / 2, guiMultiplayer.getHeight() / 2, 0x808080);
+        else if (guiMultiplayer.serverRepository.didFail())
+            FontRenderer.minecraftFontRenderer.drawCenteredString("Failed to load servers.", guiMultiplayer.getWidth() / 2, guiMultiplayer.getHeight() / 2, 0x808080);
+        else if (!guiMultiplayer.serverRepository.gotServers())
+            FontRenderer.minecraftFontRenderer.drawCenteredString("Loading servers...", guiMultiplayer.getWidth() / 2, guiMultiplayer.getHeight() / 2, 0x808080);
+    }
+
+    protected void drawSlot(int slotIndex, int xPos, int yPos, int zPos)
     {
         resize(guiMultiplayer.getWidth(), guiMultiplayer.getHeight(), 32, (guiMultiplayer.getHeight() - 55));
 
-        MineOnlineServer server = guiMultiplayer.getServers().get(i);
+        MineOnlineServer server = guiMultiplayer.getServers().get(slotIndex);
 
         MinecraftVersion version = MinecraftVersionRepository.getSingleton().getVersionByMD5(server.md5);
         String versionName = "Unknown Version";
@@ -70,22 +92,62 @@ public class GuiSlotServer extends GuiSlot
             }
         }
 
-        guiMultiplayer.drawString(server.name, j + 2, k + 1, 0xffffff);
-        guiMultiplayer.drawString(versionName, j + 2, k + 12, 0x808080);
+        if (server.serverIcon != null) {
+            BufferedImage image;
+            byte[] imageByte;
+            try {
+                Base64.Decoder decoder = Base64.getDecoder();
+                imageByte = decoder.decode(server.serverIcon);
+                ByteArrayInputStream bis = new ByteArrayInputStream(imageByte);
+                image = ImageIO.read(bis);
+                bis.close();
+
+                ByteArrayOutputStream os = new ByteArrayOutputStream();
+                ImageIO.write(image, "png", os);
+                InputStream is = new ByteArrayInputStream(os.toByteArray());
+
+                GL11.glBindTexture(GL11.GL_TEXTURE_2D, Loader.singleton.loadTexture("/servers/" + server.ip + ":" + server.port + "/server-icon.png", is));
+            } catch (Exception e) {
+                GL11.glBindTexture(GL11.GL_TEXTURE_2D, Loader.singleton.getGuiTexture(EGUITexture.UNKNOWN_PACK));
+                e.printStackTrace();
+            }
+        } else {
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, Loader.singleton.getGuiTexture(EGUITexture.UNKNOWN_PACK));
+        }
+
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        Renderer.singleton.startDrawingQuads();
+        Renderer.singleton.setColorRGBA(255, 255, 255, 255);
+        Renderer.singleton.addVertexWithUV(xPos, yPos + zPos, 0.0D, 0.0D, 1.0D);
+        Renderer.singleton.addVertexWithUV(xPos + 32, yPos + zPos, 0.0D, 1.0D, 1.0D);
+        Renderer.singleton.addVertexWithUV(xPos + 32, yPos, 0.0D, 1.0D, 0.0D);
+        Renderer.singleton.addVertexWithUV(xPos, yPos, 0.0D, 0.0D, 0.0D);
+        Renderer.singleton.draw();
+
+        FontRenderer.minecraftFontRenderer.drawString(server.name, xPos + 32 + 2, yPos + 1, 0xffffff);
+        FontRenderer.minecraftFontRenderer.drawString(versionName, xPos + 32 + 2, yPos + 12, 0x808080);
         String users = server.isMineOnline ? "" + server.users : "?";
-        guiMultiplayer.drawString(users + "/" + server.maxUsers, (j + 215) - FontRenderer.minecraftFontRenderer.getStringWidth(users + "/" + server.maxUsers), k + 12, 0x808080);
-        ///parent.drawString(server.onlineMode ? "Online Mode" : "", j + 2 + FontRenderer.minecraftFontRenderer.getStringWidth( "Online Mode"), k + 1, 0x55FF55);
+        FontRenderer.minecraftFontRenderer.drawString(users + "/" + server.maxUsers, (xPos + slotWidth - 4) - FontRenderer.minecraftFontRenderer.getStringWidth(users + "/" + server.maxUsers), yPos + 12, 0x808080);
 
         if (server.motd != null)
-            guiMultiplayer.drawString(server.motd, j + 2, k + 12 + 11, 0x808080);
+            FontRenderer.minecraftFontRenderer.drawString(server.motd, xPos + 32 + 2, yPos + 12 + 11, 0x808080);
 
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, Loader.singleton.getGuiTexture(EGUITexture.MINEONLINE_GUI_ICONS));
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
 
-        if (server.onlineMode)
-            guiMultiplayer.drawTexturedModalRect(j + 190, k, 20, 176, 10, 8);
+        if (server.featured)
+            Renderer.singleton.drawSprite(xPos + slotWidth - 29, yPos, 20, 184, 10, 8);
+        else if (server.onlineMode)
+            Renderer.singleton.drawSprite(xPos + slotWidth - 29, yPos, 20, 176, 10, 8);
+
+        if (server.whitelisted)
+            if (server.featured || server.onlineMode)
+                Renderer.singleton.drawSprite(xPos + slotWidth - 44, yPos, 20, 192, 10, 8);
+            else
+                Renderer.singleton.drawSprite(xPos + slotWidth - 29, yPos, 20, 192, 10, 8);
+
 
         int connectionIconTypeIndex;
         int connectionIconIndex;
@@ -127,30 +189,41 @@ public class GuiSlotServer extends GuiSlot
         } else
         {
             connectionIconTypeIndex = 1;
-            connectionIconIndex = (int)(System.currentTimeMillis() / 100L + (long)(i * 2) & 7L);
+            connectionIconIndex = (int)(System.currentTimeMillis() / 100L + (long)(slotIndex * 2) & 7L);
             if(connectionIconIndex > 4)
             {
                 connectionIconIndex = 8 - connectionIconIndex;
             }
             tooltipText = "Polling..";
         }
-        guiMultiplayer.drawTexturedModalRect(j + 205, k, 0 + connectionIconTypeIndex * 10, 176 + connectionIconIndex * 8, 10, 8);
+        Renderer.singleton.drawSprite(xPos + slotWidth - 14, yPos, 0 + connectionIconTypeIndex * 10, 176 + connectionIconIndex * 8, 10, 8);
         byte byte0 = 4;
-        if (field_35409_k >= (j + 205) - byte0 && field_35408_l >= k - byte0 && field_35409_k <= j + 205 + 10 + byte0 && field_35408_l <= k + 8 + byte0)
+        if (mouseX >= (xPos + slotWidth - 14) - byte0 && mouseY >= yPos - byte0 && mouseX <= xPos + (slotWidth - 14) + 10 + byte0 && mouseY <= yPos + 8 + byte0)
         {
             guiMultiplayer.setTooltip(tooltipText);
         }
 
-        if (server.onlineMode && field_35409_k >= (j + 190) - byte0 && field_35408_l >= k - byte0 && field_35409_k <= j + 190 + 10 + byte0 && field_35408_l <= k + 8 + byte0)
+        if (mouseX >= (xPos + slotWidth - 29) - byte0 && mouseY >= yPos - byte0 && mouseX <= xPos + (slotWidth - 29) + 10 + byte0 && mouseY <= yPos + 8 + byte0)
         {
-            guiMultiplayer.setTooltip("Online Mode (Secured)");
+            if (server.featured)
+                guiMultiplayer.setTooltip("Featured");
+            else if (server.onlineMode)
+                guiMultiplayer.setTooltip("Online Mode");
+            else if (server.whitelisted)
+                guiMultiplayer.setTooltip("Whitelisted");
+        }
+
+        if (mouseX >= (xPos + slotWidth - 44) - byte0 && mouseY >= yPos - byte0 && mouseX <= xPos + (slotWidth - 44) + 10 + byte0 && mouseY <= yPos + 8 + byte0)
+        {
+            if (server.whitelisted && (server.onlineMode || server.featured))
+                guiMultiplayer.setTooltip("Whitelisted");
         }
         // TODO: Players Tooltip
-//        if(field_35409_k >= (j + 205) - byte0 && field_35408_l >= k && field_35409_k <= j + 205 + 10 + byte0 && field_35408_l <= k + 12 + byte0)
+//        if(mouseX >= (j + 205) - byte0 && mouseY >= k && mouseX <= j + 205 + 10 + byte0 && mouseY <= k + 12 + byte0)
 //        {
 //            parent.setTooltip(Arrays.toString(server.players).replace("[", "").replace("]", "").replace(",", "\n"));
 //        }
     }
 
-    final GuiMultiplayer guiMultiplayer; /* synthetic field */
+    final GuiMultiplayer guiMultiplayer;
 }

@@ -6,8 +6,6 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
@@ -89,40 +87,44 @@ public class ProgressDialog extends JDialog {
     }
 
     public static void showProgress(String title, WindowAdapter closeListener) {
-        if (singleton != null) {
-            singleton.dispose();
-            singleton = null;
-        }
-
-        ProgressDialog dialog = new ProgressDialog(title);
-
-        SwingWorker worker = new SwingWorker() {
-            @Override
-            protected Object doInBackground() throws Exception {
-                while (dialog.progress < 100) {
-                    setProgress(dialog.progress);
-                }
+        try {
+            if (singleton != null) {
+                singleton.dispose();
                 singleton = null;
-                return null;
             }
 
-        };
+            ProgressDialog dialog = new ProgressDialog(title);
 
-        dialog.worker = worker;
+            SwingWorker worker = new SwingWorker() {
+                @Override
+                protected Object doInBackground() throws Exception {
+                    while (dialog.progress < 100) {
+                        setProgress(dialog.progress);
+                    }
+                    singleton = null;
+                    return null;
+                }
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                dialog.start();
-                dialog.setLocationRelativeTo(null);
-                dialog.setVisible(true);
+            };
 
-                if (closeListener != null)
-                    dialog.addWindowListener(closeListener);
-            }
-        }).run();
+            dialog.worker = worker;
 
-        singleton = dialog;
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    dialog.start();
+                    dialog.setLocationRelativeTo(null);
+                    dialog.setVisible(true);
+
+                    if (closeListener != null)
+                        dialog.addWindowListener(closeListener);
+                }
+            }).run();
+
+            singleton = dialog;
+        } catch (AWTError ex) {
+            setProgress(100);
+        }
     }
 
     public class PropertyChangeHandler implements PropertyChangeListener {

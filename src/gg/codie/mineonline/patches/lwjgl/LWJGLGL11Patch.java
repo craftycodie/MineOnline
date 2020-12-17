@@ -19,7 +19,6 @@ public class LWJGLGL11Patch {
                     .visit(Advice.to(LWJGLGL11GLTexSubImageAdvice.class).on(ElementMatchers.named("glTexSubImage2D").and(ElementMatchers.takesArguments(
                             int.class, int.class, int.class, int.class, int.class, int.class, int.class, int.class, ByteBuffer.class
                     ))))
-                    .visit(Advice.to(LWJGLGL11GLEnableAdvice.class).on(ElementMatchers.named("glEnable").and(ElementMatchers.takesArguments(int.class))))
                     .make()
                     .load(Class.forName("org.lwjgl.opengl.GL11").getClassLoader(), ClassReloadingStrategy.fromInstalledAgent());
         } catch (ClassNotFoundException ex) {

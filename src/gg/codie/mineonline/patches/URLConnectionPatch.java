@@ -7,9 +7,7 @@ import net.bytebuddy.implementation.Implementation;
 import net.bytebuddy.matcher.ElementMatchers;
 import sun.net.www.protocol.file.FileURLConnection;
 
-import java.net.ContentHandler;
 import java.net.HttpURLConnection;
-import java.net.URLConnection;
 
 public class URLConnectionPatch {
     public static void patchResponses() {

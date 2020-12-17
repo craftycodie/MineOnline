@@ -23,13 +23,13 @@ public class LWJGLGLUPatch {
 
     public static void zoom(){
         try {
-            LWJGLGLUPerspectiveAdvice.customFOV = 20;
+            LWJGLGLUPerspectiveAdvice.zoom = true;
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
 
     public static void unZoom(){
-        LWJGLGLUPerspectiveAdvice.customFOV = Settings.singleton.getFOV();
+        LWJGLGLUPerspectiveAdvice.zoom = false;
     }
 }

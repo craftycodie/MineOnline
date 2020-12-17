@@ -1,5 +1,6 @@
 package gg.codie.mineonline.client;
 
+import gg.codie.common.utils.OSUtils;
 import gg.codie.mineonline.*;
 import gg.codie.mineonline.discord.DiscordRPCHandler;
 import gg.codie.mineonline.patches.SocketPatch;
@@ -8,7 +9,6 @@ import gg.codie.mineonline.patches.minecraft.PropertiesSignaturePatch;
 import gg.codie.mineonline.patches.minecraft.YggdrasilMinecraftSessionServicePatch;
 import gg.codie.mineonline.utils.JREUtils;
 import gg.codie.mineonline.utils.Logging;
-import gg.codie.common.utils.OSUtils;
 
 import javax.swing.*;
 import java.io.File;
@@ -86,8 +86,6 @@ public class MinecraftClientLauncher {
             processBuilder.redirectInput(ProcessBuilder.Redirect.INHERIT);
 
             processBuilder.inheritIO().start();
-
-            Runtime.getRuntime().halt(0);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -120,6 +118,8 @@ public class MinecraftClientLauncher {
     }
 
     public void startMinecraft() throws Exception {
+        System.setProperty("apple.awt.application.name", "MineOnline");
+
         URLClassLoader classLoader = new URLClassLoader(new URL[] { Paths.get(jarPath).toUri().toURL() });
 
         if(minecraftVersion != null)

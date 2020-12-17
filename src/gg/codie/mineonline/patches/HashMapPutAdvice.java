@@ -1,20 +1,14 @@
 package gg.codie.mineonline.patches;
 
-import gg.codie.mineonline.patches.lwjgl.LWJGLDisplayUpdateAdvice;
-import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.asm.Advice;
 import net.bytebuddy.dynamic.loading.ClassReloadingStrategy;
 import net.bytebuddy.implementation.Implementation;
 import net.bytebuddy.implementation.bytecode.assign.Assigner;
 import net.bytebuddy.matcher.ElementMatchers;
 
-import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 public class HashMapPutAdvice {
     public static HashMap<String, Integer> textures = new HashMap<>();
@@ -30,8 +24,8 @@ public class HashMapPutAdvice {
             if ((boolean)ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.HashMapPutAdvice").getField("ignore").get(null))
                 return;
 
-//            if ((boolean)ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.lwjgl.LWJGLDisplayUpdateAdvice").getField("inUpdateHook").get(null))
-//                return;
+            if ((boolean)ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.lwjgl.LWJGLDisplayUpdateAdvice").getField("inUpdateHook").get(null))
+                return;
 
             List<String> ignored = Arrays.asList(new String[] {
                     "/custom_water_flowing.png",
@@ -65,7 +59,7 @@ public class HashMapPutAdvice {
 
                 ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.HashMapPutAdvice").getField("ignore").set(null, false);
 
-                ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.gui.rendering.Loader").getDeclaredMethod("reloadMinecraftTextures").invoke(null);
+                ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.gui.rendering.Loader").getDeclaredMethod("reloadMinecraftTexture", String.class).invoke(null, new Object[] { key });
             } else if (key.equals("calm") && value instanceof ArrayList) {
                 ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.HashMapPutAdvice").getField("sounds").set(null, thisObj);
                 ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.HashMapPutAdvice").getField("ignore").set(null, false);

@@ -1,9 +1,6 @@
 package gg.codie.mineonline.patches.lwjgl;
 
 import net.bytebuddy.asm.Advice;
-import net.bytebuddy.implementation.bytecode.assign.Assigner;
-
-import java.lang.reflect.Method;
 
 public class LWJGLDisplayIsCloseRequestedAdvice {
     public static boolean isCloseRequested = false;
