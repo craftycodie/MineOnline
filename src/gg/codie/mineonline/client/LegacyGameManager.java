@@ -19,7 +19,6 @@ import gg.codie.mineonline.patches.ClassPatch;
 import gg.codie.mineonline.patches.HashMapPatch;
 import gg.codie.mineonline.patches.StringPatch;
 import gg.codie.mineonline.patches.*;
-import gg.codie.mineonline.patches.lwjgl.LWJGLGL11GLEnableAdvice;
 import gg.codie.mineonline.patches.lwjgl.LWJGLGL11GLOrthoAdvice;
 import gg.codie.mineonline.patches.lwjgl.LWJGLGL11Patch;
 import gg.codie.mineonline.patches.lwjgl.LWJGLGLUPatch;
@@ -29,8 +28,6 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 
 import java.awt.*;
-import java.io.IOException;
-import java.util.ArrayList;
 
 public class LegacyGameManager {
 
