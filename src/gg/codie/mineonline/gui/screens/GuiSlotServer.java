@@ -64,7 +64,7 @@ public class GuiSlotServer extends GuiSlot
 
     @Override
     public void drawScreen(int mousex, int mousey) {
-        super.drawScreen(mouseX, mouseY);
+        super.drawScreen(mousex, mousey);
 
         if (MinecraftVersionRepository.getSingleton().isLoadingInstalledVersions())
             FontRenderer.minecraftFontRenderer.drawCenteredString("Loading versions...", guiMultiplayer.getWidth() / 2, guiMultiplayer.getHeight() / 2, 0x808080);
