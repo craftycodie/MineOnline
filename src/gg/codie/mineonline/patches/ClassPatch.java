@@ -7,8 +7,6 @@ import net.bytebuddy.implementation.Implementation;
 import net.bytebuddy.matcher.ElementMatchers;
 
 public class ClassPatch {
-    public static String texturePack;
-
     public static void init() {
         new ByteBuddy()
                 .with(Implementation.Context.Disabled.Factory.INSTANCE)
