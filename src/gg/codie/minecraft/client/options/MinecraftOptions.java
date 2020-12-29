@@ -385,7 +385,10 @@ public class MinecraftOptions implements IMinecraftOptionsHandler {
         }
 
         if (texturePack.equals("Default"))
-            texturePack = "";
+            texturePack = null;
+
+        if (texturePack == null || texturePack.isEmpty())
+            return;
 
         try {
             setOption("skin", texturePack);
