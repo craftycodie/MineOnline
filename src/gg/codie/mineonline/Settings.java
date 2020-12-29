@@ -26,6 +26,7 @@ public class Settings implements IMinecraftOptionsHandler {
     private static final String STENCIL_COUNT = "stencilCount";
     private static final String COVERAGE_SAMPLE_COUNT = "coverageSampleCount";
     private static final String LAST_LAUNCHED_OPTIONS_VERSION = "lastLaunchedOptionsVersion";
+    private static final String USE_CUSTOM_FONTS = "useCustomFonts";
 
     private static final String FULLSCREEN = "fullscreen";
     private static final String GUI_SCALE = "guiScale";
@@ -67,10 +68,10 @@ public class Settings implements IMinecraftOptionsHandler {
     private static final String SKIN_LAYER_RIGHT_LEG = "skinLayerRightLeg";
     private static final String AUTO_JUMP = "autoJump";
     private static final String KEY_CODE_INGAME_MENU = "keyCodeIngameMenu";
-    static final String LIMIT_FRAMERATE = "limitFramerate";
+    private static final String LIMIT_FRAMERATE = "limitFramerate";
 
 
-    private static final int SETTINGS_VERSION_NUMBER = 12;
+    private static final int SETTINGS_VERSION_NUMBER = 13;
 
     private static boolean readonly = true;
 
@@ -117,6 +118,8 @@ public class Settings implements IMinecraftOptionsHandler {
         settings.put(SAMPLE_COUNT, 0);
         settings.put(STENCIL_COUNT, 0);
         settings.put(COVERAGE_SAMPLE_COUNT, 0);
+        settings.put(USE_CUSTOM_FONTS, false);
+
         settings.put(KEY_CODE_INVENTORY, 18);
         settings.put(KEY_CODE_CHAT, 20);
         settings.put(KEY_CODE_DROP, 16);
@@ -535,6 +538,8 @@ public class Settings implements IMinecraftOptionsHandler {
                         settings.put(AUTO_JUMP, false);
                     case 11:
                         settings.put(KEY_CODE_INGAME_MENU, 19);
+                    case 12:
+                        settings.put(USE_CUSTOM_FONTS, false);
                 }
                 settings.put(SETTINGS_VERSION, SETTINGS_VERSION_NUMBER);
             }
@@ -603,6 +608,10 @@ public class Settings implements IMinecraftOptionsHandler {
 
     public boolean getCustomCapes() {
         return settings.optBoolean(CUSTOM_CAPES, true);
+    }
+
+    public boolean getCustomFonts() {
+        return settings.optBoolean(USE_CUSTOM_FONTS, false);
     }
 
     public void setCustomCapes(boolean customCapes) {

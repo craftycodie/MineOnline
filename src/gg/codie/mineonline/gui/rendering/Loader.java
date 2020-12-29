@@ -34,6 +34,8 @@ import java.util.zip.ZipFile;
 public class Loader {
     private HashMap<String, Integer> textures = new HashMap<>();
 
+    static final String MINEONLINE_TEXTURE_PREFIX = "mo:";
+
     public final int MISSING_TEXTURE_ID;
 
     public static Loader singleton;
@@ -148,6 +150,8 @@ public class Loader {
             "/misc/grasscolor.png", //Needs to be patched separately.
             "/misc/watercolor.png", //Needs to be patched separately.
             "/default.png", //Needs to be patched separately.
+            "/default.gif", //Needs to be patched separately.
+
             "/pack.png"
     ));
 
@@ -269,7 +273,7 @@ public class Loader {
                 "/environment/rain.png",
                 "/environment/snow.png",
 
-                "/font/default.png",
+//                "/font/default.png",
 
                 "/item/arrows.png",
                 "/item/boat.png",
@@ -307,7 +311,8 @@ public class Loader {
                 "/terrain/moon.png",
                 "/terrain/sun.png",
 
-                "/default.png",
+//                "/default.png",
+//                "/default.gif",
         };
 
 //        if (LegacyGameManager.isInGame() && !LegacyGameManager.getVersion().useTexturepackPatch)
@@ -327,29 +332,29 @@ public class Loader {
     }
 
     public int getGuiTexture(EGUITexture eguiTexture) {
-        if (!textures.containsKey(eguiTexture.textureName)) {
+        if (!textures.containsKey(MINEONLINE_TEXTURE_PREFIX + eguiTexture.textureName)) {
             Settings.singleton.loadSettings();
             if (eguiTexture.useTexturePack ) {
                 try {
                     ZipFile texturesZip = new ZipFile(LauncherFiles.MINECRAFT_TEXTURE_PACKS_PATH + Settings.singleton.getTexturePack());
                     ZipEntry texture = texturesZip.getEntry(eguiTexture.textureName.substring(1));
                     if (texture != null) {
-                        return loadTexture(eguiTexture.textureName, texturesZip.getInputStream(texture));
+                        return loadTexture(MINEONLINE_TEXTURE_PREFIX + eguiTexture.textureName, texturesZip.getInputStream(texture));
                     }
                 } catch (Exception ex) {
 
                 }
             }
 
-            return loadTexture(eguiTexture.textureName, Loader.class.getResource(eguiTexture.textureName));
+            return loadTexture(MINEONLINE_TEXTURE_PREFIX + eguiTexture.textureName, Loader.class.getResource(eguiTexture.textureName));
         } else
-            return textures.get(eguiTexture.textureName);
+            return textures.get(MINEONLINE_TEXTURE_PREFIX + eguiTexture.textureName);
     }
 
     public void unloadTexture(EGUITexture eguiTexture) {
-        if (textures.containsKey(eguiTexture.textureName)) {
-            GL11.glDeleteTextures(textures.get(eguiTexture.textureName));
-            textures.remove(eguiTexture.textureName);
+        if (textures.containsKey(MINEONLINE_TEXTURE_PREFIX + eguiTexture.textureName)) {
+            GL11.glDeleteTextures(textures.get(MINEONLINE_TEXTURE_PREFIX + eguiTexture.textureName));
+            textures.remove(MINEONLINE_TEXTURE_PREFIX + eguiTexture.textureName);
         }
     }
 
