@@ -351,7 +351,7 @@ public class MinecraftOptions implements IMinecraftOptionsHandler {
         }
 
         try {
-            return getOption("skin");
+            return getOption("skin").isEmpty() ? "Default" : getOption("skin");
         } catch (IOException ex) {
             return "";
         }
@@ -365,6 +365,9 @@ public class MinecraftOptions implements IMinecraftOptionsHandler {
                 return;
             default:
         }
+
+        if (texturePack.equals("Default"))
+            texturePack = "";
 
         try {
             setOption("skin", texturePack);

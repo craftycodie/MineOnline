@@ -13,7 +13,7 @@ public class TexturePackDefault extends TexturePackBase
     public TexturePackDefault()
     {
         texturePackName = -1;
-        texturePackFileName = "";
+        texturePackFileName = "Default";
         firstDescriptionLine = "The default look of Minecraft";
         try
         {
