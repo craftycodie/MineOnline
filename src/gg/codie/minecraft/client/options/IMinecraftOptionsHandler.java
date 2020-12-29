@@ -31,9 +31,6 @@ public interface IMinecraftOptionsHandler {
     boolean getAdvancedOpenGL() throws NoSuchFieldException;
     void setAdvancedOpenGL(boolean advancedOpenGL);
 
-    boolean getLimitFramerate() throws NoSuchFieldException;
-    void setLimitFramerate(boolean limitFramerate);
-
     EMinecraftPerformance getPerformance() throws NoSuchFieldException;
     void setPerformance(EMinecraftPerformance performance);
 

@@ -144,24 +144,6 @@ public class MinecraftOptions implements IMinecraftOptionsHandler {
     }
 
     @Override
-    public boolean getLimitFramerate() throws NoSuchFieldException {
-        try {
-            return getOption("limitFramerate").equalsIgnoreCase("true");
-        } catch (IOException ex) {
-            return false;
-        }
-    }
-
-    @Override
-    public void setLimitFramerate(boolean limitFramerate) {
-        try {
-            setOption("limitFramerate", limitFramerate ? "true" : "false");
-        } catch (IOException ex) {
-            // ignore
-        }
-    }
-
-    @Override
     public boolean getInvertYMouse() throws NoSuchFieldException {
         try {
             return getOption("invertYMouse").equalsIgnoreCase("true");
@@ -403,9 +385,6 @@ public class MinecraftOptions implements IMinecraftOptionsHandler {
 
     @Override
     public void setLastServer(String lastServer) {
-        if (lastServer == null || lastServer.isEmpty())
-            return;
-
         try {
             setOption("lastServer", lastServer.replace(":", "_"));
         } catch (IOException ex) {
@@ -454,7 +433,6 @@ public class MinecraftOptions implements IMinecraftOptionsHandler {
         switch (optionsVersion) {
             case CLASSIC:
             case PRESKINS:
-            case ALPHA2:
             case PREFOV:
                 throw new NoSuchFieldException("No fov in this version");
             default:
@@ -472,7 +450,6 @@ public class MinecraftOptions implements IMinecraftOptionsHandler {
         switch (optionsVersion) {
             case CLASSIC:
             case PRESKINS:
-            case ALPHA2:
             case PREFOV:
                 return;
             default:
@@ -598,8 +575,6 @@ public class MinecraftOptions implements IMinecraftOptionsHandler {
 
         switch (optionsVersion) {
             case CLASSIC:
-            case PRESKINS:
-            case ALPHA2:
                 keyName = "key_Forward";
                 break;
             case DEFAULT:
@@ -620,8 +595,6 @@ public class MinecraftOptions implements IMinecraftOptionsHandler {
 
         switch (optionsVersion) {
             case CLASSIC:
-            case PRESKINS:
-            case ALPHA2:
                 keyName = "key_Left";
                 break;
             case DEFAULT:
@@ -642,8 +615,6 @@ public class MinecraftOptions implements IMinecraftOptionsHandler {
 
         switch (optionsVersion) {
             case CLASSIC:
-            case PRESKINS:
-            case ALPHA2:
                 keyName = "key_Back";
                 break;
             case DEFAULT:
@@ -664,8 +635,6 @@ public class MinecraftOptions implements IMinecraftOptionsHandler {
 
         switch (optionsVersion) {
             case CLASSIC:
-            case PRESKINS:
-            case ALPHA2:
                 keyName = "key_Right";
                 break;
             case DEFAULT:
@@ -686,8 +655,6 @@ public class MinecraftOptions implements IMinecraftOptionsHandler {
 
         switch (optionsVersion) {
             case CLASSIC:
-            case PRESKINS:
-            case ALPHA2:
                 keyName = "key_Jump";
                 break;
             case DEFAULT:
@@ -704,21 +671,8 @@ public class MinecraftOptions implements IMinecraftOptionsHandler {
 
     @Override
     public int getSneakKeyCode() throws NoSuchFieldException {
-        String keyName;
-
-        switch (optionsVersion) {
-            case CLASSIC:
-            case PRESKINS:
-            case ALPHA2:
-                keyName = "key_Sneak";
-                break;
-            case DEFAULT:
-            default:
-                keyName = "key_key.sneak";
-        }
-
         try {
-            return Integer.parseInt(getOption(keyName));
+            return Integer.parseInt(getOption("key_key.sneak"));
         } catch (IOException | NumberFormatException ex) {
             return 0;
         }
@@ -726,21 +680,8 @@ public class MinecraftOptions implements IMinecraftOptionsHandler {
 
     @Override
     public int getDropKeyCode() throws NoSuchFieldException {
-        String keyName;
-
-        switch (optionsVersion) {
-            case CLASSIC:
-            case PRESKINS:
-            case ALPHA2:
-                keyName = "key_Drop";
-                break;
-            case DEFAULT:
-            default:
-                keyName = "key_key.drop";
-        }
-
         try {
-            return Integer.parseInt(getOption(keyName));
+            return Integer.parseInt(getOption("key_key.drop"));
         } catch (IOException | NumberFormatException ex) {
             return 0;
         }
@@ -748,21 +689,8 @@ public class MinecraftOptions implements IMinecraftOptionsHandler {
 
     @Override
     public int getInventoryKeyCode() throws NoSuchFieldException {
-        String keyName;
-
-        switch (optionsVersion) {
-            case CLASSIC:
-            case PRESKINS:
-            case ALPHA2:
-                keyName = "key_Inventory";
-                break;
-            case DEFAULT:
-            default:
-                keyName = "key_key.inventory";
-        }
-
         try {
-            return Integer.parseInt(getOption(keyName));
+            return Integer.parseInt(getOption("key_key.inventory"));
         } catch (IOException | NumberFormatException ex) {
             return 0;
         }
@@ -774,8 +702,6 @@ public class MinecraftOptions implements IMinecraftOptionsHandler {
 
         switch (optionsVersion) {
             case CLASSIC:
-            case PRESKINS:
-            case ALPHA2:
                 keyName = "key_Chat";
                 break;
             case DEFAULT:
@@ -796,8 +722,6 @@ public class MinecraftOptions implements IMinecraftOptionsHandler {
 
         switch (optionsVersion) {
             case CLASSIC:
-            case PRESKINS:
-            case ALPHA2:
                 keyName = "key_Toggle fog";
                 break;
             case DEFAULT:
@@ -845,8 +769,6 @@ public class MinecraftOptions implements IMinecraftOptionsHandler {
 
         switch (optionsVersion) {
             case CLASSIC:
-            case PRESKINS:
-            case ALPHA2:
                 keyName = "key_Forward";
                 break;
             case DEFAULT:
@@ -867,8 +789,6 @@ public class MinecraftOptions implements IMinecraftOptionsHandler {
 
         switch (optionsVersion) {
             case CLASSIC:
-            case PRESKINS:
-            case ALPHA2:
                 keyName = "key_Left";
                 break;
             case DEFAULT:
@@ -889,8 +809,6 @@ public class MinecraftOptions implements IMinecraftOptionsHandler {
 
         switch (optionsVersion) {
             case CLASSIC:
-            case PRESKINS:
-            case ALPHA2:
                 keyName = "key_Back";
                 break;
             case DEFAULT:
@@ -911,8 +829,6 @@ public class MinecraftOptions implements IMinecraftOptionsHandler {
 
         switch (optionsVersion) {
             case CLASSIC:
-            case PRESKINS:
-            case ALPHA2:
                 keyName = "key_Right";
                 break;
             case DEFAULT:
@@ -933,8 +849,6 @@ public class MinecraftOptions implements IMinecraftOptionsHandler {
 
         switch (optionsVersion) {
             case CLASSIC:
-            case PRESKINS:
-            case ALPHA2:
                 keyName = "key_Jump";
                 break;
             case DEFAULT:
@@ -951,21 +865,8 @@ public class MinecraftOptions implements IMinecraftOptionsHandler {
 
     @Override
     public void setSneakKeyCode(int keyCode) {
-        String keyName;
-
-        switch (optionsVersion) {
-            case CLASSIC:
-            case PRESKINS:
-            case ALPHA2:
-                keyName = "key_Sneak";
-                break;
-            case DEFAULT:
-            default:
-                keyName = "key_key.sneak";
-        }
-
         try {
-            setOption(keyName, "" + keyCode);
+            setOption("key_key.sneak", "" + keyCode);
         } catch (IOException ex) {
             // ignore
         }
@@ -973,21 +874,8 @@ public class MinecraftOptions implements IMinecraftOptionsHandler {
 
     @Override
     public void setDropKeyCode(int keyCode) {
-        String keyName;
-
-        switch (optionsVersion) {
-            case CLASSIC:
-            case PRESKINS:
-            case ALPHA2:
-                keyName = "key_Drop";
-                break;
-            case DEFAULT:
-            default:
-                keyName = "key_key.drop";
-        }
-
         try {
-            setOption(keyName, "" + keyCode);
+            setOption("key_key.drop", "" + keyCode);
         } catch (IOException ex) {
             // ignore
         }
@@ -999,8 +887,6 @@ public class MinecraftOptions implements IMinecraftOptionsHandler {
 
         switch (optionsVersion) {
             case CLASSIC:
-            case PRESKINS:
-            case ALPHA2:
                 keyName = "key_Inventory";
                 break;
             case DEFAULT:
@@ -1021,8 +907,6 @@ public class MinecraftOptions implements IMinecraftOptionsHandler {
 
         switch (optionsVersion) {
             case CLASSIC:
-            case PRESKINS:
-            case ALPHA2:
                 keyName = "key_Chat";
                 break;
             case DEFAULT:
@@ -1043,8 +927,6 @@ public class MinecraftOptions implements IMinecraftOptionsHandler {
 
         switch (optionsVersion) {
             case CLASSIC:
-            case PRESKINS:
-            case ALPHA2:
                 keyName = "key_Toggle fog";
                 break;
             case DEFAULT:
