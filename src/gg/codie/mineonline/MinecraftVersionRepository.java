@@ -450,9 +450,6 @@ public class MinecraftVersionRepository {
                 continue;
 
             for (File versionFile : versionFiles) {
-                if(Globals.DEV)
-                    System.out.println("Reading custom version: " + versionFile.getPath());
-
                 if(versionFile.getName().length() < 37 || versionFile.isDirectory())
                     continue;
 
