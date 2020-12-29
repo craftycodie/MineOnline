@@ -184,34 +184,37 @@ public class Loader {
 
         String texturePack = Settings.singleton.getTexturePack();
 
-        try {
-            ZipFile texturesZip = new ZipFile(LauncherFiles.MINECRAFT_TEXTURE_PACKS_PATH + texturePack);
+        if (!texturePack.equals("Default")) {
+            try {
+                ZipFile texturesZip = new ZipFile(LauncherFiles.MINECRAFT_TEXTURE_PACKS_PATH + texturePack);
 
-            ZipEntry texture = texturesZip.getEntry(textureName.substring(1));
+                ZipEntry texture = texturesZip.getEntry(textureName.substring(1));
 
-            if (texture != null) {
-                Loader.singleton.overwriteTexture(HashMapPutAdvice.textures.get(textureName), texturesZip.getInputStream(texture), textureName);
+                if (texture != null) {
+                    Loader.singleton.overwriteTexture(HashMapPutAdvice.textures.get(textureName), texturesZip.getInputStream(texture), textureName);
 
-                if(textureName.equals("/terrain.png")) {
-                    try {
-                        BufferedImage terrain = ImageIO.read(texturesZip.getInputStream(texture));
-                        HDTextureFXHelper.scale = (float)terrain.getHeight() / 256;
-                    } catch (Exception ex) {
-                        HDTextureFXHelper.scale = 1;
+                    if (textureName.equals("/terrain.png")) {
+                        try {
+                            BufferedImage terrain = ImageIO.read(texturesZip.getInputStream(texture));
+                            HDTextureFXHelper.scale = (float) terrain.getHeight() / 256;
+                        } catch (Exception ex) {
+                            HDTextureFXHelper.scale = 1;
+                        }
+                        HDTextureFXHelper.reloadTextures();
                     }
-                    HDTextureFXHelper.reloadTextures();
-                }
 
-                return;
-            } else {
-                if(textureName.equals("/terrain.png")) {
-                    HDTextureFXHelper.scale = 1;
-                    HDTextureFXHelper.reloadTextures();
+                    return;
+                } else {
+                    if (textureName.equals("/terrain.png")) {
+                        HDTextureFXHelper.scale = 1;
+                        HDTextureFXHelper.reloadTextures();
+                    }
                 }
+            } catch (Exception ex) {
+
             }
-        } catch (Exception ex) {
-
         }
+
         try {
 
             if (LegacyGameManager.getAppletWrapper().getMinecraftAppletClass() != null)

@@ -14,59 +14,60 @@ public class Settings implements IMinecraftOptionsHandler {
     public static Settings singleton;
     private JSONObject settings;
 
-    public static final String SETTINGS_VERSION = "settingsVersion";
-    public static final String JAVA_HOME = "javaHome";
-    public static final String CLIENT_LAUNCH_ARGS = "clientLaunchArgs";
-    public static final String HIDE_VERSION_STRING = "hideVersionString";
-    public static final String GAME_WIDTH = "gameWidth";
-    public static final String GAME_HEIGHT = "gameHeight";
-    public static final String CUSTOM_CAPES = "customCapes";
-    public static final String KEY_CODE_ZOOM = "keyCodeZoom";
-    public static final String SAMPLE_COUNT = "sampleCount";
-    public static final String STENCIL_COUNT = "stencilCount";
-    public static final String COVERAGE_SAMPLE_COUNT = "coverageSampleCount";
-    public static final String LAST_LAUNCHED_OPTIONS_VERSION = "lastLaunchedOptionsVersion";
+    private static final String SETTINGS_VERSION = "settingsVersion";
+    private static final String JAVA_HOME = "javaHome";
+    private static final String CLIENT_LAUNCH_ARGS = "clientLaunchArgs";
+    private static final String HIDE_VERSION_STRING = "hideVersionString";
+    private static final String GAME_WIDTH = "gameWidth";
+    private static final String GAME_HEIGHT = "gameHeight";
+    private static final String CUSTOM_CAPES = "customCapes";
+    private static final String KEY_CODE_ZOOM = "keyCodeZoom";
+    private static final String SAMPLE_COUNT = "sampleCount";
+    private static final String STENCIL_COUNT = "stencilCount";
+    private static final String COVERAGE_SAMPLE_COUNT = "coverageSampleCount";
+    private static final String LAST_LAUNCHED_OPTIONS_VERSION = "lastLaunchedOptionsVersion";
 
-    public static final String FULLSCREEN = "fullscreen";
-    public static final String GUI_SCALE = "guiScale";
-    public static final String FOV = "fov";
-    public static final String MAIN_HAND = "mainHand";
-    public static final String TEXTURE_PACK = "texturePack";
-    public static final String MUSIC = "music";
-    public static final String SOUND = "sound";
-    public static final String INVERT_Y_MOUSE = "invertYMouse";
-    public static final String MOUSE_SENSITIVITY = "mouseSensitivity";
-    public static final String RENDER_DISTANCE = "viewDistance";
-    public static final String VIEW_BOBBING = "viewBobbing";
-    public static final String ANAGLYPH_3D = "anaglyph3d";
-    public static final String ADVANCED_OPEN_GL = "advancedOpengl";
-    public static final String PERFORMANCE = "performance";
-    public static final String DIFFICULTY = "difficulty";
-    public static final String FANCY_GRAPHICS = "fancyGraphics";
-    public static final String SMOOTH_LIGHTING = "smoothLighting";
-    public static final String LAST_SERVER = "lastServer";
-    public static final String SHOW_FPS = "showFPS";
-    public static final String KEY_CODE_FORWARD = "keyCodeForward";
-    public static final String KEY_CODE_LEFT = "keyCodeLeft";
-    public static final String KEY_CODE_BACK = "keyCodeBack";
-    public static final String KEY_CODE_RIGHT = "keyCodeRight";
-    public static final String KEY_CODE_JUMP = "keyCodeJump";
-    public static final String KEY_CODE_SNEAK = "keyCodeSneak";
-    public static final String KEY_CODE_DROP = "keyCodeDrop";
-    public static final String KEY_CODE_INVENTORY = "keyCodeInventory";
-    public static final String KEY_CODE_CHAT = "keyCodeChat";
-    public static final String KEY_CODE_FOG = "keyCodeFog";
-    public static final String KEY_CODE_SAVE_LOCATION = "keyCodeSaveLocation";
-    public static final String KEY_CODE_LOAD_LOCATION = "keyCodeLoadLocation";
-    public static final String KEY_CODE_BUILD_MENU = "keyCodeBuildMenu";
-    public static final String SKIN_LAYER_HEAD = "skinLayerHead";
-    public static final String SKIN_LAYER_TORSO = "skinLayerTorso";
-    public static final String SKIN_LAYER_LEFT_ARM = "skinLayerLeftArm";
-    public static final String SKIN_LAYER_RIGHT_ARM = "skinLayerRightArm";
-    public static final String SKIN_LAYER_LEFT_LEG = "skinLayerLeftLeg";
-    public static final String SKIN_LAYER_RIGHT_LEG = "skinLayerRightLeg";
-    public static final String AUTO_JUMP = "autoJump";
-    public static final String KEY_CODE_INGAME_MENU = "keyCodeIngameMenu";
+    private static final String FULLSCREEN = "fullscreen";
+    private static final String GUI_SCALE = "guiScale";
+    private static final String FOV = "fov";
+    private static final String MAIN_HAND = "mainHand";
+    private static final String TEXTURE_PACK = "texturePack";
+    private static final String MUSIC = "music";
+    private static final String SOUND = "sound";
+    private static final String INVERT_Y_MOUSE = "invertYMouse";
+    private static final String MOUSE_SENSITIVITY = "mouseSensitivity";
+    private static final String RENDER_DISTANCE = "viewDistance";
+    private static final String VIEW_BOBBING = "viewBobbing";
+    private static final String ANAGLYPH_3D = "anaglyph3d";
+    private static final String ADVANCED_OPEN_GL = "advancedOpengl";
+    private static final String PERFORMANCE = "performance";
+    private static final String DIFFICULTY = "difficulty";
+    private static final String FANCY_GRAPHICS = "fancyGraphics";
+    private static final String SMOOTH_LIGHTING = "smoothLighting";
+    private static final String LAST_SERVER = "lastServer";
+    private static final String SHOW_FPS = "showFPS";
+    private static final String KEY_CODE_FORWARD = "keyCodeForward";
+    private static final String KEY_CODE_LEFT = "keyCodeLeft";
+    private static final String KEY_CODE_BACK = "keyCodeBack";
+    private static final String KEY_CODE_RIGHT = "keyCodeRight";
+    private static final String KEY_CODE_JUMP = "keyCodeJump";
+    private static final String KEY_CODE_SNEAK = "keyCodeSneak";
+    private static final String KEY_CODE_DROP = "keyCodeDrop";
+    private static final String KEY_CODE_INVENTORY = "keyCodeInventory";
+    private static final String KEY_CODE_CHAT = "keyCodeChat";
+    private static final String KEY_CODE_FOG = "keyCodeFog";
+    private static final String KEY_CODE_SAVE_LOCATION = "keyCodeSaveLocation";
+    private static final String KEY_CODE_LOAD_LOCATION = "keyCodeLoadLocation";
+    private static final String KEY_CODE_BUILD_MENU = "keyCodeBuildMenu";
+    private static final String SKIN_LAYER_HEAD = "skinLayerHead";
+    private static final String SKIN_LAYER_TORSO = "skinLayerTorso";
+    private static final String SKIN_LAYER_LEFT_ARM = "skinLayerLeftArm";
+    private static final String SKIN_LAYER_RIGHT_ARM = "skinLayerRightArm";
+    private static final String SKIN_LAYER_LEFT_LEG = "skinLayerLeftLeg";
+    private static final String SKIN_LAYER_RIGHT_LEG = "skinLayerRightLeg";
+    private static final String AUTO_JUMP = "autoJump";
+    private static final String KEY_CODE_INGAME_MENU = "keyCodeIngameMenu";
+    static final String LIMIT_FRAMERATE = "limitFramerate";
 
 
     private static final int SETTINGS_VERSION_NUMBER = 12;
@@ -154,6 +155,7 @@ public class Settings implements IMinecraftOptionsHandler {
         settings.put(LAST_LAUNCHED_OPTIONS_VERSION, "DEFAULT");
         settings.put(AUTO_JUMP, false);
         settings.put(KEY_CODE_INGAME_MENU, 19);
+        settings.put(LIMIT_FRAMERATE, false);
 
         saveSettings();
         loadSettings();
@@ -227,6 +229,11 @@ public class Settings implements IMinecraftOptionsHandler {
             }
             try {
                 setAdvancedOpenGL(options.getAdvancedOpenGL());
+            } catch (NoSuchFieldException ex) {
+                // ignore.
+            }
+            try {
+                setLimitFramerate(options.getLimitFramerate());
             } catch (NoSuchFieldException ex) {
                 // ignore.
             }
@@ -413,6 +420,7 @@ public class Settings implements IMinecraftOptionsHandler {
             options.set3DAnalyhph(get3DAnaglyph());
             options.setAdvancedOpenGL(getAdvancedOpenGL());
             options.setPerformance(getPerformance());
+            options.setLimitFramerate(getLimitFramerate());
             options.setDifficulty(getDifficulty());
             options.setFancyGraphics(getFancyGraphics());
             options.setSmoothLighting(getSmoothLighting());
@@ -735,6 +743,16 @@ public class Settings implements IMinecraftOptionsHandler {
     @Override
     public void setAdvancedOpenGL(boolean advancedOpenGL) {
         settings.put(ADVANCED_OPEN_GL, advancedOpenGL);
+    }
+
+    @Override
+    public boolean getLimitFramerate() {
+        return settings.optBoolean(LIMIT_FRAMERATE, false);
+    }
+
+    @Override
+    public void setLimitFramerate(boolean limitFramerate) {
+        settings.put(LIMIT_FRAMERATE, limitFramerate);
     }
 
     @Override

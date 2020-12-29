@@ -128,10 +128,6 @@ public class LegacyGameManager {
                 StringPatch.enable = Settings.singleton.getHideVersionString();
             }
 
-            if (version.useTexturepackPatch) {
-                ClassPatch.texturePack = Settings.singleton.getTexturePack();
-            }
-
             // Fixes various input issues with classic - infdev versions.
             InputPatch.enableClassicFixes = version.enableCursorPatch;
 
@@ -166,7 +162,6 @@ public class LegacyGameManager {
     public static void setTexturePack(String texturePack) {
         Settings.singleton.setTexturePack(texturePack);
         Settings.singleton.saveSettings();
-        ClassPatch.texturePack = texturePack;
         Loader.reloadMinecraftTextures();
         if (Loader.singleton != null) {
             for (EGUITexture texture : EGUITexture.values()) {
