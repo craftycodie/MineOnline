@@ -97,7 +97,9 @@ public class MinecraftVersionRepository {
     }
 
     public LinkedList<MinecraftVersion> getDownloadableClients() {
-        return Arrays.stream(versions).filter(version -> version != null).filter(version -> (version.type.equals("client") || version.type.equals("launcher") || version.type.equals("rubydung")) && version.downloadURL != null).distinct().collect(Collectors.toCollection(LinkedList::new));
+        LinkedList<MinecraftVersion> allVersions = new LinkedList<>(Arrays.asList(versions));
+        allVersions.addAll(new LinkedList<>(Arrays.asList(customVersions)));
+        return allVersions.stream().filter(version -> version != null).filter(version -> (version.type.equals("client") || version.type.equals("launcher") || version.type.equals("rubydung")) && version.downloadURL != null).distinct().collect(Collectors.toCollection(LinkedList::new));
     }
 
     private void loadJar(String path) {
@@ -448,6 +450,9 @@ public class MinecraftVersionRepository {
                 continue;
 
             for (File versionFile : versionFiles) {
+                if(Globals.DEV)
+                    System.out.println("Reading custom version: " + versionFile.getPath());
+
                 if(versionFile.getName().length() < 37 || versionFile.isDirectory())
                     continue;
 
