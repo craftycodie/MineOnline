@@ -1,5 +1,6 @@
 package gg.codie.mineonline.gui.rendering;
 
+import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.Settings;
 import gg.codie.mineonline.gui.input.InputSanitization;
 import gg.codie.mineonline.gui.textures.EGUITexture;
@@ -10,6 +11,8 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.IntBuffer;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 public class FontRenderer
 {
@@ -24,28 +27,28 @@ public class FontRenderer
     {
         Settings.singleton.loadSettings();
 
-        charWidth = new int[256];
+        charWidth = new float[256];
         fontTextureName = 0;
         buffer = BufferUtils.createIntBuffer(1024);
         BufferedImage bufferedimage;
         try
         {
             // TODO: Add texture pack support (needs an in game patch)
-//            if (Settings.singleton.getTexturePack().isEmpty()) {
+            if (Settings.singleton.getTexturePack().isEmpty() || Settings.singleton.getTexturePack().equals("Default")) {
                 bufferedimage = ImageIO.read(FontRenderer.class.getResourceAsStream(EGUITexture.FONT.textureName));
-//            } else {
-//                try {
-//                    ZipFile texturesZip = new ZipFile(LauncherFiles.MINECRAFT_TEXTURE_PACKS_PATH + Settings.singleton.getTexturePack());
-//                    ZipEntry texture = texturesZip.getEntry(EGUITexture.FONT.textureName.substring(1));
-//                    if (texture != null) {
-//                        bufferedimage = ImageIO.read(texturesZip.getInputStream(texture));
-//                    } else {
-//                        bufferedimage = ImageIO.read(FontRenderer.class.getResourceAsStream(EGUITexture.FONT.textureName));
-//                    }
-//                } catch (Exception ex) {
-//                    bufferedimage = ImageIO.read(FontRenderer.class.getResourceAsStream(EGUITexture.FONT.textureName));
-//                }
-//            }
+            } else {
+                try {
+                    ZipFile texturesZip = new ZipFile(LauncherFiles.MINECRAFT_TEXTURE_PACKS_PATH + Settings.singleton.getTexturePack());
+                    ZipEntry texture = texturesZip.getEntry(EGUITexture.FONT.textureName.substring(1));
+                    if (texture != null) {
+                        bufferedimage = ImageIO.read(texturesZip.getInputStream(texture));
+                    } else {
+                        bufferedimage = ImageIO.read(FontRenderer.class.getResourceAsStream(EGUITexture.FONT.textureName));
+                    }
+                } catch (Exception ex) {
+                    bufferedimage = ImageIO.read(FontRenderer.class.getResourceAsStream(EGUITexture.FONT.textureName));
+                }
+            }
         }
         catch(IOException ioexception)
         {
@@ -53,24 +56,36 @@ public class FontRenderer
         }
         int fontFileWidth = bufferedimage.getWidth();
         int fontFileHeight = bufferedimage.getHeight();
+
+        int fontSize = 128;
+        float fontScale = 1;
+
+        if (fontFileHeight == fontFileWidth && fontFileHeight % 128 == 0) {
+            fontSize = fontFileHeight;
+            fontScale = (float)fontSize / 128;
+        }
+
         int[] fontPixels = new int[fontFileWidth * fontFileHeight];
-        bufferedimage.getRGB(0, 0, fontFileWidth, fontFileHeight, fontPixels, 0, fontFileWidth);
-        for(int i = 0; i < 256; i++)
+        bufferedimage.getRGB(0, 0, fontSize, fontSize, fontPixels, 0, fontSize);
+        for(int ascii = 0; ascii < 256; ascii++)
         {
-            int row = i % 16;
-            int column = i / 16;
-            int space = 7;
+            // 16 chars per col, 16 chars per row.
+            int column = ascii % 16;
+            int row = ascii / 16;
+
+            // Loop through pixels of the char going down then across to figure out the max width.
+            int charX = (int)(8 * fontScale) - 1;
             do
             {
-                if(space < 0)
+                if(charX < 0)
                 {
                     break;
                 }
-                int i3 = row * 8 + space;
+                int i3 = column * (int)(8 * fontScale) + charX;
                 boolean flag = true;
-                for(int l3 = 0; l3 < 8 && flag; l3++)
+                for(int charY = 0; charY < (int)(8 * fontScale) && flag; charY++)
                 {
-                    int i4 = (column * 8 + l3) * fontFileWidth;
+                    int i4 = (row * (int)(8 * fontScale) + charY) * fontSize;
                     int k4 = fontPixels[i3 + i4] & 0xff;
                     if(k4 > 0)
                     {
@@ -82,13 +97,15 @@ public class FontRenderer
                 {
                     break;
                 }
-                space--;
+                charX--;
             } while(true);
-            if(i == 32)
+            if(ascii == 32)
             {
-                space = 2;
+                charX = (int)(2 * fontScale);
             }
-            charWidth[i] = space + 2;
+            if (fontScale == 1)
+                charX += 2;
+            charWidth[ascii] = (charX / fontScale);
         }
 
         fontTextureName = Loader.singleton.getGuiTexture(EGUITexture.FONT);
@@ -233,7 +250,7 @@ public class FontRenderer
         {
             return 0;
         }
-        int width = 0;
+        float width = 0;
         for(int i = 0; i < string.length(); i++)
         {
             if(string.charAt(i) == '\247')
@@ -248,10 +265,10 @@ public class FontRenderer
             }
         }
 
-        return width;
+        return (int)width;
     }
 
-    private int charWidth[];
+    private float charWidth[];
     public int fontTextureName;
     private int fontDisplayLists;
     private IntBuffer buffer;
