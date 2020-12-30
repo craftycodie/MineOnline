@@ -3,7 +3,7 @@ package gg.codie.mineonline.gui.screens;
 import gg.codie.mineonline.client.LegacyGameManager;
 import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.gui.components.GuiButton;
-import gg.codie.mineonline.gui.rendering.FontRenderer;
+import gg.codie.mineonline.gui.rendering.Font;
 
 import java.awt.*;
 import java.net.URI;
@@ -79,7 +79,7 @@ public class GuiAbout extends AbstractGuiScreen
 
         drawDefaultBackground();
 
-        FontRenderer.minecraftFontRenderer.drawCenteredString("About", getWidth() / 2, 20, 0xffffff);
+        Font.minecraftFont.drawCenteredString("About", getWidth() / 2, 20, 0xffffff);
         super.drawScreen(mouseX, mouseY);
     }
 }

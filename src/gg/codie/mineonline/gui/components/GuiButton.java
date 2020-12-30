@@ -1,6 +1,6 @@
 package gg.codie.mineonline.gui.components;
 
-import gg.codie.mineonline.gui.rendering.FontRenderer;
+import gg.codie.mineonline.gui.rendering.Font;
 import gg.codie.mineonline.gui.rendering.Loader;
 import gg.codie.mineonline.gui.rendering.Renderer;
 import gg.codie.mineonline.gui.sound.ClickSound;
@@ -71,14 +71,14 @@ public class GuiButton extends GuiComponent
         mouseDragged(i, j);
         if(!enabled)
         {
-            FontRenderer.minecraftFontRenderer.drawCenteredString(displayString, xPosition + width / 2, yPosition + (height - 8) / 2, 0xffa0a0a0);
+            Font.minecraftFont.drawCenteredString(displayString, xPosition + width / 2, yPosition + (height - 8) / 2, 0xffa0a0a0);
         } else
         if(flag)
         {
-            FontRenderer.minecraftFontRenderer.drawCenteredString(displayString, xPosition + width / 2, yPosition + (height - 8) / 2, 0xffffa0);
+            Font.minecraftFont.drawCenteredString(displayString, xPosition + width / 2, yPosition + (height - 8) / 2, 0xffffa0);
         } else
         {
-            FontRenderer.minecraftFontRenderer.drawCenteredString(displayString, xPosition + width / 2, yPosition + (height - 8) / 2, 0xe0e0e0);
+            Font.minecraftFont.drawCenteredString(displayString, xPosition + width / 2, yPosition + (height - 8) / 2, 0xe0e0e0);
         }
     }
 

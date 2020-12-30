@@ -3,8 +3,7 @@ package gg.codie.mineonline.gui.screens;
 import gg.codie.mineonline.MinecraftVersion;
 import gg.codie.mineonline.MinecraftVersionRepository;
 import gg.codie.mineonline.api.MineOnlineServer;
-import gg.codie.mineonline.api.MineOnlineServerRepository;
-import gg.codie.mineonline.gui.rendering.FontRenderer;
+import gg.codie.mineonline.gui.rendering.Font;
 import gg.codie.mineonline.gui.rendering.Loader;
 import gg.codie.mineonline.gui.rendering.Renderer;
 import gg.codie.mineonline.gui.textures.EGUITexture;
@@ -67,11 +66,11 @@ public class GuiSlotServer extends GuiSlot
         super.drawScreen(mousex, mousey);
 
         if (MinecraftVersionRepository.getSingleton().isLoadingInstalledVersions())
-            FontRenderer.minecraftFontRenderer.drawCenteredString("Loading versions...", guiMultiplayer.getWidth() / 2, guiMultiplayer.getHeight() / 2, 0x808080);
+            Font.minecraftFont.drawCenteredString("Loading versions...", guiMultiplayer.getWidth() / 2, guiMultiplayer.getHeight() / 2, 0x808080);
         else if (guiMultiplayer.serverRepository.didFail())
-            FontRenderer.minecraftFontRenderer.drawCenteredString("Failed to load servers.", guiMultiplayer.getWidth() / 2, guiMultiplayer.getHeight() / 2, 0x808080);
+            Font.minecraftFont.drawCenteredString("Failed to load servers.", guiMultiplayer.getWidth() / 2, guiMultiplayer.getHeight() / 2, 0x808080);
         else if (!guiMultiplayer.serverRepository.gotServers())
-            FontRenderer.minecraftFontRenderer.drawCenteredString("Loading servers...", guiMultiplayer.getWidth() / 2, guiMultiplayer.getHeight() / 2, 0x808080);
+            Font.minecraftFont.drawCenteredString("Loading servers...", guiMultiplayer.getWidth() / 2, guiMultiplayer.getHeight() / 2, 0x808080);
     }
 
     protected void drawSlot(int slotIndex, int xPos, int yPos, int zPos)
@@ -124,13 +123,13 @@ public class GuiSlotServer extends GuiSlot
         Renderer.singleton.addVertexWithUV(xPos, yPos, 0.0D, 0.0D, 0.0D);
         Renderer.singleton.draw();
 
-        FontRenderer.minecraftFontRenderer.drawString(server.name, xPos + 32 + 2, yPos + 1, 0xffffff);
-        FontRenderer.minecraftFontRenderer.drawString(versionName, xPos + 32 + 2, yPos + 12, 0x808080);
+        Font.minecraftFont.drawString(server.name, xPos + 32 + 2, yPos + 1, 0xffffff);
+        Font.minecraftFont.drawString(versionName, xPos + 32 + 2, yPos + 12, 0x808080);
         String users = server.isMineOnline ? "" + server.users : "?";
-        FontRenderer.minecraftFontRenderer.drawString(users + "/" + server.maxUsers, (xPos + slotWidth - 4) - FontRenderer.minecraftFontRenderer.getStringWidth(users + "/" + server.maxUsers), yPos + 12, 0x808080);
+        Font.minecraftFont.drawString(users + "/" + server.maxUsers, (xPos + slotWidth - 4) - Font.minecraftFont.width(users + "/" + server.maxUsers), yPos + 12, 0x808080);
 
         if (server.motd != null)
-            FontRenderer.minecraftFontRenderer.drawString(server.motd, xPos + 32 + 2, yPos + 12 + 11, 0x808080);
+            Font.minecraftFont.drawString(server.motd, xPos + 32 + 2, yPos + 12 + 11, 0x808080);
 
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, Loader.singleton.getGuiTexture(EGUITexture.MINEONLINE_GUI_ICONS));

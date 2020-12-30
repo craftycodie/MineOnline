@@ -8,7 +8,7 @@ import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.gui.components.GuiButton;
 import gg.codie.mineonline.gui.components.GuiPasswordField;
 import gg.codie.mineonline.gui.components.GuiTextField;
-import gg.codie.mineonline.gui.rendering.FontRenderer;
+import gg.codie.mineonline.gui.rendering.Font;
 import gg.codie.mineonline.gui.rendering.Loader;
 import gg.codie.mineonline.gui.rendering.Renderer;
 import gg.codie.mineonline.gui.sound.ClickSound;
@@ -59,7 +59,7 @@ public class GuiLogin extends AbstractGuiScreen
         usernameField.mouseClicked(x, y, button);
         passwordField.mouseClicked(x, y, button);
         super.mouseClicked(x, y, button);
-        if (MenuManager.isUpdateAvailable() && y > getHeight() - 20 && y < getHeight() - 10 && x < FontRenderer.minecraftFontRenderer.getStringWidth("Update Available!")) {
+        if (MenuManager.isUpdateAvailable() && y > getHeight() - 20 && y < getHeight() - 10 && x < Font.minecraftFont.width("Update Available!")) {
             ClickSound.play();
             try {
                 if (Globals.BRANCH.equalsIgnoreCase("release"))
@@ -71,7 +71,7 @@ public class GuiLogin extends AbstractGuiScreen
             }
         }
 
-        if (y > getHeight() / 4 + 48 + 96 && y < getHeight() / 4 + 48 + 106 && x > (getWidth() / 2 ) - (FontRenderer.minecraftFontRenderer.getStringWidth("Need Account?")) / 2 && x < (getWidth() / 2 ) + (FontRenderer.minecraftFontRenderer.getStringWidth("Need Account?")) / 2) {
+        if (y > getHeight() / 4 + 48 + 96 && y < getHeight() / 4 + 48 + 106 && x > (getWidth() / 2 ) - (Font.minecraftFont.width("Need Account?")) / 2 && x < (getWidth() / 2 ) + (Font.minecraftFont.width("Need Account?")) / 2) {
             ClickSound.play();
             try {
                 Desktop.getDesktop().browse(new URI("https://www.minecraft.net/store/minecraft-java-edition"));
@@ -80,7 +80,7 @@ public class GuiLogin extends AbstractGuiScreen
             }
         }
 
-        if (y > getHeight() - 10 && y < getHeight() && x > getWidth() - FontRenderer.minecraftFontRenderer.getStringWidth("Made by @codieradical <3")) {
+        if (y > getHeight() - 10 && y < getHeight() && x > getWidth() - Font.minecraftFont.width("Made by @codieradical <3")) {
             ClickSound.play();
             try {
                 Desktop.getDesktop().browse(new URI("https://twitter.com/codieradical"));
@@ -217,14 +217,14 @@ public class GuiLogin extends AbstractGuiScreen
         GL11.glScalef(0.625f, 0.625f, 1);
         tessellator.setColorRGBA(255, 255, 255, 255);
         if (MenuManager.isUpdateAvailable())
-            FontRenderer.minecraftFontRenderer.drawString("Update Available!", 2, getHeight() - 20, 0xffff00);
-        FontRenderer.minecraftFontRenderer.drawString("MineOnline " + (Globals.DEV ? "Dev " : "") + Globals.LAUNCHER_VERSION + (!Globals.BRANCH.equalsIgnoreCase("release") ? " (" + Globals.BRANCH + ")" : ""), 2, getHeight() - 10, 0xffffff);
+            Font.minecraftFont.drawString("Update Available!", 2, getHeight() - 20, 0xffff00);
+        Font.minecraftFont.drawString("MineOnline " + (Globals.DEV ? "Dev " : "") + Globals.LAUNCHER_VERSION + (!Globals.BRANCH.equalsIgnoreCase("release") ? " (" + Globals.BRANCH + ")" : ""), 2, getHeight() - 10, 0xffffff);
         String s = "Made by @codieradical <3";
-        FontRenderer.minecraftFontRenderer.drawString(s, getWidth() - FontRenderer.minecraftFontRenderer.getStringWidth(s) - 2, getHeight() - 10, 0xffffff);
-        FontRenderer.minecraftFontRenderer.drawString("Need Account?", (getWidth() / 2) - FontRenderer.minecraftFontRenderer.getStringWidth("Need Account?") / 2, getHeight() / 4 + 48 + 96, 0x5555FF);
-        FontRenderer.minecraftFontRenderer.drawString("Username or E-Mail:", getWidth() / 2 - 100, getHeight() / 4 + 48 - 16, 0xffffff);
-        FontRenderer.minecraftFontRenderer.drawString("Password:", getWidth() / 2 - 100, getHeight() / 4 + 48 + 48 - 22, 0xffffff);
-        FontRenderer.minecraftFontRenderer.drawString(errorText, (getWidth() / 2) - FontRenderer.minecraftFontRenderer.getStringWidth(errorText) / 2, getHeight() / 4 + 48 - 32, 0xFF5555);
+        Font.minecraftFont.drawString(s, getWidth() - Font.minecraftFont.width(s) - 2, getHeight() - 10, 0xffffff);
+        Font.minecraftFont.drawString("Need Account?", (getWidth() / 2) - Font.minecraftFont.width("Need Account?") / 2, getHeight() / 4 + 48 + 96, 0x5555FF);
+        Font.minecraftFont.drawString("Username or E-Mail:", getWidth() / 2 - 100, getHeight() / 4 + 48 - 16, 0xffffff);
+        Font.minecraftFont.drawString("Password:", getWidth() / 2 - 100, getHeight() / 4 + 48 + 48 - 22, 0xffffff);
+        Font.minecraftFont.drawString(errorText, (getWidth() / 2) - Font.minecraftFont.width(errorText) / 2, getHeight() / 4 + 48 - 32, 0xFF5555);
 
         usernameField.drawTextBox();
         passwordField.drawTextBox();
