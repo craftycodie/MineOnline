@@ -20,5 +20,7 @@
   "optionsVersion": "CLASSIC",
   "useResizePatch": true,
   "hasNetherPortalTexture": false,
+  "fontClass": "com.mojang.minecraft.e.l",
+  "colorCodePrefix": "&",
   "downloadURL": "https://launcher.mojang.com/v1/objects/54622801f5ef1bcc1549a842c5b04cb5d5583005/client.jar"
 }

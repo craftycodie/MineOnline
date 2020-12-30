@@ -8,7 +8,7 @@ import gg.codie.mineonline.gui.GUIScale;
 import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.gui.input.MouseHandler;
 import gg.codie.mineonline.gui.rendering.DisplayManager;
-import gg.codie.mineonline.gui.rendering.FontRenderer;
+import gg.codie.mineonline.gui.rendering.Font;
 import gg.codie.mineonline.gui.rendering.Loader;
 import gg.codie.mineonline.gui.screens.AbstractGuiScreen;
 import gg.codie.mineonline.gui.screens.GuiIngameMenu;
@@ -218,7 +218,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
             public void onCreateEvent() {
                 DisplayManager.checkGLError("minecraft create hook start");
                 new Loader();
-                FontRenderer.reloadFont();
+                Font.reloadFont();
                 DisplayManager.checkGLError("minecraft create hook end");
             }
         };
@@ -317,7 +317,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
                         int ypos = 2;
                         if (minecraftVersion.ingameVersionString != null && !Settings.singleton.getHideVersionString())
                             ypos = 12;
-                        FontRenderer.minecraftFontRenderer.drawStringWithShadow("MineOnline " + (Globals.DEV ? "Dev " : "") + Globals.LAUNCHER_VERSION + " (" + Globals.BRANCH + ")", 2, ypos, 0xffffff);
+                        Font.minecraftFont.drawStringWithShadow("MineOnline " + (Globals.DEV ? "Dev " : "") + Globals.LAUNCHER_VERSION + " (" + Globals.BRANCH + ")", 2, ypos, 0xffffff);
                     }
 
                     GUIScale scaledresolution = new GUIScale(getWidth(), getHeight());
@@ -365,7 +365,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
                                 }
 
                                 if (opacityMultiplier > 0) {
-                                    FontRenderer.minecraftFontRenderer.drawStringWithShadow("Saved screenshot as " + lastScreenshotName, 2, GUIScale.lastScaledHeight() - 100, 0xffffff + ((int) (0xff * opacityMultiplier) << 24));
+                                    Font.minecraftFont.drawStringWithShadow("Saved screenshot as " + lastScreenshotName, 2, GUIScale.lastScaledHeight() - 100, 0xffffff + ((int) (0xff * opacityMultiplier) << 24));
                                 }
                             } catch (Exception e) {
                                 e.printStackTrace();

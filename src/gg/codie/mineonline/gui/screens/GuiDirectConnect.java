@@ -13,7 +13,7 @@ import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.gui.components.GuiButton;
 import gg.codie.mineonline.gui.components.GuiTextField;
 import gg.codie.mineonline.gui.rendering.DisplayManager;
-import gg.codie.mineonline.gui.rendering.FontRenderer;
+import gg.codie.mineonline.gui.rendering.Font;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 
@@ -192,12 +192,12 @@ public class GuiDirectConnect extends AbstractGuiScreen
         resize();
 
         drawDefaultBackground();
-        FontRenderer.minecraftFontRenderer.drawCenteredString("Play Multiplayer", getWidth() / 2, (getHeight() / 4 - 60) + 20, 0xffffff);
-        FontRenderer.minecraftFontRenderer.drawString("Enter the IP of a server to connect to it:", getWidth() / 2 - 140, (getHeight() / 4 - 60) + 60, 0xa0a0a0);
+        Font.minecraftFont.drawCenteredString("Play Multiplayer", getWidth() / 2, (getHeight() / 4 - 60) + 20, 0xffffff);
+        Font.minecraftFont.drawString("Enter the IP of a server to connect to it:", getWidth() / 2 - 140, (getHeight() / 4 - 60) + 60, 0xa0a0a0);
 
-//        FontRenderer.minecraftFontRenderer.drawString("Minecraft Multiplayer is currently not finished, but there", getWidth() / 2 - 140, (getHeight() / 4 - 60) + 60, 0xa0a0a0);
-//        FontRenderer.minecraftFontRenderer.drawString("is some buggy early testing going on.", getWidth() / 2 - 140, (getHeight() / 4 - 60) + 60 + 9, 0xa0a0a0);
-//        FontRenderer.minecraftFontRenderer.drawString("Enter the IP of a server to connect to it:", getWidth() / 2 - 140, (getHeight() / 4 - 60) + 60 + 36, 0xa0a0a0);
+//        FontRenderer.minecraftFont.drawString("Minecraft Multiplayer is currently not finished, but there", getWidth() / 2 - 140, (getHeight() / 4 - 60) + 60, 0xa0a0a0);
+//        FontRenderer.minecraftFont.drawString("is some buggy early testing going on.", getWidth() / 2 - 140, (getHeight() / 4 - 60) + 60 + 9, 0xa0a0a0);
+//        FontRenderer.minecraftFont.drawString("Enter the IP of a server to connect to it:", getWidth() / 2 - 140, (getHeight() / 4 - 60) + 60 + 36, 0xa0a0a0);
         textField.drawTextBox();
         super.drawScreen(mouseX, mouseY);
     }

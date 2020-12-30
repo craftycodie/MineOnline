@@ -1,14 +1,8 @@
 package gg.codie.mineonline.gui.screens;
 
-import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.MinecraftVersion;
-import gg.codie.mineonline.MinecraftVersionRepository;
-import gg.codie.mineonline.gui.rendering.FontRenderer;
+import gg.codie.mineonline.gui.rendering.Font;
 
-import java.io.File;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
 import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.List;
@@ -99,9 +93,9 @@ public class GuiSlotVersion extends GuiSlot
     {
         SelectableVersion selectableVersion = versions.get(slotIndex);
 
-        FontRenderer.minecraftFontRenderer.drawString(selectableVersion.version != null ? selectableVersion.version.name : "Unknown Version", xPos + 2, yPos + 1, 0xffffff);
-        FontRenderer.minecraftFontRenderer.drawString(selectableVersion.path != null ? Paths.get(selectableVersion.path).getFileName().toString() : "Download", xPos + 2, yPos + 12, 0x808080);
-        FontRenderer.minecraftFontRenderer.drawString(selectableVersion.version != null ? selectableVersion.version.info : "", xPos + 2, yPos + 12 + 11, 0x808080);
+        Font.minecraftFont.drawString(selectableVersion.version != null ? selectableVersion.version.name : "Unknown Version", xPos + 2, yPos + 1, 0xffffff);
+        Font.minecraftFont.drawString(selectableVersion.path != null ? Paths.get(selectableVersion.path).getFileName().toString() : "Download", xPos + 2, yPos + 12, 0x808080);
+        Font.minecraftFont.drawString(selectableVersion.version != null ? selectableVersion.version.info : "", xPos + 2, yPos + 12 + 11, 0x808080);
     }
 
     final GuiVersions parent;

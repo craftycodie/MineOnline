@@ -26,6 +26,7 @@ public class Settings implements IMinecraftOptionsHandler {
     private static final String STENCIL_COUNT = "stencilCount";
     private static final String COVERAGE_SAMPLE_COUNT = "coverageSampleCount";
     private static final String LAST_LAUNCHED_OPTIONS_VERSION = "lastLaunchedOptionsVersion";
+    @Deprecated
     private static final String USE_CUSTOM_FONTS = "useCustomFonts";
 
     private static final String FULLSCREEN = "fullscreen";
@@ -71,7 +72,7 @@ public class Settings implements IMinecraftOptionsHandler {
     private static final String LIMIT_FRAMERATE = "limitFramerate";
 
 
-    private static final int SETTINGS_VERSION_NUMBER = 13;
+    private static final int SETTINGS_VERSION_NUMBER = 14;
 
     private static boolean readonly = true;
 
@@ -540,6 +541,9 @@ public class Settings implements IMinecraftOptionsHandler {
                         settings.put(KEY_CODE_INGAME_MENU, 19);
                     case 12:
                         settings.put(USE_CUSTOM_FONTS, false);
+                    case 13:
+                        if (settings.has(USE_CUSTOM_FONTS))
+                            settings.remove(USE_CUSTOM_FONTS);
                 }
                 settings.put(SETTINGS_VERSION, SETTINGS_VERSION_NUMBER);
             }
@@ -608,10 +612,6 @@ public class Settings implements IMinecraftOptionsHandler {
 
     public boolean getCustomCapes() {
         return settings.optBoolean(CUSTOM_CAPES, true);
-    }
-
-    public boolean getCustomFonts() {
-        return settings.optBoolean(USE_CUSTOM_FONTS, false);
     }
 
     public void setCustomCapes(boolean customCapes) {

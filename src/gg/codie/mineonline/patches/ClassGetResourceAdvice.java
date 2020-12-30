@@ -45,20 +45,6 @@ public class ClassGetResourceAdvice {
                 byte[] splashBytes = (byte[])ClassLoader.getSystemClassLoader().loadClass("gg.codie.common.utils.ArrayUtils").getMethod("concatenate", byte[].class, byte[].class).invoke(null, customSplashes.getBytes(), splashesTxt);
 
                 inputStream = new ByteArrayInputStream(splashBytes);
-            } else if (resourceName.endsWith("default.png") || resourceName.endsWith("default.gif")) {
-                boolean useCustomFonts = (boolean)ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.Settings").getDeclaredMethod("getCustomFonts").invoke(ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.Settings").getDeclaredField("singleton").get(null));
-
-                if(!useCustomFonts)
-                    return;
-
-                String texturePack = (String)ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.Settings").getDeclaredMethod("getTexturePack").invoke(ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.Settings").getDeclaredField("singleton").get(null));
-                String texturePacksPath = (String) ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.LauncherFiles").getField("MINECRAFT_TEXTURE_PACKS_PATH").get(null);
-
-                ZipFile texturesZip = new ZipFile(texturePacksPath + texturePack);
-                ZipEntry texture = texturesZip.getEntry(resourceName.substring(1));
-                if (texture != null) {
-                    inputStream = texturesZip.getInputStream(texture);
-                }
             }
         } catch (Exception ex) {
             ex.printStackTrace();

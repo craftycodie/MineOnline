@@ -4,14 +4,13 @@ import com.johnymuffin.BetaEvolutionsUtils;
 import gg.codie.mineonline.MinecraftVersion;
 import gg.codie.mineonline.MinecraftVersionRepository;
 import gg.codie.mineonline.Session;
-import gg.codie.mineonline.Settings;
 import gg.codie.mineonline.api.MineOnlineServer;
 import gg.codie.mineonline.api.MineOnlineServerRepository;
 import gg.codie.mineonline.client.LegacyGameManager;
 import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.gui.components.GuiButton;
 import gg.codie.mineonline.gui.rendering.DisplayManager;
-import gg.codie.mineonline.gui.rendering.FontRenderer;
+import gg.codie.mineonline.gui.rendering.Font;
 import gg.codie.mineonline.gui.rendering.Renderer;
 import gg.codie.mineonline.server.ThreadPollServers;
 import org.lwjgl.opengl.Display;
@@ -104,7 +103,7 @@ public class GuiMultiplayer extends AbstractGuiScreen
         tooltip = null;
         drawDefaultBackground();
         guiSlotServer.drawScreen(mouseX, mouseY);
-        FontRenderer.minecraftFontRenderer.drawCenteredString("Play Multiplayer", getWidth() / 2, 20, 0xffffff);
+        Font.minecraftFont.drawCenteredString("Play Multiplayer", getWidth() / 2, 20, 0xffffff);
         super.drawScreen(mouseX, mouseY);
         if(tooltip != null)
         {

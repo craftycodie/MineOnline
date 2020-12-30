@@ -3,7 +3,7 @@ package gg.codie.mineonline.gui.components;
 
 
 import gg.codie.mineonline.gui.input.InputSanitization;
-import gg.codie.mineonline.gui.rendering.FontRenderer;
+import gg.codie.mineonline.gui.rendering.Font;
 import gg.codie.mineonline.gui.rendering.Renderer;
 import gg.codie.mineonline.gui.screens.AbstractGuiScreen;
 import org.lwjgl.input.Keyboard;
@@ -96,10 +96,10 @@ public class GuiTextField extends GuiComponent
         if(isEnabled)
         {
             boolean flag = isFocused && (System.currentTimeMillis()) % 1000 < 500;
-            FontRenderer.minecraftFontRenderer.drawString((new StringBuilder()).append(text).append(flag ? "_" : "").toString(), xPos + 4, yPos + (height - 8) / 2, 0xe0e0e0);
+            Font.minecraftFont.drawString((new StringBuilder()).append(text).append(flag ? "_" : "").toString(), xPos + 4, yPos + (height - 8) / 2, 0xe0e0e0);
         } else
         {
-            FontRenderer.minecraftFontRenderer.drawString(text, xPos + 4, yPos + (height - 8) / 2, 0x707070);
+            Font.minecraftFont.drawString(text, xPos + 4, yPos + (height - 8) / 2, 0x707070);
         }
     }
 

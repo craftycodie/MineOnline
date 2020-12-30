@@ -1,8 +1,11 @@
 package gg.codie.mineonline.gui.rendering;
 
+import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.Settings;
+import gg.codie.mineonline.client.LegacyGameManager;
 import gg.codie.mineonline.gui.input.InputSanitization;
 import gg.codie.mineonline.gui.textures.EGUITexture;
+import gg.codie.mineonline.patches.lwjgl.LWJGLDisplayUpdateAdvice;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
@@ -10,85 +13,101 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.IntBuffer;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
-public class FontRenderer
+public class Font
 {
     public static void reloadFont() {
         Settings.singleton.loadSettings();
-        minecraftFontRenderer = new FontRenderer();
+        minecraftFont = new Font();
     }
 
-    public static FontRenderer minecraftFontRenderer = new FontRenderer();
+    public static Font minecraftFont = new Font();
 
-    private FontRenderer()
+    private Font()
     {
         Settings.singleton.loadSettings();
 
-        charWidth = new int[256];
+        charWidth = new float[256];
         fontTextureName = 0;
         buffer = BufferUtils.createIntBuffer(1024);
         BufferedImage bufferedimage;
         try
         {
             // TODO: Add texture pack support (needs an in game patch)
-//            if (Settings.singleton.getTexturePack().isEmpty()) {
-                bufferedimage = ImageIO.read(FontRenderer.class.getResourceAsStream(EGUITexture.FONT.textureName));
-//            } else {
-//                try {
-//                    ZipFile texturesZip = new ZipFile(LauncherFiles.MINECRAFT_TEXTURE_PACKS_PATH + Settings.singleton.getTexturePack());
-//                    ZipEntry texture = texturesZip.getEntry(EGUITexture.FONT.textureName.substring(1));
-//                    if (texture != null) {
-//                        bufferedimage = ImageIO.read(texturesZip.getInputStream(texture));
-//                    } else {
-//                        bufferedimage = ImageIO.read(FontRenderer.class.getResourceAsStream(EGUITexture.FONT.textureName));
-//                    }
-//                } catch (Exception ex) {
-//                    bufferedimage = ImageIO.read(FontRenderer.class.getResourceAsStream(EGUITexture.FONT.textureName));
-//                }
-//            }
+            if (Settings.singleton.getTexturePack().isEmpty() || Settings.singleton.getTexturePack().equals("Default")) {
+                bufferedimage = ImageIO.read(Font.class.getResourceAsStream(EGUITexture.FONT.textureName));
+            } else {
+                try {
+                    ZipFile texturesZip = new ZipFile(LauncherFiles.MINECRAFT_TEXTURE_PACKS_PATH + Settings.singleton.getTexturePack());
+                    ZipEntry texture = texturesZip.getEntry(EGUITexture.FONT.textureName.substring(1));
+                    if (texture != null) {
+                        bufferedimage = ImageIO.read(texturesZip.getInputStream(texture));
+                    } else {
+                        bufferedimage = ImageIO.read(Font.class.getResourceAsStream(EGUITexture.FONT.textureName));
+                    }
+                } catch (Exception ex) {
+                    bufferedimage = ImageIO.read(Font.class.getResourceAsStream(EGUITexture.FONT.textureName));
+                }
+            }
         }
         catch(IOException ioexception)
         {
             throw new RuntimeException(ioexception);
         }
-        int fontFileWidth = bufferedimage.getWidth();
-        int fontFileHeight = bufferedimage.getHeight();
-        int[] fontPixels = new int[fontFileWidth * fontFileHeight];
-        bufferedimage.getRGB(0, 0, fontFileWidth, fontFileHeight, fontPixels, 0, fontFileWidth);
-        for(int i = 0; i < 256; i++)
+        int w = bufferedimage.getWidth();
+        int h = bufferedimage.getHeight();
+
+        int fontSize = 128;
+        float fontScale = 1;
+
+        if (h == w && h % 128 == 0) {
+            fontSize = h;
+            fontScale = (float)fontSize / 128;
+        }
+
+        int[] rawPixels = new int[w * h];
+        bufferedimage.getRGB(0, 0, fontSize, fontSize, rawPixels, 0, fontSize);
+        for(int ascii = 0; ascii < 256; ascii++)
         {
-            int row = i % 16;
-            int column = i / 16;
-            int space = 7;
+            // 16 chars per col, 16 chars per row.
+            int xt = ascii % 16;
+            int yt = ascii / 16;
+
+            // Loop through pixels of the char going down then across to figure out the max width.
+            int charX = (int)(8 * fontScale) - 1;
             do
             {
-                if(space < 0)
+                if(charX < 0)
                 {
                     break;
                 }
-                int i3 = row * 8 + space;
-                boolean flag = true;
-                for(int l3 = 0; l3 < 8 && flag; l3++)
+                int xPixel = xt * (int)(8 * fontScale) + charX;
+                boolean emptyColumn = true;
+                for(int charY = 0; charY < (int)(8 * fontScale) && emptyColumn; charY++)
                 {
-                    int i4 = (column * 8 + l3) * fontFileWidth;
-                    int k4 = fontPixels[i3 + i4] & 0xff;
-                    if(k4 > 0)
+                    int yPixel = (yt * (int)(8 * fontScale) + charY) * fontSize;
+                    int pixel = rawPixels[xPixel + yPixel] & 0xff;
+                    if(pixel > 0)
                     {
-                        flag = false;
+                        emptyColumn = false;
                     }
                 }
 
-                if(!flag)
+                if(!emptyColumn)
                 {
                     break;
                 }
-                space--;
+                charX--;
             } while(true);
-            if(i == 32)
+            if(ascii == 32)
             {
-                space = 2;
+                charX = (int)(2 * fontScale);
             }
-            charWidth[i] = space + 2;
+            if (fontScale == 1)
+                charX += 2;
+            charWidth[ascii] = (charX / fontScale);
         }
 
         fontTextureName = Loader.singleton.getGuiTexture(EGUITexture.FONT);
@@ -152,7 +171,7 @@ public class FontRenderer
     }
 
     public void drawCenteredString(String s, int xPos, int yPos, int color) {
-        drawStringWithShadow(s, xPos - FontRenderer.minecraftFontRenderer.getStringWidth(s) / 2, yPos, color);
+        drawStringWithShadow(s, xPos - Font.minecraftFont.width(s) / 2, yPos, color);
     }
 
     public void drawString(String string, int x, int y, int color)
@@ -160,13 +179,19 @@ public class FontRenderer
         renderString(string, x, y, color, false);
     }
 
-    public void renderString(String string, int x, int y, int color, boolean shadow)
+    public void renderString(String string, int x, int y, int color, boolean darken)
     {
+        char colorCodePrefix = '\247';
+
+        // Kinda hacky. If minecraft is rendering a string here, and is in classic, fix color codes.
+        if (!LWJGLDisplayUpdateAdvice.inUpdateHook && LegacyGameManager.isInGame() && LegacyGameManager.getVersion() != null && LegacyGameManager.getVersion().colorCodePrefix != null)
+            colorCodePrefix = LegacyGameManager.getVersion().colorCodePrefix.charAt(0);
+
         if(string == null)
         {
             return;
         }
-        if(shadow)
+        if(darken)
         {
             int l = color & 0xff000000;
             color = (color & 0xfcfcfc) >> 2;
@@ -190,14 +215,14 @@ public class FontRenderer
         GL11.glTranslatef(x, y, 0.0F);
         for(int i1 = 0; i1 < string.length(); i1++)
         {
-            for(; string.length() > i1 + 1 && string.charAt(i1) == '\247'; i1 += 2)
+            for(; string.length() > i1 + 1 && string.charAt(i1) == colorCodePrefix; i1 += 2)
             {
                 int j1 = "0123456789abcdef".indexOf(string.toLowerCase().charAt(i1 + 1));
                 if(j1 < 0 || j1 > 15)
                 {
                     j1 = 15;
                 }
-                buffer.put(fontDisplayLists + 256 + j1 + (shadow ? 16 : 0));
+                buffer.put(fontDisplayLists + 256 + j1 + (darken ? 16 : 0));
                 if(buffer.remaining() == 0)
                 {
                     buffer.flip();
@@ -227,16 +252,22 @@ public class FontRenderer
         GL11.glPopMatrix();
     }
 
-    public int getStringWidth(String string)
+    public int width(String string)
     {
+        char colorCodePrefix = '\247';
+
+        // Kinda hacky. If minecraft is rendering a string here, and is in classic, fix color codes.
+        if (!LWJGLDisplayUpdateAdvice.inUpdateHook && LegacyGameManager.isInGame() && LegacyGameManager.getVersion() != null && LegacyGameManager.getVersion().colorCodePrefix != null)
+            colorCodePrefix = LegacyGameManager.getVersion().colorCodePrefix.charAt(0);
+
         if(string == null)
         {
             return 0;
         }
-        int width = 0;
+        float len = 0;
         for(int i = 0; i < string.length(); i++)
         {
-            if(string.charAt(i) == '\247')
+            if(string.charAt(i) == colorCodePrefix)
             {
                 i++;
                 continue;
@@ -244,14 +275,14 @@ public class FontRenderer
             int k = InputSanitization.allowedCharacters.indexOf(string.charAt(i));
             if(k >= 0)
             {
-                width += charWidth[k];
+                len += charWidth[k];
             }
         }
 
-        return width;
+        return (int)len;
     }
 
-    private int charWidth[];
+    private float charWidth[];
     public int fontTextureName;
     private int fontDisplayLists;
     private IntBuffer buffer;
