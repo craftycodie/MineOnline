@@ -7,7 +7,7 @@ import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.gui.components.GuiButton;
 import gg.codie.mineonline.gui.components.GuiToggleButton;
 import gg.codie.mineonline.gui.rendering.DisplayManager;
-import gg.codie.mineonline.gui.rendering.FontRenderer;
+import gg.codie.mineonline.gui.rendering.Font;
 import gg.codie.mineonline.gui.rendering.Renderer;
 import org.lwjgl.input.Keyboard;
 
@@ -392,7 +392,7 @@ public class GuiVersions extends AbstractGuiScreen
 
         if (MinecraftVersionRepository.getSingleton().isLoadingInstalledVersions()) {
             guiSlotVersion.drawScreen(mouseX, mouseY);
-            FontRenderer.minecraftFontRenderer.drawCenteredString("Loading versions...", getWidth() / 2, getHeight() / 2, 0x808080);
+            Font.minecraftFont.drawCenteredString("Loading versions...", getWidth() / 2, getHeight() / 2, 0x808080);
         } else if (!versionsWereLoaded) {
             guiSlotVersion = new GuiSlotVersion(this, filteredVersions(), compare);
             guiSlotVersion.drawScreen(mouseX, mouseY);
@@ -406,10 +406,10 @@ public class GuiVersions extends AbstractGuiScreen
         }
 
         if (guiSlotVersion.getSize() < 1 && versionsWereLoaded) {
-            FontRenderer.minecraftFontRenderer.drawCenteredString("No versions found.", getWidth() / 2, getHeight() / 2, 0x808080);
+            Font.minecraftFont.drawCenteredString("No versions found.", getWidth() / 2, getHeight() / 2, 0x808080);
         }
 
-        FontRenderer.minecraftFontRenderer.drawCenteredString("Select Version", getWidth() / 2, 20, 0xffffff);
+        Font.minecraftFont.drawCenteredString("Select Version", getWidth() / 2, 20, 0xffffff);
         super.drawScreen(mouseX, mouseY);
 
         if (mouseX >= getWidth() / 2 + 54 && mouseY >= 12 && mouseX <= getWidth() / 2 + 74 && mouseY <= 30)

@@ -8,7 +8,7 @@ import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.gui.components.GuiButton;
 import gg.codie.mineonline.gui.components.GuiSlider;
 import gg.codie.mineonline.gui.components.GuiSmallButton;
-import gg.codie.mineonline.gui.rendering.FontRenderer;
+import gg.codie.mineonline.gui.rendering.Font;
 
 public class GuiOptions extends AbstractGuiScreen
 {
@@ -197,7 +197,7 @@ public class GuiOptions extends AbstractGuiScreen
         resize();
 
         drawDefaultBackground();
-        FontRenderer.minecraftFontRenderer.drawCenteredString(screenName, getWidth() / 2, 20, 0xffffff);
+        Font.minecraftFont.drawCenteredString(screenName, getWidth() / 2, 20, 0xffffff);
         super.drawScreen(mouseX, mouseY);
     }
 

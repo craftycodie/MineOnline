@@ -59,6 +59,8 @@ public class MinecraftVersion {
     public final boolean hasNetherPortalTexture;
     public final URL downloadURL;
     public final boolean useMineOnlineMenu;
+    public final String fontClass;
+    public final String colorCodePrefix;
 
     public MinecraftVersion(
             String sha256,
@@ -98,7 +100,9 @@ public class MinecraftVersion {
             int hurtEffectCallsPerFrame,
             String waterColorizerClass,
             String grassColorizerClass,
-            String foliageColorizerClass
+            String foliageColorizerClass,
+            String fontClass,
+            String colorCodePrefix
     ) {
         this.sha256 = sha256;
         this.name = name;
@@ -138,6 +142,8 @@ public class MinecraftVersion {
         this.waterColorizerClass = waterColorizerClass;
         this.grassColorizerClass = grassColorizerClass;
         this.foliageColorizerClass = foliageColorizerClass;
+        this.fontClass = fontClass;
+        this.colorCodePrefix = colorCodePrefix;
     }
 
     public MinecraftVersion(JSONObject object) {
@@ -178,6 +184,8 @@ public class MinecraftVersion {
         waterColorizerClass = object.optString("waterColorizerClass", null);
         grassColorizerClass = object.optString("grassColorizerClass", null);
         foliageColorizerClass = object.optString("foliageColorizerClass", null);
+        fontClass = object.optString("fontClass", null);
+        colorCodePrefix = object.optString("colorCodePrefix", null);
 
         URL parsedURL = null;
 
@@ -409,6 +417,8 @@ public class MinecraftVersion {
                     false,
                     null,
                     2,
+                    null,
+                    null,
                     null,
                     null,
                     null

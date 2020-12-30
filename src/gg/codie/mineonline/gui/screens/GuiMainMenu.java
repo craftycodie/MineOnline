@@ -7,7 +7,7 @@ import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.gui.SplashMessage;
 import gg.codie.mineonline.gui.components.GuiButton;
 import gg.codie.mineonline.gui.rendering.DisplayManager;
-import gg.codie.mineonline.gui.rendering.FontRenderer;
+import gg.codie.mineonline.gui.rendering.Font;
 import gg.codie.mineonline.gui.rendering.Loader;
 import gg.codie.mineonline.gui.rendering.Renderer;
 import gg.codie.mineonline.gui.sound.ClickSound;
@@ -32,7 +32,7 @@ public class GuiMainMenu extends AbstractGuiScreen
     protected void mouseClicked(int x, int y, int button)
     {
         super.mouseClicked(x, y, button);
-        if (MenuManager.isUpdateAvailable() && y > getHeight() - 20 && y < getHeight() - 10 && x < FontRenderer.minecraftFontRenderer.getStringWidth("Update Available!")) {
+        if (MenuManager.isUpdateAvailable() && y > getHeight() - 20 && y < getHeight() - 10 && x < Font.minecraftFont.width("Update Available!")) {
             ClickSound.play();
             try {
                 if (Globals.BRANCH.equalsIgnoreCase("release"))
@@ -44,7 +44,7 @@ public class GuiMainMenu extends AbstractGuiScreen
             }
         }
 
-        if (y > getHeight() - 10 && y < getHeight() && x > getWidth() - FontRenderer.minecraftFontRenderer.getStringWidth("Made by @codieradical <3")) {
+        if (y > getHeight() - 10 && y < getHeight() && x > getWidth() - Font.minecraftFont.width("Made by @codieradical <3")) {
             ClickSound.play();
             try {
                 Desktop.getDesktop().browse(new URI("https://twitter.com/codieradical"));
@@ -141,15 +141,15 @@ public class GuiMainMenu extends AbstractGuiScreen
         GL11.glTranslatef(getWidth() / 2 + 90, 70F, 0.0F);
         GL11.glRotatef(-20F, 0.0F, 0.0F, 1.0F);
         float f1 = 1.8F - Math.abs((float)Math.sin(((float)(System.currentTimeMillis() % 1000L) / 1000F) * 3.141593F * 2.0F) * 0.1F);
-        f1 = (f1 * 100F) / (float)(FontRenderer.minecraftFontRenderer.getStringWidth(splashText) + 32);
+        f1 = (f1 * 100F) / (float)(Font.minecraftFont.width(splashText) + 32);
         GL11.glScalef(f1, f1, f1);
-        FontRenderer.minecraftFontRenderer.drawCenteredString(splashText, 0, -8, 0xffff00);
+        Font.minecraftFont.drawCenteredString(splashText, 0, -8, 0xffff00);
         GL11.glPopMatrix();
         if (MenuManager.isUpdateAvailable())
-            FontRenderer.minecraftFontRenderer.drawString("Update Available!", 2, getHeight() - 20, 0xffff00);
-        FontRenderer.minecraftFontRenderer.drawString("MineOnline " + (Globals.DEV ? "Dev " : "") + Globals.LAUNCHER_VERSION + (!Globals.BRANCH.equalsIgnoreCase("release") ? " (" + Globals.BRANCH + ")" : ""), 2, getHeight() - 10, 0xffffff);
+            Font.minecraftFont.drawString("Update Available!", 2, getHeight() - 20, 0xffff00);
+        Font.minecraftFont.drawString("MineOnline " + (Globals.DEV ? "Dev " : "") + Globals.LAUNCHER_VERSION + (!Globals.BRANCH.equalsIgnoreCase("release") ? " (" + Globals.BRANCH + ")" : ""), 2, getHeight() - 10, 0xffffff);
         String s = "Made by @codieradical <3";
-        FontRenderer.minecraftFontRenderer.drawString(s, getWidth() - FontRenderer.minecraftFontRenderer.getStringWidth(s) - 2, getHeight() - 10, 0xffffff);
+        Font.minecraftFont.drawString(s, getWidth() - Font.minecraftFont.width(s) - 2, getHeight() - 10, 0xffffff);
         super.drawScreen(mouseX, mouseY);
     }
 

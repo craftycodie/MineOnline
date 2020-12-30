@@ -11,7 +11,7 @@ import gg.codie.mineonline.Settings;
 import gg.codie.mineonline.discord.DiscordRPCHandler;
 import gg.codie.mineonline.gui.GUIScale;
 import gg.codie.mineonline.gui.rendering.DisplayManager;
-import gg.codie.mineonline.gui.rendering.FontRenderer;
+import gg.codie.mineonline.gui.rendering.Font;
 import gg.codie.mineonline.gui.rendering.Loader;
 import gg.codie.mineonline.gui.screens.AbstractGuiScreen;
 import gg.codie.mineonline.gui.textures.EGUITexture;
@@ -120,6 +120,7 @@ public class LegacyGameManager {
         LWJGLGLUPatch.useCustomFOV();
         ByteBufferPatch.init();
         ColorizerPatch.init();
+        FontPatch.init();
 
         if (version != null) {
             if (version.useFOVPatch && version.entityRendererClass != null)
@@ -174,7 +175,7 @@ public class LegacyGameManager {
         ColorizerPatch.updateColorizers();
 
         if (Loader.singleton != null)
-            FontRenderer.reloadFont();
+            Font.reloadFont();
     }
 
     public static void setFOV(int fov) {

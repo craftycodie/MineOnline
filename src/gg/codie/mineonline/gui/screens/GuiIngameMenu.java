@@ -5,7 +5,7 @@ import gg.codie.mineonline.LibraryManager;
 import gg.codie.mineonline.client.LegacyGameManager;
 import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.gui.components.GuiButton;
-import gg.codie.mineonline.gui.rendering.FontRenderer;
+import gg.codie.mineonline.gui.rendering.Font;
 import gg.codie.mineonline.utils.JREUtils;
 
 import java.io.File;
@@ -100,7 +100,7 @@ public class GuiIngameMenu extends AbstractGuiScreen
         initGui();
 
         drawDefaultBackground();
-        FontRenderer.minecraftFontRenderer.drawCenteredString("MineOnline menu", getWidth() / 2, 40, 0xffffff);
+        Font.minecraftFont.drawCenteredString("MineOnline menu", getWidth() / 2, 40, 0xffffff);
         super.drawScreen(mouseX, mouseY);
     }
 }

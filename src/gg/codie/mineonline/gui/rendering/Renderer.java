@@ -33,9 +33,9 @@ public class Renderer
         {
             int tooltipX = mouseX + 12;
             int tooltipY = mouseY - 12;
-            int tooltipWidth = FontRenderer.minecraftFontRenderer.getStringWidth(tooltipText);
+            int tooltipWidth = Font.minecraftFont.width(tooltipText);
             Renderer.singleton.drawGradient(tooltipX - 3, tooltipY - 3, tooltipX + tooltipWidth + 3, tooltipY + 8 + 3, 0xc0, 0, 0, 0, 0xc0, 0, 0, 0);
-            FontRenderer.minecraftFontRenderer.drawStringWithShadow(tooltipText, tooltipX, tooltipY, -1);
+            Font.minecraftFont.drawStringWithShadow(tooltipText, tooltipX, tooltipY, -1);
             return;
         }
     }

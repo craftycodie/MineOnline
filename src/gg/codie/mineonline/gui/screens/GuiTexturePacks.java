@@ -9,7 +9,7 @@ import gg.codie.mineonline.client.MinecraftTexturePackRepository;
 import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.gui.components.GuiButton;
 import gg.codie.mineonline.gui.components.GuiSmallButton;
-import gg.codie.mineonline.gui.rendering.FontRenderer;
+import gg.codie.mineonline.gui.rendering.Font;
 import org.lwjgl.Sys;
 
 import java.awt.*;
@@ -77,8 +77,8 @@ public class GuiTexturePacks extends AbstractGuiScreen
         initGui();
 
         guiTexturePackSlot.drawScreen(mouseX, mouseY);
-        FontRenderer.minecraftFontRenderer.drawCenteredString("Select Texture Pack", getWidth() / 2, 16, 0xffffff);
-        FontRenderer.minecraftFontRenderer.drawCenteredString("(Place texture pack files here)", getWidth() / 2 - 77, getHeight() - 26, 0x808080);
+        Font.minecraftFont.drawCenteredString("Select Texture Pack", getWidth() / 2, 16, 0xffffff);
+        Font.minecraftFont.drawCenteredString("(Place texture pack files here)", getWidth() / 2 - 77, getHeight() - 26, 0x808080);
         super.drawScreen(mouseX, mouseY);
     }
 
