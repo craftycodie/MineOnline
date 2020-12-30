@@ -806,7 +806,8 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
                 value = "" + Session.session.isPremium();
                 break;
             case "demo":
-                value = "" + !Session.session.isPremium();
+                if (!Session.session.isPremium())
+                    value = "true";
                 break;
             case "server":
                 value = serverAddress;
