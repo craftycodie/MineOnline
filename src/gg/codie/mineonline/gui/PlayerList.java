@@ -1,5 +1,6 @@
 package gg.codie.mineonline.gui;
 
+import gg.codie.mineonline.Session;
 import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.mineonline.api.MineOnlineServer;
 import gg.codie.mineonline.client.LegacyGameManager;
@@ -34,6 +35,8 @@ public class PlayerList
                     try {
                         MineOnlineServer server = MineOnlineAPI.getServer(SocketConstructAdvice.serverAddress.getHostAddress(), "" + SocketConstructAdvice.serverPort);
                         players = new ArrayList<>(Arrays.asList(server.players));
+                        if (!players.contains(Session.session.getUsername()))
+                            players.add(Session.session.getUsername());
                         maxPlayers = server.maxUsers;
                     } catch (IOException ex) {
                         // ignore.
