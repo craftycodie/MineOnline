@@ -16,5 +16,6 @@
   "optionsVersion": "CLASSIC",
   "hasNetherPortalTexture": false,
   "info": "Reupload",
-  "downloadURL": "https://mineonline.codie.gg/clients/a1.1.0-2.jar"
+  "downloadURL": "https://mineonline.codie.gg/clients/a1.1.0-2.jar",
+  "usePlayerList": true
 }
