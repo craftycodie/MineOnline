@@ -61,6 +61,7 @@ public class MinecraftVersion {
     public final boolean useMineOnlineMenu;
     public final String fontClass;
     public final String colorCodePrefix;
+    public final boolean usePlayerList;
 
     public MinecraftVersion(
             String sha256,
@@ -102,7 +103,8 @@ public class MinecraftVersion {
             String grassColorizerClass,
             String foliageColorizerClass,
             String fontClass,
-            String colorCodePrefix
+            String colorCodePrefix,
+            boolean usePlayerList
     ) {
         this.sha256 = sha256;
         this.name = name;
@@ -144,6 +146,7 @@ public class MinecraftVersion {
         this.foliageColorizerClass = foliageColorizerClass;
         this.fontClass = fontClass;
         this.colorCodePrefix = colorCodePrefix;
+        this.usePlayerList = usePlayerList;
     }
 
     public MinecraftVersion(JSONObject object) {
@@ -186,6 +189,7 @@ public class MinecraftVersion {
         foliageColorizerClass = object.optString("foliageColorizerClass", null);
         fontClass = object.optString("fontClass", null);
         colorCodePrefix = object.optString("colorCodePrefix", null);
+        usePlayerList = object.optBoolean("usePlayerList", false);
 
         URL parsedURL = null;
 
@@ -421,7 +425,8 @@ public class MinecraftVersion {
                     null,
                     null,
                     null,
-                    null
+                    null,
+                    false
             );
         } catch (Exception ex) {
             System.err.println("Bad launcher JSON for version " + jarFile);

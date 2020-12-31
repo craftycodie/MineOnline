@@ -16,5 +16,6 @@
   "useResizePatch": true,
   "hasNetherPortalTexture": false,
   "colorCodePrefix": "&",
-  "downloadURL": "https://mineonline.codie.gg/public/clients/c0.0.15a.jar"
+  "downloadURL": "https://mineonline.codie.gg/public/clients/c0.0.15a.jar",
+  "usePlayerList": true
 }

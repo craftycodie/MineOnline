@@ -126,7 +126,7 @@ public class GuiSlotServer extends GuiSlot
         Font.minecraftFont.drawString(server.name, xPos + 32 + 2, yPos + 1, 0xffffff);
         Font.minecraftFont.drawString(versionName, xPos + 32 + 2, yPos + 12, 0x808080);
         String users = server.isMineOnline ? "" + server.users : "?";
-        Font.minecraftFont.drawString(users + "/" + server.maxUsers, (xPos + slotWidth - 4) - Font.minecraftFont.width(users + "/" + server.maxUsers), yPos + 12, 0x808080);
+        Font.minecraftFont.drawString(users + "§8/§7" + server.maxUsers, (xPos + slotWidth - 4) - Font.minecraftFont.width(users + "/" + server.maxUsers), yPos + 12, 0xAAAAAA);
 
         if (server.motd != null)
             Font.minecraftFont.drawString(server.motd, xPos + 32 + 2, yPos + 12 + 11, 0x808080);

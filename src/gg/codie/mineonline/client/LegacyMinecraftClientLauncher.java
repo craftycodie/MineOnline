@@ -12,6 +12,7 @@ import gg.codie.mineonline.gui.rendering.Font;
 import gg.codie.mineonline.gui.rendering.Loader;
 import gg.codie.mineonline.gui.screens.AbstractGuiScreen;
 import gg.codie.mineonline.gui.screens.GuiIngameMenu;
+import gg.codie.mineonline.gui.PlayerList;
 import gg.codie.mineonline.lwjgl.OnCreateListener;
 import gg.codie.mineonline.lwjgl.OnDestroyListener;
 import gg.codie.mineonline.lwjgl.OnUpdateListener;
@@ -67,6 +68,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
     int startHeight;
 
     AbstractGuiScreen ingameMenu = new GuiIngameMenu();
+    PlayerList playerList = null;
 
 
     public static void startProcess(String jarPath, String serverIP, String serverPort, String mpPass) {
@@ -390,13 +392,13 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
                         f1WasDown = false;
                     }
 
+                    if (Keyboard.isKeyDown(Keyboard.KEY_TAB)) {
+                        if (playerList == null)
+                            playerList = new PlayerList();
 
-                    if (Keyboard.getEventKey() == Keyboard.KEY_F2 && !Keyboard.isRepeatEvent() && Keyboard.getEventKeyState() && !f2wasDown) {
-                        screenshot();
-                        f2wasDown = true;
-                    }
-                    if (Keyboard.getEventKey() == Keyboard.KEY_F2 && !Keyboard.isRepeatEvent() && !Keyboard.getEventKeyState()) {
-                        f2wasDown = false;
+                        playerList.drawScreen();
+                    } else {
+                        playerList = null;
                     }
 
                     if (Settings.singleton.getZoomKeyCode() != 0) {
@@ -435,6 +437,14 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
                         }
                     }
 
+                    if (Keyboard.getEventKey() == Keyboard.KEY_F2 && !Keyboard.isRepeatEvent() && Keyboard.getEventKeyState() && !f2wasDown) {
+                        screenshot();
+                        f2wasDown = true;
+                    }
+                    if (Keyboard.getEventKey() == Keyboard.KEY_F2 && !Keyboard.isRepeatEvent() && !Keyboard.getEventKeyState()) {
+                        f2wasDown = false;
+                    }
+
                     if (minecraftVersion != null && minecraftVersion.enableFullscreenPatch) {
                         if (Keyboard.getEventKey() == Keyboard.KEY_F11 && !Keyboard.isRepeatEvent() && Keyboard.getEventKeyState() && !f11WasDown) {
                             setFullscreen(!fullscreen);
@@ -444,7 +454,6 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
                             f11WasDown = false;
                         }
                     }
-
 
                     if (firstUpdate) {
                         firstUpdate = false;
@@ -806,7 +815,8 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
                 value = "" + Session.session.isPremium();
                 break;
             case "demo":
-                value = "" + !Session.session.isPremium();
+                if (!Session.session.isPremium())
+                    value = "true";
                 break;
             case "server":
                 value = serverAddress;
