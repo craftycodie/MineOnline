@@ -186,6 +186,11 @@ public class Font
     {
         char colorCodePrefix = '\247';
 
+        if(string == null)
+        {
+            return;
+        }
+
         // TODO: Implement a more elegant solution.
         if (this == minecraftFont) {
             for (char character : string.toCharArray()) {
@@ -200,10 +205,6 @@ public class Font
         if (!LWJGLDisplayUpdateAdvice.inUpdateHook && LegacyGameManager.isInGame() && LegacyGameManager.getVersion() != null && LegacyGameManager.getVersion().colorCodePrefix != null)
             colorCodePrefix = LegacyGameManager.getVersion().colorCodePrefix.charAt(0);
 
-        if(string == null)
-        {
-            return;
-        }
         if(darken)
         {
             int l = color & 0xff000000;
