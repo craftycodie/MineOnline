@@ -2,7 +2,7 @@
 package gg.codie.mineonline.gui.components;
 
 
-import gg.codie.mineonline.gui.input.InputSanitization;
+import gg.codie.mineonline.gui.input.FontCharacters;
 import gg.codie.mineonline.gui.rendering.Font;
 import gg.codie.mineonline.gui.rendering.Renderer;
 import gg.codie.mineonline.gui.screens.AbstractGuiScreen;
@@ -72,7 +72,7 @@ public class GuiPasswordField extends GuiComponent
         {
             text = text.substring(0, text.length() - 1);
         }
-        if(InputSanitization.allowedCharacters.indexOf(c) >= 0 && (text.length() < maxStringLength || maxStringLength == 0) && (int)c > 32)
+        if(FontCharacters.allowedCharacters.indexOf(c) >= 0 && (text.length() < maxStringLength || maxStringLength == 0) && (int)c > 32)
         {
             text += c;
         }

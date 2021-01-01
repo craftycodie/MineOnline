@@ -3,7 +3,7 @@ package gg.codie.mineonline.gui.rendering;
 import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.Settings;
 import gg.codie.mineonline.client.LegacyGameManager;
-import gg.codie.mineonline.gui.input.InputSanitization;
+import gg.codie.mineonline.gui.input.FontCharacters;
 import gg.codie.mineonline.gui.textures.EGUITexture;
 import gg.codie.mineonline.patches.lwjgl.LWJGLDisplayUpdateAdvice;
 import org.lwjgl.BufferUtils;
@@ -20,13 +20,16 @@ public class Font
 {
     public static void reloadFont() {
         Settings.singleton.loadSettings();
-        minecraftFont = new Font();
+        minecraftFont = new Font(EGUITexture.FONT, FontCharacters.allowedCharacters);
+        minecraftFont_ru = new Font(EGUITexture.FONT_RU, new String(FontCharacters.russianCharactersArray));
     }
 
-    public static Font minecraftFont = new Font();
+    public static Font minecraftFont = new Font(EGUITexture.FONT, FontCharacters.allowedCharacters);
+    private static Font minecraftFont_ru = new Font(EGUITexture.FONT_RU, new String(FontCharacters.russianCharactersArray));
 
-    private Font()
+    private Font(EGUITexture guiTexture, String allowedCharacters)
     {
+        this.allowedCharacters = allowedCharacters;
         Settings.singleton.loadSettings();
 
         charWidth = new float[256];
@@ -37,18 +40,18 @@ public class Font
         {
             // TODO: Add texture pack support (needs an in game patch)
             if (Settings.singleton.getTexturePack().isEmpty() || Settings.singleton.getTexturePack().equals("Default")) {
-                bufferedimage = ImageIO.read(Font.class.getResourceAsStream(EGUITexture.FONT.textureName));
+                bufferedimage = ImageIO.read(Font.class.getResourceAsStream(guiTexture.textureName));
             } else {
                 try {
                     ZipFile texturesZip = new ZipFile(LauncherFiles.MINECRAFT_TEXTURE_PACKS_PATH + Settings.singleton.getTexturePack());
-                    ZipEntry texture = texturesZip.getEntry(EGUITexture.FONT.textureName.substring(1));
+                    ZipEntry texture = texturesZip.getEntry(guiTexture.textureName.substring(1));
                     if (texture != null) {
                         bufferedimage = ImageIO.read(texturesZip.getInputStream(texture));
                     } else {
-                        bufferedimage = ImageIO.read(Font.class.getResourceAsStream(EGUITexture.FONT.textureName));
+                        bufferedimage = ImageIO.read(Font.class.getResourceAsStream(guiTexture.textureName));
                     }
                 } catch (Exception ex) {
-                    bufferedimage = ImageIO.read(Font.class.getResourceAsStream(EGUITexture.FONT.textureName));
+                    bufferedimage = ImageIO.read(Font.class.getResourceAsStream(guiTexture.textureName));
                 }
             }
         }
@@ -110,7 +113,7 @@ public class Font
             charWidth[ascii] = (charX / fontScale);
         }
 
-        fontTextureName = Loader.singleton.getGuiTexture(EGUITexture.FONT);
+        fontTextureName = Loader.singleton.getGuiTexture(guiTexture);
         fontDisplayLists = GL11.glGenLists(288);
         Renderer tessellator = Renderer.singleton;
         for(int i = 0; i < 256; i++)
@@ -171,7 +174,7 @@ public class Font
     }
 
     public void drawCenteredString(String s, int xPos, int yPos, int color) {
-        drawStringWithShadow(s, xPos - Font.minecraftFont.width(s) / 2, yPos, color);
+        drawStringWithShadow(s, xPos - width(s) / 2, yPos, color);
     }
 
     public void drawString(String string, int x, int y, int color)
@@ -182,6 +185,16 @@ public class Font
     public void renderString(String string, int x, int y, int color, boolean darken)
     {
         char colorCodePrefix = '\247';
+
+        // TODO: Implement a more elegant solution.
+        if (this == minecraftFont) {
+            for (char character : string.toCharArray()) {
+                if (allowedCharacters.indexOf(character) < 0 && minecraftFont_ru.allowedCharacters.indexOf(character) >= 0) {
+                    minecraftFont_ru.renderString(string, x, y, color, darken);
+                    return;
+                }
+            }
+        }
 
         // Kinda hacky. If minecraft is rendering a string here, and is in classic, fix color codes.
         if (!LWJGLDisplayUpdateAdvice.inUpdateHook && LegacyGameManager.isInGame() && LegacyGameManager.getVersion() != null && LegacyGameManager.getVersion().colorCodePrefix != null)
@@ -233,7 +246,7 @@ public class Font
 
             if(i1 < string.length())
             {
-                int k1 = InputSanitization.allowedCharacters.indexOf(string.charAt(i1));
+                int k1 = allowedCharacters.indexOf(string.charAt(i1));
                 if(k1 >= 0)
                 {
                     buffer.put(fontDisplayLists + k1);
@@ -272,10 +285,13 @@ public class Font
                 i++;
                 continue;
             }
-            int k = InputSanitization.allowedCharacters.indexOf(string.charAt(i));
+            int k = allowedCharacters.indexOf(string.charAt(i));
             if(k >= 0)
             {
                 len += charWidth[k];
+            }
+            else if (this == minecraftFont && minecraftFont_ru.allowedCharacters.indexOf(string.charAt(i)) >= 0) {
+                len += minecraftFont_ru.charWidth[minecraftFont_ru.allowedCharacters.indexOf(string.charAt(i))];
             }
         }
 
@@ -286,4 +302,5 @@ public class Font
     public int fontTextureName;
     private int fontDisplayLists;
     private IntBuffer buffer;
+    private final String allowedCharacters;
 }
