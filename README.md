@@ -24,18 +24,16 @@ These are features MineOnline will bring to Minecraft.
 
 - [Server List](https://mineonline.codie.gg/servers)
 
-- Online World Saves
-  - You can also upload classic maps via the website.
+- FOV Option
+
+- Online World Saves for Classic
   
 - Screenshots (F2)
 
-- FOV Option
-
 - Texture packs for versions before Alpha 1.2.2 (when it was officially added)
+  - Custom font support.
 
 - GUI scaling for versions before Beta 1.5 (when it was officially added)
-
-- Launcher Authentication and Updates
 
 - Secure Server Authentication (online-mode and verify-names)
 
@@ -44,6 +42,8 @@ These are features MineOnline will bring to Minecraft.
 - Bit depth fix (removes jagged lines from clouds and other stuff).
 
 - Full Discord Integration
+
+- Tab player list.
 
 ![launcher](launcherdemo.png)
 
