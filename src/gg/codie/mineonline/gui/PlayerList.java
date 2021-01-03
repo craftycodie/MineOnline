@@ -12,6 +12,7 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -21,6 +22,8 @@ public class PlayerList
     static int maxPlayers;
     boolean lastRequestDone = true;
     static long lastRequest = 0;
+    private static InetAddress lastIp;
+    private static int lastPort;
 
     public PlayerList() {
         requestPlayers();
@@ -33,7 +36,17 @@ public class PlayerList
                 @Override
                 public void run() {
                     try {
+                        InetAddress currentIp = SocketConstructAdvice.serverAddress;
+                        int currentPort = SocketConstructAdvice.serverPort;
+
                         MineOnlineServer server = MineOnlineAPI.getServer(SocketConstructAdvice.serverAddress.getHostAddress(), "" + SocketConstructAdvice.serverPort);
+
+                        if (currentIp != SocketConstructAdvice.serverAddress || currentPort != SocketConstructAdvice.serverPort) {
+                            lastRequestDone = true;
+                            lastRequest = 0;
+                            return;
+                        }
+
                         players = new ArrayList<>(Arrays.asList(server.players));
                         if (!players.contains(Session.session.getUsername()))
                             players.add(Session.session.getUsername());
@@ -50,6 +63,13 @@ public class PlayerList
 
     public void drawScreen()
     {
+        if (lastIp != SocketConstructAdvice.serverAddress || lastPort != SocketConstructAdvice.serverPort) {
+            lastIp = SocketConstructAdvice.serverAddress;
+            lastPort = SocketConstructAdvice.serverPort;
+            players = null;
+            lastRequest = 0;
+        }
+
         if (!Display.isActive())
             return;
 
