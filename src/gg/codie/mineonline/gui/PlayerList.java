@@ -50,6 +50,10 @@ public class PlayerList
                         players = new ArrayList<>(Arrays.asList(server.players));
                         if (!players.contains(Session.session.getUsername()))
                             players.add(Session.session.getUsername());
+
+                        if (server.dontListPlayers)
+                            players = null;
+
                         maxPlayers = server.maxUsers;
                     } catch (IOException ex) {
                         // ignore.
