@@ -422,7 +422,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
                             if (LegacyGameManager.getGuiScreen() == null && Mouse.isGrabbed()) {
                                 LegacyGameManager.setGUIScreen(ingameMenu);
                             } else if (LegacyGameManager.getGuiScreen() != null) {
-                                LegacyGameManager.setGUIScreen(null);
+//                                LegacyGameManager.setGUIScreen(null);
                             }
 
                             menuWasDown = true;
@@ -430,6 +430,9 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
                             menuWasDown = false;
                         }
                     }
+
+                    if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE && LegacyGameManager.getGuiScreen() != null)
+                        LegacyGameManager.setGUIScreen(null);
 
                     if (Keyboard.getEventKey() == 1 && !Keyboard.isRepeatEvent() && Keyboard.getEventKeyState()) {
                         if (LegacyGameManager.getGuiScreen() != null) {

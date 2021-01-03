@@ -43,8 +43,6 @@ public class MineOnlineMPPassProvider implements IMPPassProvider {
             rd.close();
 
             JSONObject resObject = new JSONObject(response.toString());
-
-            System.out.println(resObject);
             return resObject.has("mpPass") ? resObject.getString("mpPass") : null;
         } catch (Exception ex) {
             ex.printStackTrace();
