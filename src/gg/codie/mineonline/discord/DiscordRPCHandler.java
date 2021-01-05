@@ -1,6 +1,7 @@
 package gg.codie.mineonline.discord;
 
 import gg.codie.common.utils.OSUtils;
+import gg.codie.minecraft.server.MinecraftColorCodeProvider;
 import gg.codie.mineonline.Globals;
 import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.LibraryManager;
@@ -122,7 +123,7 @@ public class DiscordRPCHandler {
                     ex.printStackTrace();
             }
 
-            DiscordRichPresence.Builder presence = new DiscordRichPresence.Builder(server != null ? server.name : (DiscordRPCHandler.serverIP + (!DiscordRPCHandler.serverPort.equals("25565") ? (":" + DiscordRPCHandler.serverPort) : "")));
+            DiscordRichPresence.Builder presence = new DiscordRichPresence.Builder(server != null ? new MinecraftColorCodeProvider().removeColorCodes(server.name) : (DiscordRPCHandler.serverIP + (!DiscordRPCHandler.serverPort.equals("25565") ? (":" + DiscordRPCHandler.serverPort) : "")));
             presence.setDetails(DiscordRPCHandler.versionName);
             presence.setStartTimestamps(startTimestamp);
             presence.setSecrets(DiscordRPCHandler.serverIP + ", " + DiscordRPCHandler.serverPort, null);
