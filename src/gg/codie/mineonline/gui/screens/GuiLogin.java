@@ -178,7 +178,7 @@ public class GuiLogin extends AbstractGuiScreen
         usernameField.setMaxStringLength(128);
 
         passwordField.isFocused = false;
-        passwordField.setMaxStringLength(128);
+        passwordField.setMaxStringLength(256);
     }
 
     public void resize() {

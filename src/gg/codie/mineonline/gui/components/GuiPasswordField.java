@@ -58,7 +58,7 @@ public class GuiPasswordField extends GuiComponent
             {
                 s = "";
             }
-            j = 32 - text.length();
+            j = maxStringLength - text.length();
             if(j > s.length())
             {
                 j = s.length();
