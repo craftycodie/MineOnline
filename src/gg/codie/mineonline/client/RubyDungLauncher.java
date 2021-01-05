@@ -140,8 +140,6 @@ public class RubyDungLauncher implements IMinecraftAppletWrapper {
 
         URLClassLoader classLoader = new URLClassLoader(new URL[] { Paths.get(jarPath).toUri().toURL() });
 
-        LegacyGameManager.createGameManager(minecraftVersion, this);
-
         DisplayManager.init();
         DisplayManager.getCanvas().setPreferredSize(new Dimension(startWidth, startHeight));
         DisplayManager.getFrame().setPreferredSize(new Dimension(startWidth + DisplayManager.getFrame().getInsets().left + DisplayManager.getFrame().getInsets().right, startHeight + DisplayManager.getFrame().getInsets().top + DisplayManager.getFrame().getInsets().bottom));
@@ -171,6 +169,11 @@ public class RubyDungLauncher implements IMinecraftAppletWrapper {
             LWJGLDisplayPatch.hijackLWJGLThreadPatch(minecraftVersion != null && minecraftVersion.useGreyScreenPatch);
 
             LegacyGameManager.createGameManager(minecraftVersion, this);
+
+            if(minecraftVersion != null)
+                DiscordRPCHandler.play(minecraftVersion.name, null, null);
+            else
+                DiscordRPCHandler.play(Paths.get(jarPath).getFileName().toString(), null, null);
 
             try {
                 rubyDungClass = classLoader.loadClass("com.mojang.rubydung.RubyDung");
