@@ -1,40 +1,26 @@
 package gg.codie.mineonline.gui;
 
-import com.sun.deploy.net.HttpRequest;
-import com.sun.deploy.net.HttpResponse;
 import gg.codie.mineonline.gui.rendering.DisplayManager;
-import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
 import javafx.embed.swing.JFXPanel;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebHistory;
 import javafx.scene.web.WebView;
-import javafx.stage.Stage;
-import jdk.nashorn.internal.parser.JSONParser;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.lwjgl.opengl.Display;
-import org.w3c.dom.events.UIEvent;
-import sun.net.www.http.HttpClient;
 
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.*;
-import java.net.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.security.cert.X509Certificate;
-import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -118,6 +104,12 @@ public class MicrosoftLoginController extends VBox {
             Display.getParent().getParent().setVisible(false);
             Image img = Toolkit.getDefaultToolkit().getImage(DisplayManager.class.getResource("/img/favicon.png"));
             frame.setIconImage(img);
+            frame.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosing(WindowEvent e) {
+                    Display.getParent().getParent().setVisible(true);
+                }
+            });
 
             reset();
 
