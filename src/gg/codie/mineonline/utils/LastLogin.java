@@ -18,10 +18,10 @@ public class LastLogin {
     public final String uuid;
 
     public static void writeLastLogin(String accessToken, String clientToken, String loginUsername, String username, String uuid) {
-        try {
+        File lastLogin = new File(LauncherFiles.LAST_LOGIN_PATH);
+
+        try (FileOutputStream fileOutputStream = new FileOutputStream(lastLogin)) {
             DataOutputStream dos;
-            File lastLogin = new File(LauncherFiles.LAST_LOGIN_PATH);
-            FileOutputStream fileOutputStream = new FileOutputStream(lastLogin);
 
             Cipher cipher = getCipher(1, "passwordfile");
             if (cipher != null) {
@@ -35,7 +35,6 @@ public class LastLogin {
             dos.writeUTF(username);
             dos.writeUTF(uuid);
             dos.close();
-            fileOutputStream.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -62,10 +61,9 @@ public class LastLogin {
     }
 
     public static LastLogin readLastLogin() {
-        try {
+        File lastLogin = new File(LauncherFiles.LAST_LOGIN_PATH);
+        try (FileInputStream fileInputStream = new FileInputStream(lastLogin)) {
             DataInputStream dis;
-            File lastLogin = new File(LauncherFiles.LAST_LOGIN_PATH);
-            FileInputStream fileInputStream = new FileInputStream(lastLogin);
 
             Cipher cipher = getCipher(2, "passwordfile");
             if (cipher != null) {
@@ -82,7 +80,6 @@ public class LastLogin {
                 return new LastLogin(accessToken, clientToken, loginUsername, username, uuid);
             }
             dis.close();
-            fileInputStream.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
