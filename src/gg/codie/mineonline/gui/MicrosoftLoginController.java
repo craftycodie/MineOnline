@@ -1,6 +1,9 @@
 package gg.codie.mineonline.gui;
 
+import gg.codie.mineonline.Session;
 import gg.codie.mineonline.gui.rendering.DisplayManager;
+import gg.codie.mineonline.gui.screens.GuiMainMenu;
+import gg.codie.mineonline.utils.LastLogin;
 import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
 import javafx.embed.swing.JFXPanel;
@@ -67,8 +70,6 @@ public class MicrosoftLoginController extends VBox {
 
                 // listen to end oauth flow
                 webView.getEngine().getHistory().getEntries().addListener((ListChangeListener<WebHistory.Entry>) c -> {
-                    System.out.println(webView.getEngine().getLocation());
-
                     if (c.next() && c.wasAdded()) {
                         for (WebHistory.Entry entry : c.getAddedSubList()) {
                             if (entry.getUrl().startsWith(redirectUrlSuffix)) {
@@ -93,7 +94,7 @@ public class MicrosoftLoginController extends VBox {
 
     public MicrosoftLoginController() {
         try {
-            frame = new JFrame("Minecraft Login");
+            frame = new JFrame("MineOnline Login");
             JFXPanel jfxPanel = new JFXPanel();
             frame.add(jfxPanel);
             frame.pack();
@@ -348,7 +349,11 @@ public class MicrosoftLoginController extends VBox {
             String name = (String) jsonObject.get("name");
             String uuid = (String) jsonObject.get("id");
 
-            System.out.println("Win! " + name + " " + uuid + " " + mcAccessToken);
+            new Session(name, mcAccessToken, "", uuid, true);
+            LastLogin.writeLastLogin(Session.session.getAccessToken(), "", null, Session.session.getUsername(), Session.session.getUuid());
+            frame.dispose();
+            Display.getParent().getParent().setVisible(true);
+            MenuManager.setMenuScreen(new GuiMainMenu());
         } catch (IOException e) {
             e.printStackTrace();
         }

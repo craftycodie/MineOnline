@@ -126,6 +126,10 @@ public class LibraryManager {
             classpath.append(getClasspathSeparator() + LauncherFiles.JINPUT_JAR);
         }
 
+        // This only seems to work on Java 8.
+        // TODO: Figure out how to use JFX with newer JDKs.
+        classpath.append(getClasspathSeparator() + System.getProperty("java.home") + "\\lib\\ext\\jfxrt.jar");
+
         classpath.append(getClasspathSeparator() + LauncherFiles.JSON_JAR);
         classpath.append(getClasspathSeparator() + LauncherFiles.BYTEBUDDY_JAR);
         classpath.append(getClasspathSeparator() + LauncherFiles.ASM_COMMONS_JAR);
