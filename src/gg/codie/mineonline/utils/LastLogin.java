@@ -6,6 +6,8 @@ import javax.crypto.*;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.PBEParameterSpec;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Random;
 
 public class LastLogin {
@@ -19,12 +21,13 @@ public class LastLogin {
         try {
             DataOutputStream dos;
             File lastLogin = new File(LauncherFiles.LAST_LOGIN_PATH);
+            FileOutputStream fileOutputStream = new FileOutputStream(lastLogin);
 
             Cipher cipher = getCipher(1, "passwordfile");
             if (cipher != null) {
-                dos = new DataOutputStream(new CipherOutputStream(new FileOutputStream(lastLogin), cipher));
+                dos = new DataOutputStream(new CipherOutputStream(fileOutputStream, cipher));
             } else {
-                dos = new DataOutputStream(new FileOutputStream(lastLogin));
+                dos = new DataOutputStream(fileOutputStream);
             }
             dos.writeUTF(accessToken);
             dos.writeUTF(clientToken);
@@ -32,14 +35,18 @@ public class LastLogin {
             dos.writeUTF(username);
             dos.writeUTF(uuid);
             dos.close();
+            fileOutputStream.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     public static void deleteLastLogin() {
-        File lastLogin = new File(LauncherFiles.LAST_LOGIN_PATH);
-        lastLogin.delete();
+        try {
+            Files.delete(Paths.get(LauncherFiles.LAST_LOGIN_PATH));
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 
     private static Cipher getCipher(int mode, String password) throws Exception {
@@ -58,12 +65,13 @@ public class LastLogin {
         try {
             DataInputStream dis;
             File lastLogin = new File(LauncherFiles.LAST_LOGIN_PATH);
+            FileInputStream fileInputStream = new FileInputStream(lastLogin);
 
             Cipher cipher = getCipher(2, "passwordfile");
             if (cipher != null) {
-                dis = new DataInputStream(new CipherInputStream(new FileInputStream(lastLogin), cipher));
+                dis = new DataInputStream(new CipherInputStream(fileInputStream, cipher));
             } else {
-                dis = new DataInputStream(new FileInputStream(lastLogin));
+                dis = new DataInputStream(fileInputStream);
             }
             String accessToken = dis.readUTF();
             String clientToken = dis.readUTF();
@@ -74,7 +82,9 @@ public class LastLogin {
                 return new LastLogin(accessToken, clientToken, loginUsername, username, uuid);
             }
             dis.close();
+            fileInputStream.close();
         } catch (Exception e) {
+            e.printStackTrace();
         }
 
         return null;

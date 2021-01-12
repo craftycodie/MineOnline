@@ -4,7 +4,7 @@ import com.johnymuffin.BetaEvolutionsUtils;
 import gg.codie.minecraft.api.AuthServer;
 import gg.codie.minecraft.api.MojangAPI;
 import gg.codie.mineonline.*;
-import gg.codie.mineonline.api.ClassicAuthService;
+import gg.codie.mineonline.api.ClassicServerAuthService;
 import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.mineonline.api.MineOnlineServer;
 import gg.codie.mineonline.discord.DiscordRPCHandler;
@@ -12,10 +12,7 @@ import gg.codie.mineonline.gui.input.MouseHandler;
 import gg.codie.mineonline.gui.rendering.DisplayManager;
 import gg.codie.mineonline.gui.rendering.Loader;
 import gg.codie.mineonline.gui.rendering.Renderer;
-import gg.codie.mineonline.gui.screens.AbstractGuiScreen;
-import gg.codie.mineonline.gui.screens.GuiDirectConnect;
-import gg.codie.mineonline.gui.screens.GuiLogin;
-import gg.codie.mineonline.gui.screens.GuiMainMenu;
+import gg.codie.mineonline.gui.screens.*;
 import gg.codie.mineonline.gui.textures.EGUITexture;
 import gg.codie.mineonline.utils.LastLogin;
 import gg.codie.mineonline.utils.Logging;
@@ -41,7 +38,7 @@ import java.util.Set;
 public class MenuManager {
 
     public static boolean formopen = false;
-    private static ClassicAuthService classicAuthService = new ClassicAuthService();
+    private static ClassicServerAuthService classicAuthService = new ClassicServerAuthService();
 
     public static void setMenuScreen(AbstractGuiScreen guiScreen) {
         if(MenuManager.guiScreen != null)
@@ -286,7 +283,7 @@ public class MenuManager {
             else
                 setMenuScreen(new GuiMainMenu());
         else
-            setMenuScreen(new GuiLogin());
+            setMenuScreen(new GuiLoginLegacy());
 
         int lastWidth = Display.getWidth();
         int lastHeight = Display.getHeight();

@@ -168,7 +168,7 @@ public class GuiOptions extends AbstractGuiScreen
             controlList.add(new GuiSmallButton(0, getWidth() / 2 + 5, getHeight() / 6 + 48, "Logout", new GuiButton.GuiButtonListener() {
                 @Override
                 public void OnButtonPress() {
-                    MenuManager.setMenuScreen(new GuiLogin());
+                    MenuManager.setMenuScreen(new GuiLoginLegacy());
                     Session.session.logout();
                 }
             }));

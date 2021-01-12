@@ -25,39 +25,13 @@ import java.util.UUID;
 
 public class GuiLogin extends AbstractGuiScreen
 {
-    private String errorText;
-    private boolean offline;
-
     public GuiLogin()
     {
         initGui();
     }
 
-    protected void keyTyped(char c, int i)
-    {
-        usernameField.textboxKeyTyped(c, i);
-        if(c == '\r')
-        {
-            actionPerformed((GuiButton)controlList.get(0));
-        }
-
-        passwordField.textboxKeyTyped(c, i);
-        if(c == '\r')
-        {
-            actionPerformed((GuiButton)controlList.get(0));
-        }
-
-        loginButton.enabled = usernameField.getText().length() > 0 && passwordField.getText().length() > 0;
-
-        if (playOfflineButton != null)
-            playOfflineButton.enabled = usernameField.getText().length() > 0;
-
-    }
-
     protected void mouseClicked(int x, int y, int button)
     {
-        usernameField.mouseClicked(x, y, button);
-        passwordField.mouseClicked(x, y, button);
         super.mouseClicked(x, y, button);
         if (MenuManager.isUpdateAvailable() && y > getHeight() - 20 && y < getHeight() - 10 && x < Font.minecraftFont.width("Update Available!")) {
             ClickSound.play();
@@ -90,120 +64,31 @@ public class GuiLogin extends AbstractGuiScreen
         }
     }
 
-    public void showOfflineButton() {
-        controlList.remove(loginButton);
-        controlList.add(loginButton = new GuiButton(0, getWidth() / 2, getHeight() / 4 + 48 + 72, 100, 20, "Login", loginHandler));
-        controlList.add(playOfflineButton = new GuiButton(0, getWidth() / 2 - 102, getHeight() / 4 + 48 + 72, 100, 20, "Play Offline", new GuiButton.GuiButtonListener() {
-            @Override
-            public void OnButtonPress() {
-                try {
-                    if(usernameField.getText().contains("@")) {
-                        EventQueue.invokeLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                JOptionPane.showMessageDialog(null, "Enter a username to play in offline-mode.");
-                            }
-                        });
-                        return;
-                    }
-
-                    new Session(usernameField.getText());
-                    MenuManager.setMenuScreen(new GuiMainMenu());
-                } catch (Exception ex) {
-                }
-            }
-        }));
-    }
-
-    GuiButton.GuiButtonListener loginHandler =  new GuiButton.GuiButtonListener() {
-        @Override
-        public void OnButtonPress() {
-
-            try {
-                String clientSecret = UUID.randomUUID().toString();
-                JSONObject login = AuthServer.authenticate(usernameField.getText(), passwordField.getText(), clientSecret);
-
-                if (login.has("error"))
-                    throw new Exception(login.getString("error"));
-                if (!login.has("accessToken") || !login.has("selectedProfile"))
-                    throw new Exception("Failed to authenticate!");
-                if (MojangAPI.minecraftProfile(login.getJSONObject("selectedProfile").getString("name")).optBoolean("demo", false))
-                    throw new Exception("Please buy Minecraft to use MineOnline.");
-
-                String sessionToken = login.getString("accessToken");
-                String uuid = login.getJSONObject("selectedProfile").getString("id");
-
-                if (sessionToken != null) {
-                    new Session(login.getJSONObject("selectedProfile").getString("name"), sessionToken, clientSecret, uuid, true);
-                    LastLogin.writeLastLogin(Session.session.getAccessToken(), clientSecret, usernameField.getText(), Session.session.getUsername(), Session.session.getUuid());
-                    MenuManager.setMenuScreen(new GuiMainMenu());
-                } else {
-                    errorText = "Incorrect username or password.";
-                }
-            } catch (Exception ex) {
-                ex.printStackTrace();
-
-                String errorMessage = ex.getMessage();
-                if (errorMessage.startsWith("Bad login")) {
-                    errorMessage = "Incorrect username or password.";
-                }
-
-                if (ex instanceof IOException)
-                    errorMessage = "Bad login.";
-
-                errorText = errorMessage;
-
-                offline = true;
-            }
-        }
-    };
-
     public void initGui()
     {
         int i = getHeight() / 4 + 48;
 
-        String username = "";
-        LastLogin lastLogin = LastLogin.readLastLogin();
-        if(lastLogin != null) {
-            username = lastLogin.loginUsername;
-        }
-
-        usernameField = new GuiTextField(this, getWidth() / 2 - 100, i, 200, 20, username);
-        passwordField = new GuiPasswordField(this, getWidth() / 2 - 100, i + 42, 200, 20, "");
-        controlList.add(loginButton = new GuiButton(0, getWidth() / 2 - 100, i + 72, "Login", loginHandler));
-
-        loginButton.enabled = false;
-
-        usernameField.isFocused = true;
-        usernameField.setMaxStringLength(128);
-
-        passwordField.isFocused = false;
-        passwordField.setMaxStringLength(256);
+        controlList.add(loginLegacy = new GuiButton(0, getWidth() / 2 - 100, i + 72, "Login via Mojang", new GuiButton.GuiButtonListener() {
+            @Override
+            public void OnButtonPress() {
+                MenuManager.setMenuScreen(new GuiLoginLegacy());
+            }
+        }));
+        controlList.add(loginMicrosoft = new GuiButton(0, getWidth() / 2 - 100, i + 72, "Login via Microsoft", new GuiButton.GuiButtonListener() {
+            @Override
+            public void OnButtonPress() {
+                // TODO: Init Microsoft Login.
+            }
+        }));
     }
 
     public void resize() {
-        usernameField.resize(getWidth() / 2 - 100, getHeight() / 4 + 48);
-        passwordField.resize(getWidth() / 2 - 100, getHeight() / 4 + 48 + 42);
-        if (playOfflineButton != null) {
-            loginButton.resize(getWidth() / 2 + 2, getHeight() / 4 + 48 + 72);
-            playOfflineButton.resize(getWidth() / 2 - 102, getHeight() / 4 + 48 + 72);
-        } else {
-            loginButton.resize(getWidth() / 2 - 100, getHeight() / 4 + 48 + 72);
-        }
-    }
-
-    public void selectNextField() {
-        if (!passwordField.isFocused) {
-            usernameField.setFocused(false);
-            passwordField.setFocused(true);
-        }
+        loginLegacy.resize(getWidth() / 2 - 102, getHeight() / 4 + 48 + 32);
+        loginMicrosoft.resize(getWidth() / 2 - 102, getHeight() / 4 + 48 + 72);
     }
 
     public void drawScreen(int mouseX, int mouseY)
     {
-        if (offline && playOfflineButton == null)
-            showOfflineButton();
-
         resize();
 
         Renderer tessellator = Renderer.singleton;
@@ -221,19 +106,10 @@ public class GuiLogin extends AbstractGuiScreen
         Font.minecraftFont.drawString("MineOnline " + (Globals.DEV ? "Dev " : "") + Globals.LAUNCHER_VERSION + (!Globals.BRANCH.equalsIgnoreCase("release") ? " (" + Globals.BRANCH + ")" : ""), 2, getHeight() - 10, 0xffffff);
         String s = "Made by @codieradical <3";
         Font.minecraftFont.drawString(s, getWidth() - Font.minecraftFont.width(s) - 2, getHeight() - 10, 0xffffff);
-        Font.minecraftFont.drawString("Need Account?", (getWidth() / 2) - Font.minecraftFont.width("Need Account?") / 2, getHeight() / 4 + 48 + 96, 0x5555FF);
-        Font.minecraftFont.drawString("Username or E-Mail:", getWidth() / 2 - 100, getHeight() / 4 + 48 - 16, 0xffffff);
-        Font.minecraftFont.drawString("Password:", getWidth() / 2 - 100, getHeight() / 4 + 48 + 48 - 22, 0xffffff);
-        Font.minecraftFont.drawString(errorText, (getWidth() / 2) - Font.minecraftFont.width(errorText) / 2, getHeight() / 4 + 48 - 32, 0xFF5555);
-
-        usernameField.drawTextBox();
-        passwordField.drawTextBox();
 
         super.drawScreen(mouseX, mouseY);
     }
 
-    private GuiTextField usernameField;
-    private GuiPasswordField passwordField;
-    private GuiButton loginButton;
-    private GuiButton playOfflineButton;
+    private GuiButton loginLegacy;
+    private GuiButton loginMicrosoft;
 }
