@@ -157,7 +157,7 @@ public class GuiOptions extends AbstractGuiScreen
                 }
             }));
 
-            controlList.add(new GuiSmallButton(0, getWidth() / 2 - 155, getHeight() / 6 + 48, "Custom Capes: " + (Settings.singleton.getHideVersionString() ? "YES" : "NO"), new GuiButton.GuiButtonListener() {
+            controlList.add(new GuiSmallButton(0, getWidth() / 2 - 155, getHeight() / 6 + 48, "Custom Capes: " + (Settings.singleton.getCustomCapes() ? "YES" : "NO"), new GuiButton.GuiButtonListener() {
                 @Override
                 public void OnButtonPress() {
                     Settings.singleton.setCustomCapes(!Settings.singleton.getCustomCapes());
