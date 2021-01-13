@@ -19,30 +19,19 @@ The program can also run regular desktop versions of the game, and even old laun
 These are features MineOnline will bring to Minecraft.
 
 - Skins and Cloaks
-
 - Resource Files (Sounds, the right ones for each version!)
-
 - [Server List](https://mineonline.codie.gg/servers)
-
-- FOV Option
-
+- FOV Slider
+- Microsoft Login Support
 - Online World Saves for Classic
-  
 - Screenshots (F2)
-
 - Texture packs for versions before Alpha 1.2.2 (when it was officially added)
   - Custom font support.
-
 - GUI scaling for versions before Beta 1.5 (when it was officially added)
-
 - Secure Server Authentication (online-mode and verify-names)
-
 - Resizable & Fullscreenable Applets with Mac and Linux Support
-
 - Bit depth fix (removes jagged lines from clouds and other stuff).
-
 - Full Discord Integration
-
 - Tab player list.
 
 ![launcher](launcherdemo.png)
