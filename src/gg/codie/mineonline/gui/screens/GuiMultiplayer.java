@@ -14,7 +14,7 @@ import gg.codie.mineonline.gui.rendering.Font;
 import gg.codie.mineonline.gui.rendering.Renderer;
 import gg.codie.mineonline.server.ThreadPollServers;
 import org.lwjgl.opengl.Display;
-import gg.codie.mineonline.api.ClassicAuthService;
+import gg.codie.mineonline.api.ClassicServerAuthService;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -212,5 +212,5 @@ public class GuiMultiplayer extends AbstractGuiScreen
     private GuiButton connectButton;
     private String tooltip;
     public MineOnlineServerRepository serverRepository = new MineOnlineServerRepository();
-    private ClassicAuthService classicAuthService = new ClassicAuthService();
+    private ClassicServerAuthService classicAuthService = new ClassicServerAuthService();
 }

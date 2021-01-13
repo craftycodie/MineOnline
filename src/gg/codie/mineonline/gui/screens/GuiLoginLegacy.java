@@ -5,6 +5,7 @@ import gg.codie.minecraft.api.MojangAPI;
 import gg.codie.mineonline.Globals;
 import gg.codie.mineonline.Session;
 import gg.codie.mineonline.gui.MenuManager;
+import gg.codie.mineonline.gui.MicrosoftLoginController;
 import gg.codie.mineonline.gui.components.GuiButton;
 import gg.codie.mineonline.gui.components.GuiPasswordField;
 import gg.codie.mineonline.gui.components.GuiTextField;
@@ -13,6 +14,7 @@ import gg.codie.mineonline.gui.rendering.Loader;
 import gg.codie.mineonline.gui.rendering.Renderer;
 import gg.codie.mineonline.gui.sound.ClickSound;
 import gg.codie.mineonline.gui.textures.EGUITexture;
+import gg.codie.mineonline.utils.JREUtils;
 import gg.codie.mineonline.utils.LastLogin;
 import org.json.JSONObject;
 import org.lwjgl.opengl.GL11;
@@ -23,12 +25,12 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.UUID;
 
-public class GuiLogin extends AbstractGuiScreen
+public class GuiLoginLegacy extends AbstractGuiScreen
 {
     private String errorText;
     private boolean offline;
 
-    public GuiLogin()
+    public GuiLoginLegacy()
     {
         initGui();
     }
@@ -54,6 +56,23 @@ public class GuiLogin extends AbstractGuiScreen
 
     }
 
+    private void microsoftLogin() {
+        try {
+            Class.forName("javafx.scene.layout.VBox");
+            new MicrosoftLoginController();
+        } catch (ClassNotFoundException ex) {
+            EventQueue.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    JOptionPane.showMessageDialog(null,
+                            "You must install Java FX to use Microsoft Login.\n" +
+                            "Your Java install is here: " + JREUtils.getRunningJavaExecutable()
+                    );
+                }
+            });
+        }
+    }
+
     protected void mouseClicked(int x, int y, int button)
     {
         usernameField.mouseClicked(x, y, button);
@@ -71,10 +90,19 @@ public class GuiLogin extends AbstractGuiScreen
             }
         }
 
-        if (y > getHeight() / 4 + 48 + 96 && y < getHeight() / 4 + 48 + 106 && x > (getWidth() / 2 ) - (Font.minecraftFont.width("Need Account?")) / 2 && x < (getWidth() / 2 ) + (Font.minecraftFont.width("Need Account?")) / 2) {
+        if (y > getHeight() / 4 + 48 + 96 && y < getHeight() / 4 + 48 + 106 && x > ((getWidth() / 2) + 102) - (Font.minecraftFont.width("Need Account?")) && x < (getWidth() / 2 ) + 102) {
             ClickSound.play();
             try {
                 Desktop.getDesktop().browse(new URI("https://www.minecraft.net/store/minecraft-java-edition"));
+            } catch (Exception ex) {
+
+            }
+        }
+
+        if (y > getHeight() / 4 + 48 + 96 && y < getHeight() / 4 + 48 + 106 && x > ((getWidth() / 2) - 100) && x < ((getWidth() / 2) - 102) + (Font.minecraftFont.width("Login via Microsoft"))) {
+            ClickSound.play();
+            try {
+                microsoftLogin();
             } catch (Exception ex) {
 
             }
@@ -135,7 +163,7 @@ public class GuiLogin extends AbstractGuiScreen
 
                 if (sessionToken != null) {
                     new Session(login.getJSONObject("selectedProfile").getString("name"), sessionToken, clientSecret, uuid, true);
-                    LastLogin.writeLastLogin(Session.session.getAccessToken(), clientSecret, usernameField.getText(), Session.session.getUsername(), Session.session.getUuid());
+                    LastLogin.writeLastLogin(Session.session.getAccessToken(), clientSecret, usernameField.getText(), Session.session.getUsername(), Session.session.getUuid(), true);
                     MenuManager.setMenuScreen(new GuiMainMenu());
                 } else {
                     errorText = "Incorrect username or password.";
@@ -221,7 +249,8 @@ public class GuiLogin extends AbstractGuiScreen
         Font.minecraftFont.drawString("MineOnline " + (Globals.DEV ? "Dev " : "") + Globals.LAUNCHER_VERSION + (!Globals.BRANCH.equalsIgnoreCase("release") ? " (" + Globals.BRANCH + ")" : ""), 2, getHeight() - 10, 0xffffff);
         String s = "Made by @codieradical <3";
         Font.minecraftFont.drawString(s, getWidth() - Font.minecraftFont.width(s) - 2, getHeight() - 10, 0xffffff);
-        Font.minecraftFont.drawString("Need Account?", (getWidth() / 2) - Font.minecraftFont.width("Need Account?") / 2, getHeight() / 4 + 48 + 96, 0x5555FF);
+        Font.minecraftFont.drawString("Login via Microsoft", ((getWidth() / 2) - 100), getHeight() / 4 + 48 + 96, 0x5555FF);
+        Font.minecraftFont.drawString("Need Account?", ((getWidth() / 2) + 102) - Font.minecraftFont.width("Need Account?"), getHeight() / 4 + 48 + 96, 0x5555FF);
         Font.minecraftFont.drawString("Username or E-Mail:", getWidth() / 2 - 100, getHeight() / 4 + 48 - 16, 0xffffff);
         Font.minecraftFont.drawString("Password:", getWidth() / 2 - 100, getHeight() / 4 + 48 + 48 - 22, 0xffffff);
         Font.minecraftFont.drawString(errorText, (getWidth() / 2) - Font.minecraftFont.width(errorText) / 2, getHeight() / 4 + 48 - 32, 0xFF5555);

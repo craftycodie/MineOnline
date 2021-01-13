@@ -7,10 +7,10 @@ import gg.codie.mineonline.Globals;
 import java.net.InetAddress;
 import java.util.LinkedList;
 
-public class ClassicAuthService {
+public class ClassicServerAuthService {
     private LinkedList<IMPPassProvider> mpPassProviders = new LinkedList<>();
 
-    public ClassicAuthService() {
+    public ClassicServerAuthService() {
         registerMPPassProviders();
     }
 

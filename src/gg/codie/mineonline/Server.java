@@ -27,7 +27,7 @@ public class Server {
         launchArgs.add("-javaagent:" + LauncherFiles.PATCH_AGENT_JAR);
         launchArgs.add("-Djava.util.Arrays.useLegacyMergeSort=true");
         launchArgs.add("-cp");
-        launchArgs.add(LibraryManager.getClasspath(false, new String[] { new File(MinecraftServerLauncher.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath() }));
+        launchArgs.add(LibraryManager.getClasspath(false, false, new String[] { new File(MinecraftServerLauncher.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath() }));
         launchArgs.add(MinecraftServerLauncher.class.getCanonicalName());
         launchArgs.addAll(Arrays.asList(args));
 
