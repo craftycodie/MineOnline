@@ -38,7 +38,7 @@ public class MinecraftServerProcess {
                 launchArgs.addAll(Arrays.asList(Arrays.copyOfRange(args, 1, args.length)));
 
         launchArgs.add("-cp");
-        launchArgs.add(LibraryManager.getClasspath(false, new String[] { new File(MinecraftServerProcess.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath(), args[0] }));
+        launchArgs.add(LibraryManager.getClasspath(false, false, new String[] { new File(MinecraftServerProcess.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath(), args[0] }));
         launchArgs.add(MinecraftServerProcess.class.getCanonicalName());
         launchArgs.addAll(Arrays.asList(args));
 

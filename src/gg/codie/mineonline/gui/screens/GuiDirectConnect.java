@@ -5,7 +5,7 @@ import gg.codie.mineonline.MinecraftVersion;
 import gg.codie.mineonline.MinecraftVersionRepository;
 import gg.codie.mineonline.Session;
 import gg.codie.mineonline.Settings;
-import gg.codie.mineonline.api.ClassicAuthService;
+import gg.codie.mineonline.api.ClassicServerAuthService;
 import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.mineonline.api.MineOnlineServer;
 import gg.codie.mineonline.client.LegacyGameManager;
@@ -204,5 +204,5 @@ public class GuiDirectConnect extends AbstractGuiScreen
 
     private AbstractGuiScreen parentScreen;
     private GuiTextField textField;
-    private ClassicAuthService classicAuthService = new ClassicAuthService();
+    private ClassicServerAuthService classicAuthService = new ClassicServerAuthService();
 }

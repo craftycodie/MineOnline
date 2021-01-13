@@ -4,7 +4,7 @@ import com.johnymuffin.BetaEvolutionsUtils;
 import gg.codie.minecraft.api.AuthServer;
 import gg.codie.minecraft.api.MojangAPI;
 import gg.codie.mineonline.*;
-import gg.codie.mineonline.api.ClassicAuthService;
+import gg.codie.mineonline.api.ClassicServerAuthService;
 import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.mineonline.api.MineOnlineServer;
 import gg.codie.mineonline.discord.DiscordRPCHandler;
@@ -12,10 +12,7 @@ import gg.codie.mineonline.gui.input.MouseHandler;
 import gg.codie.mineonline.gui.rendering.DisplayManager;
 import gg.codie.mineonline.gui.rendering.Loader;
 import gg.codie.mineonline.gui.rendering.Renderer;
-import gg.codie.mineonline.gui.screens.AbstractGuiScreen;
-import gg.codie.mineonline.gui.screens.GuiDirectConnect;
-import gg.codie.mineonline.gui.screens.GuiLogin;
-import gg.codie.mineonline.gui.screens.GuiMainMenu;
+import gg.codie.mineonline.gui.screens.*;
 import gg.codie.mineonline.gui.textures.EGUITexture;
 import gg.codie.mineonline.utils.LastLogin;
 import gg.codie.mineonline.utils.Logging;
@@ -41,7 +38,7 @@ import java.util.Set;
 public class MenuManager {
 
     public static boolean formopen = false;
-    private static ClassicAuthService classicAuthService = new ClassicAuthService();
+    private static ClassicServerAuthService classicAuthService = new ClassicServerAuthService();
 
     public static void setMenuScreen(AbstractGuiScreen guiScreen) {
         if(MenuManager.guiScreen != null)
@@ -170,20 +167,27 @@ public class MenuManager {
         String sessionToken = null;
         String uuid = null;
 
-        if(lastLogin != null ) {
+        if(lastLogin != null) {
             try {
-                JSONObject login = AuthServer.refresh(lastLogin.accessToken, lastLogin.clientToken);
+                // TODO: Add support for refreshing Microsoft auth.
+                if (lastLogin.legacy) {
+                    JSONObject login = AuthServer.refresh(lastLogin.accessToken, lastLogin.clientToken);
 
-                if (login.has("error"))
-                    throw new Exception(login.getString("error"));
-                if (!login.has("accessToken") || !login.has("selectedProfile"))
-                    throw new Exception("Failed to authenticate!");
-                if (MojangAPI.minecraftProfile(login.getJSONObject("selectedProfile").getString("name")).optBoolean("demo", false))
-                    throw new Exception("Please buy Minecraft to use MineOnline.");
+                    if (login.has("error"))
+                        throw new Exception(login.getString("error"));
+                    if (!login.has("accessToken") || !login.has("selectedProfile"))
+                        throw new Exception("Failed to authenticate!");
+                    if (MojangAPI.minecraftProfile(login.getJSONObject("selectedProfile").getString("name")).optBoolean("demo", false))
+                        throw new Exception("Please buy Minecraft to use MineOnline.");
 
-                sessionToken = login.getString("accessToken");
-                username = login.getJSONObject("selectedProfile").getString("name");
-                uuid = login.getJSONObject("selectedProfile").getString("id");
+                    sessionToken = login.getString("accessToken");
+                    username = login.getJSONObject("selectedProfile").getString("name");
+                    uuid = login.getJSONObject("selectedProfile").getString("id");
+                } else {
+                    sessionToken = lastLogin.accessToken;
+                    username = lastLogin.username;
+                    uuid = lastLogin.uuid;
+                }
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -193,7 +197,7 @@ public class MenuManager {
 
         if (sessionToken != null && username != null) {
             new Session(username, sessionToken, lastLogin.clientToken, uuid, true);
-            LastLogin.writeLastLogin(sessionToken, lastLogin.clientToken, lastLogin.loginUsername, username, uuid);
+            LastLogin.writeLastLogin(sessionToken, lastLogin.clientToken, lastLogin.loginUsername, username, uuid, lastLogin.legacy);
         }
 
         if (Session.session != null && Session.session.isOnline() && joinserver != null && quicklaunch == null) {
@@ -286,7 +290,7 @@ public class MenuManager {
             else
                 setMenuScreen(new GuiMainMenu());
         else
-            setMenuScreen(new GuiLogin());
+            setMenuScreen(new GuiLoginLegacy());
 
         int lastWidth = Display.getWidth();
         int lastHeight = Display.getHeight();

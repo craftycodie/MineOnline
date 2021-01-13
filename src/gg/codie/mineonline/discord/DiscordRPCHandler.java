@@ -1,6 +1,7 @@
 package gg.codie.mineonline.discord;
 
 import gg.codie.common.utils.OSUtils;
+import gg.codie.minecraft.server.MinecraftColorCodeProvider;
 import gg.codie.mineonline.Globals;
 import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.LibraryManager;
@@ -122,7 +123,7 @@ public class DiscordRPCHandler {
                     ex.printStackTrace();
             }
 
-            DiscordRichPresence.Builder presence = new DiscordRichPresence.Builder(server != null ? server.name : (DiscordRPCHandler.serverIP + (!DiscordRPCHandler.serverPort.equals("25565") ? (":" + DiscordRPCHandler.serverPort) : "")));
+            DiscordRichPresence.Builder presence = new DiscordRichPresence.Builder(server != null ? new MinecraftColorCodeProvider().removeColorCodes(server.name) : (DiscordRPCHandler.serverIP + (!DiscordRPCHandler.serverPort.equals("25565") ? (":" + DiscordRPCHandler.serverPort) : "")));
             presence.setDetails(DiscordRPCHandler.versionName);
             presence.setStartTimestamps(startTimestamp);
             presence.setSecrets(DiscordRPCHandler.serverIP + ", " + DiscordRPCHandler.serverPort, null);
@@ -169,7 +170,7 @@ public class DiscordRPCHandler {
                         launchArgs.add("-javaagent:" + LauncherFiles.PATCH_AGENT_JAR);
                         launchArgs.add("-Djava.util.Arrays.useLegacyMergeSort=true");
                         launchArgs.add("-cp");
-                        launchArgs.add(LibraryManager.getClasspath(true, new String[]{new File(MenuManager.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath(), LauncherFiles.DISCORD_RPC_JAR}));
+                        launchArgs.add(LibraryManager.getClasspath(true, true, new String[]{new File(MenuManager.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath(), LauncherFiles.DISCORD_RPC_JAR}));
                         launchArgs.add(MenuManager.class.getCanonicalName());
                         launchArgs.add("-server");
                         launchArgs.add(s.replace(", ", ":"));

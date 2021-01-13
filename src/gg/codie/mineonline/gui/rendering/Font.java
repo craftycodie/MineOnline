@@ -35,7 +35,6 @@ public class Font
         BufferedImage bufferedimage;
         try
         {
-            // TODO: Add texture pack support (needs an in game patch)
             if (Settings.singleton.getTexturePack().isEmpty() || Settings.singleton.getTexturePack().equals("Default")) {
                 bufferedimage = ImageIO.read(Font.class.getResourceAsStream(EGUITexture.FONT.textureName));
             } else {

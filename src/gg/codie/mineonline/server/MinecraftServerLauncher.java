@@ -135,9 +135,9 @@ public class MinecraftServerLauncher {
             public void onShutdown() {
                 if (discord != null) {
                     if (minecraftVersion != null) {
-                        discord.sendDiscordMessage("", "Launching " + minecraftVersion.name + " server: **" + serverProperties.serverName() + "**");
+                        discord.sendDiscordMessage("", "Launching " + minecraftVersion.name + " server: **" + new MinecraftColorCodeProvider().removeColorCodes(serverProperties.serverName()) + "**");
                     } else {
-                        discord.sendDiscordMessage("", "Launching server: **" + serverProperties.serverName() + "**");
+                        discord.sendDiscordMessage("", "Launching server: **" + new MinecraftColorCodeProvider().removeColorCodes(serverProperties.serverName()) + "**");
                     }
                 }
             }
@@ -154,13 +154,13 @@ public class MinecraftServerLauncher {
 
         if (minecraftVersion != null){
             if (discord != null) {
-                discord.sendDiscordMessage("", "Launching " + minecraftVersion.name + " server: **" + serverProperties.serverName() + "**");
+                discord.sendDiscordMessage("", "Launching " + minecraftVersion.name + " server: **" + new MinecraftColorCodeProvider().removeColorCodes(serverProperties.serverName()) + "**");
             }
             System.out.println("Launching Server " + minecraftVersion.name);
         }
         else {
             if (discord != null) {
-                discord.sendDiscordMessage("", "Launching server: **" + serverProperties.serverName() + "**");
+                discord.sendDiscordMessage("", "Launching server: **" + new MinecraftColorCodeProvider().removeColorCodes(serverProperties.serverName()) + "**");
             }
             System.out.println("Launching Server " + this.jarPath);
         }
@@ -348,13 +348,13 @@ public class MinecraftServerLauncher {
                                 for (String names : playerNames) {
                                     boolean join = Arrays.stream(prevPlayers).anyMatch(names::equals);
                                     if (!join) {
-                                        discord.sendDiscordMessage("","**" + names + "** joined **" + serverProperties.serverName() + "**");
+                                        discord.sendDiscordMessage("","**" + names + "** joined **" + new MinecraftColorCodeProvider().removeColorCodes(serverProperties.serverName()) + "**");
                                     }
                                 }
                                 for (String names : prevPlayers) {
                                     boolean left = Arrays.stream(playerNames).anyMatch(names::equals);
                                     if (!left) {
-                                        discord.sendDiscordMessage("","**" + colorCodeProvider.removeColorCodes(names) + "** left **" + serverProperties.serverName() + "**");
+                                        discord.sendDiscordMessage("","**" + colorCodeProvider.removeColorCodes(names) + "** left **" + new MinecraftColorCodeProvider().removeColorCodes(serverProperties.serverName()) + "**");
                                     }
                                 }
                             }
