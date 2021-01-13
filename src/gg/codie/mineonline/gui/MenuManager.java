@@ -167,20 +167,27 @@ public class MenuManager {
         String sessionToken = null;
         String uuid = null;
 
-        if(lastLogin != null ) {
+        if(lastLogin != null) {
             try {
-                JSONObject login = AuthServer.refresh(lastLogin.accessToken, lastLogin.clientToken);
+                // TODO: Add support for refreshing Microsoft auth.
+                if (lastLogin.legacy) {
+                    JSONObject login = AuthServer.refresh(lastLogin.accessToken, lastLogin.clientToken);
 
-                if (login.has("error"))
-                    throw new Exception(login.getString("error"));
-                if (!login.has("accessToken") || !login.has("selectedProfile"))
-                    throw new Exception("Failed to authenticate!");
-                if (MojangAPI.minecraftProfile(login.getJSONObject("selectedProfile").getString("name")).optBoolean("demo", false))
-                    throw new Exception("Please buy Minecraft to use MineOnline.");
+                    if (login.has("error"))
+                        throw new Exception(login.getString("error"));
+                    if (!login.has("accessToken") || !login.has("selectedProfile"))
+                        throw new Exception("Failed to authenticate!");
+                    if (MojangAPI.minecraftProfile(login.getJSONObject("selectedProfile").getString("name")).optBoolean("demo", false))
+                        throw new Exception("Please buy Minecraft to use MineOnline.");
 
-                sessionToken = login.getString("accessToken");
-                username = login.getJSONObject("selectedProfile").getString("name");
-                uuid = login.getJSONObject("selectedProfile").getString("id");
+                    sessionToken = login.getString("accessToken");
+                    username = login.getJSONObject("selectedProfile").getString("name");
+                    uuid = login.getJSONObject("selectedProfile").getString("id");
+                } else {
+                    sessionToken = lastLogin.accessToken;
+                    username = lastLogin.username;
+                    uuid = lastLogin.uuid;
+                }
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -190,7 +197,7 @@ public class MenuManager {
 
         if (sessionToken != null && username != null) {
             new Session(username, sessionToken, lastLogin.clientToken, uuid, true);
-            LastLogin.writeLastLogin(sessionToken, lastLogin.clientToken, lastLogin.loginUsername, username, uuid);
+            LastLogin.writeLastLogin(sessionToken, lastLogin.clientToken, lastLogin.loginUsername, username, uuid, lastLogin.legacy);
         }
 
         if (Session.session != null && Session.session.isOnline() && joinserver != null && quicklaunch == null) {

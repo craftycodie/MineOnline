@@ -76,7 +76,6 @@ public class MicrosoftLoginController extends VBox {
                             if (entry.getUrl().startsWith(redirectUrlSuffix)) {
                                 String authCode = entry.getUrl().substring(entry.getUrl().indexOf("=") + 1, entry.getUrl().indexOf("&"));
                                 // once we got the auth code, we can turn it into a oauth token
-                                System.out.println("authCode: " + authCode); // TODO debug
                                 acquireAccessToken(authCode);
                             }
                         }
@@ -159,9 +158,7 @@ public class MicrosoftLoginController extends VBox {
 
             JSONObject jsonObject = new JSONObject(response.toString());
 
-            System.out.println(jsonObject);
             String accessToken = (String) jsonObject.get("access_token");
-            System.out.println("accessToken: " + accessToken); // TODO debug
             acquireXBLToken(accessToken);
         } catch (IOException e) {
             e.printStackTrace();
@@ -205,7 +202,6 @@ public class MicrosoftLoginController extends VBox {
             rd.close();
 
             JSONObject jsonObject = new JSONObject(response.toString());
-            System.out.println(jsonObject);
             String xblToken = (String) jsonObject.get("Token");
             acquireXsts(xblToken);
         } catch (IOException e) {
@@ -254,7 +250,6 @@ public class MicrosoftLoginController extends VBox {
             JSONObject claims = (JSONObject) jsonObject.get("DisplayClaims");
             JSONArray xui = (JSONArray) claims.get("xui");
             String uhs = (String) ((JSONObject) xui.get(0)).get("uhs");
-            System.out.println("xblXsts: " + xblXsts + ", uhs: " + uhs); // TODO debug
             acquireMinecraftToken(uhs, xblXsts);
         } catch (IOException e) {
             e.printStackTrace();
@@ -291,7 +286,6 @@ public class MicrosoftLoginController extends VBox {
 
             JSONObject jsonObject = new JSONObject(response.toString());
             String mcAccessToken = (String) jsonObject.get("access_token");
-            System.out.println("mcAccessToken: " + mcAccessToken); // TODO debug
             checkMcStore(mcAccessToken);
             checkMcProfile(mcAccessToken);
         } catch (IOException e) {
@@ -354,7 +348,7 @@ public class MicrosoftLoginController extends VBox {
             String uuid = (String) jsonObject.get("id");
 
             new Session(name, mcAccessToken, "", uuid, true);
-            LastLogin.writeLastLogin(Session.session.getAccessToken(), "", null, Session.session.getUsername(), Session.session.getUuid());
+            LastLogin.writeLastLogin(Session.session.getAccessToken(), "", null, Session.session.getUsername(), Session.session.getUuid(), false);
             frame.dispose();
             Display.getParent().getParent().setVisible(true);
             MenuManager.setMenuScreen(new GuiMainMenu());

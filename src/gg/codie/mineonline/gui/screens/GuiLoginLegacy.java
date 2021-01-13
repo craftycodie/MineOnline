@@ -163,7 +163,7 @@ public class GuiLoginLegacy extends AbstractGuiScreen
 
                 if (sessionToken != null) {
                     new Session(login.getJSONObject("selectedProfile").getString("name"), sessionToken, clientSecret, uuid, true);
-                    LastLogin.writeLastLogin(Session.session.getAccessToken(), clientSecret, usernameField.getText(), Session.session.getUsername(), Session.session.getUuid());
+                    LastLogin.writeLastLogin(Session.session.getAccessToken(), clientSecret, usernameField.getText(), Session.session.getUsername(), Session.session.getUuid(), true);
                     MenuManager.setMenuScreen(new GuiMainMenu());
                 } else {
                     errorText = "Incorrect username or password.";

@@ -16,8 +16,9 @@ public class LastLogin {
     public final String loginUsername;
     public final String username;
     public final String uuid;
+    public final boolean legacy;
 
-    public static void writeLastLogin(String accessToken, String clientToken, String loginUsername, String username, String uuid) {
+    public static void writeLastLogin(String accessToken, String clientToken, String loginUsername, String username, String uuid, boolean legacy) {
         File lastLogin = new File(LauncherFiles.LAST_LOGIN_PATH);
 
         try (FileOutputStream fileOutputStream = new FileOutputStream(lastLogin)) {
@@ -34,6 +35,7 @@ public class LastLogin {
             dos.writeUTF(loginUsername);
             dos.writeUTF(username);
             dos.writeUTF(uuid);
+            dos.writeBoolean(legacy);
             dos.close();
         } catch (Exception e) {
 //            e.printStackTrace();
@@ -76,8 +78,9 @@ public class LastLogin {
             String loginUsername = dis.readUTF();
             String username = dis.readUTF();
             String uuid = dis.readUTF();
+            boolean legacy = dis.readBoolean();
             if(accessToken.length() > 0 && clientToken.length() > 0 && username.length() > 0 && uuid.length() > 0 && loginUsername.length() > 0) {
-                return new LastLogin(accessToken, clientToken, loginUsername, username, uuid);
+                return new LastLogin(accessToken, clientToken, loginUsername, username, uuid, legacy);
             }
             dis.close();
         } catch (Exception e) {
@@ -87,11 +90,12 @@ public class LastLogin {
         return null;
     }
 
-    private LastLogin(String accessToken, String clientToken, String loginUsername, String username, String uuid) {
+    private LastLogin(String accessToken, String clientToken, String loginUsername, String username, String uuid, boolean legacy) {
         this.accessToken = accessToken;
         this.clientToken = clientToken;
         this.loginUsername = loginUsername;
         this.username = username;
         this.uuid = uuid;
+        this.legacy = legacy;
     }
 }
