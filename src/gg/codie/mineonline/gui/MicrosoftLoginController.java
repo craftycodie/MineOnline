@@ -21,13 +21,14 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.*;
 import java.net.HttpURLConnection;
-import java.net.ProxySelector;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
+// This class is based on GitHub/MiniDigger's MSA implementation (MIT).
+// Thanks MiniDigger! https://github.com/MiniDigger/MiniLauncher
 public class MicrosoftLoginController extends VBox {
 
     private static final String loginUrl = "https://login.live.com/oauth20_authorize.srf" +
