@@ -18,6 +18,11 @@ public class Startup {
         Logging.deleteLog();
         Logging.enableLogging();
 
+        if (Globals.DEV) {
+            System.out.println("&&& MineOnline v " + Globals.LAUNCHER_VERSION + " b " + Globals.BRANCH + " &&&");
+            System.out.println("Starting in Dev mode using Java: " + JREUtils.getRunningJavaExecutable());
+        }
+
         LibraryManager.extractLibraries();
 
         LinkedList<String> launchArgs = new LinkedList();

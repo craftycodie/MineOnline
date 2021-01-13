@@ -14,6 +14,7 @@ import gg.codie.mineonline.gui.rendering.Loader;
 import gg.codie.mineonline.gui.rendering.Renderer;
 import gg.codie.mineonline.gui.sound.ClickSound;
 import gg.codie.mineonline.gui.textures.EGUITexture;
+import gg.codie.mineonline.utils.JREUtils;
 import gg.codie.mineonline.utils.LastLogin;
 import org.json.JSONObject;
 import org.lwjgl.opengl.GL11;
@@ -63,7 +64,10 @@ public class GuiLoginLegacy extends AbstractGuiScreen
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    JOptionPane.showMessageDialog(null, "You must install Java FX to use Microsoft Login.");
+                    JOptionPane.showMessageDialog(null,
+                            "You must install Java FX to use Microsoft Login.\n" +
+                            "Your Java install is here: " + JREUtils.getRunningJavaExecutable()
+                    );
                 }
             });
         }
