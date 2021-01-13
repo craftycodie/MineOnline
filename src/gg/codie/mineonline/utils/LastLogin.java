@@ -36,7 +36,7 @@ public class LastLogin {
             dos.writeUTF(uuid);
             dos.close();
         } catch (Exception e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
     }
 
@@ -81,7 +81,7 @@ public class LastLogin {
             }
             dis.close();
         } catch (Exception e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
 
         return null;
