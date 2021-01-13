@@ -115,7 +115,7 @@ public class LibraryManager {
         }
     }
 
-    public static String getClasspath(boolean includeLWJGL2, String[] includeJars) {
+    public static String getClasspath(boolean includeLWJGL2, boolean includeJFX, String[] includeJars) {
         StringBuilder classpath = new StringBuilder();
         //classpath.append(System.getProperty("java.class.path").replace("\"", ""));
 
@@ -126,9 +126,18 @@ public class LibraryManager {
             classpath.append(getClasspathSeparator() + LauncherFiles.JINPUT_JAR);
         }
 
-        // This only seems to work on Java 8.
-        // TODO: Figure out how to use JFX with newer JDKs.
-        classpath.append(getClasspathSeparator() + System.getProperty("java.home") + "\\lib\\ext\\jfxrt.jar");
+        if (includeJFX) {
+            // Java 8
+            classpath.append(getClasspathSeparator() + System.getProperty("java.home") + "\\lib\\ext\\jfxrt.jar");
+            // Open JDK
+            classpath.append(getClasspathSeparator() + System.getProperty("java.home") + "\\lib\\javafx.graphics.jar");
+            classpath.append(getClasspathSeparator() + System.getProperty("java.home") + "\\lib\\javafx.web.jar");
+            classpath.append(getClasspathSeparator() + System.getProperty("java.home") + "\\lib\\javafx.swing.jar");
+            classpath.append(getClasspathSeparator() + System.getProperty("java.home") + "\\lib\\javafx.controls.jar");
+            classpath.append(getClasspathSeparator() + System.getProperty("java.home") + "\\lib\\javafx.media.jar");
+            classpath.append(getClasspathSeparator() + System.getProperty("java.home") + "\\lib\\javafx.base.jar");
+        }
+
 
         classpath.append(getClasspathSeparator() + LauncherFiles.JSON_JAR);
         classpath.append(getClasspathSeparator() + LauncherFiles.BYTEBUDDY_JAR);

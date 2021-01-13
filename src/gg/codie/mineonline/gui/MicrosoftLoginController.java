@@ -21,6 +21,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.ProxySelector;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -99,9 +100,12 @@ public class MicrosoftLoginController extends VBox {
             frame.add(jfxPanel);
             frame.pack();
             frame.setVisible(true);
-            jfxPanel.setScene(new Scene(this));
+            Platform.runLater(() -> {
+                jfxPanel.setScene(new Scene(this));
+            });
             frame.setSize(500, 600);
             frame.setLocationRelativeTo(null);
+            frame.setResizable(false);
             Display.getParent().getParent().setVisible(false);
             Image img = Toolkit.getDefaultToolkit().getImage(DisplayManager.class.getResource("/img/favicon.png"));
             frame.setIconImage(img);
