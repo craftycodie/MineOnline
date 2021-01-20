@@ -596,6 +596,9 @@ public class Settings implements IMinecraftOptionsHandler {
                     case 13:
                         if (settings.has(USE_CUSTOM_FONTS))
                             settings.remove(USE_CUSTOM_FONTS);
+                    case 14:
+                        if (getPickItemKey() == -99)
+                            setPickItemKey(-98);
                 }
                 settings.put(SETTINGS_VERSION, SETTINGS_VERSION_NUMBER);
             }
@@ -1353,7 +1356,7 @@ public class Settings implements IMinecraftOptionsHandler {
 
     @Override
     public int getPickItemKey() {
-        return settings.optInt(KEY_CODE_PICK_ITEM, -99);
+        return settings.optInt(KEY_CODE_PICK_ITEM, -98);
     }
 
     @Override
