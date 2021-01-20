@@ -1,1 +1,1 @@
-{  "name": "Release 1.5.2",  "md5": "6897C3287FB971C9F362EB3AB20F5DDD",  "type": "client",  "baseVersion": "1.5.2",  "legacy": true,  "resourcesVersion": "1.5.2",  "useCustomAnimations": false}
+{  "name": "Release 1.5.2",  "md5": "6897C3287FB971C9F362EB3AB20F5DDD",  "type": "client",  "baseVersion": "1.5.2",  "legacy": true,  "resourcesVersion": "1.5.2",  "useCustomAnimations": false,  "downloadURL": "https://launcher.mojang.com/v1/objects/465378c9dc2f779ae1d6e8046ebc46fb53a57968/client.jar"}
