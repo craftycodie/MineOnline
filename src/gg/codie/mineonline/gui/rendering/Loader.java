@@ -26,7 +26,6 @@ import java.nio.IntBuffer;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -145,7 +144,7 @@ public class Loader {
     }
 
     private static LinkedList<String> ignoredTextures = new LinkedList<>(Arrays.asList(
-            "/font/default.png", //Needs to be patched separately.
+            "/textures/font/default.png", //Needs to be patched separately.
             "/misc/foliagecolor.png", //Needs to be patched separately.
             "/misc/grasscolor.png", //Needs to be patched separately.
             "/misc/watercolor.png", //Needs to be patched separately.
@@ -220,7 +219,6 @@ public class Loader {
         }
 
         try {
-
             if (LegacyGameManager.getAppletWrapper().getMinecraftAppletClass() != null)
                 Loader.singleton.overwriteTexture(HashMapPutAdvice.textures.get(textureName), LegacyGameManager.getAppletWrapper().getMinecraftAppletClass().getResourceAsStream(textureName), textureName);
             if(textureName.equals("/terrain.png")) {
@@ -245,16 +243,16 @@ public class Loader {
                 "/char.png",
                 "/2char.png",
 
-                "/gui/gui.png",
-                "/gui/background.png",
-                "/gui/container.png",
-                "/gui/crafting.png",
-                "/gui/logo.png",
-                "/gui/furnace.png",
-                "/gui/inventory.png",
-                "/gui/items.png",
-                "/gui/unknown_pack.png",
-                "/gui/icons.png",
+                "/textures/gui/gui.png",
+                "/textures/gui/background.png",
+                "/textures/gui/container.png",
+                "/textures/gui/crafting.png",
+                "/textures/gui/logo.png",
+                "/textures/gui/furnace.png",
+                "/textures/gui/inventory.png",
+                "/textures/gui/items.png",
+                "/textures/gui/unknown_pack.png",
+                "/textures/gui/icons.png",
 
                 "/armor/chain_1.png",
                 "/armor/chain_2.png",
@@ -346,7 +344,7 @@ public class Loader {
                 }
             }
 
-            return loadTexture(MINEONLINE_TEXTURE_PREFIX + eguiTexture.textureName, Loader.class.getResource(eguiTexture.textureName));
+            return loadTexture(MINEONLINE_TEXTURE_PREFIX + eguiTexture.textureName, Loader.class.getResource("/textures" + eguiTexture.textureName));
         } else
             return textures.get(MINEONLINE_TEXTURE_PREFIX + eguiTexture.textureName);
     }

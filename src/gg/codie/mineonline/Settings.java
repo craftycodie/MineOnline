@@ -70,9 +70,35 @@ public class Settings implements IMinecraftOptionsHandler {
     private static final String AUTO_JUMP = "autoJump";
     private static final String KEY_CODE_INGAME_MENU = "keyCodeIngameMenu";
     private static final String LIMIT_FRAMERATE = "limitFramerate";
+    private static final String LANGUAGE = "language";
+    private static final String BRIGHTNESS = "brightness";
+    private static final String PARTICLES = "particles";
+    private static final String CLOUDS = "clouds";
+    private static final String CHAT_VISIBILITY = "chatVisibility";
+    private static final String CHAT_COLORS = "chatColors";
+    private static final String CHAT_LINKS = "chatLinks";
+    private static final String CHAT_LINKS_PROMPT = "chatLinksPrompt";
+    private static final String CHAT_OPACITY = "chatOpacity";
+    private static final String SERVER_TEXTURES = "serverTextures";
+    private static final String SNOOPER_ENABLED = "snooperEnabled";
+    private static final String HIDE_SERVER_ADDRESS = "hideServerAddress";
+    private static final String ADVANCED_ITEM_TOOLTIPS = "advancedItemTooltips";
+    private static final String PAUSE_ON_FOCUS_LOSS = "pauseOnFocusLoss";
+    private static final String SHOW_CAPE = "showCape";
+    private static final String TOUCHSCREEN = "touchscreen";
+    private static final String VSYNC_ENABLED = "vsync";
+    private static final String HELD_ITEM_TOOLTIPS = "heldItemTooltips";
+    private static final String CHAT_HEIGHT_FOCUSED = "chatHeightFocused";
+    private static final String CHAT_HEIGHT_UNFOCUSED = "chatHeightUnfocused";
+    private static final String CHAT_SCALE = "chatScale";
+    private static final String CHAT_WIDTH = "chatWidth";
+    private static final String KEY_CODE_ATTACK = "keyCodeAttack";
+    private static final String KEY_CODE_USE = "keyCodeUse";
+    private static final String KEY_CODE_COMMAND = "keyCodeCommand";
+    private static final String KEY_CODE_PICK_ITEM = "keyCodePickItem";
+    private static final String KEY_CODE_PLAYER_LIST = "keyCodePlayerList";
 
-
-    private static final int SETTINGS_VERSION_NUMBER = 14;
+    private static final int SETTINGS_VERSION_NUMBER = 15;
 
     private static boolean readonly = true;
 
@@ -450,6 +476,32 @@ public class Settings implements IMinecraftOptionsHandler {
             options.setShowLeftPantsLeg(getShowLeftPantsLeg());
             options.setShowRightPantsLeg(getShowRightPantsLeg());
             options.setAutoJump(getAutoJump());
+            options.setCommandKey(getCommandKey());
+            options.setPlayerListKey(getPlayerListKey());
+            options.setPickItemKey(getPickItemKey());
+            options.setUseKey(getUseKey());
+            options.setAttackKey(getAttackKey());
+            options.setChatOpacity(getChatOpacity());
+            options.setChatColors(getChatColors());
+            options.setChatLinks(getChatLinks());
+            options.setChatLinksPrompt(getChatLinksPrompt());
+            options.setChatWidth(getChatWidth());
+            options.setChatHeightFocused(getChatHeightFocused());
+            options.setChatHeightUnfocused(getChatHeightUnfocused());
+            options.setShowCape(getShowCape());
+            options.setPauseOnLostFocus(getPauseOnLostFocus());
+            options.setVsync(getVsync());
+            options.setHeldItemTooltips(getHeldItemTooltips());
+            options.setHideServerAddress(getHideServerAddress());
+            options.setAdvancedItemTooltips(getAdvancedItemTooltips());
+            options.setChatVisibility(getChatVisibility());
+            options.setTouchscreen(getTouchscreen());
+            options.setSnooperEnabled(getSnooperEnabled());
+            options.setLanguage(getLanguage());
+            options.setParticles(getParticles());
+            options.setServerTextures(getServerTextures());
+            options.setClouds(getClouds());
+            options.setGamma(getGamma());
         } catch (Exception ex) {
             // ignore
         }
@@ -1052,5 +1104,275 @@ public class Settings implements IMinecraftOptionsHandler {
     @Override
     public void setAutoJump(boolean autoJump) {
         settings.put(AUTO_JUMP, autoJump);
+    }
+
+    @Override
+    public float getGamma() {
+        return settings.optFloat(BRIGHTNESS, 70f);
+    }
+
+    @Override
+    public void setGamma(float gamma) {
+        settings.put(BRIGHTNESS, gamma);
+    }
+
+    @Override
+    public boolean getClouds() {
+        return settings.optBoolean(CLOUDS, true);
+    }
+
+    @Override
+    public void setClouds(boolean clouds) {
+        settings.put(CLOUDS, clouds);
+    }
+
+    @Override
+    public boolean getServerTextures() {
+        return settings.optBoolean(SERVER_TEXTURES, true);
+    }
+
+    @Override
+    public void setServerTextures(boolean serverTextures) {
+        settings.put(SERVER_TEXTURES, serverTextures);
+    }
+
+    @Override
+    public EMinecraftParticles getParticles() {
+        return settings.optEnum(EMinecraftParticles.class, PARTICLES, EMinecraftParticles.ALL);
+    }
+
+    @Override
+    public void setParticles(EMinecraftParticles particles) {
+        settings.put(PARTICLES, particles);
+    }
+
+    @Override
+    public String getLanguage() {
+        return settings.optString(LANGUAGE, "en_US");
+    }
+
+    @Override
+    public void setLanguage(String language) {
+        settings.put(LANGUAGE, language);
+    }
+
+    @Override
+    public boolean getChatColors() {
+        return settings.optBoolean(CHAT_COLORS, true);
+    }
+
+    @Override
+    public void setChatColors(boolean chatColors) {
+        settings.put(CHAT_COLORS, chatColors);
+    }
+
+    @Override
+    public boolean getChatLinks() {
+        return settings.optBoolean(CHAT_LINKS, true);
+    }
+
+    @Override
+    public void setChatLinks(boolean chatLinks) {
+        settings.put(CHAT_LINKS, chatLinks);
+    }
+
+    @Override
+    public boolean getChatLinksPrompt() {
+        return settings.optBoolean(CHAT_LINKS_PROMPT, true);
+    }
+
+    @Override
+    public void setChatLinksPrompt(boolean chatLinksPrompt) {
+        settings.put(CHAT_LINKS_PROMPT, chatLinksPrompt);
+    }
+
+    @Override
+    public boolean getSnooperEnabled() {
+        return settings.optBoolean(SNOOPER_ENABLED, false);
+    }
+
+    @Override
+    public void setSnooperEnabled(boolean snooperEnabled) {
+        settings.put(SNOOPER_ENABLED, snooperEnabled);
+    }
+
+    @Override
+    public boolean getVsync() {
+        return settings.optBoolean(VSYNC_ENABLED, false);
+    }
+
+    @Override
+    public void setVsync(boolean enableVsync) {
+        settings.put(VSYNC_ENABLED, enableVsync);
+    }
+
+    @Override
+    public boolean getHideServerAddress() {
+        return settings.optBoolean(HIDE_SERVER_ADDRESS, false);
+    }
+
+    @Override
+    public void setHideServerAddress(boolean hideServerAddress) {
+        settings.put(HIDE_SERVER_ADDRESS, hideServerAddress);
+    }
+
+    @Override
+    public boolean getAdvancedItemTooltips() {
+        return settings.optBoolean(ADVANCED_ITEM_TOOLTIPS, false);
+    }
+
+    @Override
+    public void setAdvancedItemTooltips(boolean advancedItemTooltips) {
+        settings.put(ADVANCED_ITEM_TOOLTIPS, advancedItemTooltips);
+    }
+
+    @Override
+    public boolean getPauseOnLostFocus() {
+        return settings.optBoolean(PAUSE_ON_FOCUS_LOSS, true);
+    }
+
+    @Override
+    public void setPauseOnLostFocus(boolean pauseOnLostFocus) {
+        settings.put(PAUSE_ON_FOCUS_LOSS, pauseOnLostFocus);
+    }
+
+    @Override
+    public boolean getShowCape() {
+        return settings.optBoolean(SHOW_CAPE, true);
+    }
+
+    @Override
+    public void setShowCape(boolean showCape) {
+        settings.put(SHOW_CAPE, showCape);
+    }
+
+    @Override
+    public boolean getTouchscreen() {
+        return settings.optBoolean(TOUCHSCREEN, false);
+    }
+
+    @Override
+    public void setTouchscreen(boolean touchscreen) {
+        settings.put(TOUCHSCREEN, touchscreen);
+    }
+
+    @Override
+    public boolean getHeldItemTooltips() {
+        return settings.optBoolean(HELD_ITEM_TOOLTIPS, true);
+    }
+
+    @Override
+    public void setHeldItemTooltips(boolean heldItemTooltips) {
+        settings.put(HELD_ITEM_TOOLTIPS, heldItemTooltips);
+    }
+
+    @Override
+    public EMinecraftChatVisibility getChatVisibility() {
+        return settings.optEnum(EMinecraftChatVisibility.class, CHAT_VISIBILITY, EMinecraftChatVisibility.SHOWN);
+    }
+
+    @Override
+    public void setChatVisibility(EMinecraftChatVisibility chatVisibility) {
+        settings.put(CHAT_VISIBILITY, chatVisibility);
+    }
+
+    @Override
+    public float getChatHeightFocused() {
+        return settings.optFloat(CHAT_HEIGHT_FOCUSED, 1);
+    }
+
+    @Override
+    public void setChatHeightFocused(float chatHeightFocused) {
+        settings.put(CHAT_HEIGHT_FOCUSED, chatHeightFocused);
+    }
+
+    @Override
+    public float getChatHeightUnfocused() {
+        return settings.optFloat(CHAT_HEIGHT_UNFOCUSED, 0.44366196f);
+    }
+
+    @Override
+    public void setChatHeightUnfocused(float chatHeightUnfocused) {
+        settings.put(CHAT_HEIGHT_UNFOCUSED, chatHeightUnfocused);
+    }
+
+    @Override
+    public float getChatScale() {
+        return settings.optFloat(CHAT_HEIGHT_UNFOCUSED, 1);
+    }
+
+    @Override
+    public void setChatScale(float chatScale) {
+        settings.put(CHAT_SCALE, chatScale);
+    }
+
+    @Override
+    public float getChatWidth() {
+        return settings.optFloat(CHAT_WIDTH, 1);
+    }
+
+    @Override
+    public void setChatWidth(float chatWidth) {
+        settings.put(CHAT_WIDTH, chatWidth);
+    }
+
+    @Override
+    public void setAttackKey(int keyCode) {
+        settings.put(KEY_CODE_ATTACK, keyCode);
+    }
+
+    @Override
+    public int getAttackKey() {
+        return settings.optInt(KEY_CODE_ATTACK, -100);
+    }
+
+    @Override
+    public void setUseKey(int keyCode) {
+        settings.put(KEY_CODE_USE, keyCode);
+    }
+
+    @Override
+    public int getUseKey() {
+        return settings.optInt(KEY_CODE_USE, -99);
+    }
+
+    @Override
+    public float getChatOpacity() {
+        return settings.optFloat(CHAT_OPACITY, 1);
+    }
+
+    @Override
+    public void setChatOpacity(float chatOpacity) {
+        settings.put(CHAT_OPACITY, chatOpacity);
+    }
+
+    @Override
+    public void setPickItemKey(int keyCode) {
+        settings.put(KEY_CODE_PICK_ITEM, keyCode);
+    }
+
+    @Override
+    public int getPickItemKey() {
+        return settings.optInt(KEY_CODE_PICK_ITEM, -99);
+    }
+
+    @Override
+    public void setPlayerListKey(int keyCode) {
+        settings.put(KEY_CODE_PLAYER_LIST, keyCode);
+    }
+
+    @Override
+    public int getPlayerListKey() {
+        return settings.optInt(KEY_CODE_PLAYER_LIST, 15);
+    }
+
+    @Override
+    public void setCommandKey(int keyCode) {
+        settings.put(KEY_CODE_COMMAND, keyCode);
+    }
+
+    @Override
+    public int getCommandKey() {
+        return settings.optInt(KEY_CODE_COMMAND, 53);
     }
 }

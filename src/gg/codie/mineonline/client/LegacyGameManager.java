@@ -181,7 +181,9 @@ public class LegacyGameManager {
     public static void setFOV(int fov) {
         Settings.singleton.setFOV(fov);
         Settings.singleton.saveSettings();
-        LWJGLGLUPerspectiveAdvice.customFOV = fov;
+
+        if (getVersion() != null && getVersion().useFOVPatch)
+            LWJGLGLUPerspectiveAdvice.customFOV = fov;
     }
 
     public static void setHideVersionString(boolean hideVersionString) {
