@@ -98,7 +98,7 @@ public class Settings implements IMinecraftOptionsHandler {
     private static final String KEY_CODE_PICK_ITEM = "keyCodePickItem";
     private static final String KEY_CODE_PLAYER_LIST = "keyCodePlayerList";
 
-    private static final int SETTINGS_VERSION_NUMBER = 15;
+    private static final int SETTINGS_VERSION_NUMBER = 16;
 
     private static boolean readonly = true;
 
@@ -596,7 +596,7 @@ public class Settings implements IMinecraftOptionsHandler {
                     case 13:
                         if (settings.has(USE_CUSTOM_FONTS))
                             settings.remove(USE_CUSTOM_FONTS);
-                    case 14:
+                    case 15:
                         if (getPickItemKey() == -99)
                             setPickItemKey(-98);
                 }
