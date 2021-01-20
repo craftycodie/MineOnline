@@ -144,7 +144,7 @@ public class Loader {
     }
 
     private static LinkedList<String> ignoredTextures = new LinkedList<>(Arrays.asList(
-            "/textures/font/default.png", //Needs to be patched separately.
+            "/font/default.png", //Needs to be patched separately.
             "/misc/foliagecolor.png", //Needs to be patched separately.
             "/misc/grasscolor.png", //Needs to be patched separately.
             "/misc/watercolor.png", //Needs to be patched separately.
@@ -243,16 +243,16 @@ public class Loader {
                 "/char.png",
                 "/2char.png",
 
-                "/textures/gui/gui.png",
-                "/textures/gui/background.png",
-                "/textures/gui/container.png",
-                "/textures/gui/crafting.png",
-                "/textures/gui/logo.png",
-                "/textures/gui/furnace.png",
-                "/textures/gui/inventory.png",
-                "/textures/gui/items.png",
-                "/textures/gui/unknown_pack.png",
-                "/textures/gui/icons.png",
+                "/gui/gui.png",
+                "/gui/background.png",
+                "/gui/container.png",
+                "/gui/crafting.png",
+                "/gui/logo.png",
+                "/gui/furnace.png",
+                "/gui/inventory.png",
+                "/gui/items.png",
+                "/gui/unknown_pack.png",
+                "/gui/icons.png",
 
                 "/armor/chain_1.png",
                 "/armor/chain_2.png",
