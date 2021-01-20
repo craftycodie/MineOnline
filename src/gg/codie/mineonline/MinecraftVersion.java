@@ -62,6 +62,7 @@ public class MinecraftVersion {
     public final String fontClass;
     public final String colorCodePrefix;
     public final boolean usePlayerList;
+    public final boolean useCustomAnimations;
 
     public MinecraftVersion(
             String sha256,
@@ -104,7 +105,8 @@ public class MinecraftVersion {
             String foliageColorizerClass,
             String fontClass,
             String colorCodePrefix,
-            boolean usePlayerList
+            boolean usePlayerList,
+            boolean useCustomAnimations
     ) {
         this.sha256 = sha256;
         this.name = name;
@@ -147,6 +149,7 @@ public class MinecraftVersion {
         this.fontClass = fontClass;
         this.colorCodePrefix = colorCodePrefix;
         this.usePlayerList = usePlayerList;
+        this.useCustomAnimations = useCustomAnimations;
     }
 
     public MinecraftVersion(JSONObject object) {
@@ -190,6 +193,7 @@ public class MinecraftVersion {
         fontClass = object.optString("fontClass", null);
         colorCodePrefix = object.optString("colorCodePrefix", null);
         usePlayerList = object.optBoolean("usePlayerList", false);
+        useCustomAnimations = object.optBoolean("useCustomAnimations", true);
 
         URL parsedURL = null;
 
@@ -426,6 +430,7 @@ public class MinecraftVersion {
                     null,
                     null,
                     null,
+                    false,
                     false
             );
         } catch (Exception ex) {

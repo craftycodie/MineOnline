@@ -35,6 +35,13 @@ public class GuiControls extends AbstractGuiScreen
             }
         }));
 
+        controlList.add(zoomButton = new GuiSmallButton(2, i + (0 % 2) * 160, getHeight() / 6 + 24 * (2 >> 1), 70, 20, (buttonId == 0 ? "> " : "") + Keyboard.getKeyName(Settings.singleton.getPlayerListKey()) + (buttonId == 2 ? " <" : ""), new GuiButton.GuiButtonListener() {
+            @Override
+            public void OnButtonPress() {
+                buttonId = 2;
+            }
+        }));
+
         controlList.add(new GuiButton(200, getWidth() / 2 - 100, getHeight() / 6 + 168, "Done", new GuiButton.GuiButtonListener() {
             @Override
             public void OnButtonPress() {
@@ -82,6 +89,7 @@ public class GuiControls extends AbstractGuiScreen
         int k = getWidth() / 2 - 155;
         Font.minecraftFont.drawString("Zoom", k + (0 % 2) * 160 + 70 + 6, getHeight() / 6 + 24 * (0 >> 1) + 7, -1);
         Font.minecraftFont.drawString("MineOnline Menu", k + (1 % 2) * 160 + 70 + 6, getHeight() / 6 + 24 * (1 >> 1) + 7, -1);
+        Font.minecraftFont.drawString("Player List", k + (2 % 2) * 160 + 70 + 6, getHeight() / 6 + 24 * (2 >> 1) + 7, -1);
 
         super.drawScreen(mouseX, mouseY);
     }

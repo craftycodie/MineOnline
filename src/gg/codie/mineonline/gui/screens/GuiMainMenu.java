@@ -70,6 +70,9 @@ public class GuiMainMenu extends AbstractGuiScreen
 
         AbstractGuiScreen thisScreen = this;
 
+        MinecraftVersion selectedVersion = MinecraftVersionRepository.getSingleton().getVersion(MinecraftVersionRepository.getSingleton().getLastSelectedJarPath());
+        boolean selectedVersionIsRelease = selectedVersion == null || selectedVersion.name.startsWith("Release") || selectedVersion.name.startsWith("Snapshot");
+
         controlList.add(new GuiButton(1, getWidth() / 2 - 100, i, "Singleplayer", new GuiButton.GuiButtonListener() {
             @Override
             public void OnButtonPress() {
@@ -93,7 +96,7 @@ public class GuiMainMenu extends AbstractGuiScreen
                         return MinecraftVersionRepository.getSingleton().getLastSelectedJarPath() != null && MinecraftVersionRepository.getSingleton().getLastSelectedJarPath().equals(selectableVersion.path);
                     }
                 },
-                    false, false));
+                    false, selectedVersionIsRelease));
             }
         }));
         controlList.add(multiplayerButton = new GuiButton(2, getWidth() / 2 - 100, i + 24, "Multiplayer", new GuiButton.GuiButtonListener() {

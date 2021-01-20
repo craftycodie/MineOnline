@@ -36,7 +36,7 @@ public class Font
         try
         {
             if (Settings.singleton.getTexturePack().isEmpty() || Settings.singleton.getTexturePack().equals("Default")) {
-                bufferedimage = ImageIO.read(Font.class.getResourceAsStream(EGUITexture.FONT.textureName));
+                bufferedimage = ImageIO.read(Font.class.getResourceAsStream("/textures" + EGUITexture.FONT.textureName));
             } else {
                 try {
                     ZipFile texturesZip = new ZipFile(LauncherFiles.MINECRAFT_TEXTURE_PACKS_PATH + Settings.singleton.getTexturePack());
@@ -44,10 +44,10 @@ public class Font
                     if (texture != null) {
                         bufferedimage = ImageIO.read(texturesZip.getInputStream(texture));
                     } else {
-                        bufferedimage = ImageIO.read(Font.class.getResourceAsStream(EGUITexture.FONT.textureName));
+                        bufferedimage = ImageIO.read(Font.class.getResourceAsStream("/textures" + EGUITexture.FONT.textureName));
                     }
                 } catch (Exception ex) {
-                    bufferedimage = ImageIO.read(Font.class.getResourceAsStream(EGUITexture.FONT.textureName));
+                    bufferedimage = ImageIO.read(Font.class.getResourceAsStream("/textures" + EGUITexture.FONT.textureName));
                 }
             }
         }

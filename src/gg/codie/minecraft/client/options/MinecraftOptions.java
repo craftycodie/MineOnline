@@ -1109,4 +1109,493 @@ public class MinecraftOptions implements IMinecraftOptionsHandler {
             // ignore
         }
     }
+
+
+
+    @Override
+    public float getGamma() throws NoSuchFieldException {
+        try {
+            return 70 + (40 * Float.parseFloat(getOption("gamma")));
+        } catch (IOException ex) {
+            return 70;
+        }
+    }
+
+    @Override
+    public void setGamma(float gamma) {
+        try {
+            setOption("gamma", "" + ((gamma - 70) / 40));
+        } catch (IOException ex) {
+            // ignore
+        }
+    }
+
+    @Override
+    public boolean getClouds() throws NoSuchFieldException {
+        try {
+            return getOption("clouds").equalsIgnoreCase("true");
+        } catch (IOException ex) {
+            return false;
+        }
+    }
+
+    @Override
+    public void setClouds(boolean clouds) {
+        try {
+            setOption("clouds", clouds ? "true" : "false");
+        } catch (IOException ex) {
+            // ignore
+        }
+    }
+
+    @Override
+    public boolean getServerTextures() throws NoSuchFieldException {
+        try {
+            return getOption("serverTextures").equalsIgnoreCase("true");
+        } catch (IOException ex) {
+            return false;
+        }
+    }
+
+    @Override
+    public void setServerTextures(boolean serverTextures) {
+        try {
+            setOption("serverTextures", serverTextures ? "true" : "false");
+        } catch (IOException ex) {
+            // ignore
+        }
+    }
+
+    @Override
+    public EMinecraftParticles getParticles() throws NoSuchFieldException {
+        try {
+            return EMinecraftParticles.values()[Integer.parseInt(getOption("particles"))];
+        } catch (IOException | NumberFormatException ex) {
+            return EMinecraftParticles.ALL;
+        }
+    }
+
+    @Override
+    public void setParticles(EMinecraftParticles performance) {
+        try {
+            setOption("particles", "" + performance.getIntValue());
+        } catch (IOException ex) {
+            // ignore
+        }
+    }
+
+    @Override
+    public String getLanguage() throws NoSuchFieldException {
+        try {
+            return getOption("lang");
+        } catch (IOException ex) {
+            return "en_US";
+        }
+    }
+
+    @Override
+    public void setLanguage(String language) {
+        try {
+            setOption("lang", language);
+        } catch (IOException ex) {
+            // ignore
+        }
+    }
+
+    @Override
+    public boolean getChatColors() throws NoSuchFieldException {
+        try {
+            return getOption("chatColors").equalsIgnoreCase("true");
+        } catch (IOException ex) {
+            return true;
+        }
+    }
+
+    @Override
+    public void setChatColors(boolean chatColors) {
+        try {
+            setOption("chatColors", chatColors ? "true" : "false");
+        } catch (IOException ex) {
+            // ignore
+        }
+    }
+
+    @Override
+    public boolean getChatLinks() throws NoSuchFieldException {
+        try {
+            return getOption("chatLinks").equalsIgnoreCase("true");
+        } catch (IOException ex) {
+            return true;
+        }
+    }
+
+    @Override
+    public void setChatLinks(boolean chatLinks) {
+        try {
+            setOption("chatLinks", chatLinks ? "true" : "false");
+        } catch (IOException ex) {
+            // ignore
+        }
+    }
+
+    @Override
+    public boolean getChatLinksPrompt() throws NoSuchFieldException {
+        try {
+            return getOption("chatLinksPrompt").equalsIgnoreCase("true");
+        } catch (IOException ex) {
+            return true;
+        }
+    }
+
+    @Override
+    public void setChatLinksPrompt(boolean chatLinksPrompt) {
+        try {
+            setOption("chatLinksPrompt", chatLinksPrompt ? "true" : "false");
+        } catch (IOException ex) {
+            // ignore
+        }
+    }
+
+    @Override
+    public boolean getSnooperEnabled() throws NoSuchFieldException {
+        try {
+            return getOption("snooperEnabled").equalsIgnoreCase("true");
+        } catch (IOException ex) {
+            return false;
+        }
+    }
+
+    @Override
+    public void setSnooperEnabled(boolean snooperEnabled) {
+        try {
+            setOption("snooperEnabled", snooperEnabled ? "true" : "false");
+        } catch (IOException ex) {
+            // ignore
+        }
+    }
+
+    @Override
+    public boolean getVsync() throws NoSuchFieldException {
+        try {
+            return getOption("enableVsync").equalsIgnoreCase("true");
+        } catch (IOException ex) {
+            return false;
+        }
+    }
+
+    @Override
+    public void setVsync(boolean enableVsync) {
+        try {
+            setOption("enableVsync", enableVsync ? "true" : "false");
+        } catch (IOException ex) {
+            // ignore
+        }
+    }
+
+    @Override
+    public boolean getHideServerAddress() throws NoSuchFieldException {
+        try {
+            return getOption("hideServerAddress").equalsIgnoreCase("true");
+        } catch (IOException ex) {
+            return false;
+        }
+    }
+
+    @Override
+    public void setHideServerAddress(boolean hideServerAddress) {
+        try {
+            setOption("hideServerAddress", hideServerAddress ? "true" : "false");
+        } catch (IOException ex) {
+            // ignore
+        }
+    }
+
+    @Override
+    public boolean getAdvancedItemTooltips() throws NoSuchFieldException {
+        try {
+            return getOption("advancedItemTooltips").equalsIgnoreCase("true");
+        } catch (IOException ex) {
+            return false;
+        }
+    }
+
+    @Override
+    public void setAdvancedItemTooltips(boolean advancedItemTooltips) {
+        try {
+            setOption("advancedItemTooltips", advancedItemTooltips ? "true" : "false");
+        } catch (IOException ex) {
+            // ignore
+        }
+    }
+
+    @Override
+    public boolean getPauseOnLostFocus() throws NoSuchFieldException {
+        try {
+            return getOption("pauseOnLostFocus").equalsIgnoreCase("true");
+        } catch (IOException ex) {
+            return true;
+        }
+    }
+
+    @Override
+    public void setPauseOnLostFocus(boolean pauseOnLostFocus) {
+        try {
+            setOption("pauseOnLostFocus", pauseOnLostFocus ? "true" : "false");
+        } catch (IOException ex) {
+            // ignore
+        }
+    }
+
+    @Override
+    public boolean getShowCape() throws NoSuchFieldException {
+        try {
+            return getOption("showCape").equalsIgnoreCase("true");
+        } catch (IOException ex) {
+            return true;
+        }
+    }
+
+    @Override
+    public void setShowCape(boolean showCape) {
+        try {
+            setOption("showCape", showCape ? "true" : "false");
+        } catch (IOException ex) {
+            // ignore
+        }
+    }
+
+    @Override
+    public boolean getTouchscreen() throws NoSuchFieldException {
+        try {
+            return getOption("touchscreen").equalsIgnoreCase("true");
+        } catch (IOException ex) {
+            return false;
+        }
+    }
+
+    @Override
+    public void setTouchscreen(boolean touchscreen) {
+        try {
+            setOption("touchscreen", touchscreen ? "true" : "false");
+        } catch (IOException ex) {
+            // ignore
+        }
+    }
+
+    @Override
+    public boolean getHeldItemTooltips() throws NoSuchFieldException {
+        try {
+            return getOption("heldItemTooltips").equalsIgnoreCase("true");
+        } catch (IOException ex) {
+            return false;
+        }
+    }
+
+    @Override
+    public void setHeldItemTooltips(boolean heldItemTooltips) {
+        try {
+            setOption("heldItemTooltips", heldItemTooltips ? "true" : "false");
+        } catch (IOException ex) {
+            // ignore
+        }
+    }
+
+    @Override
+    public EMinecraftChatVisibility getChatVisibility() throws NoSuchFieldException {
+        try {
+            return EMinecraftChatVisibility.values()[Integer.parseInt(getOption("chatVisibility"))];
+        } catch (IOException | NumberFormatException ex) {
+            return EMinecraftChatVisibility.SHOWN;
+        }
+    }
+
+    @Override
+    public void setChatVisibility(EMinecraftChatVisibility chatVisibility) {
+        try {
+            setOption("chatVisibility", "" + chatVisibility.getIntValue());
+        } catch (IOException ex) {
+            // ignore
+        }
+    }
+
+    @Override
+    public float getChatHeightFocused() throws NoSuchFieldException {
+        try {
+            return Float.parseFloat(getOption("chatHeightFocused"));
+        } catch (IOException ex) {
+            return 1;
+        }
+    }
+
+    @Override
+    public void setChatHeightFocused(float chatHeightFocused) {
+        try {
+            setOption("chatHeightFocused", "" + chatHeightFocused);
+        } catch (IOException ex) {
+            // ignore
+        }
+    }
+
+    @Override
+    public float getChatHeightUnfocused() throws NoSuchFieldException {
+        try {
+            return Float.parseFloat(getOption("chatHeightFocused"));
+        } catch (IOException ex) {
+            return 0.44366196f;
+        }
+    }
+
+    @Override
+    public void setChatHeightUnfocused(float chatHeightUnfocused) {
+        try {
+            setOption("chatHeightUnfocused", "" + chatHeightUnfocused);
+        } catch (IOException ex) {
+            // ignore
+        }
+    }
+
+    @Override
+    public float getChatScale() throws NoSuchFieldException {
+        try {
+            return Float.parseFloat(getOption("chatScale"));
+        } catch (IOException ex) {
+            return 1;
+        }
+    }
+
+    @Override
+    public void setChatScale(float chatScale) {
+        try {
+            setOption("chatScale", "" + chatScale);
+        } catch (IOException ex) {
+            // ignore
+        }
+    }
+
+    @Override
+    public float getChatWidth() throws NoSuchFieldException {
+        try {
+            return Float.parseFloat(getOption("chatWidth"));
+        } catch (IOException ex) {
+            return 1;
+        }
+    }
+
+    @Override
+    public void setChatWidth(float chatWidth) {
+        try {
+            setOption("chatWidth", "" + chatWidth);
+        } catch (IOException ex) {
+            // ignore
+        }
+    }
+
+    @Override
+    public float getChatOpacity() throws NoSuchFieldException {
+        try {
+            return Float.parseFloat(getOption("chatOpacity"));
+        } catch (IOException ex) {
+            return 1;
+        }
+    }
+
+    @Override
+    public void setChatOpacity(float chatOpacity) {
+        try {
+            setOption("chatOpacity", "" + chatOpacity);
+        } catch (IOException ex) {
+            // ignore
+        }
+    }
+
+    @Override
+    public void setAttackKey(int keyCode) {
+        try {
+            setOption("key_key.attack", "" + keyCode);
+        } catch (IOException | NumberFormatException ex) {
+            // ignore
+        }
+    }
+
+    @Override
+    public int getAttackKey() throws NoSuchFieldException {
+        try {
+            return Integer.parseInt(getOption("key_key.attack"));
+        } catch (IOException | NumberFormatException ex) {
+            return -100;
+        }
+    }
+
+    @Override
+    public void setUseKey(int keyCode) {
+        try {
+            setOption("key_key.use", "" + keyCode);
+        } catch (IOException | NumberFormatException ex) {
+            // ignore
+        }
+    }
+
+    @Override
+    public int getUseKey() throws NoSuchFieldException {
+        try {
+            return Integer.parseInt(getOption("key_key.use"));
+        } catch (IOException | NumberFormatException ex) {
+            return -99;
+        }
+    }
+
+    @Override
+    public void setPickItemKey(int keyCode) {
+        try {
+            setOption("key_key.pickItem", "" + keyCode);
+        } catch (IOException | NumberFormatException ex) {
+            // ignore
+        }
+    }
+
+    @Override
+    public int getPickItemKey() throws NoSuchFieldException {
+        try {
+            return Integer.parseInt(getOption("key_key.pickItem"));
+        } catch (IOException | NumberFormatException ex) {
+            return -98;
+        }
+    }
+
+    @Override
+    public void setPlayerListKey(int keyCode) {
+        try {
+            setOption("key_key.playerlist", "" + keyCode);
+        } catch (IOException | NumberFormatException ex) {
+            // ignore
+        }
+    }
+
+    @Override
+    public int getPlayerListKey() throws NoSuchFieldException {
+        try {
+            return Integer.parseInt(getOption("key_key.playerlist"));
+        } catch (IOException | NumberFormatException ex) {
+            return 15;
+        }
+    }
+
+    @Override
+    public void setCommandKey(int keyCode) {
+        try {
+            setOption("key_key.command", "" + keyCode);
+        } catch (IOException | NumberFormatException ex) {
+            // ignore
+        }
+    }
+
+    @Override
+    public int getCommandKey() throws NoSuchFieldException {
+        try {
+            return Integer.parseInt(getOption("key_key.command"));
+        } catch (IOException | NumberFormatException ex) {
+            return 53;
+        }
+    }
+
 }

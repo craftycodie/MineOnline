@@ -26,7 +26,6 @@ import java.nio.IntBuffer;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -220,7 +219,6 @@ public class Loader {
         }
 
         try {
-
             if (LegacyGameManager.getAppletWrapper().getMinecraftAppletClass() != null)
                 Loader.singleton.overwriteTexture(HashMapPutAdvice.textures.get(textureName), LegacyGameManager.getAppletWrapper().getMinecraftAppletClass().getResourceAsStream(textureName), textureName);
             if(textureName.equals("/terrain.png")) {
@@ -346,7 +344,7 @@ public class Loader {
                 }
             }
 
-            return loadTexture(MINEONLINE_TEXTURE_PREFIX + eguiTexture.textureName, Loader.class.getResource(eguiTexture.textureName));
+            return loadTexture(MINEONLINE_TEXTURE_PREFIX + eguiTexture.textureName, Loader.class.getResource("/textures" + eguiTexture.textureName));
         } else
             return textures.get(MINEONLINE_TEXTURE_PREFIX + eguiTexture.textureName);
     }

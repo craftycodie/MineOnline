@@ -169,10 +169,12 @@ public class GuiMultiplayer extends AbstractGuiScreen
             }
         };
 
+        boolean serverVersionIsRelease = serverVersion == null || serverVersion.name.startsWith("Release") || serverVersion.name.startsWith("Snapshot");
+
         if (LegacyGameManager.isInGame())
-            LegacyGameManager.setGUIScreen(new GuiVersions(this, selectableVersionPredicate, selectListener, compare, true, serverVersion != null && !serverVersion.legacy));
+            LegacyGameManager.setGUIScreen(new GuiVersions(this, selectableVersionPredicate, selectListener, compare, true, serverVersion != null && serverVersionIsRelease));
         else
-            MenuManager.setMenuScreen(new GuiVersions(this, selectableVersionPredicate, selectListener, compare, true, serverVersion != null && !serverVersion.legacy));
+            MenuManager.setMenuScreen(new GuiVersions(this, selectableVersionPredicate, selectListener, compare, true, serverVersion != null && serverVersionIsRelease));
     }
 
     public List<MineOnlineServer> getServers()

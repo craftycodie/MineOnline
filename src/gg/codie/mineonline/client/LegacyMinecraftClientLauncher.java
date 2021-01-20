@@ -392,7 +392,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
                         f1WasDown = false;
                     }
 
-                    if (Keyboard.isKeyDown(Keyboard.KEY_TAB)) {
+                    if (Settings.singleton.getPlayerListKey() != 0 && Keyboard.isKeyDown(Settings.singleton.getPlayerListKey())) {
                         if (playerList == null)
                             playerList = new PlayerList();
 

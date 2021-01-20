@@ -17,14 +17,14 @@ public class LWJGLGL11GLTexSubImageAdvice {
         if (target != 3553) //GL_TEXTURE_2D
             return;
 
-//        System.out.println("DEBUG: Offset = " + xOffset + ", " + yOffset);
-//        System.out.println("DEBUG: Size = " + width + ", " + height);
-
         if (width != 16 || height != 16)
             return;
 
         try {
-            String texturePacksPath = (String) ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.LauncherFiles").getField("MINECRAFT_TEXTURE_PACKS_PATH").get(null);
+            Object version = ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.client.LegacyGameManager").getDeclaredMethod("getVersion").invoke(null);
+            boolean useCustomAnimations = ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.MinecraftVersion").getDeclaredField("useCustomAnimations").getBoolean(version);
+            if (!useCustomAnimations)
+                return;
 
             int[] animatedData = new int[width * height];
 
