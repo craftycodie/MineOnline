@@ -117,12 +117,9 @@ public class MicrosoftLoginController extends VBox {
             });
 
             reset();
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
     }
 
     private void acquireAccessToken(String authcode) {
@@ -236,22 +233,51 @@ public class MicrosoftLoginController extends VBox {
             connection.getOutputStream().flush();
             connection.getOutputStream().close();
 
-            InputStream is = connection.getInputStream();
-            BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-            StringBuilder response = new StringBuilder();
-            String line;
-            while ((line = rd.readLine()) != null) {
-                response.append(line);
-                response.append('\r');
-            }
-            rd.close();
+            try {
+                InputStream is = connection.getInputStream();
+                BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+                StringBuilder response = new StringBuilder();
+                String line;
+                while ((line = rd.readLine()) != null) {
+                    response.append(line);
+                    response.append('\r');
+                }
+                rd.close();
 
-            JSONObject jsonObject = new JSONObject(response.toString());
-            String xblXsts = (String) jsonObject.get("Token");
-            JSONObject claims = (JSONObject) jsonObject.get("DisplayClaims");
-            JSONArray xui = (JSONArray) claims.get("xui");
-            String uhs = (String) ((JSONObject) xui.get(0)).get("uhs");
-            acquireMinecraftToken(uhs, xblXsts);
+                JSONObject jsonObject = new JSONObject(response.toString());
+                String xblXsts = (String) jsonObject.get("Token");
+                JSONObject claims = (JSONObject) jsonObject.get("DisplayClaims");
+                JSONArray xui = (JSONArray) claims.get("xui");
+                String uhs = (String) ((JSONObject) xui.get(0)).get("uhs");
+                acquireMinecraftToken(uhs, xblXsts);
+            } catch (IOException e) {
+                InputStream is = connection.getErrorStream();
+                BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+                StringBuilder response = new StringBuilder();
+                String line;
+                while ((line = rd.readLine()) != null) {
+                    response.append(line);
+                    response.append('\r');
+                }
+                rd.close();
+
+                JSONObject jsonObject = new JSONObject(response.toString());
+                if (jsonObject.has("XErr")) {
+                    long errorCode = jsonObject.getLong("XErr");
+                    if (errorCode ==  2148916233L) {
+                        JOptionPane.showMessageDialog(null, "This Microsoft account is not signed up with Xbox.\nPlease login to minecraft.net to continue.");
+                        reset();
+                    } else if (errorCode == 2148916238L) {
+                        if (jsonObject.has("Redirect")) {
+                            webView.getEngine().load(jsonObject.getString("Redirect"));
+                        } else {
+                            JOptionPane.showMessageDialog(null, "The Microsoft account holder is under 18.\nPlease add this account to a family to continue.");
+                            reset();
+                        }
+                    }
+                } else
+                    throw e;
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
