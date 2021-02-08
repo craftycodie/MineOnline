@@ -25,14 +25,14 @@ public class HttpURLConnectionGetResponseCodeAdvice {
                         .replace(".png", "");
 
                 Class skinUtilsClass = ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.utils.SkinUtils");
-                Method findSkinURLForUsername = skinUtilsClass.getMethod("findSkinURLForUsername", String.class);
+                Method getUserSkin = skinUtilsClass.getMethod("getUserSkin", String.class);
 
                 Class TextureHelper = ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.gui.textures.TextureHelper");
-                Method convertModernSkin = TextureHelper.getMethod("convertModernSkin", InputStream.class);
+                Method convertModernSkin = TextureHelper.getMethod("convertModernSkin", ClassLoader.getSystemClassLoader().loadClass("org.json.JSONObject"));
 
-                url = (String) findSkinURLForUsername.invoke(null, username);
+                Object skin = getUserSkin.invoke(null, username);
 
-                if(url == null) {
+                if(skin == null) {
                     returnCode = 404;
                     return;
                 } else returnCode = 200;
@@ -40,7 +40,7 @@ public class HttpURLConnectionGetResponseCodeAdvice {
                 Field inputStreamField = thisObj.getClass().getDeclaredField("inputStream");
                 inputStreamField.setAccessible(true);
 
-                inputStreamField.set(thisObj, convertModernSkin.invoke(null, new URL(url).openStream()));
+                inputStreamField.set(thisObj, convertModernSkin.invoke(null, skin));
             } catch (Exception ex) {
                 if (Globals.DEV)
                     ex.printStackTrace();
