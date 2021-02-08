@@ -13,7 +13,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 public class SkinUtils {
-    public static String findSkinURLForUsername(String username) {
+    // Used with reflection.
+    public static JSONObject getUserSkin(String username) {
         try {
             JSONObject profile = MojangAPI.minecraftProfile(username);
             if (!profile.has("id"))
@@ -22,12 +23,12 @@ public class SkinUtils {
             if (!profile.has("properties"))
                 throw new FileNotFoundException("Skin not found: " + username);
             profile = new JSONObject(new String(Base64.getDecoder().decode(profile.getJSONArray("properties").getJSONObject(0).getString("value")), StandardCharsets.UTF_8));
-            return profile.getJSONObject("textures").getJSONObject("SKIN").getString("url");
+            return profile.getJSONObject("textures").getJSONObject("SKIN");
 
         } catch (Exception ex) {
             if (Globals.DEV)
                 ex.printStackTrace();
-            return "";
+            return null;
         }
     }
 
