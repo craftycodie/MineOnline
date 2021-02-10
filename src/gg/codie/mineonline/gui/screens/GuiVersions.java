@@ -132,6 +132,29 @@ public class GuiVersions extends AbstractGuiScreen
         guiSlotVersion.update();
     }
 
+    protected void keyTyped(char c, int i)
+    {
+        guiSlotVersion.keyTyped(c, i);
+
+        if(c == '\r')
+        {
+            try {
+                dropTarget.removeDropTargetListener(dropTargetAdapter);
+                this.onSelectListener.onSelect(guiSlotVersion.getSelectedPath());
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        else if (i == Keyboard.KEY_ESCAPE) {
+            dropTarget.removeDropTargetListener(dropTargetAdapter);
+
+            if (LegacyGameManager.isInGame())
+                LegacyGameManager.setGUIScreen(parentScreen);
+            else
+                MenuManager.setMenuScreen(parentScreen);
+        }
+    }
+
     public void versionSelected() {
         try {
             dropTarget.removeDropTargetListener(dropTargetAdapter);
@@ -144,7 +167,7 @@ public class GuiVersions extends AbstractGuiScreen
     private List<GuiSlotVersion.SelectableVersion> filteredVersions() {
         LinkedList<GuiSlotVersion.SelectableVersion> versions = new LinkedList<>();
 
-        synchronized (versions) {
+        synchronized (MinecraftVersionRepository.getSingleton().getInstalledJars()) {
             // Add installed jars to the list.
             MinecraftVersionRepository.getSingleton().getInstalledJars().forEach((String path, MinecraftVersion version) -> {
                 for (GuiSlotVersion.SelectableVersion knownVersion : versions) {
@@ -372,14 +395,6 @@ public class GuiVersions extends AbstractGuiScreen
         controlList.get(6).resize(getWidth() / 2 + 4 + 50, getHeight() - 48);
         controlList.get(7).resize((getWidth() / 2) - 50, getHeight() - 48);
         guiSlotVersion.resize(getWidth(), getHeight(), 32, getHeight() - 55);
-    }
-
-    protected void keyTyped(char c, int i)
-    {
-        if(c == '\r')
-        {
-            actionPerformed((GuiButton)controlList.get(2));
-        }
     }
 
     boolean reloadList;

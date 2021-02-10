@@ -38,18 +38,14 @@ public class GuiLoginLegacy extends AbstractGuiScreen
     protected void keyTyped(char c, int i)
     {
         usernameField.textboxKeyTyped(c, i);
-        if(c == '\r')
-        {
-            actionPerformed((GuiButton)controlList.get(0));
-        }
-
         passwordField.textboxKeyTyped(c, i);
-        if(c == '\r')
-        {
-            actionPerformed((GuiButton)controlList.get(0));
-        }
 
         loginButton.enabled = usernameField.getText().length() > 0 && passwordField.getText().length() > 0;
+
+        if(passwordField.isFocused && c == '\r' && loginButton.enabled)
+        {
+            loginHandler.OnButtonPress();
+        }
 
         if (playOfflineButton != null)
             playOfflineButton.enabled = usernameField.getText().length() > 0;

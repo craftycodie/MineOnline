@@ -4,6 +4,7 @@ import gg.codie.mineonline.gui.input.MouseHandler;
 import gg.codie.mineonline.gui.rendering.Loader;
 import gg.codie.mineonline.gui.rendering.Renderer;
 import gg.codie.mineonline.gui.textures.EGUITexture;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
@@ -44,6 +45,22 @@ public abstract class GuiSlot
 
     public void update() {
         amountScrolled -= (float)Mouse.getDWheel() / 3.3225;
+    }
+
+    public void keyTyped(char c, int i)
+    {
+        if (i == Keyboard.KEY_UP && selectedElement > 0)
+        {
+            selectedElement -= 1;
+            elementClicked(selectedElement, false);
+            amountScrolled = 36 * (selectedElement - 1);
+
+        }
+        else if (i == Keyboard.KEY_DOWN && selectedElement < getSize() - 1) {
+            selectedElement += 1;
+            elementClicked(selectedElement, false);
+            amountScrolled = 36 * (selectedElement - 1);
+        }
     }
 
     protected abstract int getSize();
