@@ -25,6 +25,7 @@ import java.io.IOException;
 
 public class GuiDirectConnect extends AbstractGuiScreen
 {
+    private final GuiDirectConnect thisScreen = this;
 
     public GuiDirectConnect(AbstractGuiScreen guiscreen, String serverString)
     {
@@ -37,36 +38,36 @@ public class GuiDirectConnect extends AbstractGuiScreen
         this(guiscreen, null);
     }
 
+    GuiVersions.IVersionSelectListener selectListener = new GuiVersions.IVersionSelectListener() {
+        @Override
+        public void onSelect(String path) {
+            joinServer(path);
+        }
+    };
+
+    GuiButton.GuiButtonListener connectButtonHandler = new GuiButton.GuiButtonListener() {
+        @Override
+        public void OnButtonPress() {
+            GuiSlotVersion.ISelectableVersionCompare compare = new GuiSlotVersion.ISelectableVersionCompare() {
+                @Override
+                public boolean isDefault(GuiSlotVersion.SelectableVersion selectableVersion) {
+                    return MinecraftVersionRepository.getSingleton().getLastSelectedJarPath() != null && MinecraftVersionRepository.getSingleton().getLastSelectedJarPath().equals(selectableVersion.path);
+                }
+            };
+
+            if (LegacyGameManager.isInGame())
+                LegacyGameManager.setGUIScreen(new GuiVersions(thisScreen, null, selectListener, compare, false, false));
+            else
+                MenuManager.setMenuScreen(new GuiVersions(thisScreen, null, selectListener, compare, false, false));
+        }
+    };
+
     public void initGui(String serverString)
     {
         Keyboard.enableRepeatEvents(true);
-        AbstractGuiScreen thisScreen = this;
         controlList.clear();
 
-        GuiVersions.IVersionSelectListener selectListener = new GuiVersions.IVersionSelectListener() {
-            @Override
-            public void onSelect(String path) {
-                joinServer(path);
-            }
-        };
-
-        controlList.add(new GuiButton(0, getWidth() / 2 - 100, getHeight() / 4 + 96 + 12, "Connect", new GuiButton.GuiButtonListener() {
-            @Override
-            public void OnButtonPress() {
-
-                GuiSlotVersion.ISelectableVersionCompare compare = new GuiSlotVersion.ISelectableVersionCompare() {
-                    @Override
-                    public boolean isDefault(GuiSlotVersion.SelectableVersion selectableVersion) {
-                        return MinecraftVersionRepository.getSingleton().getLastSelectedJarPath() != null && MinecraftVersionRepository.getSingleton().getLastSelectedJarPath().equals(selectableVersion.path);
-                    }
-                };
-
-                if (LegacyGameManager.isInGame())
-                    LegacyGameManager.setGUIScreen(new GuiVersions(thisScreen, null, selectListener, compare, false, false));
-                else
-                    MenuManager.setMenuScreen(new GuiVersions(thisScreen, null, selectListener, compare, false, false));
-            }
-        }));
+        controlList.add(new GuiButton(0, getWidth() / 2 - 100, getHeight() / 4 + 96 + 12, "Connect", connectButtonHandler));
         controlList.add(new GuiButton(1, getWidth() / 2 - 100, (getHeight() / 4 - 10) + 50 + 18, "Cancel", new GuiButton.GuiButtonListener() {
             @Override
             public void OnButtonPress() {
@@ -173,11 +174,11 @@ public class GuiDirectConnect extends AbstractGuiScreen
     protected void keyTyped(char c, int i)
     {
         textField.textboxKeyTyped(c, i);
-        if(c == '\r')
-        {
-            actionPerformed((GuiButton)controlList.get(0));
-        }
         ((GuiButton)controlList.get(0)).enabled = textField.getText().length() > 0;
+        if(c == '\r' && ((GuiButton) controlList.get(0)).enabled)
+        {
+            connectButtonHandler.OnButtonPress();
+        }
     }
 
     protected void mouseClicked(int x, int y, int button)
