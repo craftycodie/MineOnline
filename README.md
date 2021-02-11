@@ -32,7 +32,7 @@ These are features MineOnline will bring to Minecraft.
 - Resizable & Fullscreenable Applets with Mac and Linux Support
 - Bit depth fix (removes jagged lines from clouds and other stuff).
 - Full Discord Integration
-- Tab player list.
+- Tab player list (Only in listed servers).
 
 ![launcher](launcherdemo.png)
 
