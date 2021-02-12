@@ -13,6 +13,7 @@ import gg.codie.mineonline.gui.rendering.DisplayManager;
 import gg.codie.mineonline.gui.rendering.Font;
 import gg.codie.mineonline.gui.rendering.Renderer;
 import gg.codie.mineonline.server.ThreadPollServers;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 import gg.codie.mineonline.api.ClassicServerAuthService;
 
@@ -45,6 +46,22 @@ public class GuiMultiplayer extends AbstractGuiScreen
             }
         }
     };
+
+    protected void keyTyped(char c, int i)
+    {
+        guiSlotServer.keyTyped(c, i);
+
+        if(c == '\r')
+        {
+            joinServer(serverRepository.getServers().get(selectedIndex));
+        }
+        else if (i == Keyboard.KEY_ESCAPE) {
+            if (LegacyGameManager.isInGame())
+                LegacyGameManager.setGUIScreen(parentScreen);
+            else
+                MenuManager.setMenuScreen(parentScreen);
+        }
+    }
 
     public void initGui()
     {
@@ -81,14 +98,6 @@ public class GuiMultiplayer extends AbstractGuiScreen
     public void onGuiClosed()
     {
         serverRepository.offGotServers(gotServersListener);
-    }
-
-    protected void keyTyped(char c, int i)
-    {
-        if(c == '\r')
-        {
-            actionPerformed((GuiButton)controlList.get(2));
-        }
     }
 
     protected void mouseClicked(int x, int y, int button)

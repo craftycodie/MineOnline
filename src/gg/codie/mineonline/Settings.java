@@ -29,6 +29,8 @@ public class Settings implements IMinecraftOptionsHandler {
     @Deprecated
     private static final String USE_CUSTOM_FONTS = "useCustomFonts";
 
+    private static final String SHOW_MENU_TOAST = "showMenuToast";
+
     private static final String FULLSCREEN = "fullscreen";
     private static final String GUI_SCALE = "guiScale";
     private static final String FOV = "fov";
@@ -707,6 +709,13 @@ public class Settings implements IMinecraftOptionsHandler {
 
     public void setLastLaunchedOptionsVersion(EMinecraftOptionsVersion optionsVersion) {
         settings.put(LAST_LAUNCHED_OPTIONS_VERSION, optionsVersion);
+    }
+
+    public boolean getMenuToast() {
+        return settings.optBoolean(SHOW_MENU_TOAST, true);
+    }
+    public void setMenuToast(boolean show) {
+        settings.put(SHOW_MENU_TOAST, show);
     }
 
     @Override

@@ -11,6 +11,7 @@ import gg.codie.mineonline.gui.components.GuiButton;
 import gg.codie.mineonline.gui.components.GuiSmallButton;
 import gg.codie.mineonline.gui.rendering.Font;
 import org.lwjgl.Sys;
+import org.lwjgl.input.Keyboard;
 
 import java.awt.*;
 import java.io.File;
@@ -59,17 +60,26 @@ public class GuiTexturePacks extends AbstractGuiScreen
         controlList.add(new GuiSmallButton(6, getWidth() / 2 + 4, getHeight() - 48, "Done", new GuiButton.GuiButtonListener() {
             @Override
             public void OnButtonPress() {
-                if (LegacyGameManager.isInGame())
-                    LegacyGameManager.setGUIScreen(parent);
-                else
-                    MenuManager.setMenuScreen(parent);
+                done();
             }
         }));
     }
 
-    protected void mouseMovedOrUp(int x, int y, int button)
+    private void done() {
+        if (LegacyGameManager.isInGame())
+            LegacyGameManager.setGUIScreen(parent);
+        else
+            MenuManager.setMenuScreen(parent);
+    }
+
+    protected void keyTyped(char c, int i)
     {
-        super.mouseMovedOrUp(x, y, button);
+        guiTexturePackSlot.keyTyped(c, i);
+
+        if(c == '\r' || i == Keyboard.KEY_ESCAPE)
+        {
+            done();
+        }
     }
 
     public void drawScreen(int mouseX, int mouseY)

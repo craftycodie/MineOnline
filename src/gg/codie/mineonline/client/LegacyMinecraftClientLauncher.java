@@ -136,6 +136,9 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
     // [ jarPath, width, height, ip, port, mppass ]
     public static void main(String[] args) {
         System.setProperty("java.util.Arrays.useLegacyMergeSort", "true");
+//        System.setProperty("org.lwjgl.util.NoChecks", "true");
+        if (Globals.DEV)
+            System.setProperty("org.lwjgl.util.Debug", "true");
 
         Logging.enableLogging();
         DiscordRPCHandler.initialize();
@@ -342,6 +345,8 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
 
                         LegacyGameManager.getGuiScreen().handleInput();
                     }
+
+                    LegacyGameManager.renderToast();
 
                     DisplayManager.checkGLError("minecraft update hook start");
 

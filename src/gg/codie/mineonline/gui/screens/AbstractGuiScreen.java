@@ -81,10 +81,6 @@ public abstract class AbstractGuiScreen extends GuiComponent
 
     }
 
-    protected void actionPerformed(GuiButton guiButton) {
-
-    }
-
     public void handleInput()
     {
         for(; Mouse.next(); handleMouseInput()) { }

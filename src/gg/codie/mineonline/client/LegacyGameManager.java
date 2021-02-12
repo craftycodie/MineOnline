@@ -10,6 +10,7 @@ import gg.codie.mineonline.MinecraftVersion;
 import gg.codie.mineonline.Settings;
 import gg.codie.mineonline.discord.DiscordRPCHandler;
 import gg.codie.mineonline.gui.GUIScale;
+import gg.codie.mineonline.gui.components.GuiToast;
 import gg.codie.mineonline.gui.rendering.DisplayManager;
 import gg.codie.mineonline.gui.rendering.Font;
 import gg.codie.mineonline.gui.rendering.Loader;
@@ -24,6 +25,7 @@ import gg.codie.mineonline.patches.lwjgl.LWJGLGL11Patch;
 import gg.codie.mineonline.patches.lwjgl.LWJGLGLUPatch;
 import gg.codie.mineonline.patches.lwjgl.LWJGLGLUPerspectiveAdvice;
 import gg.codie.mineonline.patches.minecraft.*;
+import gg.codie.mineonline.patches.paulscode.PaulscodePatch;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 
@@ -37,6 +39,8 @@ public class LegacyGameManager {
     private MinecraftVersion version;
     private IMinecraftAppletWrapper appletWrapper;
     private FileChangeListener optionsListener;
+
+    private GuiToast guiToast = new GuiToast();
 
     private LegacyGameManager(MinecraftVersion version, IMinecraftAppletWrapper appletWrapper) {
         this.version = version;
@@ -106,6 +110,11 @@ public class LegacyGameManager {
         preparePatches();
     }
 
+    public static void renderToast() {
+        if (singleton == null) return;
+        singleton.guiToast.renderToast();
+    }
+
     private static void preparePatches() {
         System.out.println("Preparing Patches!");
 
@@ -123,6 +132,9 @@ public class LegacyGameManager {
         FontPatch.init();
 
         if (version != null) {
+            if (version.useIndevSoundPatch)
+                PaulscodePatch.fixIndevAudio();
+
             if (version.useFOVPatch && version.entityRendererClass != null)
                 FOVViewmodelPatch.fixViewmodelFOV(version.entityRendererClass, version.viewModelFunction, version.hurtEffectFunction, Settings.singleton.getMainHand() == EMinecraftMainHand.LEFT);
             if (version.ingameVersionString != null) {
@@ -247,6 +259,11 @@ public class LegacyGameManager {
         }
 
         LegacyGameManager.guiScreen = guiScreen;
+
+        if (LegacyGameManager.guiScreen != null && Settings.singleton.getMenuToast()) {
+            Settings.singleton.setMenuToast(false);
+            Settings.singleton.saveSettings();
+        }
     }
 
     public static AbstractGuiScreen getGuiScreen() {
