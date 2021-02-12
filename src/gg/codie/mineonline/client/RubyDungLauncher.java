@@ -294,6 +294,8 @@ public class RubyDungLauncher implements IMinecraftAppletWrapper {
                             LegacyGameManager.getGuiScreen().handleInput();
                         }
 
+                        LegacyGameManager.renderToast();
+
                         DisplayManager.checkGLError("minecraft update hook start");
 
                         if (minecraftVersion != null && minecraftVersion.enableCursorPatch) {
