@@ -24,6 +24,7 @@ import gg.codie.mineonline.patches.lwjgl.LWJGLGL11Patch;
 import gg.codie.mineonline.patches.lwjgl.LWJGLGLUPatch;
 import gg.codie.mineonline.patches.lwjgl.LWJGLGLUPerspectiveAdvice;
 import gg.codie.mineonline.patches.minecraft.*;
+import gg.codie.mineonline.patches.paulscode.PaulscodePatch;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 
@@ -123,6 +124,9 @@ public class LegacyGameManager {
         FontPatch.init();
 
         if (version != null) {
+            if (version.useIndevSoundPatch)
+                PaulscodePatch.fixIndevAudio();
+
             if (version.useFOVPatch && version.entityRendererClass != null)
                 FOVViewmodelPatch.fixViewmodelFOV(version.entityRendererClass, version.viewModelFunction, version.hurtEffectFunction, Settings.singleton.getMainHand() == EMinecraftMainHand.LEFT);
             if (version.ingameVersionString != null) {
