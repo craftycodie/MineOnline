@@ -16,7 +16,6 @@ import java.net.*;
 import java.nio.file.Paths;
 import java.util.Enumeration;
 import java.util.LinkedList;
-import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -63,6 +62,7 @@ public class MinecraftVersion {
     public final String colorCodePrefix;
     public final boolean usePlayerList;
     public final boolean useCustomAnimations;
+    public final boolean useIndevSoundPatch;
 
     public MinecraftVersion(
             String sha256,
@@ -106,7 +106,8 @@ public class MinecraftVersion {
             String fontClass,
             String colorCodePrefix,
             boolean usePlayerList,
-            boolean useCustomAnimations
+            boolean useCustomAnimations,
+            boolean useIndevSoundPatch
     ) {
         this.sha256 = sha256;
         this.name = name;
@@ -150,6 +151,7 @@ public class MinecraftVersion {
         this.colorCodePrefix = colorCodePrefix;
         this.usePlayerList = usePlayerList;
         this.useCustomAnimations = useCustomAnimations;
+        this.useIndevSoundPatch = useIndevSoundPatch;
     }
 
     public MinecraftVersion(JSONObject object) {
@@ -194,6 +196,7 @@ public class MinecraftVersion {
         colorCodePrefix = object.optString("colorCodePrefix", null);
         usePlayerList = object.optBoolean("usePlayerList", false);
         useCustomAnimations = object.optBoolean("useCustomAnimations", true);
+        useIndevSoundPatch = object.optBoolean("useIndevSoundPatch", false);
 
         URL parsedURL = null;
 
@@ -430,6 +433,7 @@ public class MinecraftVersion {
                     null,
                     null,
                     null,
+                    false,
                     false,
                     false
             );

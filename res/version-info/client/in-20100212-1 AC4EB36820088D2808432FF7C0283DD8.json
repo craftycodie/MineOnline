@@ -15,5 +15,6 @@
   "optionsVersion": "CLASSIC",
   "useResizePatch": true,
   "hasNetherPortalTexture": false,
+  "useIndevSoundPatch": true,
   "downloadURL": "https://mineonline.codie.gg/clients/in-20100212-2.jar"
 }

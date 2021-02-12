@@ -167,9 +167,9 @@ public class GuiVersions extends AbstractGuiScreen
     private List<GuiSlotVersion.SelectableVersion> filteredVersions() {
         LinkedList<GuiSlotVersion.SelectableVersion> versions = new LinkedList<>();
 
-        synchronized (MinecraftVersionRepository.getSingleton().getInstalledJars()) {
-            // Add installed jars to the list.
-            MinecraftVersionRepository.getSingleton().getInstalledJars().forEach((String path, MinecraftVersion version) -> {
+        // Add installed jars to the list.
+        MinecraftVersionRepository.getSingleton().getInstalledJars().forEach((String path, MinecraftVersion version) -> {
+            synchronized (versions) {
                 for (GuiSlotVersion.SelectableVersion knownVersion : versions) {
                     // If we already have a jar of the same version downloaded, skip.
                     if (knownVersion.version == version && knownVersion.path != null)
@@ -180,17 +180,19 @@ public class GuiVersions extends AbstractGuiScreen
                         versions.remove(knownVersion);
                 }
                 versions.add(new GuiSlotVersion.SelectableVersion(version, path));
-            });
-            // Add downloadable jars to the list.
-            MinecraftVersionRepository.getSingleton().getDownloadableClients().forEach((MinecraftVersion version) -> {
+            }
+        });
+        // Add downloadable jars to the list.
+        MinecraftVersionRepository.getSingleton().getDownloadableClients().forEach((MinecraftVersion version) -> {
+            synchronized (versions) {
                 for (GuiSlotVersion.SelectableVersion selectableVersion : versions) {
                     if (selectableVersion.version == version)
                         return;
                 }
 
                 versions.add(new GuiSlotVersion.SelectableVersion(version, null));
-            });
-        }
+            }
+        });
 
         List<GuiSlotVersion.SelectableVersion> filteredVersions = new LinkedList<>();
 
