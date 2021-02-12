@@ -10,6 +10,7 @@ import gg.codie.mineonline.MinecraftVersion;
 import gg.codie.mineonline.Settings;
 import gg.codie.mineonline.discord.DiscordRPCHandler;
 import gg.codie.mineonline.gui.GUIScale;
+import gg.codie.mineonline.gui.components.GuiToast;
 import gg.codie.mineonline.gui.rendering.DisplayManager;
 import gg.codie.mineonline.gui.rendering.Font;
 import gg.codie.mineonline.gui.rendering.Loader;
@@ -38,6 +39,8 @@ public class LegacyGameManager {
     private MinecraftVersion version;
     private IMinecraftAppletWrapper appletWrapper;
     private FileChangeListener optionsListener;
+
+    private GuiToast guiToast = new GuiToast();
 
     private LegacyGameManager(MinecraftVersion version, IMinecraftAppletWrapper appletWrapper) {
         this.version = version;
@@ -105,6 +108,11 @@ public class LegacyGameManager {
         }
 
         preparePatches();
+    }
+
+    public static void renderToast() {
+        if (singleton == null) return;
+        singleton.guiToast.renderToast();
     }
 
     private static void preparePatches() {
@@ -251,6 +259,11 @@ public class LegacyGameManager {
         }
 
         LegacyGameManager.guiScreen = guiScreen;
+
+        if (LegacyGameManager.guiScreen != null && Settings.singleton.getMenuToast()) {
+            Settings.singleton.setMenuToast(false);
+            Settings.singleton.saveSettings();
+        }
     }
 
     public static AbstractGuiScreen getGuiScreen() {

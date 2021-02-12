@@ -346,6 +346,8 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
                         LegacyGameManager.getGuiScreen().handleInput();
                     }
 
+                    LegacyGameManager.renderToast();
+
                     DisplayManager.checkGLError("minecraft update hook start");
 
                     if (minecraftVersion != null && minecraftVersion.enableCursorPatch) {
