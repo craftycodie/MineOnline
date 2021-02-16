@@ -27,8 +27,11 @@ public class MinecraftServerProperties {
 
     public MinecraftServerProperties(String serverDir) throws IOException {
         properties = new java.util.Properties();
-        if (serverDir != null)
-            properties.load(new FileInputStream(new File(serverDir + File.separator + "server.properties")));
+        if (serverDir != null) {
+            File propertiesFile = new File(serverDir + File.separator + "server.properties");
+            if (propertiesFile.exists())
+                properties.load(new FileInputStream(propertiesFile));
+        }
     }
 
     public boolean isWhitelisted() {
