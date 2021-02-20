@@ -79,7 +79,7 @@ public class GuiAbout extends AbstractGuiScreen
 
         drawDefaultBackground();
 
-        Font.minecraftFont.drawCenteredString("About", getWidth() / 2, 20, 0xffffff);
+        Font.minecraftFont.drawCenteredStringWithShadow("About", getWidth() / 2, 20, 0xffffff);
         super.drawScreen(mouseX, mouseY);
     }
 }

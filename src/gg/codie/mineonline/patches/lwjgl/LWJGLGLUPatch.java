@@ -26,6 +26,11 @@ public class LWJGLGLUPatch {
     public static void zoom(){
         try {
             LWJGLGLUPerspectiveAdvice.zoom = true;
+
+            if (Settings.singleton.getZoomToast()) {
+                Settings.singleton.setZoomToast(false);
+                Settings.singleton.saveSettings();
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }

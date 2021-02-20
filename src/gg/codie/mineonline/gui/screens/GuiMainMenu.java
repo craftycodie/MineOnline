@@ -146,7 +146,7 @@ public class GuiMainMenu extends AbstractGuiScreen
         float f1 = 1.8F - Math.abs((float)Math.sin(((float)(System.currentTimeMillis() % 1000L) / 1000F) * 3.141593F * 2.0F) * 0.1F);
         f1 = (f1 * 100F) / (float)(Font.minecraftFont.width(splashText) + 32);
         GL11.glScalef(f1, f1, f1);
-        Font.minecraftFont.drawCenteredString(splashText, 0, -8, 0xffff00);
+        Font.minecraftFont.drawCenteredStringWithShadow(splashText, 0, -8, 0xffff00);
         GL11.glPopMatrix();
         if (MenuManager.isUpdateAvailable())
             Font.minecraftFont.drawString("Update Available!", 2, getHeight() - 20, 0xffff00);

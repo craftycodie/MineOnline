@@ -402,6 +402,11 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
                         if (playerList == null)
                             playerList = new PlayerList();
 
+                        if (Settings.singleton.getPlayerListToast()) {
+                            Settings.singleton.setPlayerListToast(false);
+                            Settings.singleton.saveSettings();
+                        }
+
                         playerList.drawScreen();
                     } else {
                         playerList = null;

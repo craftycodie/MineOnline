@@ -85,7 +85,7 @@ public class GuiControls extends AbstractGuiScreen
         initGui();
 
         drawDefaultBackground();
-        Font.minecraftFont.drawCenteredString(screenTitle, getWidth() / 2, 20, 0xffffff);
+        Font.minecraftFont.drawCenteredStringWithShadow(screenTitle, getWidth() / 2, 20, 0xffffff);
         int k = getWidth() / 2 - 155;
         Font.minecraftFont.drawString("Zoom", k + (0 % 2) * 160 + 70 + 6, getHeight() / 6 + 24 * (0 >> 1) + 7, -1);
         Font.minecraftFont.drawString("MineOnline Menu", k + (1 % 2) * 160 + 70 + 6, getHeight() / 6 + 24 * (1 >> 1) + 7, -1);

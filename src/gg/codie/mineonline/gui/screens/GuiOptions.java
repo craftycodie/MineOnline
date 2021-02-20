@@ -197,7 +197,7 @@ public class GuiOptions extends AbstractGuiScreen
         resize();
 
         drawDefaultBackground();
-        Font.minecraftFont.drawCenteredString(screenName, getWidth() / 2, 20, 0xffffff);
+        Font.minecraftFont.drawCenteredStringWithShadow(screenName, getWidth() / 2, 20, 0xffffff);
         super.drawScreen(mouseX, mouseY);
     }
 

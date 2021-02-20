@@ -100,7 +100,7 @@ public class GuiIngameMenu extends AbstractGuiScreen
         initGui();
 
         drawDefaultBackground();
-        Font.minecraftFont.drawCenteredString("MineOnline menu", getWidth() / 2, 40, 0xffffff);
+        Font.minecraftFont.drawCenteredStringWithShadow("MineOnline menu", getWidth() / 2, 40, 0xffffff);
         super.drawScreen(mouseX, mouseY);
     }
 }

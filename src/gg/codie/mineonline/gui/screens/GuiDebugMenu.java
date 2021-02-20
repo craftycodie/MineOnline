@@ -32,6 +32,8 @@ public class GuiDebugMenu extends AbstractGuiScreen
             public void OnButtonPress() {
                 Settings.singleton.setMenuToast(true);
                 Settings.singleton.setScreenshotToast(true);
+                Settings.singleton.setZoomToast(true);
+                Settings.singleton.setPlayerListToast(true);
                 Settings.singleton.saveSettings();
             }
         }));
@@ -49,7 +51,7 @@ public class GuiDebugMenu extends AbstractGuiScreen
         initGui();
 
         drawDefaultBackground();
-        Font.minecraftFont.drawCenteredString("MineOnline Debug menu", getWidth() / 2, 40, 0xffffff);
+        Font.minecraftFont.drawCenteredStringWithShadow("MineOnline Debug menu", getWidth() / 2, 40, 0xffffff);
         super.drawScreen(mouseX, mouseY);
     }
 }

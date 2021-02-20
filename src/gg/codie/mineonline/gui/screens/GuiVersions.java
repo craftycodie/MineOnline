@@ -411,7 +411,7 @@ public class GuiVersions extends AbstractGuiScreen
 
         if (MinecraftVersionRepository.getSingleton().isLoadingInstalledVersions()) {
             guiSlotVersion.drawScreen(mouseX, mouseY);
-            Font.minecraftFont.drawCenteredString("Loading versions...", getWidth() / 2, getHeight() / 2, 0x808080);
+            Font.minecraftFont.drawCenteredStringWithShadow("Loading versions...", getWidth() / 2, getHeight() / 2, 0x808080);
         } else if (!versionsWereLoaded) {
             guiSlotVersion = new GuiSlotVersion(this, filteredVersions(), compare);
             guiSlotVersion.drawScreen(mouseX, mouseY);
@@ -425,10 +425,10 @@ public class GuiVersions extends AbstractGuiScreen
         }
 
         if (guiSlotVersion.getSize() < 1 && versionsWereLoaded) {
-            Font.minecraftFont.drawCenteredString("No versions found.", getWidth() / 2, getHeight() / 2, 0x808080);
+            Font.minecraftFont.drawCenteredStringWithShadow("No versions found.", getWidth() / 2, getHeight() / 2, 0x808080);
         }
 
-        Font.minecraftFont.drawCenteredString("Select Version", getWidth() / 2, 20, 0xffffff);
+        Font.minecraftFont.drawCenteredStringWithShadow("Select Version", getWidth() / 2, 20, 0xffffff);
         super.drawScreen(mouseX, mouseY);
 
         if (mouseX >= getWidth() / 2 + 54 && mouseY >= 12 && mouseX <= getWidth() / 2 + 74 && mouseY <= 30)

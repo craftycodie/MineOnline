@@ -65,6 +65,23 @@ public class PlayerList
         }
     }
 
+    public boolean hasPlayers()
+    {
+        if (lastIp != SocketConstructAdvice.serverAddress || lastPort != SocketConstructAdvice.serverPort) {
+            lastIp = SocketConstructAdvice.serverAddress;
+            lastPort = SocketConstructAdvice.serverPort;
+            players = null;
+            lastRequest = 0;
+        }
+
+        if (LegacyGameManager.getVersion() == null || !LegacyGameManager.getVersion().usePlayerList)
+            return false;
+
+        requestPlayers();
+
+        return SocketConstructAdvice.serverAddress != null && players != null;
+    }
+
     public void drawScreen()
     {
         if (lastIp != SocketConstructAdvice.serverAddress || lastPort != SocketConstructAdvice.serverPort) {

@@ -66,11 +66,11 @@ public class GuiSlotServer extends GuiSlot
         super.drawScreen(mousex, mousey);
 
         if (MinecraftVersionRepository.getSingleton().isLoadingInstalledVersions())
-            Font.minecraftFont.drawCenteredString("Loading versions...", guiMultiplayer.getWidth() / 2, guiMultiplayer.getHeight() / 2, 0x808080);
+            Font.minecraftFont.drawCenteredStringWithShadow("Loading versions...", guiMultiplayer.getWidth() / 2, guiMultiplayer.getHeight() / 2, 0x808080);
         else if (guiMultiplayer.serverRepository.didFail())
-            Font.minecraftFont.drawCenteredString("Failed to load servers.", guiMultiplayer.getWidth() / 2, guiMultiplayer.getHeight() / 2, 0x808080);
+            Font.minecraftFont.drawCenteredStringWithShadow("Failed to load servers.", guiMultiplayer.getWidth() / 2, guiMultiplayer.getHeight() / 2, 0x808080);
         else if (!guiMultiplayer.serverRepository.gotServers())
-            Font.minecraftFont.drawCenteredString("Loading servers...", guiMultiplayer.getWidth() / 2, guiMultiplayer.getHeight() / 2, 0x808080);
+            Font.minecraftFont.drawCenteredStringWithShadow("Loading servers...", guiMultiplayer.getWidth() / 2, guiMultiplayer.getHeight() / 2, 0x808080);
     }
 
     protected void drawSlot(int slotIndex, int xPos, int yPos, int zPos)
