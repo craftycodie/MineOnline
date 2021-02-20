@@ -434,14 +434,14 @@ public class RubyDungLauncher implements IMinecraftAppletWrapper {
     // this MUST be called from the OpenGL thread.
     public void screenshot() {
         try {
-            int width = Display.getWidth();
-            int height = Display.getHeight();
+            int width = Display.getParent().getWidth();
+            int height = Display.getParent().getHeight();
 
-            if(buffer == null || buffer.capacity() < width * height)
+            if(buffer == null || buffer.capacity() != (width * height * 3))
             {
                 buffer = BufferUtils.createByteBuffer(width * height * 3);
             }
-            if(imageData == null || imageData.length < width * height * 3)
+            if(imageData == null || imageData.length != width * height * 3)
             {
                 pixelData = new byte[width * height * 3];
                 imageData = new int[width * height];
@@ -450,7 +450,6 @@ public class RubyDungLauncher implements IMinecraftAppletWrapper {
             GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, 1);
             buffer.clear();
             GL11.glReadPixels(0, 0, width, height, GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, buffer);
-
 
             buffer.clear();
 
