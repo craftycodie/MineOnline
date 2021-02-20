@@ -12,6 +12,7 @@
   "entityRendererClass": "iq",
   "viewModelFunction": "b",
   "scaledResolutionClass": "iy",
+  "fontClass": "kd",
   "resourcesVersion": "a1.1.0",
   "optionsVersion": "CLASSIC",
   "hasNetherPortalTexture": false,
