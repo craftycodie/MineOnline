@@ -11,6 +11,7 @@ import gg.codie.mineonline.gui.rendering.DisplayManager;
 import gg.codie.mineonline.gui.rendering.Font;
 import gg.codie.mineonline.gui.rendering.Loader;
 import gg.codie.mineonline.gui.screens.AbstractGuiScreen;
+import gg.codie.mineonline.gui.screens.GuiDebugMenu;
 import gg.codie.mineonline.gui.screens.GuiIngameMenu;
 import gg.codie.mineonline.gui.PlayerList;
 import gg.codie.mineonline.lwjgl.OnCreateListener;
@@ -434,6 +435,10 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
                         } else if (Keyboard.getEventKey() == Settings.singleton.getMineonlineMenuKeyCode() && !Keyboard.isRepeatEvent() && !Keyboard.getEventKeyState()) {
                             menuWasDown = false;
                         }
+                    }
+
+                    if (Keyboard.getEventKey() == Keyboard.KEY_F6 && Globals.DEV && !Keyboard.isRepeatEvent() && Keyboard.getEventKeyState() && LegacyGameManager.getGuiScreen() == null && Mouse.isGrabbed()) {
+                        LegacyGameManager.setGUIScreen(new GuiDebugMenu());
                     }
 
                     if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE && LegacyGameManager.getGuiScreen() != null)
