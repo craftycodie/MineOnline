@@ -155,6 +155,10 @@ public class MinecraftVersionRepository {
         if(dir == null)
             dir = Paths.get(LauncherFiles.MINECRAFT_VERSIONS_PATH);
 
+        File versionsFolder = new File(dir.toString());
+        if (!versionsFolder.exists() || !versionsFolder.isDirectory())
+            return new LinkedList<>();
+
         try {
 
             try (DirectoryStream<Path> stream = Files.newDirectoryStream(dir)) {

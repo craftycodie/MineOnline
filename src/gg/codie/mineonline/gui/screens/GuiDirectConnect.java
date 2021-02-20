@@ -193,7 +193,7 @@ public class GuiDirectConnect extends AbstractGuiScreen
         resize();
 
         drawDefaultBackground();
-        Font.minecraftFont.drawCenteredString("Play Multiplayer", getWidth() / 2, (getHeight() / 4 - 60) + 20, 0xffffff);
+        Font.minecraftFont.drawCenteredStringWithShadow("Play Multiplayer", getWidth() / 2, (getHeight() / 4 - 60) + 20, 0xffffff);
         Font.minecraftFont.drawString("Enter the IP of a server to connect to it:", getWidth() / 2 - 140, (getHeight() / 4 - 60) + 60, 0xa0a0a0);
 
 //        FontRenderer.minecraftFont.drawString("Minecraft Multiplayer is currently not finished, but there", getWidth() / 2 - 140, (getHeight() / 4 - 60) + 60, 0xa0a0a0);

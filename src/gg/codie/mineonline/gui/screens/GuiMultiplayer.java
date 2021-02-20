@@ -112,7 +112,7 @@ public class GuiMultiplayer extends AbstractGuiScreen
         tooltip = null;
         drawDefaultBackground();
         guiSlotServer.drawScreen(mouseX, mouseY);
-        Font.minecraftFont.drawCenteredString("Play Multiplayer", getWidth() / 2, 20, 0xffffff);
+        Font.minecraftFont.drawCenteredStringWithShadow("Play Multiplayer", getWidth() / 2, 20, 0xffffff);
         super.drawScreen(mouseX, mouseY);
         if(tooltip != null)
         {

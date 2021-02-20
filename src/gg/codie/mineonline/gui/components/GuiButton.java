@@ -71,14 +71,14 @@ public class GuiButton extends GuiComponent
         mouseDragged(i, j);
         if(!enabled)
         {
-            Font.minecraftFont.drawCenteredString(displayString, xPosition + width / 2, yPosition + (height - 8) / 2, 0xffa0a0a0);
+            Font.minecraftFont.drawCenteredStringWithShadow(displayString, xPosition + width / 2, yPosition + (height - 8) / 2, 0xffa0a0a0);
         } else
         if(flag)
         {
-            Font.minecraftFont.drawCenteredString(displayString, xPosition + width / 2, yPosition + (height - 8) / 2, 0xffffa0);
+            Font.minecraftFont.drawCenteredStringWithShadow(displayString, xPosition + width / 2, yPosition + (height - 8) / 2, 0xffffa0);
         } else
         {
-            Font.minecraftFont.drawCenteredString(displayString, xPosition + width / 2, yPosition + (height - 8) / 2, 0xe0e0e0);
+            Font.minecraftFont.drawCenteredStringWithShadow(displayString, xPosition + width / 2, yPosition + (height - 8) / 2, 0xe0e0e0);
         }
     }
 

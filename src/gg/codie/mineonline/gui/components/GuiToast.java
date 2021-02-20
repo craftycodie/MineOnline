@@ -20,7 +20,10 @@ import java.util.Arrays;
 public class GuiToast extends GuiComponent
 {
     private final ArrayList<IToast> toasts = new ArrayList<>(Arrays.asList(new IToast[] {
+            new PlayerListToast(),
             new MenuToast(),
+            new ScreenshotClipboardToast(),
+            new ZoomToast()
     }));
 
     public boolean isShowingToast() {
@@ -101,8 +104,8 @@ public class GuiToast extends GuiComponent
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, k);
         GL11.glDisable(GL11.GL_LIGHTING);
         Renderer.singleton.drawSprite(toastX, toastY, 96, 202, 160, 32);
-        Font.minecraftFont.drawString(displayToast.getLine1(), toastX + 30, toastY + 7, 0x000000);
-        Font.minecraftFont.drawString(displayToast.getLine2(), toastX + 30, toastY + 18, 0x000000);
+        Font.minecraftFont.drawCenteredString(displayToast.getLine1(), toastX + 80, toastY + 7, 0x000000);
+        Font.minecraftFont.drawCenteredString(displayToast.getLine2(), toastX + 80, toastY + 18, 0x000000);
         GL11.glPushMatrix();
         GL11.glRotatef(180F, 1.0F, 0.0F, 0.0F);
         GL11.glPopMatrix();

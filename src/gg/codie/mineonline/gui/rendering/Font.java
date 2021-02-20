@@ -170,6 +170,10 @@ public class Font
     }
 
     public void drawCenteredString(String s, int xPos, int yPos, int color) {
+        drawString(s, xPos - Font.minecraftFont.width(s) / 2, yPos, color);
+    }
+
+    public void drawCenteredStringWithShadow(String s, int xPos, int yPos, int color) {
         drawStringWithShadow(s, xPos - Font.minecraftFont.width(s) / 2, yPos, color);
     }
 

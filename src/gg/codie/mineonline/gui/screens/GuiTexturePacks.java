@@ -87,8 +87,8 @@ public class GuiTexturePacks extends AbstractGuiScreen
         initGui();
 
         guiTexturePackSlot.drawScreen(mouseX, mouseY);
-        Font.minecraftFont.drawCenteredString("Select Texture Pack", getWidth() / 2, 16, 0xffffff);
-        Font.minecraftFont.drawCenteredString("(Place texture pack files here)", getWidth() / 2 - 77, getHeight() - 26, 0x808080);
+        Font.minecraftFont.drawCenteredStringWithShadow("Select Texture Pack", getWidth() / 2, 16, 0xffffff);
+        Font.minecraftFont.drawCenteredStringWithShadow("(Place texture pack files here)", getWidth() / 2 - 77, getHeight() - 26, 0x808080);
         super.drawScreen(mouseX, mouseY);
     }
 

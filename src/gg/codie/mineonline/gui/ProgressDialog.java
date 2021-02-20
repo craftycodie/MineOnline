@@ -93,6 +93,9 @@ public class ProgressDialog extends JDialog {
                 singleton = null;
             }
 
+            if (GraphicsEnvironment.isHeadless())
+                return;
+
             ProgressDialog dialog = new ProgressDialog(title);
 
             SwingWorker worker = new SwingWorker() {

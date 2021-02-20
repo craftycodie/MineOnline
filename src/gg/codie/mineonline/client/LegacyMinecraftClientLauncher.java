@@ -11,6 +11,7 @@ import gg.codie.mineonline.gui.rendering.DisplayManager;
 import gg.codie.mineonline.gui.rendering.Font;
 import gg.codie.mineonline.gui.rendering.Loader;
 import gg.codie.mineonline.gui.screens.AbstractGuiScreen;
+import gg.codie.mineonline.gui.screens.GuiDebugMenu;
 import gg.codie.mineonline.gui.screens.GuiIngameMenu;
 import gg.codie.mineonline.gui.PlayerList;
 import gg.codie.mineonline.lwjgl.OnCreateListener;
@@ -401,6 +402,11 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
                         if (playerList == null)
                             playerList = new PlayerList();
 
+                        if (Settings.singleton.getPlayerListToast()) {
+                            Settings.singleton.setPlayerListToast(false);
+                            Settings.singleton.saveSettings();
+                        }
+
                         playerList.drawScreen();
                     } else {
                         playerList = null;
@@ -434,6 +440,10 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
                         } else if (Keyboard.getEventKey() == Settings.singleton.getMineonlineMenuKeyCode() && !Keyboard.isRepeatEvent() && !Keyboard.getEventKeyState()) {
                             menuWasDown = false;
                         }
+                    }
+
+                    if (Keyboard.getEventKey() == Keyboard.KEY_F6 && Globals.DEV && !Keyboard.isRepeatEvent() && Keyboard.getEventKeyState() && LegacyGameManager.getGuiScreen() == null && Mouse.isGrabbed()) {
+                        LegacyGameManager.setGUIScreen(new GuiDebugMenu());
                     }
 
                     if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE && LegacyGameManager.getGuiScreen() != null)
@@ -719,14 +729,14 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
     // this MUST be called from the OpenGL thread.
     public void screenshot() {
         try {
-            int width = Display.getWidth();
-            int height = Display.getHeight();
+            int width = Display.getParent().getWidth();
+            int height = Display.getParent().getHeight();
 
-            if(buffer == null || buffer.capacity() != width * height)
+            if(buffer == null || buffer.capacity() != (width * height * 3))
             {
                 buffer = BufferUtils.createByteBuffer(width * height * 3);
             }
-            if(imageData == null || imageData.length < width * height * 3)
+            if(imageData == null || imageData.length != width * height * 3)
             {
                 pixelData = new byte[width * height * 3];
                 imageData = new int[width * height];
@@ -735,8 +745,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
             GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, 1);
             buffer.clear();
             GL11.glReadPixels(0, 0, width, height, GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, buffer);
-
-
+            
             buffer.clear();
 
             buffer.get(pixelData);
