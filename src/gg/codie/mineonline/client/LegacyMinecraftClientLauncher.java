@@ -21,6 +21,7 @@ import gg.codie.mineonline.patches.*;
 import gg.codie.mineonline.patches.lwjgl.LWJGLDisplayPatch;
 import gg.codie.mineonline.patches.lwjgl.LWJGLGL11GLOrthoAdvice;
 import gg.codie.mineonline.patches.lwjgl.LWJGLGLUPatch;
+import gg.codie.mineonline.patches.minecraft.ColorizerPatch;
 import gg.codie.mineonline.patches.minecraft.FOVViewmodelAdvice;
 import gg.codie.mineonline.patches.minecraft.InputPatch;
 import gg.codie.mineonline.utils.JREUtils;
@@ -315,6 +316,10 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
                         }
                     } catch (Exception ex) {
 
+                    }
+
+                    if (minecraftVersion.useTexturepackPatch) {
+                        ColorizerPatch.updateColorizers();
                     }
                 }
 
