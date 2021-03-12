@@ -25,15 +25,13 @@ public class PointerInfoGetLocationAdvice {
                 return;
             }
 
-            ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.lwjgl.LWJGLMouseGetDXAdvice").getField("lock").set(null, false);
-            ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.lwjgl.LWJGLMouseGetDYAdvice").getField("lock").set(null, false);
+            ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.lwjgl.LWJGLMouseGetDXYAdvice").getField("lock").set(null, false);
 
             Class lwjglMouseClass = ClassLoader.getSystemClassLoader().loadClass("org.lwjgl.input.Mouse");
             int x = -(int)lwjglMouseClass.getMethod("getDX").invoke(null);
             int y = (int)lwjglMouseClass.getMethod("getDY").invoke(null);
 
-            ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.lwjgl.LWJGLMouseGetDXAdvice").getField("lock").set(null, true);
-            ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.lwjgl.LWJGLMouseGetDYAdvice").getField("lock").set(null, true);
+            ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.lwjgl.LWJGLMouseGetDXYAdvice").getField("lock").set(null, true);
 
             x += mcCanvas.getLocationOnScreen().x + (mcCanvas.getWidth() / 2);
             y += mcCanvas.getLocationOnScreen().y + (mcCanvas.getHeight() / 2);
