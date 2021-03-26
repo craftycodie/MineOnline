@@ -31,13 +31,25 @@ public class LibraryManager {
         if(!jarFile.exists() || jarFile.isDirectory())
             return;
 
+        File nativesFolder = new File(LauncherFiles.MINEONLINE_NATIVES_FOLDER);
+
+        if (!nativesFolder.exists())
+            nativesFolder.mkdirs();
+
         java.util.jar.JarFile jar = new java.util.jar.JarFile(jarFile.getPath());
         java.util.Enumeration enumEntries = jar.entries();
         while (enumEntries.hasMoreElements()) {
             java.util.jar.JarEntry file = (java.util.jar.JarEntry) enumEntries.nextElement();
-            if(!file.getName().startsWith("lib")) {
+            if(!file.getName().startsWith("lib"))
                 continue;
-            }
+
+            // Only extract libraries for the running OS.
+            if (file.getName().contains("native") && !file.getName().contains(OSUtils.getPlatform().name()))
+                continue;
+            if (OSUtils.isMac() && (file.getName().endsWith("lwjgl.jar") || file.getName().endsWith("lwjgl_util.jar")))
+                continue;
+            else if (!OSUtils.isMac() && (file.getName().endsWith("lwjgl-mac.jar") || file.getName().endsWith("lwjgl_util-mac.jar")))
+                continue;
 
             ProgressDialog.setSubMessage(file.getName());
 
