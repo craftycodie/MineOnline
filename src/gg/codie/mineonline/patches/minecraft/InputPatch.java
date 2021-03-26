@@ -20,8 +20,8 @@ public class InputPatch {
                     // Determine whether the cursor is focused.
                     .visit(Advice.to(LWJGLMouseSetNativeCursorAdvice.class).on(ElementMatchers.named("setNativeCursor")))
                     // Lock Delta calls to MineOnline, indev calls it and throws away the result, and it can only be called once per frame.
-                    .visit(Advice.to(LWJGLMouseGetDYAdvice.class).on(ElementMatchers.named("getDX")))
-                    .visit(Advice.to(LWJGLMouseGetDYAdvice.class).on(ElementMatchers.named("getDY")))
+                    .visit(Advice.to(LWJGLMouseGetDXYAdvice.class).on(ElementMatchers.named("getDX")))
+                    .visit(Advice.to(LWJGLMouseGetDXYAdvice.class).on(ElementMatchers.named("getDY")))
                     // Prevent clicks from doubling.
                     .visit(Advice.to(LWJGLMouseIsButtonDownAdvice.class).on(ElementMatchers.named("isButtonDown").and(ElementMatchers.takesArguments(int.class))))
                     // Prevent mouse centering when the MO menu is open.

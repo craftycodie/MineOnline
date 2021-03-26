@@ -2,7 +2,8 @@ package gg.codie.mineonline.patches.lwjgl;
 
 import net.bytebuddy.asm.Advice;
 
-public class LWJGLMouseGetDXAdvice {
+public class LWJGLMouseGetDXYAdvice {
+    // Used by PointerInfoGetLocationAdvice.
     public static boolean lock;
 
     @Advice.OnMethodEnter(skipOn = Advice.OnNonDefaultValue.class)
@@ -19,5 +20,15 @@ public class LWJGLMouseGetDXAdvice {
         }
 
         return lock;
+    }
+
+    @Advice.OnMethodExit
+    static void intercept(@Advice.Return(readOnly = false) int dxy) {
+        try {
+            if (!(boolean) ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.minecraft.InputPatch").getField("enableClassicFixes").get(null))
+                return;
+        } catch (Exception ex) { }
+
+        dxy = - dxy;
     }
 }

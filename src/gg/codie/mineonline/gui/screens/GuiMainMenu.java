@@ -56,16 +56,6 @@ public class GuiMainMenu extends AbstractGuiScreen
 
     public void initGui()
     {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date());
-        if(calendar.get(2) + 1 == 12 && calendar.get(5) == 24)
-        {
-            splashText = "Merry X-mas!";
-        } else
-        if(calendar.get(2) + 1 == 1 && calendar.get(5) == 1)
-        {
-            splashText = "Happy new year!";
-        }
         int i = getHeight() / 4 + 48;
 
         AbstractGuiScreen thisScreen = this;
