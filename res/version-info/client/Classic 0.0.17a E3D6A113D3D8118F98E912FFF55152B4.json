@@ -1,0 +1,18 @@
+{
+  "name": "Classic 0.0.17a",
+  "md5": "E3D6A113D3D8118F98E912FFF55152B4",
+  "type": "client",
+  "baseVersion": "c0.0.17a",
+  "useFOVPatch": true,
+  "useTexturepackPatch": true,
+  "ingameVersionString": "0.0.17a",
+  "enableScreenshotPatch": true,
+  "enableCursorPatch": true,
+  "legacy": true,
+  "resourcesVersion": "c0.0.22a_05",
+  "optionsVersion": "CLASSIC",
+  "useResizePatch": true,
+  "hasNetherPortalTexture": false,
+  "colorCodePrefix": "&",
+  "downloadURL": "https://mineonline.codie.gg/public/clients/c0.0.17a.jar"
+}
