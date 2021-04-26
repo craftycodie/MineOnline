@@ -1,3 +1,19 @@
+# Development Update (26/4/21)
+I'm currently on a break from this project, for at least 2 months.
+The next update, 4.0.0, will be the first long-term service update.
+With 4.0.0 I plan to bring the following changes:
+
+- The live server list will be replaced with a customizable one where you can add and remove servers, just like how release MC works.
+- Sounds will no-longer be downloaded as you play the game, instead they will come with MineOnline and will be installed.
+- Worlds will no longer be saved online in classic. Instead they will save on your PC.
+- MineOnline's Classic Server Authentication API will be (already is) shut down.
+
+With these changes, the MineOnline website is no longer required. The game will only communicate with Mojang, and it will do so directly. I can't afford to keep the MineOnline website up indefinately.
+
+Thanks for playing <3
+
+- Codie
+
 ![logo](mineonlinelogo.png)
 
 Launch old versions of minecraft just as you remembered them.
