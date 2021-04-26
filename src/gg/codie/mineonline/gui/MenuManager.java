@@ -94,7 +94,7 @@ public class MenuManager {
 
         DiscordRPCHandler.initialize();
 
-        if(Arrays.stream(args).anyMatch(arg -> arg.equals("-skipupdates")))
+        if(Arrays.stream(args).anyMatch(arg -> arg.equals("-skipupdates")) || Globals.LTS)
             skipUpdates = true;
 
         LibraryManager.updateNativesPath();

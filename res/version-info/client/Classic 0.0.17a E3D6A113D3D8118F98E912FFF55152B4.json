@@ -14,5 +14,5 @@
   "useResizePatch": true,
   "hasNetherPortalTexture": false,
   "colorCodePrefix": "&",
-  "downloadURL": "https://mineonline.codie.gg/public/clients/c0.0.17a.jar"
+  "fontClass": "com.mojang.minecraft.b.j"
 }

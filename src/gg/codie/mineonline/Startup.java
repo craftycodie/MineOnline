@@ -19,7 +19,7 @@ public class Startup {
         Logging.enableLogging();
 
         if (Globals.DEV) {
-            System.out.println("&&& MineOnline v " + Globals.LAUNCHER_VERSION + " b " + Globals.BRANCH + " &&&");
+            System.out.println("&&& MineOnline v " + Globals.LAUNCHER_VERSION + (Globals.LTS ? "-LTS" : "") + " b " + Globals.BRANCH + " &&&");
             System.out.println("Starting in Dev mode using Java: " + JREUtils.getRunningJavaExecutable());
         }
 
