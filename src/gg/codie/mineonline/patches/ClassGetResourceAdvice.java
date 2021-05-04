@@ -35,7 +35,7 @@ public class ClassGetResourceAdvice {
                         "Now Playing: Home - Resonance\n" +
                         "you love chips and i love chips\n" +
                         "MineOnline!\n" +
-                        "@codiecrafts\n" +
+                        "@craftycodie\n" +
                         "Hello Kai!\n" +
                         "The Great Journey Awaits!\n";
 
