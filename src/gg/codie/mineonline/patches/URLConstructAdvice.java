@@ -139,7 +139,7 @@ public class URLConstructAdvice {
 
                 url = (String) findCloakURLForUsername.invoke(null, username);
 
-            } else {
+            } else if (!(Boolean) ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.Globals").getField("LTS").get(null)) {
                 if (url.endsWith("/MinecraftResources/") || url.endsWith("/resources")|| url.endsWith("/resources/")) {
                     String resourcesVersion = (String) ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.FilePatch").getField("resourcesVersion").get(null);
 

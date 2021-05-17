@@ -78,13 +78,15 @@ public class SkinUtils {
             if (!profile.has("id"))
                 throw new FileNotFoundException("User not found: " + username);
 
-            String eventCapeUEL = getEventCapeURL(profile.getString("id"));
+            if(!Globals.LTS) {
+                String eventCapeUEL = getEventCapeURL(profile.getString("id"));
 
-            if (eventCapeUEL != null)
-                return eventCapeUEL;
-            else if (Settings.singleton.getCustomCapes()) {
-                if (hasCustomCape(profile.getString("id")))
-                    return Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/player/" + profile.getString("id") + "/customcape";
+                if (eventCapeUEL != null)
+                    return eventCapeUEL;
+                else if (Settings.singleton.getCustomCapes()) {
+                    if (hasCustomCape(profile.getString("id")))
+                        return Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/player/" + profile.getString("id") + "/customcape";
+                }
             }
 
             profile = SessionServer.minecraftProfile(profile.getString("id"));
@@ -117,13 +119,15 @@ public class SkinUtils {
 
     public static String findCloakURLForUuid(String uuid) {
         try {
-            String eventCapeUEL = getEventCapeURL(uuid);
+            if(!Globals.LTS) {
+                String eventCapeUEL = getEventCapeURL(uuid);
 
-            if (eventCapeUEL != null)
-                return eventCapeUEL;
-            else if (Settings.singleton.getCustomCapes()) {
-                if (hasCustomCape(uuid))
-                    return Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/player/" + uuid + "/customcape";
+                if (eventCapeUEL != null)
+                    return eventCapeUEL;
+                else if (Settings.singleton.getCustomCapes()) {
+                    if (hasCustomCape(uuid))
+                        return Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/player/" + uuid + "/customcape";
+                }
             }
 
             JSONObject profile = SessionServer.minecraftProfile(uuid);

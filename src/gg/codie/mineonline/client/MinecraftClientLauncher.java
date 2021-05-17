@@ -175,6 +175,9 @@ public class MinecraftClientLauncher {
             args.add("--accessToken");
             args.add(Session.session.getAccessToken());
 
+            args.add("--userProperties");
+            args.add("{}");
+
             if (Settings.singleton.getFullscreen())
                 args.add("--fullscreen");
 

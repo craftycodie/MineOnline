@@ -1,5 +1,6 @@
 package gg.codie.mineonline.gui.screens;
 
+import gg.codie.mineonline.Globals;
 import gg.codie.mineonline.client.LegacyGameManager;
 import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.gui.components.GuiButton;
@@ -44,16 +45,19 @@ public class GuiAbout extends AbstractGuiScreen
             }
         }));
 
-        controlList.add(new GuiButton(0, getWidth() / 2 - 100, getHeight() / 4 + 96 + byte0, "Custom Capes", new GuiButton.GuiButtonListener() {
-            @Override
-            public void OnButtonPress() {
-                try {
-                    Desktop.getDesktop().browse(new URI("https://www.minecraftcapes.co.uk/"));
-                } catch (Exception ex) {
 
+        if (!Globals.LTS) {
+            controlList.add(new GuiButton(0, getWidth() / 2 - 100, getHeight() / 4 + 96 + byte0, "Custom Capes", new GuiButton.GuiButtonListener() {
+                @Override
+                public void OnButtonPress() {
+                    try {
+                        Desktop.getDesktop().browse(new URI("https://www.minecraftcapes.co.uk/"));
+                    } catch (Exception ex) {
+
+                    }
                 }
-            }
-        }));
+            }));
+        }
 
 
         controlList.add(new GuiButton(5, getWidth() / 2 - 100, getHeight() / 4 + 48 + byte0, "Website", new GuiButton.GuiButtonListener() {
