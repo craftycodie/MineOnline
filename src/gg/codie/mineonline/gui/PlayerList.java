@@ -1,5 +1,6 @@
 package gg.codie.mineonline.gui;
 
+import gg.codie.mineonline.Globals;
 import gg.codie.mineonline.Session;
 import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.mineonline.api.MineOnlineServer;
@@ -30,7 +31,7 @@ public class PlayerList
     }
 
     public void requestPlayers() {
-        if(lastRequestDone && lastRequest < System.currentTimeMillis() - 10000 && SocketConstructAdvice.serverAddress != null && LegacyGameManager.getVersion() != null && LegacyGameManager.getVersion().usePlayerList) {
+        if(!Globals.LTS && lastRequestDone && lastRequest < System.currentTimeMillis() - 10000 && SocketConstructAdvice.serverAddress != null && LegacyGameManager.getVersion() != null && LegacyGameManager.getVersion().usePlayerList) {
             lastRequestDone = false;
             new Thread(new Runnable() {
                 @Override

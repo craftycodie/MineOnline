@@ -1,5 +1,7 @@
 package gg.codie.mineonline.api;
 
+import gg.codie.mineonline.Globals;
+
 import java.util.LinkedList;
 import java.util.concurrent.CompletableFuture;
 
@@ -20,6 +22,9 @@ public class MineOnlineServerRepository {
     }
 
     public void loadServers() {
+        if (Globals.LTS)
+            return;
+
         servers = null;
         failed = false;
 

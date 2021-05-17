@@ -1,5 +1,6 @@
 package gg.codie.mineonline.gui.screens;
 
+import gg.codie.mineonline.Globals;
 import gg.codie.mineonline.MinecraftVersion;
 import gg.codie.mineonline.MinecraftVersionRepository;
 import gg.codie.mineonline.api.MineOnlineServer;
@@ -65,7 +66,9 @@ public class GuiSlotServer extends GuiSlot
     public void drawScreen(int mousex, int mousey) {
         super.drawScreen(mousex, mousey);
 
-        if (MinecraftVersionRepository.getSingleton().isLoadingInstalledVersions())
+        if (Globals.LTS)
+            Font.minecraftFont.drawCenteredStringWithShadow("Not Yet Implemented.", guiMultiplayer.getWidth() / 2, guiMultiplayer.getHeight() / 2, 0x808080);
+        else if (MinecraftVersionRepository.getSingleton().isLoadingInstalledVersions())
             Font.minecraftFont.drawCenteredStringWithShadow("Loading versions...", guiMultiplayer.getWidth() / 2, guiMultiplayer.getHeight() / 2, 0x808080);
         else if (guiMultiplayer.serverRepository.didFail())
             Font.minecraftFont.drawCenteredStringWithShadow("Failed to load servers.", guiMultiplayer.getWidth() / 2, guiMultiplayer.getHeight() / 2, 0x808080);
