@@ -1,6 +1,7 @@
 package gg.codie.mineonline;
 
 import gg.codie.mineonline.gui.MenuManager;
+import gg.codie.mineonline.sound.SoundExtractionService;
 import gg.codie.mineonline.utils.JREUtils;
 import gg.codie.mineonline.utils.Logging;
 
@@ -24,6 +25,7 @@ public class Startup {
         }
 
         LibraryManager.extractLibraries();
+        new SoundExtractionService().extractSoundFiles();
 
         LinkedList<String> launchArgs = new LinkedList();
         launchArgs.add(JREUtils.getRunningJavaExecutable());
