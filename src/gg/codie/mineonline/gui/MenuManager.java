@@ -7,6 +7,7 @@ import gg.codie.mineonline.*;
 import gg.codie.mineonline.api.ClassicServerAuthService;
 import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.mineonline.api.MineOnlineServer;
+import gg.codie.mineonline.api.UpdateCheckerService;
 import gg.codie.mineonline.discord.DiscordRPCHandler;
 import gg.codie.mineonline.gui.input.MouseHandler;
 import gg.codie.mineonline.gui.rendering.DisplayManager;
@@ -94,7 +95,7 @@ public class MenuManager {
 
         DiscordRPCHandler.initialize();
 
-        if(Arrays.stream(args).anyMatch(arg -> arg.equals("-skipupdates")) || Globals.LTS)
+        if(Arrays.stream(args).anyMatch(arg -> arg.equals("-skipupdates")))
             skipUpdates = true;
 
         LibraryManager.updateNativesPath();
@@ -103,11 +104,14 @@ public class MenuManager {
 
         if (!skipUpdates) {
             try {
-                updateAvailable = !MineOnlineAPI.getLauncherVersion().replaceAll("\\s", "").equals(Globals.LAUNCHER_VERSION);
+                updateAvailable = !new UpdateCheckerService().getLauncherVersion().replaceAll("\\s", "").equals(Globals.LAUNCHER_VERSION);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
+
+        // TODO: LTS CHANGE
+        skipUpdates = true;
 
         boolean multiinstance = false;
         String quicklaunch = null;

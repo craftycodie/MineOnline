@@ -22,9 +22,6 @@ public class MineOnlineServerRepository {
     }
 
     public void loadServers() {
-        if (Globals.LTS)
-            return;
-
         servers = null;
         failed = false;
 

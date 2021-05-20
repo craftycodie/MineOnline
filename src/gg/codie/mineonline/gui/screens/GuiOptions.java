@@ -1,7 +1,6 @@
 package gg.codie.mineonline.gui.screens;
 
 import gg.codie.minecraft.client.options.EMinecraftGUIScale;
-import gg.codie.mineonline.Globals;
 import gg.codie.mineonline.Session;
 import gg.codie.mineonline.Settings;
 import gg.codie.mineonline.client.LegacyGameManager;
@@ -158,19 +157,11 @@ public class GuiOptions extends AbstractGuiScreen
                 }
             }));
 
-            controlList.add(new GuiSmallButton(0, getWidth() / 2 + 5, getHeight() / 6 + 48, "Logout", new GuiButton.GuiButtonListener() {
+            controlList.add(new GuiSmallButton(0, getWidth() / 2 - 155, getHeight() / 6 + 48, "Logout", new GuiButton.GuiButtonListener() {
                 @Override
                 public void OnButtonPress() {
                     MenuManager.setMenuScreen(new GuiLoginLegacy());
                     Session.session.logout();
-                }
-            }));
-
-            controlList.add(new GuiSmallButton(0, getWidth() / 2 - 155, getHeight() / 6 + 48, "Custom Capes: " + (Settings.singleton.getCustomCapes() ? "YES" : "NO"), new GuiButton.GuiButtonListener() {
-                @Override
-                public void OnButtonPress() {
-                    Settings.singleton.setCustomCapes(!Settings.singleton.getCustomCapes());
-                    ((GuiSmallButton) controlList.get(7)).displayString = "Custom Capes: " + (Settings.singleton.getCustomCapes() ? "YES" : "NO");
                 }
             }));
         }
@@ -187,9 +178,7 @@ public class GuiOptions extends AbstractGuiScreen
 
         if (!LegacyGameManager.isInGame()) {
             controlList.get(6).resize(getWidth() / 2 + 5, getHeight() / 6 + 24);
-            controlList.get(7).resize(getWidth() / 2 + 5, getHeight() / 6 + 48);
-            if (!Globals.LTS)
-                controlList.get(8).resize(getWidth() / 2 - 155, getHeight() / 6 + 48);
+            controlList.get(7).resize(getWidth() / 2 - 155, getHeight() / 6 + 48);
         }
     }
 

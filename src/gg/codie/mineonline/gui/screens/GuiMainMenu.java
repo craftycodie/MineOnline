@@ -95,6 +95,9 @@ public class GuiMainMenu extends AbstractGuiScreen
                 MenuManager.setMenuScreen(new GuiMultiplayer(thisScreen));
             }
         }));
+
+        multiplayerButton.enabled = false;
+
         controlList.add(new GuiButton(3, getWidth() / 2 - 100, i + 48, "Mods and Texture Packs", new GuiButton.GuiButtonListener() {
             @Override
             public void OnButtonPress() {
@@ -140,7 +143,7 @@ public class GuiMainMenu extends AbstractGuiScreen
         GL11.glPopMatrix();
         if (MenuManager.isUpdateAvailable())
             Font.minecraftFont.drawString("Update Available!", 2, getHeight() - 20, 0xffff00);
-        Font.minecraftFont.drawString("MineOnline " + (Globals.DEV ? "Dev " : "") + Globals.LAUNCHER_VERSION + (Globals.LTS ? "-LTS" : "") + (!Globals.BRANCH.equalsIgnoreCase("release") ? " (" + Globals.BRANCH + ")" : ""), 2, getHeight() - 10, 0xffffff);
+        Font.minecraftFont.drawString("MineOnline " + (Globals.DEV ? "Dev " : "") + Globals.LAUNCHER_VERSION + (!Globals.BRANCH.equalsIgnoreCase("release") ? " (" + Globals.BRANCH + ")" : ""), 2, getHeight() - 10, 0xffffff);
         String s = "Made by @craftycodie <3";
         Font.minecraftFont.drawString(s, getWidth() - Font.minecraftFont.width(s) - 2, getHeight() - 10, 0xffffff);
         super.drawScreen(mouseX, mouseY);

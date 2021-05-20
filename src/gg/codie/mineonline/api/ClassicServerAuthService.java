@@ -15,8 +15,6 @@ public class ClassicServerAuthService {
     }
 
     private void registerMPPassProviders() {
-        if (!Globals.LTS)
-            mpPassProviders.add(new MineOnlineMPPassProvider());
         mpPassProviders.add(new BetaCraftMPPassProvider());
     }
 

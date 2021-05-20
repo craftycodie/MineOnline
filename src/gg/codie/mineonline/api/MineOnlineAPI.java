@@ -232,25 +232,4 @@ public class MineOnlineAPI {
                 connection.disconnect();
         }
     }
-
-    public static String getLauncherVersion() throws IOException {
-        HttpURLConnection connection;
-
-        URL url = new URL(Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/version-" + Globals.BRANCH);
-        connection = (HttpURLConnection) url.openConnection();
-        connection.connect();
-
-        InputStream is = connection.getInputStream();
-        BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-
-        StringBuilder response = new StringBuilder();
-        String line;
-        while ((line = rd.readLine()) != null) {
-            response.append(line);
-            response.append('\r');
-        }
-        rd.close();
-
-        return response.toString();
-    }
 }

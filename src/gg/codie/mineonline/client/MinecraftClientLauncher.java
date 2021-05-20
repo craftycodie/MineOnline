@@ -1,6 +1,7 @@
 package gg.codie.mineonline.client;
 
 import gg.codie.common.utils.OSUtils;
+import gg.codie.minecraft.api.MinecraftLibrariesService;
 import gg.codie.mineonline.*;
 import gg.codie.mineonline.discord.DiscordRPCHandler;
 import gg.codie.mineonline.patches.SocketPatch;
@@ -37,11 +38,25 @@ public class MinecraftClientLauncher {
 
             LinkedList<String> libraries = new LinkedList<>();
 
+            MinecraftLibrariesService minecraftLibrariesService = new MinecraftLibrariesService();
+
             for(String library : minecraftVersion.libraries) {
+                if (!new File(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_PATH + library).toString()).exists()) {
+                    try {
+                        minecraftLibrariesService.downloadLibrary(library);
+                    } catch (Exception ex) {
+                        JOptionPane.showMessageDialog(null, "Failed to launch Minecraft.\nFailed to download required libraries.");
+                    }
+                }
                 libraries.add(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_PATH + library).toString());
             }
 
             for(String nativeJar : minecraftVersion.natives) {
+                try {
+                    minecraftLibrariesService.downloadLibrary(nativeJar);
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null, "Failed to launch Minecraft.\nFailed to download required libraries.");
+                }
                 libraries.add(Paths.get(LauncherFiles.MINECRAFT_LIBRARIES_PATH + nativeJar).toString());
             }
 

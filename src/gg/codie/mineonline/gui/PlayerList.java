@@ -31,7 +31,7 @@ public class PlayerList
     }
 
     public void requestPlayers() {
-        if(!Globals.LTS && lastRequestDone && lastRequest < System.currentTimeMillis() - 10000 && SocketConstructAdvice.serverAddress != null && LegacyGameManager.getVersion() != null && LegacyGameManager.getVersion().usePlayerList) {
+        if(lastRequestDone && lastRequest < System.currentTimeMillis() - 10000 && SocketConstructAdvice.serverAddress != null && LegacyGameManager.getVersion() != null && LegacyGameManager.getVersion().usePlayerList) {
             lastRequestDone = false;
             new Thread(new Runnable() {
                 @Override
