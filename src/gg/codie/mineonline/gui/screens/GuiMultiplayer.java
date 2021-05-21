@@ -41,7 +41,7 @@ public class GuiMultiplayer extends AbstractGuiScreen
         @Override
         public void GotServers(LinkedList<MineOnlineServer> servers) {
             for(MineOnlineServer server : servers) {
-                if(!ThreadPollServers.serverLatencies.containsKey(server.connectAddress + ":" + server.port))
+                if(!ThreadPollServers.serverLatencies.containsKey(server.address))
                     ThreadPollServers.pollServer(server);
             }
         }
@@ -67,7 +67,7 @@ public class GuiMultiplayer extends AbstractGuiScreen
     {
         controlList.clear();
 
-        controlList.add(connectButton = new GuiButton(1, getWidth() / 2 + 54, getHeight() - 48, 100, 20, "Join Server", new GuiButton.GuiButtonListener() {
+        controlList.add(connectButton = new GuiButton(1, getWidth() / 2 - 154, getHeight() - 48, 100, 20, "Join Server", new GuiButton.GuiButtonListener() {
             @Override
             public void OnButtonPress() {
                 joinServer(serverRepository.getServers().get(selectedIndex));
@@ -83,7 +83,17 @@ public class GuiMultiplayer extends AbstractGuiScreen
                     MenuManager.setMenuScreen(new GuiDirectConnect(thisScreen));
             }
         }));
-        controlList.add(new GuiButton(3, getWidth() / 2 - 154, getHeight() - 48, 100, 20, "Cancel", new GuiButton.GuiButtonListener() {
+        controlList.add(new GuiButton(3, getWidth() / 2 + 54, getHeight() - 48, 100, 20, "Add Server", new GuiButton.GuiButtonListener() {
+            @Override
+            public void OnButtonPress() {
+                if (LegacyGameManager.isInGame())
+                    LegacyGameManager.setGUIScreen(new GuiEditServer(thisScreen));
+                else
+                    MenuManager.setMenuScreen(new GuiEditServer(thisScreen));
+            }
+        }));
+
+        controlList.add(new GuiButton(3, getWidth() / 2 + 79, getHeight() - 24, 75, 20, "Cancel", new GuiButton.GuiButtonListener() {
             @Override
             public void OnButtonPress() {
                 if (LegacyGameManager.isInGame())
@@ -92,7 +102,39 @@ public class GuiMultiplayer extends AbstractGuiScreen
                     MenuManager.setMenuScreen(parentScreen);
             }
         }));
+
+        controlList.add(new GuiButton(3, getWidth() / 2 + 3, getHeight() - 24, 70, 20, "Refresh", new GuiButton.GuiButtonListener() {
+            @Override
+            public void OnButtonPress() {
+                for(MineOnlineServer server : MineOnlineServerRepository.getSingleton().getServers()) {
+                    ThreadPollServers.serverLatencies.clear();
+                    ThreadPollServers.pollServer(server);
+                }
+            }
+        }));
+
+        controlList.add(deleteButton = new GuiButton(3, getWidth() / 2 - 75, getHeight() - 24, 70, 20, "Delete", new GuiButton.GuiButtonListener() {
+            @Override
+            public void OnButtonPress() {
+                MineOnlineServerRepository.getSingleton().deleteServer(selectedIndex);
+                selectedIndex = -1;
+            }
+        }));
+
+
+        controlList.add(editButton = new GuiButton(3, getWidth() / 2 - 154, getHeight() - 24, 70, 20, "Edit", new GuiButton.GuiButtonListener() {
+            @Override
+            public void OnButtonPress() {
+                if (LegacyGameManager.isInGame())
+                    LegacyGameManager.setGUIScreen(new GuiEditServer(thisScreen, serverRepository.getServers().get(selectedIndex), selectedIndex));
+                else
+                    MenuManager.setMenuScreen(new GuiEditServer(thisScreen, serverRepository.getServers().get(selectedIndex), selectedIndex));
+            }
+        }));
+
         connectButton.enabled = selectedIndex >= 0 && selectedIndex < guiSlotServer.getSize();
+        editButton.enabled = selectedIndex >= 0 && selectedIndex < guiSlotServer.getSize();
+        deleteButton.enabled = selectedIndex >= 0 && selectedIndex < guiSlotServer.getSize();
     }
 
     public void onGuiClosed()
@@ -127,7 +169,7 @@ public class GuiMultiplayer extends AbstractGuiScreen
 
     private void joinServer(MineOnlineServer server)
     {
-        MinecraftVersion serverVersion = MinecraftVersionRepository.getSingleton().getVersionByMD5(server.md5);
+        MinecraftVersion serverVersion = MinecraftVersionRepository.getSingleton().getVersionByMD5(server.clientMD5);
 
         Predicate<GuiSlotVersion.SelectableVersion> selectableVersionPredicate = null;
 
@@ -141,24 +183,21 @@ public class GuiMultiplayer extends AbstractGuiScreen
             @Override
             public void onSelect(String path) {
                 try {
-                    String mppass = classicAuthService.getMPPass(server.ip, server.port + "", Session.session.getAccessToken(), Session.session.getUuid(), Session.session.getUsername());
-                    MinecraftVersion.launchMinecraft(path, server.ip, server.port + "", mppass);
+                    String[] split = server.address.split(":");
+                    String mppass = classicAuthService.getMPPass(split[0], split.length > 1 ? split[1] : "25565", Session.session.getAccessToken(), Session.session.getUuid(), Session.session.getUsername());
+                    MinecraftVersion.launchMinecraft(path, split[0], split.length > 1 ? split[1] : "25565", mppass);
 
                     if (LegacyGameManager.isInGame()) {
-                        if (server.usingBetaEvolutions) {
-                            BetaEvolutionsUtils betaEvolutions = new BetaEvolutionsUtils(true);
-                            BetaEvolutionsUtils.VerificationResults verificationResults = betaEvolutions.authenticateUser(Session.session.getUsername(), Session.session.getAccessToken());
-                            System.out.println("[Beta Evolutions] Authenticated with " + verificationResults.getSuccessful() + "/" + verificationResults.getTotal() + " BetaEVO nodes.");
-                        }
+                        BetaEvolutionsUtils betaEvolutions = new BetaEvolutionsUtils(true);
+                        BetaEvolutionsUtils.VerificationResults verificationResults = betaEvolutions.authenticateUser(Session.session.getUsername(), Session.session.getAccessToken());
+                        System.out.println("[Beta Evolutions] Authenticated with " + verificationResults.getSuccessful() + "/" + verificationResults.getTotal() + " BetaEVO nodes.");
                         LegacyGameManager.closeGame();
                     } else {
                         Display.destroy();
                         DisplayManager.getFrame().setVisible(false);
-                        if(server.usingBetaEvolutions) {
-                            BetaEvolutionsUtils betaEvolutions = new BetaEvolutionsUtils(true);
-                            BetaEvolutionsUtils.VerificationResults verificationResults = betaEvolutions.authenticateUser(Session.session.getUsername(), Session.session.getAccessToken());
-                            System.out.println("[Beta Evolutions] Authenticated with " + verificationResults.getSuccessful() + "/" + verificationResults.getTotal() + " BetaEVO nodes.");
-                        }
+                        BetaEvolutionsUtils betaEvolutions = new BetaEvolutionsUtils(true);
+                        BetaEvolutionsUtils.VerificationResults verificationResults = betaEvolutions.authenticateUser(Session.session.getUsername(), Session.session.getAccessToken());
+                        System.out.println("[Beta Evolutions] Authenticated with " + verificationResults.getSuccessful() + "/" + verificationResults.getTotal() + " BetaEVO nodes.");
                         DisplayManager.getFrame().dispose();
                         System.exit(0);
                     }
@@ -221,7 +260,10 @@ public class GuiMultiplayer extends AbstractGuiScreen
     private GuiSlotServer guiSlotServer;
     private int selectedIndex;
     private GuiButton connectButton;
+    private GuiButton editButton;
+    private GuiButton deleteButton;
+
     private String tooltip;
-    public MineOnlineServerRepository serverRepository = new MineOnlineServerRepository();
+    public MineOnlineServerRepository serverRepository = MineOnlineServerRepository.getSingleton();
     private ClassicServerAuthService classicAuthService = new ClassicServerAuthService();
 }

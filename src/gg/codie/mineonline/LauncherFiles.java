@@ -11,6 +11,7 @@ public class LauncherFiles {
     public static final String MINEONLINE_FOLDER = getMineOnlineDirectory().getPath() + File.separator;
 
     public static final String MINEONLINE_SETTINGS_FILE = MINEONLINE_FOLDER + "settings.json";
+    public static final String MINEONLINE_SERVERS_FILE = MINEONLINE_FOLDER + "servers.json";
 
     public static final String MINEONLINE_LIBRARY_FOLDER = MINEONLINE_FOLDER + "lib" + File.separator;
 

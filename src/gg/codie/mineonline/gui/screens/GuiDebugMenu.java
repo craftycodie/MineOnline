@@ -33,7 +33,6 @@ public class GuiDebugMenu extends AbstractGuiScreen
                 Settings.singleton.setMenuToast(true);
                 Settings.singleton.setScreenshotToast(true);
                 Settings.singleton.setZoomToast(true);
-                Settings.singleton.setPlayerListToast(true);
                 Settings.singleton.saveSettings();
             }
         }));

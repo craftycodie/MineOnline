@@ -45,8 +45,12 @@ public class ProgressDialog extends JDialog {
             singleton.progress = progress;
 
             if (progress >= 100) {
-                singleton.dispose();
-                singleton = null;
+                try {
+                    singleton.dispose();
+                    singleton = null;
+                } catch (Exception ex) {
+
+                }
             }
         }
     }

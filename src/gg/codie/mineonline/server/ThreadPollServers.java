@@ -33,31 +33,31 @@ public class ThreadPollServers extends Thread
                           long var1 = System.nanoTime();
                           performPoll(mineOnlineServer);
                           long var3 = System.nanoTime();
-                          serverLatencies.put(mineOnlineServer.connectAddress + ":" + mineOnlineServer.port, (var3 - var1) / 1000000L);
+                          serverLatencies.put(mineOnlineServer.address, (var3 - var1) / 1000000L);
                           var27 = false;
                           break label183;
                        } catch (UnknownHostException ex) {
                            ex.printStackTrace();
-                           serverLatencies.put(mineOnlineServer.connectAddress + ":" + mineOnlineServer.port, -1L);
+                           serverLatencies.put(mineOnlineServer.address, -1L);
                           var27 = false;
                        } catch (SocketTimeoutException ex) {
                            ex.printStackTrace();
-                           serverLatencies.put(mineOnlineServer.connectAddress + ":" + mineOnlineServer.port, -1L);
+                           serverLatencies.put(mineOnlineServer.address, -1L);
                           var27 = false;
                           break label187;
                        } catch (ConnectException ex) {
                            ex.printStackTrace();
-                           serverLatencies.put(mineOnlineServer.connectAddress + ":" + mineOnlineServer.port, -1L);
+                           serverLatencies.put(mineOnlineServer.address, -1L);
                           var27 = false;
                           break label186;
                        } catch (IOException ex) {
                            ex.printStackTrace();
-                           serverLatencies.put(mineOnlineServer.connectAddress + ":" + mineOnlineServer.port, -1L);
+                           serverLatencies.put(mineOnlineServer.address, -1L);
                           var27 = false;
                           break label185;
                        } catch (Exception ex) {
                            ex.printStackTrace();
-                           serverLatencies.put(mineOnlineServer.connectAddress + ":" + mineOnlineServer.port, -1L);
+                           serverLatencies.put(mineOnlineServer.address, -1L);
                           var27 = false;
                           break label184;
                        } finally {
@@ -84,7 +84,7 @@ public class ThreadPollServers extends Thread
     private void performPoll(MineOnlineServer mineOnlineServer)
             throws IOException
     {
-        String s = mineOnlineServer.connectAddress + ":" + mineOnlineServer.port;
+        String s = mineOnlineServer.address;
         String as[] = s.split(":");
         if(s.startsWith("["))
         {

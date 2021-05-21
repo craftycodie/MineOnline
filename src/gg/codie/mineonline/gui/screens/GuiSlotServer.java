@@ -1,6 +1,5 @@
 package gg.codie.mineonline.gui.screens;
 
-import gg.codie.mineonline.Globals;
 import gg.codie.mineonline.MinecraftVersion;
 import gg.codie.mineonline.MinecraftVersionRepository;
 import gg.codie.mineonline.api.MineOnlineServer;
@@ -11,13 +10,7 @@ import gg.codie.mineonline.gui.textures.EGUITexture;
 import gg.codie.mineonline.server.ThreadPollServers;
 import org.lwjgl.opengl.GL11;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
 import java.util.Arrays;
-import java.util.Base64;
 
 public class GuiSlotServer extends GuiSlot
 {
@@ -68,10 +61,6 @@ public class GuiSlotServer extends GuiSlot
 
         if (MinecraftVersionRepository.getSingleton().isLoadingInstalledVersions())
             Font.minecraftFont.drawCenteredStringWithShadow("Loading versions...", guiMultiplayer.getWidth() / 2, guiMultiplayer.getHeight() / 2, 0x808080);
-        else if (guiMultiplayer.serverRepository.didFail())
-            Font.minecraftFont.drawCenteredStringWithShadow("Failed to load servers.", guiMultiplayer.getWidth() / 2, guiMultiplayer.getHeight() / 2, 0x808080);
-        else if (!guiMultiplayer.serverRepository.gotServers())
-            Font.minecraftFont.drawCenteredStringWithShadow("Loading servers...", guiMultiplayer.getWidth() / 2, guiMultiplayer.getHeight() / 2, 0x808080);
     }
 
     protected void drawSlot(int slotIndex, int xPos, int yPos, int zPos)
@@ -80,7 +69,7 @@ public class GuiSlotServer extends GuiSlot
 
         MineOnlineServer server = guiMultiplayer.getServers().get(slotIndex);
 
-        MinecraftVersion version = MinecraftVersionRepository.getSingleton().getVersionByMD5(server.md5);
+        MinecraftVersion version = MinecraftVersionRepository.getSingleton().getVersionByMD5(server.clientMD5);
         String versionName = "Unknown Version";
         if (version != null) {
             if (version.clientName != null) {
@@ -92,28 +81,7 @@ public class GuiSlotServer extends GuiSlot
             }
         }
 
-        if (server.serverIcon != null) {
-            BufferedImage image;
-            byte[] imageByte;
-            try {
-                Base64.Decoder decoder = Base64.getDecoder();
-                imageByte = decoder.decode(server.serverIcon);
-                ByteArrayInputStream bis = new ByteArrayInputStream(imageByte);
-                image = ImageIO.read(bis);
-                bis.close();
-
-                ByteArrayOutputStream os = new ByteArrayOutputStream();
-                ImageIO.write(image, "png", os);
-                InputStream is = new ByteArrayInputStream(os.toByteArray());
-
-                GL11.glBindTexture(GL11.GL_TEXTURE_2D, Loader.singleton.loadTexture("/servers/" + server.ip + ":" + server.port + "/server-icon.png", is));
-            } catch (Exception e) {
-                GL11.glBindTexture(GL11.GL_TEXTURE_2D, Loader.singleton.getGuiTexture(EGUITexture.UNKNOWN_PACK));
-                e.printStackTrace();
-            }
-        } else {
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, Loader.singleton.getGuiTexture(EGUITexture.UNKNOWN_PACK));
-        }
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, Loader.singleton.getGuiTexture(EGUITexture.UNKNOWN_PACK));
 
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         Renderer.singleton.startDrawingQuads();
@@ -126,34 +94,17 @@ public class GuiSlotServer extends GuiSlot
 
         Font.minecraftFont.drawString(server.name, xPos + 32 + 2, yPos + 1, 0xffffff);
         Font.minecraftFont.drawString(versionName, xPos + 32 + 2, yPos + 12, 0x808080);
-        String users = server.isMineOnline ? "" + server.users : "?";
-        Font.minecraftFont.drawString(users + "§8/§7" + server.maxUsers, (xPos + slotWidth - 4) - Font.minecraftFont.width(users + "/" + server.maxUsers), yPos + 12, 0xAAAAAA);
-
-        if (server.motd != null)
-            Font.minecraftFont.drawString(server.motd, xPos + 32 + 2, yPos + 12 + 11, 0x808080);
 
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, Loader.singleton.getGuiTexture(EGUITexture.MINEONLINE_GUI_ICONS));
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
 
-        if (server.featured)
-            Renderer.singleton.drawSprite(xPos + slotWidth - 29, yPos, 20, 184, 10, 8);
-        else if (server.onlineMode)
-            Renderer.singleton.drawSprite(xPos + slotWidth - 29, yPos, 20, 176, 10, 8);
-
-        if (server.whitelisted)
-            if (server.featured || server.onlineMode)
-                Renderer.singleton.drawSprite(xPos + slotWidth - 44, yPos, 20, 192, 10, 8);
-            else
-                Renderer.singleton.drawSprite(xPos + slotWidth - 29, yPos, 20, 192, 10, 8);
-
-
         int connectionIconTypeIndex;
         int connectionIconIndex;
         String tooltipText;
         Long latency;
-        if(ThreadPollServers.serverLatencies.containsKey(server.connectAddress + ":" + server.port) && (latency = ThreadPollServers.serverLatencies.get(server.connectAddress + ":" + server.port)) != -2L)
+        if(ThreadPollServers.serverLatencies.containsKey(server.address) && (latency = ThreadPollServers.serverLatencies.get(server.address)) != -2L)
         {
             connectionIconTypeIndex = 0;
             if(latency < 0L)
@@ -202,27 +153,6 @@ public class GuiSlotServer extends GuiSlot
         {
             guiMultiplayer.setTooltip(tooltipText);
         }
-
-        if (mouseX >= (xPos + slotWidth - 29) - byte0 && mouseY >= yPos - byte0 && mouseX <= xPos + (slotWidth - 29) + 10 + byte0 && mouseY <= yPos + 8 + byte0)
-        {
-            if (server.featured)
-                guiMultiplayer.setTooltip("Featured");
-            else if (server.onlineMode)
-                guiMultiplayer.setTooltip("Online Mode");
-            else if (server.whitelisted)
-                guiMultiplayer.setTooltip("Whitelisted");
-        }
-
-        if (mouseX >= (xPos + slotWidth - 44) - byte0 && mouseY >= yPos - byte0 && mouseX <= xPos + (slotWidth - 44) + 10 + byte0 && mouseY <= yPos + 8 + byte0)
-        {
-            if (server.whitelisted && (server.onlineMode || server.featured))
-                guiMultiplayer.setTooltip("Whitelisted");
-        }
-        // TODO: Players Tooltip
-//        if(mouseX >= (j + 205) - byte0 && mouseY >= k && mouseX <= j + 205 + 10 + byte0 && mouseY <= k + 12 + byte0)
-//        {
-//            parent.setTooltip(Arrays.toString(server.players).replace("[", "").replace("]", "").replace(",", "\n"));
-//        }
     }
 
     final GuiMultiplayer guiMultiplayer;

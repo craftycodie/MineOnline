@@ -32,7 +32,6 @@ public class Settings implements IMinecraftOptionsHandler {
     private static final String SHOW_MENU_TOAST = "showMenuToast";
     private static final String SHOW_SCREENSHOT_TOAST = "showScreenshotToast";
     private static final String SHOW_ZOOM_TOAST = "showZoomToast";
-    private static final String SHOW_PLAYERLIST_TOAST = "showPlayerlistToast";
 
     private static final String FULLSCREEN = "fullscreen";
     private static final String GUI_SCALE = "guiScale";
@@ -733,13 +732,6 @@ public class Settings implements IMinecraftOptionsHandler {
     }
     public void setZoomToast(boolean show) {
         settings.put(SHOW_ZOOM_TOAST, show);
-    }
-
-    public boolean getPlayerListToast() {
-        return settings.optBoolean(SHOW_PLAYERLIST_TOAST, true);
-    }
-    public void setPlayerListToast(boolean show) {
-        settings.put(SHOW_PLAYERLIST_TOAST, show);
     }
 
     @Override

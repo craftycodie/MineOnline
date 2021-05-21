@@ -41,6 +41,10 @@ public class GuiVersions extends AbstractGuiScreen
         Keyboard.enableRepeatEvents(false);
     }
 
+    public void setSelectButtonText(String text) {
+        playButton.displayString = text;
+    }
+
     public GuiVersions(AbstractGuiScreen guiscreen, Predicate<GuiSlotVersion.SelectableVersion> filter, IVersionSelectListener onSelect, GuiSlotVersion.ISelectableVersionCompare compare, boolean autoSelectSingleJar, boolean showReleaseOnOpen)
     {
         this.showReleaseOnOpen = showReleaseOnOpen;

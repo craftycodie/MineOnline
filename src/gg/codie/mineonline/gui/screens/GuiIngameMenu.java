@@ -68,7 +68,7 @@ public class GuiIngameMenu extends AbstractGuiScreen
             controlList.add(new GuiButton(5, getWidth() / 2 - 100, getHeight() / 4 + 48 + byte0, 98, 20, "Multiplayer", new GuiButton.GuiButtonListener() {
                 @Override
                 public void OnButtonPress() {
-                    LegacyGameManager.setGUIScreen(new GuiDirectConnect(thisScreen));
+                    LegacyGameManager.setGUIScreen(new GuiMultiplayer(thisScreen));
                 }
             }));
             controlList.add(new GuiButton(6, getWidth() / 2 + 2, getHeight() / 4 + 48 + byte0, 98, 20, "Texture Packs", new GuiButton.GuiButtonListener() {
@@ -81,7 +81,7 @@ public class GuiIngameMenu extends AbstractGuiScreen
             controlList.add(new GuiButton(5, getWidth() / 2 - 100, getHeight() / 4 + 48 + byte0, "Multiplayer", new GuiButton.GuiButtonListener() {
                 @Override
                 public void OnButtonPress() {
-                    LegacyGameManager.setGUIScreen(new GuiDirectConnect(thisScreen));
+                    LegacyGameManager.setGUIScreen(new GuiMultiplayer(thisScreen));
                 }
             }));
         }
