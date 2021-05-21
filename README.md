@@ -13,14 +13,12 @@ The program can also run regular desktop versions of the game, and even old laun
 
 [Download](https://github.com/craftycodie/MineOnline/releases)
 
-( also available on the [Arch User Repository](https://aur.archlinux.org/packages/mineonline/) as maintained by [@maddoxdragon](https://github.com/maddoxdragon/) )
-
 ## Features
 These are features MineOnline will bring to Minecraft.
 
 - Skins and Cloaks
 - Resource Files (Sounds, the right ones for each version!)
-- [Server List](https://mineonline.codie.gg/servers)
+- Server List
 - FOV Slider
 - Microsoft Login Support
 - Online World Saves for Classic
