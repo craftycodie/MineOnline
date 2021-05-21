@@ -17,6 +17,8 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 import gg.codie.mineonline.api.ClassicServerAuthService;
 
+import javax.swing.*;
+import java.awt.*;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -169,60 +171,61 @@ public class GuiMultiplayer extends AbstractGuiScreen
 
     private void joinServer(MineOnlineServer server)
     {
-        MinecraftVersion serverVersion = MinecraftVersionRepository.getSingleton().getVersionByMD5(server.clientMD5);
+        MinecraftVersion clientVersion = MinecraftVersionRepository.getSingleton().getVersionByMD5(server.clientMD5);
+        String jarPath = null;
 
-        Predicate<GuiSlotVersion.SelectableVersion> selectableVersionPredicate = null;
-
-        if (serverVersion != null) {
-            selectableVersionPredicate = (GuiSlotVersion.SelectableVersion selectableVersion) -> {
-                return selectableVersion.version != null && (serverVersion.baseVersion.equals(selectableVersion.version.baseVersion) || Arrays.stream(serverVersion.clientVersions).anyMatch(selectableVersion.version.baseVersion::equals));
-            };
+        for (String path : MinecraftVersionRepository.getSingleton().getInstalledJars().keySet()) {
+            if (MinecraftVersionRepository.getSingleton().getInstalledJars().get(path) != null && MinecraftVersionRepository.getSingleton().getInstalledJars().get(path).md5.equals(server.clientMD5)) {
+                jarPath = path;
+                break;
+            }
         }
 
-        GuiVersions.IVersionSelectListener selectListener = new GuiVersions.IVersionSelectListener() {
-            @Override
-            public void onSelect(String path) {
+        if (jarPath == null) {
+            if (clientVersion.downloadURL != null)
                 try {
-                    String[] split = server.address.split(":");
-                    String mppass = classicAuthService.getMPPass(split[0], split.length > 1 ? split[1] : "25565", Session.session.getAccessToken(), Session.session.getUuid(), Session.session.getUsername());
-                    MinecraftVersion.launchMinecraft(path, split[0], split.length > 1 ? split[1] : "25565", mppass);
-
-                    if (LegacyGameManager.isInGame()) {
-                        BetaEvolutionsUtils betaEvolutions = new BetaEvolutionsUtils(true);
-                        BetaEvolutionsUtils.VerificationResults verificationResults = betaEvolutions.authenticateUser(Session.session.getUsername(), Session.session.getAccessToken());
-                        System.out.println("[Beta Evolutions] Authenticated with " + verificationResults.getSuccessful() + "/" + verificationResults.getTotal() + " BetaEVO nodes.");
-                        LegacyGameManager.closeGame();
-                    } else {
-                        Display.destroy();
-                        DisplayManager.getFrame().setVisible(false);
-                        BetaEvolutionsUtils betaEvolutions = new BetaEvolutionsUtils(true);
-                        BetaEvolutionsUtils.VerificationResults verificationResults = betaEvolutions.authenticateUser(Session.session.getUsername(), Session.session.getAccessToken());
-                        System.out.println("[Beta Evolutions] Authenticated with " + verificationResults.getSuccessful() + "/" + verificationResults.getTotal() + " BetaEVO nodes.");
-                        DisplayManager.getFrame().dispose();
-                        System.exit(0);
-                    }
+                    jarPath = clientVersion.download();
                 } catch (Exception ex) {
-                    ex.printStackTrace();
-                    // ignore for now
-                }
+                    EventQueue.invokeLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            JOptionPane.showMessageDialog(null, "Failed to launch Minecraft.");
+                        }
+                    });
             }
-        };
-
-        GuiSlotVersion.ISelectableVersionCompare compare = new GuiSlotVersion.ISelectableVersionCompare() {
-            @Override
-            public boolean isDefault(GuiSlotVersion.SelectableVersion selectableVersion) {
-                if (serverVersion == null)
-                    return false;
-                return selectableVersion.version != null && selectableVersion.version.baseVersion.equals(serverVersion.clientVersions[0]);
+            else {
+                EventQueue.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        JOptionPane.showMessageDialog(null, "Couldn't find a compatible version.");
+                    }
+                });
             }
-        };
+        }
 
-        boolean serverVersionIsRelease = serverVersion == null || serverVersion.name.startsWith("Release") || serverVersion.name.startsWith("Snapshot");
+        try {
+            String[] split = server.address.split(":");
+            String mppass = classicAuthService.getMPPass(split[0], split.length > 1 ? split[1] : "25565", Session.session.getAccessToken(), Session.session.getUuid(), Session.session.getUsername());
+            MinecraftVersion.launchMinecraft(jarPath, split[0], split.length > 1 ? split[1] : "25565", mppass);
 
-        if (LegacyGameManager.isInGame())
-            LegacyGameManager.setGUIScreen(new GuiVersions(this, selectableVersionPredicate, selectListener, compare, true, serverVersion != null && serverVersionIsRelease));
-        else
-            MenuManager.setMenuScreen(new GuiVersions(this, selectableVersionPredicate, selectListener, compare, true, serverVersion != null && serverVersionIsRelease));
+            if (LegacyGameManager.isInGame()) {
+                BetaEvolutionsUtils betaEvolutions = new BetaEvolutionsUtils(true);
+                BetaEvolutionsUtils.VerificationResults verificationResults = betaEvolutions.authenticateUser(Session.session.getUsername(), Session.session.getAccessToken());
+                System.out.println("[Beta Evolutions] Authenticated with " + verificationResults.getSuccessful() + "/" + verificationResults.getTotal() + " BetaEVO nodes.");
+                LegacyGameManager.closeGame();
+            } else {
+                Display.destroy();
+                DisplayManager.getFrame().setVisible(false);
+                BetaEvolutionsUtils betaEvolutions = new BetaEvolutionsUtils(true);
+                BetaEvolutionsUtils.VerificationResults verificationResults = betaEvolutions.authenticateUser(Session.session.getUsername(), Session.session.getAccessToken());
+                System.out.println("[Beta Evolutions] Authenticated with " + verificationResults.getSuccessful() + "/" + verificationResults.getTotal() + " BetaEVO nodes.");
+                DisplayManager.getFrame().dispose();
+                System.exit(0);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            // ignore for now
+        }
     }
 
     public List<MineOnlineServer> getServers()

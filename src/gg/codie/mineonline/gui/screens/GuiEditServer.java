@@ -109,7 +109,6 @@ public class GuiEditServer extends AbstractGuiScreen
             }
         }));
 
-        ((GuiButton)controlList.get(0)).enabled = false;
         addressTextField = new GuiTextField(this, getWidth() / 2 - 100, (getHeight() / 4 - 10) + 50 + 18, 200, 20, server.address);
         addressTextField.isFocused = true;
         addressTextField.setMaxStringLength(128);
@@ -117,6 +116,8 @@ public class GuiEditServer extends AbstractGuiScreen
         nameTextField = new GuiTextField(this, getWidth() / 2 - 100, (getHeight() / 4 - 10) + 50 + 22, 200, 20, server.name);
         nameTextField.isFocused = false;
         nameTextField.setMaxStringLength(128);
+
+        ((GuiButton)controlList.get(0)).enabled = addressTextField.getText().length() > 0 && nameTextField.getText().length() > 0 && server.clientMD5 != null;
     }
 
     public void resize() {

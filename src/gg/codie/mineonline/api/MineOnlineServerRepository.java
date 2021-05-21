@@ -47,6 +47,14 @@ public class MineOnlineServerRepository {
 
             serversJSON = new JSONObject(stringBuffer.toString());
         } catch (IOException ex) {
+            serversJSON = new JSONObject();
+            JSONArray servers = new JSONArray();
+            JSONObject retroMC = new JSONObject();
+            retroMC.put("name", "Retro MC");
+            retroMC.put("address", "mc.retromc.org");
+            retroMC.put("clientMD5", "EAE3353FDAA7E10A59B4CB5B45BFA10D");
+            servers.put(retroMC);
+            serversJSON.put("servers", servers);
             saveServers();
         }
 
