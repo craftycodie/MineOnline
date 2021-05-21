@@ -3,6 +3,7 @@ package gg.codie.mineonline.patches;
 import net.bytebuddy.asm.Advice;
 
 import java.lang.reflect.Method;
+import java.net.URL;
 
 public class URLConstructAdvice {
     public static String updateURL;
@@ -116,12 +117,16 @@ public class URLConstructAdvice {
                     url = ClassLoader.getSystemResource("responses/YES").toString();
                 else // Just something to make it error.
                     url = ClassLoader.getSystemResource("responses/bad login").toString();
-            } else if ((url.contains("/login/session.jsp"))) {
+            } else if (url.contains("/login/session.jsp")) {
                 url = ClassLoader.getSystemResource("responses/ok").toString();
-            } else if ((url.contains("/game/?n="))) {
+            } else if (url.contains("/game/?n=")) {
                 url = ClassLoader.getSystemResource("responses/42069").toString();
-            } else if ((url.contains("/haspaid.jsp"))) {
+            } else if (url.contains("/haspaid.jsp")) {
                 url = ClassLoader.getSystemResource("responses/true").toString();
+            } else if (url.endsWith("/resources/")) {
+                String resourcesVersion = (String) ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.FilePatch").getField("resourcesVersion").get(null);
+                Object resourceDownloaderService = ClassLoader.getSystemClassLoader().loadClass("gg.codie.minecraft.resources.ResourcesIndexService").newInstance();
+                url = ((URL)ClassLoader.getSystemClassLoader().loadClass("gg.codie.minecraft.resources.ResourcesIndexService").getMethod("getResourcesIndex", String.class).invoke(resourceDownloaderService, resourcesVersion)).toString();
             } else if ((url.contains("/MinecraftSkins/") || url.contains("/skin/")) && url.contains(".png")) {
                 // Handled by UrlConnectionPatch
             } else if (url.contains("textures.minecraft.net")) {

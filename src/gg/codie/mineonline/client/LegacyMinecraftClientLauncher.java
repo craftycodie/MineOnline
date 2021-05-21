@@ -23,6 +23,7 @@ import gg.codie.mineonline.patches.lwjgl.LWJGLGLUPatch;
 import gg.codie.mineonline.patches.minecraft.ColorizerPatch;
 import gg.codie.mineonline.patches.minecraft.FOVViewmodelAdvice;
 import gg.codie.mineonline.patches.minecraft.InputPatch;
+import gg.codie.mineonline.sound.SoundExtractionService;
 import gg.codie.mineonline.utils.JREUtils;
 import gg.codie.mineonline.utils.Logging;
 import org.lwjgl.BufferUtils;
@@ -171,6 +172,13 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
 
         minecraftVersion = MinecraftVersionRepository.getSingleton(true, jarPath).getVersion(jarPath);
         Settings.singleton.saveMinecraftOptions(minecraftVersion != null ? minecraftVersion.optionsVersion : EMinecraftOptionsVersion.DEFAULT);
+
+        if (minecraftVersion != null)
+            try {
+                new SoundExtractionService().downloadSoundpack(minecraftVersion.resourcesVersion);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
     }
 
     boolean firstUpdate = true;

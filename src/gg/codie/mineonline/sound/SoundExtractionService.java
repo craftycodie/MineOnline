@@ -79,6 +79,52 @@ public class SoundExtractionService {
         soundsZipStream.close();
     }
 
+    public void downloadSoundpack(String version) throws URISyntaxException, IOException {
+        if (!new File(LauncherFiles.MINEONLINE_RESOURCES_PATH + version).exists()) {
+            try {
+                if (!ProgressDialog.isOpen()) {
+                    ProgressDialog.showProgress("Installing MineOnline", new WindowAdapter() {
+                        @Override
+                        public void windowClosed(WindowEvent e) {
+                            System.exit(0);
+                        }
+                    });
+                    ProgressDialog.setMessage("Downloading sounds...");
+                }
+                System.out.println("Downloading sounds for " + version);
+                ProgressDialog.setProgress(0);
+
+                ProgressDialog.setSubMessage(version + ".zip");
+                /// Download it.
+                URL downloadURL = new URL("https://github.com/craftycodie/MineOnline/blob/main/resources/" + version + ".zip?raw=true");
+                HttpURLConnection httpConnection = (java.net.HttpURLConnection) (downloadURL.openConnection());
+                InputStream in = httpConnection.getInputStream();
+
+                String path = Paths.get(LauncherFiles.MINEONLINE_TEMP_FOLDER + version + ".zip").toString();
+
+                File soundsZip = new File(path);
+                soundsZip.getParentFile().mkdirs();
+                OutputStream out = new java.io.FileOutputStream(path, false);
+                final byte[] data = new byte[1024];
+                int count;
+                int written = 0;
+                while ((count = in.read(data, 0, 1024)) != -1) {
+                    written += count;
+                    ProgressDialog.setProgress((int) MathUtils.clamp((((float)written / httpConnection.getContentLength()) * 100), 0, 99));
+                    out.write(data, 0, count);
+                }
+                out.flush();
+                out.close();
+
+                extractSoundsZip(new FileInputStream(soundsZip), version);
+
+                soundsZip.delete();
+            } catch (FileNotFoundException ex) {
+                // Ignore missing zips for now.
+            }
+        }
+    }
+
     public void extractSoundFiles() throws IOException, URISyntaxException {
         if (!new File(LauncherFiles.MINEONLINE_RESOURCES_PATH).exists())
             ProgressDialog.showProgress("Installing MineOnline", new WindowAdapter() {
@@ -120,53 +166,12 @@ public class SoundExtractionService {
 
         ProgressDialog.setMessage("Downloading sounds...");
 
-        for (String soundVersion : soundVersions) {
-            // If the sound version wasn't extracted...
-            if (!new File(LauncherFiles.MINEONLINE_RESOURCES_PATH + soundVersion).exists()) {
-                try {
-                    if (!ProgressDialog.isOpen()) {
-                        ProgressDialog.showProgress("Installing MineOnline", new WindowAdapter() {
-                            @Override
-                            public void windowClosed(WindowEvent e) {
-                                System.exit(0);
-                            }
-                        });
-                        ProgressDialog.setMessage("Downloading sounds...");
-                    }
-                    System.out.println("Downloading sounds for " + soundVersion);
-                    ProgressDialog.setProgress(0);
 
-                    ProgressDialog.setSubMessage(soundVersion + ".zip");
-                    /// Download it.
-                    URL downloadURL = new URL("https://github.com/craftycodie/MineOnline/blob/main/resources/" + soundVersion + ".zip?raw=true");
-                    HttpURLConnection httpConnection = (java.net.HttpURLConnection) (downloadURL.openConnection());
-                    InputStream in = httpConnection.getInputStream();
-
-                    String path = Paths.get(LauncherFiles.MINEONLINE_TEMP_FOLDER + soundVersion + ".zip").toString();
-
-                    File soundsZip = new File(path);
-                    soundsZip.getParentFile().mkdirs();
-                    OutputStream out = new java.io.FileOutputStream(path, false);
-                    final byte[] data = new byte[1024];
-                    int count;
-                    int written = 0;
-                    while ((count = in.read(data, 0, 1024)) != -1) {
-                        written += count;
-                        ProgressDialog.setProgress((int) MathUtils.clamp((((float)written / httpConnection.getContentLength()) * 100), 0, 99));
-                        out.write(data, 0, count);
-                    }
-                    out.flush();
-                    out.close();
-
-                    extractSoundsZip(new FileInputStream(soundsZip), soundVersion);
-
-                    soundsZip.delete();
-                } catch (FileNotFoundException ex) {
-                    // Ignore missing zips for now.
-                }
-            }
+        try {
+            downloadSoundpack("default");
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
-
 
         ProgressDialog.setProgress(100);
     }

@@ -102,7 +102,7 @@ public class MenuManager {
 
         formopen = true;
 
-        if (!skipUpdates) {
+        if (!skipUpdates && Globals.BRANCH.equals("release")) {
             try {
                 updateAvailable = !new UpdateCheckerService().getLauncherVersion().replaceAll("\\s", "").equals(Globals.LAUNCHER_VERSION);
             } catch (Exception ex) {
