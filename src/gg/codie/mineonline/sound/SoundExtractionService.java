@@ -119,6 +119,8 @@ public class SoundExtractionService {
                 extractSoundsZip(new FileInputStream(soundsZip), version);
 
                 soundsZip.delete();
+
+                ProgressDialog.setProgress(100);
             } catch (FileNotFoundException ex) {
                 // Ignore missing zips for now.
             }
@@ -172,7 +174,5 @@ public class SoundExtractionService {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-
-        ProgressDialog.setProgress(100);
     }
 }
