@@ -204,68 +204,7 @@ public class MenuManager {
             LastLogin.writeLastLogin(sessionToken, lastLogin.clientToken, lastLogin.loginUsername, username, uuid, lastLogin.legacy);
         }
 
-        if (Session.session != null && Session.session.isOnline() && joinserver != null && quicklaunch == null) {
-            String ip;
-            String port;
-
-            try {
-                String[] split = joinserver.split(":");
-                ip = split[0];
-                port = split[1];
-                MineOnlineServer mineOnlineServer = MineOnlineAPI.getServer(ip, port);
-
-                MinecraftVersion serverVersion = MinecraftVersionRepository.getSingleton().getVersionByMD5(mineOnlineServer.md5);
-
-                Set<String> minecraftJars = MinecraftVersionRepository.getSingleton().getInstalledJars().keySet();
-
-                if (serverVersion != null) {
-                    for (String compatibleClientBaseVersion : serverVersion.clientVersions) {
-                        for (String path : minecraftJars) {
-                            MinecraftVersion clientVersion = MinecraftVersionRepository.getSingleton().getInstalledJars().get(path);
-
-                            if (clientVersion != null && clientVersion.baseVersion.equals(compatibleClientBaseVersion)) {
-                                String mppass = null;
-                                if(serverVersion != null && serverVersion.hasHeartbeat) {
-                                    mppass = classicAuthService.getMPPass(Session.session.getAccessToken(), Session.session.getUsername(), Session.session.getUuid(), mineOnlineServer.ip, "" + mineOnlineServer.port);
-                                }
-
-                                if (mineOnlineServer.usingBetaEvolutions) {
-                                    BetaEvolutionsUtils betaEvolutions = new BetaEvolutionsUtils(false);
-                                    BetaEvolutionsUtils.VerificationResults verificationResults = betaEvolutions.authenticateUser(Session.session.getUsername(), Session.session.getAccessToken());
-                                    System.out.println("[Beta Evolutions] Authenticated with " + verificationResults.getSuccessful() + "/" + verificationResults.getTotal() + " BetaEVO nodes.");
-                                }
-
-                                MinecraftVersion.launchMinecraft(path, mineOnlineServer.ip, "" + mineOnlineServer.port, mppass);
-                                return;
-                            }
-                        }
-
-                        try {
-                            String path = serverVersion.download();
-
-                            String mppass = null;
-                            if(serverVersion != null && serverVersion.hasHeartbeat) {
-                                mppass = classicAuthService.getMPPass(Session.session.getAccessToken(), Session.session.getUsername(), Session.session.getUuid(), mineOnlineServer.ip, "" + mineOnlineServer.port);
-                            }
-
-                            if (mineOnlineServer.usingBetaEvolutions) {
-                                BetaEvolutionsUtils betaEvolutions = new BetaEvolutionsUtils(false);
-                                BetaEvolutionsUtils.VerificationResults verificationResults = betaEvolutions.authenticateUser(Session.session.getUsername(), Session.session.getAccessToken());
-                                System.out.println("[Beta Evolutions] Authenticated with " + verificationResults.getSuccessful() + "/" + verificationResults.getTotal() + " BetaEVO nodes.");
-                            }
-
-                            MinecraftVersion.launchMinecraft(path, mineOnlineServer.ip, "" + mineOnlineServer.port, mppass);
-                            return;
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
-                    }
-                }
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-        else if (Session.session != null && Session.session.isOnline() && quicklaunch != null) {
+        if (Session.session != null && Session.session.isOnline() && quicklaunch != null) {
             String ip = null;
             String port = null;
             String mppass = null;

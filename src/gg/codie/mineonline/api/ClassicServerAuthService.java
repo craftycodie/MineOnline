@@ -24,7 +24,8 @@ public class ClassicServerAuthService {
             serverIP = inetAddress.getHostAddress();
 
             if (inetAddress.isAnyLocalAddress()) {
-                serverIP = MineOnlineAPI.getExternalIP();
+                // TODO: reimplement.
+//                serverIP = MineOnlineAPI.getExternalIP();
             }
         } catch (Exception ex) {
             //ignore.

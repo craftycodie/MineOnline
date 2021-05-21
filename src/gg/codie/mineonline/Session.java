@@ -1,5 +1,6 @@
 package gg.codie.mineonline;
 
+import gg.codie.mineonline.discord.DiscordRPCHandler;
 import gg.codie.mineonline.utils.LastLogin;
 import gg.codie.mineonline.utils.SkinUtils;
 import org.json.JSONObject;
@@ -66,7 +67,7 @@ public class Session {
         this.uuid = uuid;
         this.isPremium = isPremium;
         cacheSkin();
-
+        DiscordRPCHandler.updateSession(username);
     }
 
     public void logout() {

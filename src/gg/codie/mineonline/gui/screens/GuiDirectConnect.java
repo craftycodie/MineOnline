@@ -132,32 +132,21 @@ public class GuiDirectConnect extends AbstractGuiScreen
                 String port = as.length > 1 ? as[1] : "25565";
                 String mppass = classicAuthService.getMPPass(ip, port, Session.session.getAccessToken(), Session.session.getUuid(), Session.session.getUsername());
                 MinecraftVersion.launchMinecraft(jarPath, as[0], (as.length <= 1 ? "25565" : as[1]), mppass);
-
-                boolean usingBetaEvolutions = false;
-
-                try {
-                    MineOnlineServer server = MineOnlineAPI.getServer(ip, port);
-                    usingBetaEvolutions = server.usingBetaEvolutions;
-                } catch (IOException ex) {
-                    // ignore
-                }
-
-
                 if (LegacyGameManager.isInGame()) {
-                    if (usingBetaEvolutions) {
+//                    if (usingBetaEvolutions) {
                         BetaEvolutionsUtils betaEvolutions = new BetaEvolutionsUtils(true);
                         BetaEvolutionsUtils.VerificationResults verificationResults = betaEvolutions.authenticateUser(Session.session.getUsername(), Session.session.getAccessToken());
                         System.out.println("[Beta Evolutions] Authenticated with " + verificationResults.getSuccessful() + "/" + verificationResults.getTotal() + " BetaEVO nodes.");
-                    }
+//                    }
                     LegacyGameManager.closeGame();
                 } else {
                     Display.destroy();
                     DisplayManager.getFrame().setVisible(false);
-                    if(usingBetaEvolutions) {
+//                    if(usingBetaEvolutions) {
                         BetaEvolutionsUtils betaEvolutions = new BetaEvolutionsUtils(true);
                         BetaEvolutionsUtils.VerificationResults verificationResults = betaEvolutions.authenticateUser(Session.session.getUsername(), Session.session.getAccessToken());
                         System.out.println("[Beta Evolutions] Authenticated with " + verificationResults.getSuccessful() + "/" + verificationResults.getTotal() + " BetaEVO nodes.");
-                    }
+//                    }
                     DisplayManager.getFrame().dispose();
                     System.exit(0);
                 }

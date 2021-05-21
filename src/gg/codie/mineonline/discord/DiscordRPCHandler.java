@@ -33,9 +33,7 @@ public class DiscordRPCHandler {
     private static String serverPort;
     private static String versionName;
     private static String username;
-    private static String uuid;
 
-    private static long lastServerUpdate = System.currentTimeMillis();
     private static long startTimestamp = System.currentTimeMillis() / 1000;
 
     private static boolean hasUpdate;
@@ -54,23 +52,24 @@ public class DiscordRPCHandler {
 
     public static void updateServer(String serverIP, String serverPort) {
         if(serverIP != null) {
-            try {
-                String hostAddress = InetAddress.getByName(serverIP).getHostAddress();
-                if (hostAddress.equals(InetAddress.getLocalHost().getHostAddress()) || hostAddress.equals(InetAddress.getLoopbackAddress().getHostAddress())) {
-                    String externalIP = MineOnlineAPI.getExternalIP();
-                    if (externalIP != null && !externalIP.isEmpty()) {
-                        DiscordRPCHandler.serverIP = externalIP;
-                    } else {
-                        DiscordRPCHandler.serverIP = serverIP;
-                    }
-                } else {
+//            try {
+                // TODO: Reimplement
+                //String hostAddress = InetAddress.getByName(serverIP).getHostAddress();
+//                if (hostAddress.equals(InetAddress.getLocalHost().getHostAddress()) || hostAddress.equals(InetAddress.getLoopbackAddress().getHostAddress())) {
+//                    String externalIP = MineOnlineAPI.getExternalIP();
+//                    if (externalIP != null && !externalIP.isEmpty()) {
+//                        DiscordRPCHandler.serverIP = externalIP;
+//                    } else {
+//                        DiscordRPCHandler.serverIP = serverIP;
+//                    }
+//                } else {
                     DiscordRPCHandler.serverIP = serverIP;
-                }
+//                }
                 DiscordRPCHandler.serverPort = serverPort;
-            } catch (UnknownHostException ex) {
-                DiscordRPCHandler.serverIP = serverIP;
-                DiscordRPCHandler.serverPort = serverPort;
-            }
+//            } catch (UnknownHostException ex) {
+//                DiscordRPCHandler.serverIP = serverIP;
+//                DiscordRPCHandler.serverPort = serverPort;
+//            }
         } else {
             DiscordRPCHandler.serverIP = null;
             DiscordRPCHandler.serverPort = null;
@@ -78,12 +77,15 @@ public class DiscordRPCHandler {
         hasUpdate = true;
     }
 
-    private static void play(String versionName, String serverIP, String serverPort, String username, String uuid) {
+    public static void updateSession(String username) {
+        DiscordRPCHandler.username = username;
+        hasUpdate = true;
+    }
+
+    private static void play(String versionName, String serverIP, String serverPort, String username) {
         boolean isUpdate = false;
 
-        DiscordRPCHandler.uuid = uuid;
-
-        if (versionName.equals(DiscordRPCHandler.versionName)
+        if (versionName!= null && versionName.equals(DiscordRPCHandler.versionName)
                 && ((serverIP == null && DiscordRPCHandler.serverIP == null) || (serverIP != null && serverIP.equals(DiscordRPCHandler.serverIP)))
                 && ((serverPort == null && DiscordRPCHandler.serverPort == null) || (serverPort != null && serverPort.equals(DiscordRPCHandler.serverPort))))
             isUpdate = true;
@@ -102,46 +104,42 @@ public class DiscordRPCHandler {
         if (DiscordRPCHandler.serverPort != null && (DiscordRPCHandler.serverPort.isEmpty() || DiscordRPCHandler.serverPort.equals("null")))
             DiscordRPCHandler.serverPort = null;
 
-        if(DiscordRPCHandler.serverIP == null) {
+        if (DiscordRPCHandler.versionName == null) {
+            DiscordRichPresence.Builder presence = new DiscordRichPresence.Builder("In the launcher.");
+            presence.setDetails("Version " + Globals.LAUNCHER_VERSION + (Globals.DEV ? " Dev" : ""));
+            presence.setBigImage("favicon", null);
+            presence.setSmallImage("nametag", DiscordRPCHandler.username);
+            DiscordRPC.discordUpdatePresence(presence.build());
+        }
+        else if (DiscordRPCHandler.serverIP == null) {
             DiscordRichPresence.Builder presence = new DiscordRichPresence.Builder("Playing Single-Player");
             presence.setDetails(DiscordRPCHandler.versionName);
             presence.setStartTimestamps(startTimestamp);
-            presence.setBigImage("keyart", null);
-            presence.setSmallImage("block", DiscordRPCHandler.username);
+            presence.setBigImage("singleplayer", null);
+            presence.setSmallImage("nametag", DiscordRPCHandler.username);
             DiscordRPC.discordUpdatePresence(presence.build());
         }
         else {
             if(DiscordRPCHandler.serverPort == null)
                 DiscordRPCHandler.serverPort = "25565";
 
-            MineOnlineServer server = null;
-
-            try {
-                server = MineOnlineAPI.getServer(DiscordRPCHandler.serverIP, DiscordRPCHandler.serverPort);
-            } catch (IOException ex) {
-                if (ex.getClass() != FileNotFoundException.class)
-                    ex.printStackTrace();
-            }
-
-            DiscordRichPresence.Builder presence = new DiscordRichPresence.Builder(server != null ? new MinecraftColorCodeProvider().removeColorCodes(server.name) : (DiscordRPCHandler.serverIP + (!DiscordRPCHandler.serverPort.equals("25565") ? (":" + DiscordRPCHandler.serverPort) : "")));
+            DiscordRichPresence.Builder presence = new DiscordRichPresence.Builder(DiscordRPCHandler.serverIP + (!DiscordRPCHandler.serverPort.equals("25565") ? (":" + DiscordRPCHandler.serverPort) : ""));
             presence.setDetails(DiscordRPCHandler.versionName);
             presence.setStartTimestamps(startTimestamp);
             presence.setSecrets(DiscordRPCHandler.serverIP + ", " + DiscordRPCHandler.serverPort, null);
             try {
                 if (InetAddress.getByName(DiscordRPCHandler.serverIP).isAnyLocalAddress())
-                    presence.setParty(externalIP + ":" + DiscordRPCHandler.serverPort, server != null ? (server.users > 0 ? server.users : 1) : 1, server != null ? server.maxUsers : 24);
+                    presence.setParty(externalIP + ":" + DiscordRPCHandler.serverPort, 1, 24);
                 else
-                    presence.setParty(DiscordRPCHandler.serverIP + ":" + DiscordRPCHandler.serverPort, server != null ? (server.users > 0 ? server.users : 1) : 1, server != null ? server.maxUsers : 24);
+                    presence.setParty(DiscordRPCHandler.serverIP + ":" + DiscordRPCHandler.serverPort, 1, 24);
             } catch (Exception ex) {
-                presence.setParty(DiscordRPCHandler.serverIP + ":" + DiscordRPCHandler.serverPort, server != null ? (server.users > 0 ? server.users : 1) : 1, server != null ? server.maxUsers : 24);
-
+                presence.setParty(DiscordRPCHandler.serverIP + ":" + DiscordRPCHandler.serverPort, 1, 24);
             }
-            presence.setBigImage("keyart", null);
-            presence.setSmallImage("block", DiscordRPCHandler.username);
+            presence.setBigImage("multiplayer", null);
+            presence.setSmallImage("nametag", DiscordRPCHandler.username);
 
             DiscordRPC.discordUpdatePresence(presence.build());
         }
-        DiscordRPCHandler.lastServerUpdate = System.currentTimeMillis();
     }
 
     static String externalIP;
@@ -149,14 +147,16 @@ public class DiscordRPCHandler {
     private static Thread discordThread;
 
     public static void initialize(){
-        externalIP = MineOnlineAPI.getExternalIP();
+        //TODO: Reimplement
+        //externalIP = MineOnlineAPI.getExternalIP();
+        username = System.getProperty("mineonline.username");
 
         discordThread = new Thread(() -> {
             DiscordEventHandlers handlers = new DiscordEventHandlers.Builder().setReadyEventHandler((user) -> {
                 System.out.println("Discord logged in " + user.username + "#" + user.discriminator + "!");
                 DiscordRichPresence.Builder presence = new DiscordRichPresence.Builder("In the launcher.");
                 presence.setDetails("Version " + Globals.LAUNCHER_VERSION + (Globals.DEV ? " Dev" : ""));
-                presence.setBigImage("block", null);
+                presence.setBigImage("favicon", null);
                 DiscordRPC.discordUpdatePresence(presence.build());
             })
             .setJoinGameEventHandler(new JoinGameCallback() {
@@ -217,8 +217,8 @@ public class DiscordRPCHandler {
             while (!Thread.currentThread().isInterrupted()) {
                 DiscordRPC.discordRunCallbacks();
 
-                if (hasUpdate || DiscordRPCHandler.serverIP != null &&  System.currentTimeMillis() - DiscordRPCHandler.lastServerUpdate > 60000) {
-                    play(DiscordRPCHandler.versionName, DiscordRPCHandler.serverIP, DiscordRPCHandler.serverPort, DiscordRPCHandler.username, DiscordRPCHandler.uuid);
+                if (hasUpdate || DiscordRPCHandler.serverIP != null) {
+                    play(DiscordRPCHandler.versionName, DiscordRPCHandler.serverIP, DiscordRPCHandler.serverPort, DiscordRPCHandler.username);
                     hasUpdate = false;
                 }
 

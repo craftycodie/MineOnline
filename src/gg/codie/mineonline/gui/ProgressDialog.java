@@ -86,6 +86,10 @@ public class ProgressDialog extends JDialog {
         }
     }
 
+    public static boolean isOpen() {
+        return singleton != null && singleton.progress < 100;
+    }
+
     public static void showProgress(String title, WindowAdapter closeListener) {
         try {
             if (singleton != null) {

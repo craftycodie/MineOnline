@@ -14,35 +14,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 
 public class MineOnlineAPI {
-    public static String getExternalIP() {
-        HttpURLConnection connection = null;
-
-        try {
-            URL url = new URL(Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/getmyip");
-            connection = (HttpURLConnection) url.openConnection();
-            connection.setUseCaches(false);
-            connection.setDoOutput(true);
-
-            InputStream is = connection.getInputStream();
-            BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-
-            StringBuilder response = new StringBuilder();
-            String line;
-            while ((line = rd.readLine()) != null) {
-                response.append(line);
-            }
-            rd.close();
-
-            if (connection != null)
-                connection.disconnect();
-
-            return new JSONObject(response.toString()).getString("ip");
-
-        } catch (Exception ex) {
-            return "";
-        }
-    }
-
     public static JSONObject getVersionIndex() throws IOException {
         HttpURLConnection connection = null;
 
@@ -131,35 +102,6 @@ public class MineOnlineAPI {
             connection.disconnect();
 
         return MineOnlineServer.parseServers(jsonArray);
-    }
-
-    public static MineOnlineServer getServer(String serverIP, String serverPort) throws IOException {
-        HttpURLConnection connection;
-
-        String parameters = "serverIP=" + URLEncoder.encode(serverIP, "UTF-8") + "&serverPort=" + URLEncoder.encode(serverPort, "UTF-8");
-        URL url = new URL(Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/getserver?" + parameters);
-        connection = (HttpURLConnection) url.openConnection();
-        connection.setDoInput(true);
-        connection.setDoOutput(false);
-        connection.connect();
-
-        InputStream is = connection.getInputStream();
-        BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-
-        StringBuilder response = new StringBuilder();
-        String line;
-        while ((line = rd.readLine()) != null) {
-            response.append(line);
-            response.append('\r');
-        }
-        rd.close();
-
-        JSONObject jsonObject = new JSONObject(response.toString());
-
-        if (connection != null)
-            connection.disconnect();
-
-        return MineOnlineServer.parseServer(jsonObject);
     }
 
     public static String listServer(

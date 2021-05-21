@@ -452,12 +452,6 @@ public class MinecraftVersion {
             InetAddress address = InetAddress.getByName(serverIP);
             serverIP = address.getHostAddress();
 
-            String externalIP = MineOnlineAPI.getExternalIP();
-
-            if (serverIP != null && serverIP.equals(externalIP)) {
-                serverIP = InetAddress.getLocalHost().getHostAddress();
-            }
-
             Settings.singleton.setLastServer(serverIP + (serverPort != null ? ":" + serverPort : ""));
             Settings.singleton.saveSettings();
         }
