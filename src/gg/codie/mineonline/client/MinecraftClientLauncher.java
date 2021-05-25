@@ -129,7 +129,7 @@ public class MinecraftClientLauncher {
         if(serverAddress != null && serverPort == null)
             this.serverPort = "25565";
 
-        minecraftVersion = MinecraftVersionRepository.getSingleton(true).getVersion(jarPath);
+        minecraftVersion = MinecraftVersionRepository.getSingleton().getVersion(jarPath);
     }
 
     public void startMinecraft() throws Exception {

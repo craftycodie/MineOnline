@@ -7,6 +7,7 @@ import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.mineonline.gui.ProgressDialog;
 import gg.codie.mineonline.utils.DownloadHandlerThread;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.*;
@@ -27,8 +28,8 @@ public class MinecraftVersionRepository {
     private static final String INSTALLED_VERSIONS = "installedJars";
     private static final String SELECTED_VERSION = "lastSelected";
 
-    public MinecraftVersionRepository(boolean onlyKnownVersionInfo, String loadJar) {
-        loadVersions(onlyKnownVersionInfo, loadJar);
+    public MinecraftVersionRepository(String loadJar) {
+        loadVersions(loadJar);
     }
 
     public boolean isLoadingInstalledVersions() {
@@ -38,18 +39,14 @@ public class MinecraftVersionRepository {
     private static MinecraftVersionRepository singleton;
 
     public static MinecraftVersionRepository getSingleton() {
-        return getSingleton(false, null);
+        return getSingleton(null);
     }
 
-    public static MinecraftVersionRepository getSingleton(boolean onlyKnownVersionInfo, String loadJar) {
+    public static MinecraftVersionRepository getSingleton(String loadJar) {
         if(singleton == null) {
-            singleton = new MinecraftVersionRepository(onlyKnownVersionInfo, loadJar);
+            singleton = new MinecraftVersionRepository(loadJar);
         }
         return singleton;
-    }
-
-    public static MinecraftVersionRepository getSingleton(boolean onlyKnownVersionInfo) {
-        return getSingleton(onlyKnownVersionInfo, null);
     }
 
     public void addInstalledVersion(String jarPath) {
@@ -352,7 +349,7 @@ public class MinecraftVersionRepository {
         }
     }
 
-    private void loadVersions(boolean onlyKnownVersionInfo, String loadJarPath) {
+    private void loadVersions(String loadJarPath) {
         try (FileInputStream input = new FileInputStream(MINEONLINE_JARS_JSON_FILE)) {
             // load a settings file
             byte[] buffer = new byte[8096];
@@ -369,29 +366,23 @@ public class MinecraftVersionRepository {
             saveInstalledVersions();
         }
 
-        if (!onlyKnownVersionInfo) {
-            // If there's a resource version that's not in the cache, extract it.
-            ProgressDialog.setSubMessage("Extracting version information...");
-            ProgressDialog.setProgress(40);
-            MinecraftVersion[] cachedVersions = getVersions(LauncherFiles.MINEONLINE_VERSION_INFO_FOLDER);
-            for (MinecraftVersion version : getResourceVersions()) {
-                if (getVersionByMD5(version.md5, cachedVersions) == null) {
-                    try {
-                        System.out.println("Extracting version " + version.name + " " + version.md5);
-                        File target = new File(LauncherFiles.MINEONLINE_VERSION_INFO_FOLDER + version.type + File.separator + version.name + " " + version.md5 + ".json");
-                        target.getParentFile().mkdirs();
-                        Files.copy(MinecraftVersionRepository.class.getResourceAsStream("/version-info/" + version.type + "/" + version.name + " " + version.md5 + ".json"), Paths.get(target.toURI()), StandardCopyOption.REPLACE_EXISTING);
-                        target.setLastModified(MinecraftVersionRepository.class.getResource("/version-info/" + version.type + "/" + version.name + " " + version.md5 + ".json").openConnection().getLastModified());
-                    } catch (Exception ex) {
-                        System.out.println("Failed to extract version " + version.md5);
-                        ex.printStackTrace();
-                    }
+        ProgressDialog.setSubMessage("Extracting version information...");
+        ProgressDialog.setProgress(40);
+        MinecraftVersion[] cachedVersions = getVersions(LauncherFiles.MINEONLINE_VERSION_INFO_FOLDER);
+        for (MinecraftVersion version : getResourceVersions()) {
+            try {
+                File target = new File(LauncherFiles.MINEONLINE_VERSION_INFO_FOLDER + version.type + File.separator + version.name + " " + version.md5 + ".json");
+                if (!target.exists() || MinecraftVersionRepository.class.getResource("/version-info/" + version.type + "/" + version.name + " " + version.md5 + ".json").openConnection().getLastModified() > Files.getLastModifiedTime(Paths.get(LauncherFiles.MINEONLINE_VERSION_INFO_FOLDER + version.type + File.separator + version.name + " " + version.md5 + ".json")).toMillis()) {
+                    System.out.println("Extracting version " + version.name + " " + version.md5);
+                    target.getParentFile().mkdirs();
+                    Files.copy(MinecraftVersionRepository.class.getResourceAsStream("/version-info/" + version.type + "/" + version.name + " " + version.md5 + ".json"), Paths.get(target.toURI()), StandardCopyOption.REPLACE_EXISTING);
+                    target.setLastModified(MinecraftVersionRepository.class.getResource("/version-info/" + version.type + "/" + version.name + " " + version.md5 + ".json").openConnection().getLastModified());
+
                 }
+            } catch (Exception ex) {
+                System.out.println("Failed to extract version " + version.md5);
+                ex.printStackTrace();
             }
-//            if (!Globals.DEV) {
-            // Fetch latest versions from the API
-            downloadVersionInfo();
-//            }
         }
         // Load cached versions
         versions = getVersions(LauncherFiles.MINEONLINE_VERSION_INFO_FOLDER);
@@ -503,7 +494,7 @@ public class MinecraftVersionRepository {
 
                     MinecraftVersion version = new MinecraftVersion(new JSONObject(sb.toString()));
                     versions.add(version);
-                } catch (IOException ex) {
+                } catch (IOException | JSONException ex) {
                     System.out.println("Bad version file " + file.getName());
                 }
 

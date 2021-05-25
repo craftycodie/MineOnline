@@ -138,8 +138,8 @@ public class MenuManager {
                 if(args.length > i + 1 && new File(args[i + 1]).exists())  {
                     quicklaunch = args[i + 1];
                 } else {
-                    if (MinecraftVersionRepository.getSingleton(skipUpdates).getLastSelectedJarPath() != null) {
-                        quicklaunch = MinecraftVersionRepository.getSingleton(skipUpdates).getLastSelectedJarPath();
+                    if (MinecraftVersionRepository.getSingleton().getLastSelectedJarPath() != null) {
+                        quicklaunch = MinecraftVersionRepository.getSingleton().getLastSelectedJarPath();
                     }
                 }
 
@@ -151,7 +151,7 @@ public class MenuManager {
         }
 
         // Load this before showing the display.
-        MinecraftVersionRepository.getSingleton(skipUpdates, quicklaunch);
+        MinecraftVersionRepository.getSingleton(quicklaunch);
 
         if(quicklaunch != null) {
             MinecraftVersion version = MinecraftVersionRepository.getSingleton().getVersion(quicklaunch);

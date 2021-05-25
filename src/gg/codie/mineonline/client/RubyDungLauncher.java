@@ -127,7 +127,7 @@ public class RubyDungLauncher implements IMinecraftAppletWrapper {
 
     public RubyDungLauncher(String jarPath, int width, int height) {
         this.jarPath = jarPath;
-        minecraftVersion = MinecraftVersionRepository.getSingleton(true).getVersion(jarPath);
+        minecraftVersion = MinecraftVersionRepository.getSingleton().getVersion(jarPath);
         Settings.singleton.saveMinecraftOptions(minecraftVersion.optionsVersion);
         this.startWidth = width;
         this.startHeight = height;

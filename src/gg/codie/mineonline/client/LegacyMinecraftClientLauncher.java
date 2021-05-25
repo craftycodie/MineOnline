@@ -170,7 +170,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
         if(serverAddress != null && serverPort == null)
             this.serverPort = "25565";
 
-        minecraftVersion = MinecraftVersionRepository.getSingleton(true, jarPath).getVersion(jarPath);
+        minecraftVersion = MinecraftVersionRepository.getSingleton(jarPath).getVersion(jarPath);
         Settings.singleton.saveMinecraftOptions(minecraftVersion != null ? minecraftVersion.optionsVersion : EMinecraftOptionsVersion.DEFAULT);
 
         if (minecraftVersion != null)
