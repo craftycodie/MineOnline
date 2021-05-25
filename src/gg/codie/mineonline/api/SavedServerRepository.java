@@ -46,7 +46,6 @@ public class SavedServerRepository {
         } catch (IOException ex) {
             serversJSON = new JSONObject();
             serversJSON.put("servers", new JSONArray());
-            addServer(new SavedMinecraftServer("Retro MC", "mc.retromc.org", "EAE3353FDAA7E10A59B4CB5B45BFA10D"));
             saveServers();
         }
 
