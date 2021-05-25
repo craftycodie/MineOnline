@@ -1,6 +1,6 @@
 package gg.codie.mineonline.server;
 
-import gg.codie.mineonline.api.MineOnlineServer;
+import gg.codie.mineonline.api.SavedMinecraftServer;
 
 import java.io.IOException;
 import java.net.*;
@@ -10,13 +10,13 @@ public class ThreadPollServers extends Thread
 {
     public static final HashMap<String, Long> serverLatencies = new HashMap<>();
 
-    public static void pollServer(MineOnlineServer server) {
-        new ThreadPollServers(server).start();
+    public static void pollServer(String address) {
+        new ThreadPollServers(address).start();
     }
 
-    private ThreadPollServers(MineOnlineServer mineOnlineServer)
+    private ThreadPollServers(String address)
     {
-        this.mineOnlineServer = mineOnlineServer;
+        this.address = address;
     }
 
     @Override
@@ -31,33 +31,31 @@ public class ThreadPollServers extends Thread
                        try {
                           var27 = true;
                           long var1 = System.nanoTime();
-                          performPoll(mineOnlineServer);
+                          performPoll(address);
                           long var3 = System.nanoTime();
-                          serverLatencies.put(mineOnlineServer.address, (var3 - var1) / 1000000L);
+                          serverLatencies.put(address, (var3 - var1) / 1000000L);
                           var27 = false;
                           break label183;
                        } catch (UnknownHostException ex) {
                            ex.printStackTrace();
-                           serverLatencies.put(mineOnlineServer.address, -1L);
+                           serverLatencies.put(address, -1L);
                           var27 = false;
                        } catch (SocketTimeoutException ex) {
-                           ex.printStackTrace();
-                           serverLatencies.put(mineOnlineServer.address, -1L);
+                           serverLatencies.put(address, -1L);
                           var27 = false;
                           break label187;
                        } catch (ConnectException ex) {
-                           ex.printStackTrace();
-                           serverLatencies.put(mineOnlineServer.address, -1L);
+                           serverLatencies.put(address, -1L);
                           var27 = false;
                           break label186;
                        } catch (IOException ex) {
                            ex.printStackTrace();
-                           serverLatencies.put(mineOnlineServer.address, -1L);
+                           serverLatencies.put(address, -1L);
                           var27 = false;
                           break label185;
                        } catch (Exception ex) {
                            ex.printStackTrace();
-                           serverLatencies.put(mineOnlineServer.address, -1L);
+                           serverLatencies.put(address, -1L);
                           var27 = false;
                           break label184;
                        } finally {
@@ -81,10 +79,10 @@ public class ThreadPollServers extends Thread
         }
      }
 
-    private void performPoll(MineOnlineServer mineOnlineServer)
+    private void performPoll(String address)
             throws IOException
     {
-        String s = mineOnlineServer.address;
+        String s = address;
         String as[] = s.split(":");
         if(s.startsWith("["))
         {
@@ -147,5 +145,5 @@ public class ThreadPollServers extends Thread
         }
     }
 
-     final MineOnlineServer mineOnlineServer;
+     final String address;
 }

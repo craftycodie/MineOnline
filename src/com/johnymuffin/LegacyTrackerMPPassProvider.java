@@ -1,6 +1,7 @@
-package gg.codie.mineonline.api;
+package com.johnymuffin;
 
 import gg.codie.mineonline.Globals;
+import gg.codie.mineonline.api.IMPPassProvider;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -10,7 +11,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
-public class MineOnlineMPPassProvider implements IMPPassProvider {
+public class LegacyTrackerMPPassProvider implements IMPPassProvider {
     @Override
     public String getMPPass(String serverIP, String serverPort, String username) {
         try {
@@ -21,7 +22,7 @@ public class MineOnlineMPPassProvider implements IMPPassProvider {
 
             String json = jsonObject.toString();
 
-            URL url = new URL(Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/mppass");
+            URL url = new URL("https://servers.api.legacyminecraft.com/api/v1/mpPass");
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestProperty("Content-Type", "application/json");
             connection.setRequestMethod("POST");

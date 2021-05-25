@@ -1,8 +1,6 @@
 package gg.codie.mineonline.api;
 
-import gg.codie.mineonline.Globals;
 import gg.codie.mineonline.LauncherFiles;
-import gg.codie.mineonline.MinecraftVersionRepository;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -10,26 +8,25 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.LinkedList;
-import java.util.concurrent.CompletableFuture;
 
-public class MineOnlineServerRepository {
+public class SavedServerRepository {
     JSONObject serversJSON = new JSONObject();
 
-    private static MineOnlineServerRepository singleton;
+    private static SavedServerRepository singleton;
 
-    public static MineOnlineServerRepository getSingleton() {
+    public static SavedServerRepository getSingleton() {
         if(singleton == null) {
-            singleton = new MineOnlineServerRepository();
+            singleton = new SavedServerRepository();
         }
         return singleton;
     }
 
-    MineOnlineServerRepository() {
+    SavedServerRepository() {
         loadServers();
     }
 
-    public LinkedList<MineOnlineServer> getServers() {
-        return serversJSON.has("servers") ? MineOnlineServer.parseServers(serversJSON.optJSONArray("servers")) : new LinkedList<>();
+    public LinkedList<SavedMinecraftServer> getServers() {
+        return serversJSON.has("servers") ? SavedMinecraftServer.parseServers(serversJSON.optJSONArray("servers")) : new LinkedList<>();
     }
 
     public void loadServers() {
@@ -48,13 +45,8 @@ public class MineOnlineServerRepository {
             serversJSON = new JSONObject(stringBuffer.toString());
         } catch (IOException ex) {
             serversJSON = new JSONObject();
-            JSONArray servers = new JSONArray();
-            JSONObject retroMC = new JSONObject();
-            retroMC.put("name", "Retro MC");
-            retroMC.put("address", "mc.retromc.org");
-            retroMC.put("clientMD5", "EAE3353FDAA7E10A59B4CB5B45BFA10D");
-            servers.put(retroMC);
-            serversJSON.put("servers", servers);
+            serversJSON.put("servers", new JSONArray());
+            addServer(new SavedMinecraftServer("Retro MC", "mc.retromc.org", "EAE3353FDAA7E10A59B4CB5B45BFA10D"));
             saveServers();
         }
 
@@ -64,19 +56,17 @@ public class MineOnlineServerRepository {
         }
 
 
-        LinkedList<MineOnlineServer> servers = serversJSON.has("servers") ? MineOnlineServer.parseServers(serversJSON.optJSONArray("servers")) : new LinkedList<>();
+        LinkedList<SavedMinecraftServer> servers = serversJSON.has("servers") ? SavedMinecraftServer.parseServers(serversJSON.optJSONArray("servers")) : new LinkedList<>();
 
         for(GotServersListener listener : listeners) {
             listener.GotServers(servers);
         }
     }
 
-    public void addServer (MineOnlineServer server) {
+    public void addServer (SavedMinecraftServer server) {
         serversJSON.getJSONArray("servers").put(server.toJson());
         saveServers();
-        for(GotServersListener listener : listeners) {
-            listener.GotServers(getServers());
-        }
+        loadServers();
     }
 
     public void deleteServer (int index) {
@@ -84,12 +74,10 @@ public class MineOnlineServerRepository {
         saveServers();
     }
 
-    public void editServer (MineOnlineServer server, int index) {
+    public void editServer (SavedMinecraftServer server, int index) {
         serversJSON.getJSONArray("servers").put(index, server.toJson());
         saveServers();
-        for(GotServersListener listener : listeners) {
-            listener.GotServers(getServers());
-        }
+        loadServers();
     }
 
     private void saveServers() {
@@ -117,7 +105,7 @@ public class MineOnlineServerRepository {
     }
 
     public interface GotServersListener {
-        void GotServers(LinkedList<MineOnlineServer> servers);
+        void GotServers(LinkedList<SavedMinecraftServer> servers);
     }
 
     private LinkedList<GotServersListener> listeners = new LinkedList<>();

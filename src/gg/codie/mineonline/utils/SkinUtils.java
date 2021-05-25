@@ -32,46 +32,6 @@ public class SkinUtils {
         }
     }
 
-    public static boolean hasCustomCape(String uuid) throws IOException {
-        HttpURLConnection connection;
-
-        URL url = new URL(Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/player/" + uuid + "/customcape");
-        connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestProperty("Content-Type", "application/json");
-        connection.setRequestMethod("GET");
-        connection.setDoInput(true);
-        connection.setDoOutput(false);
-
-        return connection.getResponseCode() == 200;
-    }
-
-    public static String getEventCapeURL(String uuid) throws IOException {
-        HttpURLConnection connection;
-
-        URL url = new URL(Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/api/player/" + uuid + "/eventcape");
-        connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestProperty("Content-Type", "application/json");
-        connection.setRequestMethod("GET");
-        connection.setDoInput(true);
-        connection.setDoOutput(false);
-
-        if (connection.getResponseCode() != 200)
-            return null;
-
-        InputStream is = connection.getInputStream();
-        BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-
-        StringBuilder response = new StringBuilder();
-        String line;
-        while ((line = rd.readLine()) != null) {
-            response.append(line);
-            response.append('\r');
-        }
-        rd.close();
-
-        return response.toString();
-    }
-
     public static String findCloakURLForUsername(String username) {
         try {
             JSONObject profile = MojangAPI.minecraftProfile(username);

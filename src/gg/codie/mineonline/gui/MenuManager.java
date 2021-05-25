@@ -1,12 +1,9 @@
 package gg.codie.mineonline.gui;
 
-import com.johnymuffin.BetaEvolutionsUtils;
 import gg.codie.minecraft.api.AuthServer;
 import gg.codie.minecraft.api.MojangAPI;
 import gg.codie.mineonline.*;
 import gg.codie.mineonline.api.ClassicServerAuthService;
-import gg.codie.mineonline.api.MineOnlineAPI;
-import gg.codie.mineonline.api.MineOnlineServer;
 import gg.codie.mineonline.api.UpdateCheckerService;
 import gg.codie.mineonline.discord.DiscordRPCHandler;
 import gg.codie.mineonline.gui.input.MouseHandler;
@@ -34,7 +31,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.util.Arrays;
-import java.util.Set;
 
 public class MenuManager {
 

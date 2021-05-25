@@ -1,11 +1,13 @@
 package gg.codie.mineonline.gui.screens;
 
 import com.johnymuffin.BetaEvolutionsUtils;
+import com.johnymuffin.LegacyTrackerServer;
+import com.johnymuffin.LegacyTrackerServerRepository;
 import gg.codie.mineonline.MinecraftVersion;
 import gg.codie.mineonline.MinecraftVersionRepository;
 import gg.codie.mineonline.Session;
-import gg.codie.mineonline.api.MineOnlineServer;
-import gg.codie.mineonline.api.MineOnlineServerRepository;
+import gg.codie.mineonline.api.SavedMinecraftServer;
+import gg.codie.mineonline.api.SavedServerRepository;
 import gg.codie.mineonline.client.LegacyGameManager;
 import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.gui.components.GuiButton;
@@ -32,19 +34,32 @@ public class GuiMultiplayer extends AbstractGuiScreen
         tooltip = null;
         parentScreen = guiscreen;
 
-        serverRepository.onGotServers(gotServersListener);
-        serverRepository.loadServers();
+        savedServerRepository.onGotServers(gotServersListener);
+        savedServerRepository.loadServers();
+
+        listedServerRepository.onGotServers(gotListdServersListener);
+        listedServerRepository.loadServers();
 
         controlList.clear();
         guiSlotServer = new GuiSlotServer(this);
     }
 
-    static MineOnlineServerRepository.GotServersListener gotServersListener = new MineOnlineServerRepository.GotServersListener() {
+    static SavedServerRepository.GotServersListener gotServersListener = new SavedServerRepository.GotServersListener() {
         @Override
-        public void GotServers(LinkedList<MineOnlineServer> servers) {
-            for(MineOnlineServer server : servers) {
+        public void GotServers(LinkedList<SavedMinecraftServer> servers) {
+            for(SavedMinecraftServer server : servers) {
                 if(!ThreadPollServers.serverLatencies.containsKey(server.address))
-                    ThreadPollServers.pollServer(server);
+                    ThreadPollServers.pollServer(server.address);
+            }
+        }
+    };
+
+    static LegacyTrackerServerRepository.GotServersListener gotListdServersListener = new LegacyTrackerServerRepository.GotServersListener() {
+        @Override
+        public void GotServers(LinkedList<LegacyTrackerServer> servers) {
+            for(LegacyTrackerServer server : servers) {
+                if(!ThreadPollServers.serverLatencies.containsKey(server.ip + ":" + server.port))
+                    ThreadPollServers.pollServer(server.ip + ":" + server.port);
             }
         }
     };
@@ -55,7 +70,7 @@ public class GuiMultiplayer extends AbstractGuiScreen
 
         if(c == '\r')
         {
-            joinServer(serverRepository.getServers().get(selectedIndex));
+            joinServer(getSelectedIndex());
         }
         else if (i == Keyboard.KEY_ESCAPE) {
             if (LegacyGameManager.isInGame())
@@ -72,7 +87,7 @@ public class GuiMultiplayer extends AbstractGuiScreen
         controlList.add(connectButton = new GuiButton(1, getWidth() / 2 - 154, getHeight() - 48, 100, 20, "Join Server", new GuiButton.GuiButtonListener() {
             @Override
             public void OnButtonPress() {
-                joinServer(serverRepository.getServers().get(selectedIndex));
+                joinServer(getSelectedIndex());
             }
         }));
         AbstractGuiScreen thisScreen = this;
@@ -108,9 +123,14 @@ public class GuiMultiplayer extends AbstractGuiScreen
         controlList.add(new GuiButton(3, getWidth() / 2 + 3, getHeight() - 24, 70, 20, "Refresh", new GuiButton.GuiButtonListener() {
             @Override
             public void OnButtonPress() {
-                for(MineOnlineServer server : MineOnlineServerRepository.getSingleton().getServers()) {
+                for(SavedMinecraftServer server : SavedServerRepository.getSingleton().getServers()) {
                     ThreadPollServers.serverLatencies.clear();
-                    ThreadPollServers.pollServer(server);
+                    ThreadPollServers.pollServer(server.address);
+                }
+
+                for(LegacyTrackerServer server : listedServerRepository.getServers()) {
+                    ThreadPollServers.serverLatencies.clear();
+                    ThreadPollServers.pollServer(server.ip + ":" + server.port);
                 }
             }
         }));
@@ -118,7 +138,7 @@ public class GuiMultiplayer extends AbstractGuiScreen
         controlList.add(deleteButton = new GuiButton(3, getWidth() / 2 - 75, getHeight() - 24, 70, 20, "Delete", new GuiButton.GuiButtonListener() {
             @Override
             public void OnButtonPress() {
-                MineOnlineServerRepository.getSingleton().deleteServer(selectedIndex);
+                SavedServerRepository.getSingleton().deleteServer(selectedIndex);
                 selectedIndex = -1;
             }
         }));
@@ -128,20 +148,20 @@ public class GuiMultiplayer extends AbstractGuiScreen
             @Override
             public void OnButtonPress() {
                 if (LegacyGameManager.isInGame())
-                    LegacyGameManager.setGUIScreen(new GuiEditServer(thisScreen, serverRepository.getServers().get(selectedIndex), selectedIndex));
+                    LegacyGameManager.setGUIScreen(new GuiEditServer(thisScreen, savedServerRepository.getServers().get(selectedIndex), selectedIndex));
                 else
-                    MenuManager.setMenuScreen(new GuiEditServer(thisScreen, serverRepository.getServers().get(selectedIndex), selectedIndex));
+                    MenuManager.setMenuScreen(new GuiEditServer(thisScreen, savedServerRepository.getServers().get(selectedIndex), selectedIndex));
             }
         }));
 
-        connectButton.enabled = selectedIndex >= 0 && selectedIndex < guiSlotServer.getSize();
-        editButton.enabled = selectedIndex >= 0 && selectedIndex < guiSlotServer.getSize();
-        deleteButton.enabled = selectedIndex >= 0 && selectedIndex < guiSlotServer.getSize();
+        connectButton.enabled = selectedIndex >= 0;
+        editButton.enabled = selectedIndex >= 0 && selectedIndex <= getSavedServers().size();
+        deleteButton.enabled = selectedIndex >= 0 && selectedIndex <= getSavedServers().size();
     }
 
     public void onGuiClosed()
     {
-        serverRepository.offGotServers(gotServersListener);
+        savedServerRepository.offGotServers(gotServersListener);
     }
 
     protected void mouseClicked(int x, int y, int button)
@@ -166,16 +186,32 @@ public class GuiMultiplayer extends AbstractGuiScreen
 
     public void joinServer(int i)
     {
-        joinServer(serverRepository.getServers().get(i));
+        if (i < getSavedServers().size()) {
+            SavedMinecraftServer savedMinecraftServer = getSavedServers().get(i);
+            joinServer(savedMinecraftServer.address.split(":")[0], savedMinecraftServer.address.contains(":") ? savedMinecraftServer.address.split(":")[1] : "25565", savedMinecraftServer.clientMD5);
+        } else {
+            LegacyTrackerServer server = getListedServers().get(i - getSavedServers().size() - 1);
+            MinecraftVersion serverVersion = null;
+            List<MinecraftVersion> versions = MinecraftVersionRepository.getSingleton().getVersionsByBaseVersion(server.baseVersion);
+            if (versions.size() > 0)
+                joinServer(server.ip, "" + server.port, versions.get(0).md5);
+            else
+                EventQueue.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        JOptionPane.showMessageDialog(null, "Failed to join server: find a compatible version.");
+                    }
+                });
+        }
     }
 
-    private void joinServer(MineOnlineServer server)
+    private void joinServer(String ip, String port, String clientMD5)
     {
-        MinecraftVersion clientVersion = MinecraftVersionRepository.getSingleton().getVersionByMD5(server.clientMD5);
+        MinecraftVersion clientVersion = MinecraftVersionRepository.getSingleton().getVersionByMD5(clientMD5);
         String jarPath = null;
 
         for (String path : MinecraftVersionRepository.getSingleton().getInstalledJars().keySet()) {
-            if (MinecraftVersionRepository.getSingleton().getInstalledJars().get(path) != null && MinecraftVersionRepository.getSingleton().getInstalledJars().get(path).md5.equals(server.clientMD5)) {
+            if (MinecraftVersionRepository.getSingleton().getInstalledJars().get(path) != null && MinecraftVersionRepository.getSingleton().getInstalledJars().get(path).md5.equals(clientMD5)) {
                 jarPath = path;
                 break;
             }
@@ -204,9 +240,8 @@ public class GuiMultiplayer extends AbstractGuiScreen
         }
 
         try {
-            String[] split = server.address.split(":");
-            String mppass = classicAuthService.getMPPass(split[0], split.length > 1 ? split[1] : "25565", Session.session.getAccessToken(), Session.session.getUuid(), Session.session.getUsername());
-            MinecraftVersion.launchMinecraft(jarPath, split[0], split.length > 1 ? split[1] : "25565", mppass);
+            String mppass = classicAuthService.getMPPass(ip, port, Session.session.getAccessToken(), Session.session.getUuid(), Session.session.getUsername());
+            MinecraftVersion.launchMinecraft(jarPath, ip, port, mppass);
 
             if (LegacyGameManager.isInGame()) {
                 BetaEvolutionsUtils betaEvolutions = new BetaEvolutionsUtils(true);
@@ -228,9 +263,14 @@ public class GuiMultiplayer extends AbstractGuiScreen
         }
     }
 
-    public List<MineOnlineServer> getServers()
+    public List<SavedMinecraftServer> getSavedServers()
     {
-        return serverRepository.getServers() != null ? serverRepository.getServers() : new LinkedList<>();
+        return savedServerRepository.getServers() != null ? savedServerRepository.getServers() : new LinkedList<>();
+    }
+
+    public List<LegacyTrackerServer> getListedServers()
+    {
+        return listedServerRepository.getServers() != null ? listedServerRepository.getServers() : new LinkedList<>();
     }
 
     @Override
@@ -267,6 +307,7 @@ public class GuiMultiplayer extends AbstractGuiScreen
     private GuiButton deleteButton;
 
     private String tooltip;
-    public MineOnlineServerRepository serverRepository = MineOnlineServerRepository.getSingleton();
+    public SavedServerRepository savedServerRepository = SavedServerRepository.getSingleton();
+    public LegacyTrackerServerRepository listedServerRepository = new LegacyTrackerServerRepository();
     private ClassicServerAuthService classicAuthService = new ClassicServerAuthService();
 }

@@ -77,10 +77,7 @@ public class GuiLoginLegacy extends AbstractGuiScreen
         if (MenuManager.isUpdateAvailable() && y > getHeight() - 20 && y < getHeight() - 10 && x < Font.minecraftFont.width("Update Available!")) {
             ClickSound.play();
             try {
-                if (Globals.BRANCH.equalsIgnoreCase("release"))
-                    Desktop.getDesktop().browse(new URI(Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/download"));
-                else
-                    Desktop.getDesktop().browse(new URI("https://github.com/craftycodie/MineOnline/releases"));
+                Desktop.getDesktop().browse(new URI("https://github.com/craftycodie/MineOnline/releases/latest"));
             } catch (Exception ex) {
 
             }

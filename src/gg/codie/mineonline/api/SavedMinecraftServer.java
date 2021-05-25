@@ -7,27 +7,27 @@ import org.json.JSONObject;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-public class MineOnlineServer {
+public class SavedMinecraftServer {
     public String address;
     public String name;
     public String clientMD5;
 
 
-    public MineOnlineServer() {
+    public SavedMinecraftServer() {
         name = "Minecraft Server";
         address = "";
     }
 
-    public MineOnlineServer(String address, String name, String md5) {
+    public SavedMinecraftServer(String address, String name, String md5) {
         this.address = address;
         this.name = name;
         this.clientMD5 = md5;
     }
 
-    public static LinkedList<MineOnlineServer> parseServers(JSONArray jsonArray) {
+    public static LinkedList<SavedMinecraftServer> parseServers(JSONArray jsonArray) {
         Iterator<Object> iterator = jsonArray.iterator();
 
-        LinkedList<MineOnlineServer> servers = new LinkedList();
+        LinkedList<SavedMinecraftServer> servers = new LinkedList();
 
         while(iterator.hasNext()) {
             JSONObject object = (JSONObject)iterator.next();
@@ -43,8 +43,8 @@ public class MineOnlineServer {
         return servers;
     }
 
-    public static MineOnlineServer parseServer(JSONObject object) throws JSONException {
-        return new MineOnlineServer(
+    public static SavedMinecraftServer parseServer(JSONObject object) throws JSONException {
+        return new SavedMinecraftServer(
                 object.optString("address", object.optString("address", null)),
                 object.getString("name"),
                 object.getString("clientMD5")

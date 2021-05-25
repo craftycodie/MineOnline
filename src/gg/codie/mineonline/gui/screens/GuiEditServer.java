@@ -2,16 +2,14 @@ package gg.codie.mineonline.gui.screens;
 
 import gg.codie.mineonline.MinecraftVersion;
 import gg.codie.mineonline.MinecraftVersionRepository;
-import gg.codie.mineonline.api.MineOnlineServer;
-import gg.codie.mineonline.api.MineOnlineServerRepository;
+import gg.codie.mineonline.api.SavedMinecraftServer;
+import gg.codie.mineonline.api.SavedServerRepository;
 import gg.codie.mineonline.client.LegacyGameManager;
 import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.gui.components.GuiButton;
 import gg.codie.mineonline.gui.components.GuiTextField;
-import gg.codie.mineonline.gui.rendering.DisplayManager;
 import gg.codie.mineonline.gui.rendering.Font;
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.Display;
 
 // Referenced classes of package net.minecraft.src:
 //            GuiScreen, GuiTextField, StringTranslate, GuiButton, 
@@ -20,19 +18,19 @@ import org.lwjgl.opengl.Display;
 public class GuiEditServer extends AbstractGuiScreen
 {
     private final GuiEditServer thisScreen = this;
-    private MineOnlineServer server;
+    private SavedMinecraftServer server;
     private int index;
 
     public GuiEditServer(AbstractGuiScreen guiscreen)
     {
-        server = new MineOnlineServer();
+        server = new SavedMinecraftServer();
         index = -1;
         server.name = "Minecraft Server";
         parentScreen = guiscreen;
         initGui();
     }
 
-    public GuiEditServer(AbstractGuiScreen guiscreen, MineOnlineServer server, int index)
+    public GuiEditServer(AbstractGuiScreen guiscreen, SavedMinecraftServer server, int index)
     {
         this.server = server;
         this.index = index;
@@ -61,9 +59,9 @@ public class GuiEditServer extends AbstractGuiScreen
         @Override
         public void OnButtonPress() {
             if (index < 0) {
-                MineOnlineServerRepository.getSingleton().addServer(server);
+                SavedServerRepository.getSingleton().addServer(server);
             } else {
-                MineOnlineServerRepository.getSingleton().editServer(server, index);
+                SavedServerRepository.getSingleton().editServer(server, index);
             }
             if (LegacyGameManager.isInGame())
                 LegacyGameManager.setGUIScreen(parentScreen);
