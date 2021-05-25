@@ -123,15 +123,12 @@ public class GuiMultiplayer extends AbstractGuiScreen
         controlList.add(new GuiButton(3, getWidth() / 2 + 3, getHeight() - 24, 70, 20, "Refresh", new GuiButton.GuiButtonListener() {
             @Override
             public void OnButtonPress() {
+                ThreadPollServers.serverLatencies.clear();
                 for(SavedMinecraftServer server : SavedServerRepository.getSingleton().getServers()) {
-                    ThreadPollServers.serverLatencies.clear();
                     ThreadPollServers.pollServer(server.address);
                 }
 
-                for(LegacyTrackerServer server : listedServerRepository.getServers()) {
-                    ThreadPollServers.serverLatencies.clear();
-                    ThreadPollServers.pollServer(server.ip + ":" + server.port);
-                }
+                listedServerRepository.loadServers();
             }
         }));
 
