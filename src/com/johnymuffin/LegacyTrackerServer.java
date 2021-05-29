@@ -7,6 +7,8 @@ import org.json.JSONObject;
 
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 public class LegacyTrackerServer {
     public final String createdAt;
@@ -67,6 +69,8 @@ public class LegacyTrackerServer {
     }
 
     public static LegacyTrackerServer parseServer(JSONObject object) throws JSONException {
+        String[] playerNames = StreamSupport.stream(object.getJSONArray("players").spliterator(), false).map((Object playerObject) -> ((JSONObject)playerObject).getString("username")).toArray(String[]::new);
+
         return new LegacyTrackerServer(
                 object.has("createdAt") && !object.isNull("createdAt") ? object.getString("createdAt") : null,
                 object.optString("serverIP", object.optString("numericalIP", null)),
@@ -77,7 +81,7 @@ public class LegacyTrackerServer {
                 object.getString("serverName"),
                 object.getString("serverVersion").toLowerCase(),
                 object.getBoolean("onlineMode"),
-                object.has("players") ? JSONUtils.getStringArray(object.getJSONArray("players")) : new String[0],
+                playerNames,
                 object.optString("serverDescription", null),
                 object.optBoolean("dontListPlayers", false),
                 object.optBoolean("featured", false),

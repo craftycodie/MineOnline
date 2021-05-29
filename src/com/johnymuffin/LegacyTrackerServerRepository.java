@@ -57,6 +57,34 @@ public class LegacyTrackerServerRepository {
         listeners.add(listener);
     }
 
+    public LegacyTrackerServer getServer(String serverIP, String port) throws IOException {
+        HttpURLConnection connection;
+
+        URL url = new URL("https://servers.api.legacyminecraft.com/api/v1/getServer?serverip=" + serverIP + "&port=" + port);
+        connection = (HttpURLConnection) url.openConnection();
+        connection.setDoInput(true);
+        connection.setDoOutput(false);
+        connection.connect();
+
+        InputStream is = connection.getInputStream();
+        BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+
+        StringBuilder response = new StringBuilder();
+        String line;
+        while ((line = rd.readLine()) != null) {
+            response.append(line);
+            response.append('\r');
+        }
+        rd.close();
+
+        JSONObject jsonResponse = new JSONObject(response.toString());
+
+        if (connection != null)
+            connection.disconnect();
+
+        return LegacyTrackerServer.parseServer(jsonResponse);
+    }
+
     public void offGotServers(GotServersListener listener) {
         listeners.remove(listener);
     }

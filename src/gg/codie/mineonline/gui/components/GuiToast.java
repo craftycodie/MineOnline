@@ -22,7 +22,8 @@ public class GuiToast extends GuiComponent
     private final ArrayList<IToast> toasts = new ArrayList<>(Arrays.asList(new IToast[] {
             new MenuToast(),
             new ScreenshotClipboardToast(),
-            new ZoomToast()
+            new ZoomToast(),
+            new PlayerListToast()
     }));
 
     public boolean isShowingToast() {

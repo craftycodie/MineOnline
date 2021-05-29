@@ -16,29 +16,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 public class SoundExtractionService {
-    // TODO: Remove or move.
-    final String[] soundVersions = new String[]{
-            "1.2.5",
-            "1.5.2",
-            "a1.0.1_01",
-            "a1.0.15",
-            "a1.0.17_04",
-            "a1.1.0",
-            "a1.1.1",
-            "a1.1.2",
-            "a1.1.2_01",
-            "a1.2.0",
-            "a1.2.1_01",
-            "b1.3_01",
-            "b1.4_01",
-            "b1.5_01",
-            "b1.7.3",
-            "b1.9-pre4",
-            "c0.0.22a_05",
-            "remake_a1.0.8_01",
-            "remake_c0.0.14a_08"
-    };
-
     private void extractSoundsZip(InputStream soundsZipStream, String soundsVersion) throws IOException {
         File soundsFolder = new File(LauncherFiles.MINEONLINE_RESOURCES_PATH + soundsVersion + File.separator);
         if (!soundsFolder.exists())

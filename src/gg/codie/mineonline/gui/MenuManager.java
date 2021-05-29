@@ -83,7 +83,6 @@ public class MenuManager {
         tessellator.draw();
     }
 
-    static boolean skipUpdates = false;
     public static void main(String[] args) throws Exception {
         System.setProperty("apple.awt.application.name", "MineOnline");
 
@@ -91,23 +90,17 @@ public class MenuManager {
 
         DiscordRPCHandler.initialize();
 
-        if(Arrays.stream(args).anyMatch(arg -> arg.equals("-skipupdates")))
-            skipUpdates = true;
-
         LibraryManager.updateNativesPath();
 
         formopen = true;
 
-        if (!skipUpdates && Globals.BRANCH.equals("release")) {
+        if (Globals.BRANCH.equals("release")) {
             try {
                 updateAvailable = !new UpdateCheckerService().getLauncherVersion().replaceAll("\\s", "").equals(Globals.LAUNCHER_VERSION);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
-
-        // TODO: LTS CHANGE
-        skipUpdates = true;
 
         boolean multiinstance = false;
         String quicklaunch = null;
@@ -142,7 +135,7 @@ public class MenuManager {
             }
         }
 
-        if (quicklaunch == null && !skipUpdates) {
+        if (quicklaunch == null) {
             showLoadingScreen();
         }
 
