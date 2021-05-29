@@ -13,6 +13,7 @@ import gg.codie.mineonline.gui.rendering.Loader;
 import gg.codie.mineonline.gui.screens.AbstractGuiScreen;
 import gg.codie.mineonline.gui.screens.GuiDebugMenu;
 import gg.codie.mineonline.gui.screens.GuiIngameMenu;
+import gg.codie.mineonline.gui.PlayerList;
 import gg.codie.mineonline.lwjgl.OnCreateListener;
 import gg.codie.mineonline.lwjgl.OnDestroyListener;
 import gg.codie.mineonline.lwjgl.OnUpdateListener;
@@ -70,6 +71,8 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
     int startHeight;
 
     AbstractGuiScreen ingameMenu = new GuiIngameMenu();
+    PlayerList playerList = null;
+
 
     public static void startProcess(String jarPath, String serverIP, String serverPort, String mpPass) {
         // Launch normal jars.
@@ -406,6 +409,20 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
                             FOVViewmodelAdvice.hideViewModel = false;
                         }
                         f1WasDown = false;
+                    }
+
+                    if (Settings.singleton.getPlayerListKey() != 0 && Keyboard.isKeyDown(Settings.singleton.getPlayerListKey())) {
+                        if (playerList == null)
+                            playerList = new PlayerList();
+
+                        if (Settings.singleton.getPlayerListToast()) {
+                            Settings.singleton.setPlayerListToast(false);
+                            Settings.singleton.saveSettings();
+                        }
+
+                        playerList.drawScreen();
+                    } else {
+                        playerList = null;
                     }
 
                     if (Settings.singleton.getZoomKeyCode() != 0) {
