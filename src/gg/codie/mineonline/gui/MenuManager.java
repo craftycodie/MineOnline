@@ -1,12 +1,10 @@
 package gg.codie.mineonline.gui;
 
-import com.johnymuffin.BetaEvolutionsUtils;
 import gg.codie.minecraft.api.AuthServer;
 import gg.codie.minecraft.api.MojangAPI;
 import gg.codie.mineonline.*;
 import gg.codie.mineonline.api.ClassicServerAuthService;
-import gg.codie.mineonline.api.MineOnlineAPI;
-import gg.codie.mineonline.api.MineOnlineServer;
+import gg.codie.mineonline.api.UpdateCheckerService;
 import gg.codie.mineonline.discord.DiscordRPCHandler;
 import gg.codie.mineonline.gui.input.MouseHandler;
 import gg.codie.mineonline.gui.rendering.DisplayManager;
@@ -33,7 +31,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.util.Arrays;
-import java.util.Set;
 
 public class MenuManager {
 
@@ -86,7 +83,6 @@ public class MenuManager {
         tessellator.draw();
     }
 
-    static boolean skipUpdates = false;
     public static void main(String[] args) throws Exception {
         System.setProperty("apple.awt.application.name", "MineOnline");
 
@@ -94,16 +90,13 @@ public class MenuManager {
 
         DiscordRPCHandler.initialize();
 
-        if(Arrays.stream(args).anyMatch(arg -> arg.equals("-skipupdates")))
-            skipUpdates = true;
-
         LibraryManager.updateNativesPath();
 
         formopen = true;
 
-        if (!skipUpdates) {
+        if (Globals.BRANCH.equals("release")) {
             try {
-                updateAvailable = !MineOnlineAPI.getLauncherVersion().replaceAll("\\s", "").equals(Globals.LAUNCHER_VERSION);
+                updateAvailable = !new UpdateCheckerService().getLauncherVersion().replaceAll("\\s", "").equals(Globals.LAUNCHER_VERSION);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -134,20 +127,20 @@ public class MenuManager {
                 if(args.length > i + 1 && new File(args[i + 1]).exists())  {
                     quicklaunch = args[i + 1];
                 } else {
-                    if (MinecraftVersionRepository.getSingleton(skipUpdates).getLastSelectedJarPath() != null) {
-                        quicklaunch = MinecraftVersionRepository.getSingleton(skipUpdates).getLastSelectedJarPath();
+                    if (MinecraftVersionRepository.getSingleton().getLastSelectedJarPath() != null) {
+                        quicklaunch = MinecraftVersionRepository.getSingleton().getLastSelectedJarPath();
                     }
                 }
 
             }
         }
 
-        if (quicklaunch == null && !skipUpdates) {
+        if (quicklaunch == null) {
             showLoadingScreen();
         }
 
         // Load this before showing the display.
-        MinecraftVersionRepository.getSingleton(skipUpdates, quicklaunch);
+        MinecraftVersionRepository.getSingleton(quicklaunch);
 
         if(quicklaunch != null) {
             MinecraftVersion version = MinecraftVersionRepository.getSingleton().getVersion(quicklaunch);
@@ -200,68 +193,7 @@ public class MenuManager {
             LastLogin.writeLastLogin(sessionToken, lastLogin.clientToken, lastLogin.loginUsername, username, uuid, lastLogin.legacy);
         }
 
-        if (Session.session != null && Session.session.isOnline() && joinserver != null && quicklaunch == null) {
-            String ip;
-            String port;
-
-            try {
-                String[] split = joinserver.split(":");
-                ip = split[0];
-                port = split[1];
-                MineOnlineServer mineOnlineServer = MineOnlineAPI.getServer(ip, port);
-
-                MinecraftVersion serverVersion = MinecraftVersionRepository.getSingleton().getVersionByMD5(mineOnlineServer.md5);
-
-                Set<String> minecraftJars = MinecraftVersionRepository.getSingleton().getInstalledJars().keySet();
-
-                if (serverVersion != null) {
-                    for (String compatibleClientBaseVersion : serverVersion.clientVersions) {
-                        for (String path : minecraftJars) {
-                            MinecraftVersion clientVersion = MinecraftVersionRepository.getSingleton().getInstalledJars().get(path);
-
-                            if (clientVersion != null && clientVersion.baseVersion.equals(compatibleClientBaseVersion)) {
-                                String mppass = null;
-                                if(serverVersion != null && serverVersion.hasHeartbeat) {
-                                    mppass = classicAuthService.getMPPass(Session.session.getAccessToken(), Session.session.getUsername(), Session.session.getUuid(), mineOnlineServer.ip, "" + mineOnlineServer.port);
-                                }
-
-                                if (mineOnlineServer.usingBetaEvolutions) {
-                                    BetaEvolutionsUtils betaEvolutions = new BetaEvolutionsUtils(false);
-                                    BetaEvolutionsUtils.VerificationResults verificationResults = betaEvolutions.authenticateUser(Session.session.getUsername(), Session.session.getAccessToken());
-                                    System.out.println("[Beta Evolutions] Authenticated with " + verificationResults.getSuccessful() + "/" + verificationResults.getTotal() + " BetaEVO nodes.");
-                                }
-
-                                MinecraftVersion.launchMinecraft(path, mineOnlineServer.ip, "" + mineOnlineServer.port, mppass);
-                                return;
-                            }
-                        }
-
-                        try {
-                            String path = serverVersion.download();
-
-                            String mppass = null;
-                            if(serverVersion != null && serverVersion.hasHeartbeat) {
-                                mppass = classicAuthService.getMPPass(Session.session.getAccessToken(), Session.session.getUsername(), Session.session.getUuid(), mineOnlineServer.ip, "" + mineOnlineServer.port);
-                            }
-
-                            if (mineOnlineServer.usingBetaEvolutions) {
-                                BetaEvolutionsUtils betaEvolutions = new BetaEvolutionsUtils(false);
-                                BetaEvolutionsUtils.VerificationResults verificationResults = betaEvolutions.authenticateUser(Session.session.getUsername(), Session.session.getAccessToken());
-                                System.out.println("[Beta Evolutions] Authenticated with " + verificationResults.getSuccessful() + "/" + verificationResults.getTotal() + " BetaEVO nodes.");
-                            }
-
-                            MinecraftVersion.launchMinecraft(path, mineOnlineServer.ip, "" + mineOnlineServer.port, mppass);
-                            return;
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
-                    }
-                }
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-        else if (Session.session != null && Session.session.isOnline() && quicklaunch != null) {
+        if (Session.session != null && Session.session.isOnline() && quicklaunch != null) {
             String ip = null;
             String port = null;
             String mppass = null;

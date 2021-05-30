@@ -77,10 +77,7 @@ public class GuiLoginLegacy extends AbstractGuiScreen
         if (MenuManager.isUpdateAvailable() && y > getHeight() - 20 && y < getHeight() - 10 && x < Font.minecraftFont.width("Update Available!")) {
             ClickSound.play();
             try {
-                if (Globals.BRANCH.equalsIgnoreCase("release"))
-                    Desktop.getDesktop().browse(new URI(Globals.API_PROTOCOL + Globals.API_HOSTNAME + "/download"));
-                else
-                    Desktop.getDesktop().browse(new URI("https://github.com/codieradical/MineOnline/releases"));
+                Desktop.getDesktop().browse(new URI("https://github.com/craftycodie/MineOnline/releases/latest"));
             } catch (Exception ex) {
 
             }
@@ -104,10 +101,10 @@ public class GuiLoginLegacy extends AbstractGuiScreen
             }
         }
 
-        if (y > getHeight() - 10 && y < getHeight() && x > getWidth() - Font.minecraftFont.width("Made by @codieradical <3")) {
+        if (y > getHeight() - 10 && y < getHeight() && x > getWidth() - Font.minecraftFont.width("Made by @craftycodie <3")) {
             ClickSound.play();
             try {
-                Desktop.getDesktop().browse(new URI("https://twitter.com/codieradical"));
+                Desktop.getDesktop().browse(new URI("https://twitter.com/craftycodie"));
             } catch (Exception ex) {
 
             }
@@ -243,7 +240,7 @@ public class GuiLoginLegacy extends AbstractGuiScreen
         if (MenuManager.isUpdateAvailable())
             Font.minecraftFont.drawString("Update Available!", 2, getHeight() - 20, 0xffff00);
         Font.minecraftFont.drawString("MineOnline " + (Globals.DEV ? "Dev " : "") + Globals.LAUNCHER_VERSION + (!Globals.BRANCH.equalsIgnoreCase("release") ? " (" + Globals.BRANCH + ")" : ""), 2, getHeight() - 10, 0xffffff);
-        String s = "Made by @codieradical <3";
+        String s = "Made by @craftycodie <3";
         Font.minecraftFont.drawString(s, getWidth() - Font.minecraftFont.width(s) - 2, getHeight() - 10, 0xffffff);
         Font.minecraftFont.drawString("Login via Microsoft", ((getWidth() / 2) - 100), getHeight() / 4 + 48 + 96, 0x5555FF);
         Font.minecraftFont.drawString("Need Account?", ((getWidth() / 2) + 102) - Font.minecraftFont.width("Need Account?"), getHeight() / 4 + 48 + 96, 0x5555FF);

@@ -1,8 +1,8 @@
 package gg.codie.mineonline.gui;
 
+import com.johnymuffin.LegacyTrackerServer;
+import com.johnymuffin.LegacyTrackerServerRepository;
 import gg.codie.mineonline.Session;
-import gg.codie.mineonline.api.MineOnlineAPI;
-import gg.codie.mineonline.api.MineOnlineServer;
 import gg.codie.mineonline.client.LegacyGameManager;
 import gg.codie.mineonline.gui.rendering.Font;
 import gg.codie.mineonline.gui.rendering.Renderer;
@@ -39,7 +39,7 @@ public class PlayerList
                         InetAddress currentIp = SocketConstructAdvice.serverAddress;
                         int currentPort = SocketConstructAdvice.serverPort;
 
-                        MineOnlineServer server = MineOnlineAPI.getServer(SocketConstructAdvice.serverAddress.getHostAddress(), "" + SocketConstructAdvice.serverPort);
+                        LegacyTrackerServer legacyTrackerServer = new LegacyTrackerServerRepository().getServer(SocketConstructAdvice.serverAddress.getHostAddress(), "" + SocketConstructAdvice.serverPort);
 
                         if (currentIp != SocketConstructAdvice.serverAddress || currentPort != SocketConstructAdvice.serverPort) {
                             lastRequestDone = true;
@@ -47,15 +47,16 @@ public class PlayerList
                             return;
                         }
 
-                        players = new ArrayList<>(Arrays.asList(server.players));
+                        players = new ArrayList<>(Arrays.asList(legacyTrackerServer.players));
                         if (!players.contains(Session.session.getUsername()))
                             players.add(Session.session.getUsername());
 
-                        if (server.dontListPlayers)
+                        if (legacyTrackerServer.dontListPlayers)
                             players = null;
 
-                        maxPlayers = server.maxUsers;
+                        maxPlayers = legacyTrackerServer.maxUsers;
                     } catch (IOException ex) {
+                        ex.printStackTrace();
                         // ignore.
                     }
                     lastRequestDone = true;

@@ -1,9 +1,9 @@
 package gg.codie.mineonline.patches;
 
-import gg.codie.mineonline.Globals;
 import net.bytebuddy.asm.Advice;
 
 import java.lang.reflect.Method;
+import java.net.URL;
 
 public class URLConstructAdvice {
     public static String updateURL;
@@ -77,9 +77,9 @@ public class URLConstructAdvice {
                 );
 
                 if (validJoin)
-                    url = ClassLoader.getSystemResource("ok").toString();
+                    url = ClassLoader.getSystemResource("responses/ok").toString();
                 else // Just something to make it error.
-                    url = ClassLoader.getSystemResource("bad login").toString();
+                    url = ClassLoader.getSystemResource("responses/bad login").toString();
             } else if (url.contains("/game/checkserver.jsp")) {
                 String username = null;
                 String serverId = null;
@@ -114,9 +114,19 @@ public class URLConstructAdvice {
                 );
 
                 if (validJoin)
-                    url = ClassLoader.getSystemResource("YES").toString();
+                    url = ClassLoader.getSystemResource("responses/YES").toString();
                 else // Just something to make it error.
-                    url = ClassLoader.getSystemResource("bad login").toString();
+                    url = ClassLoader.getSystemResource("responses/bad login").toString();
+            } else if (url.contains("/login/session.jsp")) {
+                url = ClassLoader.getSystemResource("responses/ok").toString();
+            } else if (url.contains("/game/?n=")) {
+                url = ClassLoader.getSystemResource("responses/42069").toString();
+            } else if (url.contains("/haspaid.jsp")) {
+                url = ClassLoader.getSystemResource("responses/true").toString();
+            } else if (url.endsWith("/resources/")) {
+                String resourcesVersion = (String) ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.FilePatch").getField("resourcesVersion").get(null);
+                Object resourceDownloaderService = ClassLoader.getSystemClassLoader().loadClass("gg.codie.minecraft.resources.ResourcesIndexService").newInstance();
+                url = ((URL)ClassLoader.getSystemClassLoader().loadClass("gg.codie.minecraft.resources.ResourcesIndexService").getMethod("getResourcesIndex", String.class).invoke(resourceDownloaderService, resourcesVersion)).toString();
             } else if ((url.contains("/MinecraftSkins/") || url.contains("/skin/")) && url.contains(".png")) {
                 // Handled by UrlConnectionPatch
             } else if (url.contains("textures.minecraft.net")) {
@@ -139,38 +149,39 @@ public class URLConstructAdvice {
 
                 url = (String) findCloakURLForUsername.invoke(null, username);
 
-            } else {
-                if (url.endsWith("/MinecraftResources/") || url.endsWith("/resources")|| url.endsWith("/resources/")) {
-                    String resourcesVersion = (String) ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.FilePatch").getField("resourcesVersion").get(null);
-
-                    if (resourcesVersion != null)
-                        url = url + resourcesVersion + "/";
-                }
-
-                for (String replaceHost : new String[]{
-                        "www.minecraft.net:80",
-                        "www.minecraft.net:-1",
-                        "skins.minecraft.net",
-                        "session.minecraft.net",
-                        "authenticate.minecraft.net",
-                        "login.minecraft.net",
-                        "assets.minecraft.net",
-                        "mcoapi.minecraft.net",
-                        "www.minecraft.net",
-                        "minecraft.net",
-                        "s3.amazonaws.com",
-
-                        // for mods
-                        "banshee.alex231.com",
-                        "mcauth-alex231.rhcloud.com",
-                }) {
-                    if (url.contains(replaceHost)) {
-                        url = url.replace(replaceHost, Globals.API_HOSTNAME);
-                        url = url.replace("https://", Globals.API_PROTOCOL);
-                        url = url.replace("http://", Globals.API_PROTOCOL);
-                    }
-                }
             }
+//            else if (!(Boolean) ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.Globals").getField("LTS").get(null)) {
+//                if (url.endsWith("/MinecraftResources/") || url.endsWith("/resources")|| url.endsWith("/resources/")) {
+//                    String resourcesVersion = (String) ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.FilePatch").getField("resourcesVersion").get(null);
+//
+//                    if (resourcesVersion != null)
+//                        url = url + resourcesVersion + "/";
+//                }
+//
+//                for (String replaceHost : new String[]{
+//                        "www.minecraft.net:80",
+//                        "www.minecraft.net:-1",
+//                        "skins.minecraft.net",
+//                        "session.minecraft.net",
+//                        "authenticate.minecraft.net",
+//                        "login.minecraft.net",
+//                        "assets.minecraft.net",
+//                        "mcoapi.minecraft.net",
+//                        "www.minecraft.net",
+//                        "minecraft.net",
+//                        "s3.amazonaws.com",
+//
+//                        // for mods
+//                        "banshee.alex231.com",
+//                        "mcauth-alex231.rhcloud.com",
+//                }) {
+//                    if (url.contains(replaceHost)) {
+//                        url = url.replace(replaceHost, Globals.API_HOSTNAME);
+//                        url = url.replace("https://", Globals.API_PROTOCOL);
+//                        url = url.replace("http://", Globals.API_PROTOCOL);
+//                    }
+//                }
+//            }
 
             if(DEV) {
                 System.out.println("New URL: " + url);

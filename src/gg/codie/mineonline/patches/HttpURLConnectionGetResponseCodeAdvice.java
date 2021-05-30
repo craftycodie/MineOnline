@@ -4,12 +4,9 @@ import gg.codie.mineonline.Globals;
 import net.bytebuddy.asm.Advice;
 
 import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 
 public class HttpURLConnectionGetResponseCodeAdvice {
     @Advice.OnMethodExit
@@ -47,6 +44,9 @@ public class HttpURLConnectionGetResponseCodeAdvice {
 
                 returnCode = 404;
             }
+        } else if (thisObj.getURL().toString().endsWith("/MinecraftResources/") || thisObj.getURL().toString().endsWith("/resources/")) {
+            // Sounds are downloaded by MineOnline so we don't need to check for updates in game.
+            returnCode = 404;
         }
     }
 }

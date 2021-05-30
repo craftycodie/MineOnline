@@ -15,7 +15,6 @@ public class ClassicServerAuthService {
     }
 
     private void registerMPPassProviders() {
-        mpPassProviders.add(new MineOnlineMPPassProvider());
         mpPassProviders.add(new BetaCraftMPPassProvider());
     }
 
@@ -25,7 +24,8 @@ public class ClassicServerAuthService {
             serverIP = inetAddress.getHostAddress();
 
             if (inetAddress.isAnyLocalAddress()) {
-                serverIP = MineOnlineAPI.getExternalIP();
+                // TODO: reimplement.
+//                serverIP = MineOnlineAPI.getExternalIP();
             }
         } catch (Exception ex) {
             //ignore.

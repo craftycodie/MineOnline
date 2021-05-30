@@ -32,7 +32,7 @@ public class Settings implements IMinecraftOptionsHandler {
     private static final String SHOW_MENU_TOAST = "showMenuToast";
     private static final String SHOW_SCREENSHOT_TOAST = "showScreenshotToast";
     private static final String SHOW_ZOOM_TOAST = "showZoomToast";
-    private static final String SHOW_PLAYERLIST_TOAST = "showPlayerlistToast";
+    private static final String SHOW_PLAYERLIST_TOAST = "showPlayerListToast";
 
     private static final String FULLSCREEN = "fullscreen";
     private static final String GUI_SCALE = "guiScale";

@@ -27,16 +27,14 @@ The program can also run regular desktop versions of the game, and even old laun
 
 **Compatible with Java 8u261+**
 
-[Download](https://github.com/codieradical/MineOnline/releases)
-
-( also available on the [Arch User Repository](https://aur.archlinux.org/packages/mineonline/) as maintained by [@maddoxdragon](https://github.com/maddoxdragon/) )
+[Download](https://github.com/craftycodie/MineOnline/releases)
 
 ## Features
 These are features MineOnline will bring to Minecraft.
 
 - Skins and Cloaks
 - Resource Files (Sounds, the right ones for each version!)
-- [Server List](https://mineonline.codie.gg/servers)
+- Server List
 - FOV Slider
 - Microsoft Login Support
 - Online World Saves for Classic
@@ -88,7 +86,7 @@ This file should contain an array of JSON versions, like this:
 ```
 
 Legacy is true for any pre-1.6 minecraft version.
-For 1.6 and above, libraries should be provided. Examples can be found [here](https://github.com/codieradical/MineOnline/blob/master/res/version-info/client/).
+For 1.6 and above, libraries should be provided. Examples can be found [here](https://github.com/craftycodie/MineOnline/blob/master/res/version-info/client/).
 
 I recommend you start with the unmodded version information as a template, as most of the settings will carry over.
 

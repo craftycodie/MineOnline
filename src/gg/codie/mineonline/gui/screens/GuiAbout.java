@@ -43,32 +43,6 @@ public class GuiAbout extends AbstractGuiScreen
                 }
             }
         }));
-
-        controlList.add(new GuiButton(0, getWidth() / 2 - 100, getHeight() / 4 + 96 + byte0, "Custom Capes", new GuiButton.GuiButtonListener() {
-            @Override
-            public void OnButtonPress() {
-                try {
-                    Desktop.getDesktop().browse(new URI("https://www.minecraftcapes.co.uk/"));
-                } catch (Exception ex) {
-
-                }
-            }
-        }));
-
-
-        controlList.add(new GuiButton(5, getWidth() / 2 - 100, getHeight() / 4 + 48 + byte0, "Website", new GuiButton.GuiButtonListener() {
-            @Override
-            public void OnButtonPress() {
-                if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
-                    try {
-                        Desktop.getDesktop().browse(new URI("http://mineonline.codie.gg"));
-                    } catch (Exception ex) {
-
-                    }
-                }
-            }
-        }));
-
     }
 
     @Override

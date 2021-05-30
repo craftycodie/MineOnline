@@ -4,7 +4,6 @@ import gg.codie.common.utils.JSONUtils;
 import gg.codie.common.utils.MD5Checksum;
 import gg.codie.common.utils.OSUtils;
 import gg.codie.minecraft.client.options.EMinecraftOptionsVersion;
-import gg.codie.mineonline.api.MineOnlineAPI;
 import gg.codie.mineonline.client.LegacyGameManager;
 import gg.codie.mineonline.client.LegacyMinecraftClientLauncher;
 import gg.codie.mineonline.client.MinecraftClientLauncher;
@@ -213,6 +212,7 @@ public class MinecraftVersion {
 
     public String download() throws IOException {
         HttpURLConnection httpConnection = (java.net.HttpURLConnection) (downloadURL.openConnection());
+        System.out.println(downloadURL.toString());
         InputStream in = httpConnection.getInputStream();
 
         String path = LauncherFiles.MINEONLINE_VERSIONS_PATH + "clients" + File.separator + name + " " + md5 + File.separator + baseVersion + ".jar";
@@ -451,12 +451,6 @@ public class MinecraftVersion {
         if (serverIP != null) {
             InetAddress address = InetAddress.getByName(serverIP);
             serverIP = address.getHostAddress();
-
-            String externalIP = MineOnlineAPI.getExternalIP();
-
-            if (serverIP != null && serverIP.equals(externalIP)) {
-                serverIP = InetAddress.getLocalHost().getHostAddress();
-            }
 
             Settings.singleton.setLastServer(serverIP + (serverPort != null ? ":" + serverPort : ""));
             Settings.singleton.saveSettings();

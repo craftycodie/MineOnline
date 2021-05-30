@@ -1,0 +1,19 @@
+{
+  "name": "Classic 0.0.12a_03",
+  "md5": "A93F9292A30C51A8CE0D47AACEBA08A9",
+  "type": "client",
+  "enableScreenshotPatch": true,
+  "enableFullscreenPatch": true,
+  "enableCursorPatch": true,
+  "legacy": true,
+  "baseVersion": "c0.0.12a_03",
+  "useFOVPatch": true,
+  "useTexturepackPatch": true,
+  "ingameVersionString": "0.0.12a_03",
+  "resourcesVersion": "c0.0.14a_08",
+  "optionsVersion": "CLASSIC",
+  "useResizePatch": true,
+  "hasNetherPortalTexture": false,
+  "colorCodePrefix": "&",
+  "fontClass": "com.mojang.minecraft.e.a"
+}

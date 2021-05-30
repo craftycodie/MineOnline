@@ -45,8 +45,12 @@ public class ProgressDialog extends JDialog {
             singleton.progress = progress;
 
             if (progress >= 100) {
-                singleton.dispose();
-                singleton = null;
+                try {
+                    singleton.dispose();
+                    singleton = null;
+                } catch (Exception ex) {
+
+                }
             }
         }
     }
@@ -84,6 +88,10 @@ public class ProgressDialog extends JDialog {
                 this.worker.execute();
                 break;
         }
+    }
+
+    public static boolean isOpen() {
+        return singleton != null && singleton.progress < 100;
     }
 
     public static void showProgress(String title, WindowAdapter closeListener) {

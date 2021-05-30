@@ -157,15 +157,7 @@ public class GuiOptions extends AbstractGuiScreen
                 }
             }));
 
-            controlList.add(new GuiSmallButton(0, getWidth() / 2 - 155, getHeight() / 6 + 48, "Custom Capes: " + (Settings.singleton.getCustomCapes() ? "YES" : "NO"), new GuiButton.GuiButtonListener() {
-                @Override
-                public void OnButtonPress() {
-                    Settings.singleton.setCustomCapes(!Settings.singleton.getCustomCapes());
-                    ((GuiSmallButton) controlList.get(7)).displayString = "Custom Capes: " + (Settings.singleton.getCustomCapes() ? "YES" : "NO");
-                }
-            }));
-
-            controlList.add(new GuiSmallButton(0, getWidth() / 2 + 5, getHeight() / 6 + 48, "Logout", new GuiButton.GuiButtonListener() {
+            controlList.add(new GuiSmallButton(0, getWidth() / 2 - 155, getHeight() / 6 + 48, "Logout", new GuiButton.GuiButtonListener() {
                 @Override
                 public void OnButtonPress() {
                     MenuManager.setMenuScreen(new GuiLoginLegacy());
@@ -187,7 +179,6 @@ public class GuiOptions extends AbstractGuiScreen
         if (!LegacyGameManager.isInGame()) {
             controlList.get(6).resize(getWidth() / 2 + 5, getHeight() / 6 + 24);
             controlList.get(7).resize(getWidth() / 2 - 155, getHeight() / 6 + 48);
-            controlList.get(8).resize(getWidth() / 2 + 5, getHeight() / 6 + 48);
         }
     }
 

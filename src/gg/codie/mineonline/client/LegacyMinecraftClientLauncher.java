@@ -24,6 +24,7 @@ import gg.codie.mineonline.patches.lwjgl.LWJGLGLUPatch;
 import gg.codie.mineonline.patches.minecraft.ColorizerPatch;
 import gg.codie.mineonline.patches.minecraft.FOVViewmodelAdvice;
 import gg.codie.mineonline.patches.minecraft.InputPatch;
+import gg.codie.mineonline.sound.SoundExtractionService;
 import gg.codie.mineonline.utils.JREUtils;
 import gg.codie.mineonline.utils.Logging;
 import org.lwjgl.BufferUtils;
@@ -172,8 +173,15 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
         if(serverAddress != null && serverPort == null)
             this.serverPort = "25565";
 
-        minecraftVersion = MinecraftVersionRepository.getSingleton(true, jarPath).getVersion(jarPath);
+        minecraftVersion = MinecraftVersionRepository.getSingleton(jarPath).getVersion(jarPath);
         Settings.singleton.saveMinecraftOptions(minecraftVersion != null ? minecraftVersion.optionsVersion : EMinecraftOptionsVersion.DEFAULT);
+
+        if (minecraftVersion != null)
+            try {
+                new SoundExtractionService().downloadSoundpack(minecraftVersion.resourcesVersion);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
     }
 
     boolean firstUpdate = true;
@@ -328,7 +336,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
                         int ypos = 2;
                         if (minecraftVersion.ingameVersionString != null && !Settings.singleton.getHideVersionString())
                             ypos = 12;
-                        Font.minecraftFont.drawStringWithShadow("MineOnline " + (Globals.DEV ? "Dev " : "") + Globals.LAUNCHER_VERSION + " (" + Globals.BRANCH + ")", 2, ypos, 0xffffff);
+                        Font.minecraftFont.drawStringWithShadow("MineOnline " + (Globals.DEV ? "Dev " : "") + Globals.LAUNCHER_VERSION  + " (" + Globals.BRANCH + ")", 2, ypos, 0xffffff);
                     }
 
                     GUIScale scaledresolution = new GUIScale(getWidth(), getHeight());
