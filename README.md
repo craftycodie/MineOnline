@@ -1,18 +1,3 @@
-# Development Update (26/4/21)
-I'm currently on a break from this project, for at least 2 months.
-The next update, 4.0.0, will be the first long-term service update.
-With 4.0.0 I plan to bring the following changes:
-
-- Worlds will no longer be saved online in classic. Instead they will save on your PC.
-- Custom capes will no longer be supported.
-- The server list will use LegacyTracker.
-
-With these changes, the MineOnline website is no longer required. The game will only communicate with Mojang, and it will do so directly. I can't afford to keep the MineOnline website up indefinately.
-
-Thanks for playing <3
-
-- Codie
-
 ![logo](mineonlinelogo.png)
 
 Launch old versions of minecraft just as you remembered them.
