@@ -60,7 +60,7 @@ I recommend you start with the unmodded version information as a template, as mo
 If you would like a version to be added to the main list, contact me (Codie).
 
 ## For Developers
-If you would like to help out, a good place to start is the ZenHub workspace, all of the issues are managed in [ZenHub](https://app.zenhub.com/workspaces/mineonline-5ec5d0ef84b144f89c5bc5c7). The best place to reach me is in my [discord server](https://discord.gg/xuyT7Xm).
+If you would like to help out, a good place to start is the ZenHub workspace, all of the issues are managed in [ZenHub](https://app.zenhub.com/workspaces/mineonline-5ec5d0ef84b144f89c5bc5c7). The best place to reach me is [here](https://discord.gg/xuyT7Xm).
 
 As per the license you are welcome to use the launcher code under non-commercial conditions.
 
