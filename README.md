@@ -11,7 +11,7 @@ The program can also run regular desktop versions of the game, and even old laun
 
 **Compatible with Java 8u261+**
 
-[Download](https://github.com/craftycodie/MineOnline/releases)
+[Download](https://github.com/craftycodie/MineOnline/releases/latest)
 
 ## Features
 These are features MineOnline will bring to Minecraft.
