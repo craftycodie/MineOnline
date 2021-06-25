@@ -63,7 +63,7 @@ public class SoundExtractionService {
                     ProgressDialog.showProgress("Installing MineOnline", new WindowAdapter() {
                         @Override
                         public void windowClosed(WindowEvent e) {
-                            System.exit(0);
+//                            System.exit(0);
                         }
                     });
                     ProgressDialog.setMessage("Downloading sounds...");
