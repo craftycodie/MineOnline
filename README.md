@@ -21,7 +21,7 @@ These are features MineOnline will bring to Minecraft.
 - Server List
 - FOV Slider
 - Microsoft Login Support
-- Online World Saves for Classic
+- Classic World Saving
 - Screenshots (F2)
 - Texture packs for versions before Alpha 1.2.2 (when it was officially added)
   - Custom font support.
