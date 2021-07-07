@@ -43,6 +43,7 @@ public class LauncherFiles {
     public static final String MINEONLINE_CUSTOM_VERSION_INFO_FOLDER = MINEONLINE_FOLDER + "custom-version-info" + File.separator;
     public static final String MINEONLINE_VERSION_INFO_FOLDER = MINEONLINE_FOLDER + "version-info" + File.separator;
     public static final String MINEONLINE_VERSIONS_PATH = MINEONLINE_FOLDER + "versions" + File.separator;
+    public static final String MINEONLINE_WORLDS_PATH = MINEONLINE_FOLDER + "worlds" + File.separator;
     public static final String MINEONLINE_LATEST_LOG = MINEONLINE_FOLDER + "latest.log";
     public static final String MINEONLINE_RESOURCES_PATH = MINEONLINE_FOLDER + "resources" + File.separator;
     public static final String MINEONLINE_OPTIONS_PATH = MINEONLINE_FOLDER + "options.txt";

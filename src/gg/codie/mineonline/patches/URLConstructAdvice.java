@@ -1,9 +1,16 @@
 package gg.codie.mineonline.patches;
 
+import gg.codie.mineonline.LauncherFiles;
 import net.bytebuddy.asm.Advice;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.lang.reflect.Method;
 import java.net.URL;
+import java.net.URLDecoder;
+import java.nio.file.Paths;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class URLConstructAdvice {
     public static String updateURL;
@@ -149,39 +156,29 @@ public class URLConstructAdvice {
 
                 url = (String) findCloakURLForUsername.invoke(null, username);
 
+            } else if (url.contains("/listmaps.jsp?user=")) {
+                String mineonlineWorldsFolder = (String)ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.LauncherFiles").getField("MINEONLINE_WORLDS_PATH").get(null);
+                String mineonlineTempFolder = (String)ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.LauncherFiles").getField("MINEONLINE_TEMP_FOLDER").get(null);
+
+                String[] worldNames = new String[] {"-", "-", "-", "-", "-"};
+
+                File dir = new File(mineonlineWorldsFolder);
+                File[] directoryListing = dir.listFiles();
+                if (directoryListing != null) {
+                    for (File child : directoryListing) {
+                        if (child.getName().endsWith(".mine") && child.getName().toCharArray()[1] == '_') {
+                            worldNames[Integer.parseInt("" + child.getName().toCharArray()[0]) - 1] = child.getName().substring(2, child.getName().length() - 5);
+                        }
+                        // Do something with child
+                    }
+                }
+
+                FileWriter myWriter = new FileWriter(mineonlineTempFolder + "worlds.txt");
+                myWriter.write(String.join(";", worldNames));
+                myWriter.close();
+
+                url = Paths.get(mineonlineTempFolder + "worlds.txt").toUri().toURL().toString();
             }
-//            else if (!(Boolean) ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.Globals").getField("LTS").get(null)) {
-//                if (url.endsWith("/MinecraftResources/") || url.endsWith("/resources")|| url.endsWith("/resources/")) {
-//                    String resourcesVersion = (String) ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.FilePatch").getField("resourcesVersion").get(null);
-//
-//                    if (resourcesVersion != null)
-//                        url = url + resourcesVersion + "/";
-//                }
-//
-//                for (String replaceHost : new String[]{
-//                        "www.minecraft.net:80",
-//                        "www.minecraft.net:-1",
-//                        "skins.minecraft.net",
-//                        "session.minecraft.net",
-//                        "authenticate.minecraft.net",
-//                        "login.minecraft.net",
-//                        "assets.minecraft.net",
-//                        "mcoapi.minecraft.net",
-//                        "www.minecraft.net",
-//                        "minecraft.net",
-//                        "s3.amazonaws.com",
-//
-//                        // for mods
-//                        "banshee.alex231.com",
-//                        "mcauth-alex231.rhcloud.com",
-//                }) {
-//                    if (url.contains(replaceHost)) {
-//                        url = url.replace(replaceHost, Globals.API_HOSTNAME);
-//                        url = url.replace("https://", Globals.API_PROTOCOL);
-//                        url = url.replace("http://", Globals.API_PROTOCOL);
-//                    }
-//                }
-//            }
 
             if(DEV) {
                 System.out.println("New URL: " + url);
