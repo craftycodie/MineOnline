@@ -16,6 +16,7 @@ import gg.codie.mineonline.gui.rendering.Font;
 import gg.codie.mineonline.gui.rendering.Loader;
 import gg.codie.mineonline.gui.screens.AbstractGuiScreen;
 import gg.codie.mineonline.gui.textures.EGUITexture;
+import gg.codie.mineonline.levels.MineOnlineURLStreamHandlerFactory;
 import gg.codie.mineonline.patches.ByteBufferPatch;
 import gg.codie.mineonline.patches.ClassPatch;
 import gg.codie.mineonline.patches.HashMapPatch;
@@ -30,6 +31,7 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 
 import java.awt.*;
+import java.net.URL;
 
 public class LegacyGameManager {
 
@@ -130,6 +132,8 @@ public class LegacyGameManager {
         ByteBufferPatch.init();
         ColorizerPatch.init();
         FontPatch.init();
+
+        URL.setURLStreamHandlerFactory(new MineOnlineURLStreamHandlerFactory());
 
         if (version != null) {
             if (version.useIndevSoundPatch)

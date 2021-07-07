@@ -156,28 +156,8 @@ public class URLConstructAdvice {
 
                 url = (String) findCloakURLForUsername.invoke(null, username);
 
-            } else if (url.contains("/listmaps.jsp?user=")) {
-                String mineonlineWorldsFolder = (String)ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.LauncherFiles").getField("MINEONLINE_WORLDS_PATH").get(null);
-                String mineonlineTempFolder = (String)ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.LauncherFiles").getField("MINEONLINE_TEMP_FOLDER").get(null);
-
-                String[] worldNames = new String[] {"-", "-", "-", "-", "-"};
-
-                File dir = new File(mineonlineWorldsFolder);
-                File[] directoryListing = dir.listFiles();
-                if (directoryListing != null) {
-                    for (File child : directoryListing) {
-                        if (child.getName().endsWith(".mine") && child.getName().toCharArray()[1] == '_') {
-                            worldNames[Integer.parseInt("" + child.getName().toCharArray()[0]) - 1] = child.getName().substring(2, child.getName().length() - 5);
-                        }
-                        // Do something with child
-                    }
-                }
-
-                FileWriter myWriter = new FileWriter(mineonlineTempFolder + "worlds.txt");
-                myWriter.write(String.join(";", worldNames));
-                myWriter.close();
-
-                url = Paths.get(mineonlineTempFolder + "worlds.txt").toUri().toURL().toString();
+            } else if (url.contains("/listmaps.jsp?user=") || url.contains("/level/save.html") || url.contains("/level/load.html")) {
+                url = url.replace("http", "mineonline");
             }
 
             if(DEV) {
