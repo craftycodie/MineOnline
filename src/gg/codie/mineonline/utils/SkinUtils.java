@@ -13,7 +13,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 public class SkinUtils {
-    // Used with reflection.
     public static JSONObject getUserSkin(String username) {
         try {
             JSONObject profile = MojangAPI.minecraftProfile(username);
@@ -32,7 +31,7 @@ public class SkinUtils {
         }
     }
 
-    public static String findCloakURLForUsername(String username) {
+    public static URL findCloakURLForUsername(String username) {
         try {
             JSONObject profile = MojangAPI.minecraftProfile(username);
             if (!profile.has("id"))
@@ -42,10 +41,10 @@ public class SkinUtils {
             if (!profile.has("properties"))
                 throw new FileNotFoundException("Cloak not found: " + username);
             profile = new JSONObject(new String(Base64.getDecoder().decode(profile.getJSONArray("properties").getJSONObject(0).getString("value")), StandardCharsets.UTF_8));
-            return profile.getJSONObject("textures").getJSONObject("CAPE").getString("url");
+            return new URL(profile.getJSONObject("textures").getJSONObject("CAPE").getString("url"));
 
         } catch (Exception ex) {
-            return "";
+            return null;
         }
     }
 

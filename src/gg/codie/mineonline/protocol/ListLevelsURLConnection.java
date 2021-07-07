@@ -1,12 +1,22 @@
-package gg.codie.mineonline.levels;
+package gg.codie.mineonline.protocol;
 
 import java.io.*;
+import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
 
-public class ListLevelsURLConnection extends URLConnection {
+public class ListLevelsURLConnection extends HttpURLConnection {
     public ListLevelsURLConnection(URL url) {
         super(url);
+    }
+
+    @Override
+    public void disconnect() {
+
+    }
+
+    @Override
+    public boolean usingProxy() {
+        return false;
     }
 
     @Override
@@ -20,6 +30,4 @@ public class ListLevelsURLConnection extends URLConnection {
 
         return new ByteArrayInputStream(String.join(";", worldNames).getBytes());
     }
-
-
 }

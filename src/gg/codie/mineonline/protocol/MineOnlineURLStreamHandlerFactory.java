@@ -1,4 +1,4 @@
-package gg.codie.mineonline.levels;
+package gg.codie.mineonline.protocol;
 
 import java.net.URLStreamHandler;
 import java.net.URLStreamHandlerFactory;

@@ -16,7 +16,7 @@ import gg.codie.mineonline.gui.rendering.Font;
 import gg.codie.mineonline.gui.rendering.Loader;
 import gg.codie.mineonline.gui.screens.AbstractGuiScreen;
 import gg.codie.mineonline.gui.textures.EGUITexture;
-import gg.codie.mineonline.levels.MineOnlineURLStreamHandlerFactory;
+import gg.codie.mineonline.protocol.MineOnlineURLStreamHandlerFactory;
 import gg.codie.mineonline.patches.ByteBufferPatch;
 import gg.codie.mineonline.patches.ClassPatch;
 import gg.codie.mineonline.patches.HashMapPatch;

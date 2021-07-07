@@ -1,14 +1,9 @@
-package gg.codie.mineonline.levels;
+package gg.codie.mineonline.protocol;
 
-import gg.codie.mineonline.LauncherFiles;
-
-import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
 
 public class LoadLevelURLConnection extends HttpURLConnection {
     public LoadLevelURLConnection(URL url) {
