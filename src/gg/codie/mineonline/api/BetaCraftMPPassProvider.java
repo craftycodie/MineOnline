@@ -20,37 +20,14 @@ public class BetaCraftMPPassProvider implements IMPPassProvider {
         String betacraftPayload = "token:" + Session.session.getAccessToken() + ":" + Session.session.getUuid();
 
         try {
-            URL url = new URL("https://betacraft.pl/server.jsp");
+            URL url = new URL("https://betacraft.pl/api/getmppass.jsp?user=" + username + "&server=" + serverIP + ":" + serverPort);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-            connection.setRequestProperty("User-Agent", "Java/1.8.0_265");
             connection.setRequestMethod("POST");
             connection.setDoInput(true);
-            connection.setDoOutput(true);
-            DataOutputStream output = new DataOutputStream(connection.getOutputStream());
-            output.writeUTF(username);
-            output.writeUTF(betacraftPayload);
-            output.flush();
-            output.close();
             InputStream is = connection.getInputStream();
             BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-
-            StringBuilder response = new StringBuilder();
-            String line;
-            while ((line = rd.readLine()) != null) {
-                response.append(line);
-            }
-            rd.close();
-
-            String mpPassPrefix = "join://" + serverIP + ":" + serverPort + "/";
-
-            String mpPass = response.toString().substring(response.indexOf(mpPassPrefix) + mpPassPrefix.length());
-            mpPass = mpPass.substring(0, mpPass.indexOf("/"));
-
-            if (mpPass.equals("-"))
-                mpPass = null;
-
-            return mpPass;
+            return rd.readLine();
         } catch (Exception ex) {
             ex.printStackTrace();
             return null;
