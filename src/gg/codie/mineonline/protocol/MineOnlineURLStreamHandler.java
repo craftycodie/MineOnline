@@ -1,5 +1,7 @@
 package gg.codie.mineonline.protocol;
 
+import sun.net.www.protocol.http.HttpURLConnection;
+
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -37,6 +39,6 @@ public class MineOnlineURLStreamHandler extends URLStreamHandler {
         else if ((url.toString().contains("/MinecraftCloaks/") && url.toString().contains(".png")) || url.toString().contains("/cloak/get.jsp?user="))
             return new CapeURLConnection(url);
         else
-            return null;
+            return new HttpURLConnection(url, null);
     }
 }

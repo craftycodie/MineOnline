@@ -24,6 +24,7 @@ import gg.codie.mineonline.patches.lwjgl.LWJGLGLUPatch;
 import gg.codie.mineonline.patches.minecraft.ColorizerPatch;
 import gg.codie.mineonline.patches.minecraft.FOVViewmodelAdvice;
 import gg.codie.mineonline.patches.minecraft.InputPatch;
+import gg.codie.mineonline.protocol.MineOnlineURLStreamHandlerFactory;
 import gg.codie.mineonline.sound.SoundExtractionService;
 import gg.codie.mineonline.utils.JREUtils;
 import gg.codie.mineonline.utils.Logging;
@@ -501,7 +502,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
 
         // Patches
         SocketPatch.watchSockets();
-        URLPatch.redefineURL();
+        URL.setURLStreamHandlerFactory(new MineOnlineURLStreamHandlerFactory());
         FilePatch.relocateFiles(minecraftVersion != null ? minecraftVersion.resourcesVersion : "default");
 
         // Allows c0.0.15a to connect to servers.

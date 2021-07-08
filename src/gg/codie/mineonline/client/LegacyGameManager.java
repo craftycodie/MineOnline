@@ -133,8 +133,6 @@ public class LegacyGameManager {
         ColorizerPatch.init();
         FontPatch.init();
 
-        URL.setURLStreamHandlerFactory(new MineOnlineURLStreamHandlerFactory());
-
         if (version != null) {
             if (version.useIndevSoundPatch)
                 PaulscodePatch.fixIndevAudio();

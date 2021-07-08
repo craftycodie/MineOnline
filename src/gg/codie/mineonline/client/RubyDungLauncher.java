@@ -14,7 +14,6 @@ import gg.codie.mineonline.gui.screens.GuiIngameMenu;
 import gg.codie.mineonline.lwjgl.OnCreateListener;
 import gg.codie.mineonline.lwjgl.OnDestroyListener;
 import gg.codie.mineonline.lwjgl.OnUpdateListener;
-import gg.codie.mineonline.patches.URLPatch;
 import gg.codie.mineonline.patches.lwjgl.LWJGLDisplayPatch;
 import gg.codie.mineonline.patches.lwjgl.LWJGLGL11GLOrthoAdvice;
 import gg.codie.mineonline.patches.lwjgl.LWJGLGLUPatch;
@@ -22,6 +21,7 @@ import gg.codie.mineonline.patches.minecraft.FOVViewmodelAdvice;
 import gg.codie.mineonline.patches.minecraft.InputPatch;
 import gg.codie.mineonline.patches.minecraft.RubyDungConstructorAdvice;
 import gg.codie.mineonline.patches.minecraft.RubyDungPatch;
+import gg.codie.mineonline.protocol.MineOnlineURLStreamHandlerFactory;
 import gg.codie.mineonline.utils.JREUtils;
 import gg.codie.mineonline.utils.Logging;
 import org.lwjgl.BufferUtils;
@@ -406,8 +406,7 @@ public class RubyDungLauncher implements IMinecraftAppletWrapper {
                 }
             };
 
-
-            URLPatch.redefineURL();
+            URL.setURLStreamHandlerFactory(new MineOnlineURLStreamHandlerFactory());
 
             try {
                 Display.setParent(DisplayManager.getCanvas());

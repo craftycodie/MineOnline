@@ -5,9 +5,9 @@ import gg.codie.minecraft.api.MinecraftLibrariesService;
 import gg.codie.mineonline.*;
 import gg.codie.mineonline.discord.DiscordRPCHandler;
 import gg.codie.mineonline.patches.SocketPatch;
-import gg.codie.mineonline.patches.URLPatch;
 import gg.codie.mineonline.patches.minecraft.PropertiesSignaturePatch;
 import gg.codie.mineonline.patches.minecraft.YggdrasilMinecraftSessionServicePatch;
+import gg.codie.mineonline.protocol.MineOnlineURLStreamHandlerFactory;
 import gg.codie.mineonline.utils.JREUtils;
 import gg.codie.mineonline.utils.Logging;
 
@@ -202,7 +202,7 @@ public class MinecraftClientLauncher {
             Method main = clazz.getMethod("main", String[].class);
 
             SocketPatch.watchSockets();
-            URLPatch.redefineURL();
+            URL.setURLStreamHandlerFactory(new MineOnlineURLStreamHandlerFactory());
             YggdrasilMinecraftSessionServicePatch.allowMineonlineSkins(classLoader);
             PropertiesSignaturePatch.redefineIsSignatureValid(classLoader);
 
