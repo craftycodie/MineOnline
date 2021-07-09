@@ -9,6 +9,7 @@ import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.gui.components.GuiButton;
 import gg.codie.mineonline.gui.components.GuiTextField;
 import gg.codie.mineonline.gui.rendering.Font;
+import gg.codie.mineonline.server.ThreadPollServers;
 import org.lwjgl.input.Keyboard;
 
 // Referenced classes of package net.minecraft.src:
@@ -63,6 +64,7 @@ public class GuiEditServer extends AbstractGuiScreen
             } else {
                 SavedServerRepository.getSingleton().editServer(server, index);
             }
+            ThreadPollServers.pollServer(server.address);
             if (LegacyGameManager.isInGame())
                 LegacyGameManager.setGUIScreen(parentScreen);
             else
