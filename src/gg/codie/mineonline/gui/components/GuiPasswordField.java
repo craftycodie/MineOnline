@@ -65,7 +65,15 @@ public class GuiPasswordField extends GuiComponent
             }
             if(j > 0)
             {
-                text += s.substring(0, j);
+                int validCount = 0;
+                for (char copiedCharacter: s.toCharArray()) {
+                    if(validCount == j)
+                        break;
+                    if (InputSanitization.allowedCharacters.indexOf(copiedCharacter) >= 0 && (int) copiedCharacter > 31) {
+                        text += copiedCharacter;
+                    }
+                    validCount++;
+                }
             }
         }
         if(i == 14 && text.length() > 0)
