@@ -26,7 +26,6 @@ public class JoinServerURLConnection extends HttpURLConnection {
     }
 
     private String response = "bad login";
-    private int responseCode = 400;
 
     @Override
     public void connect() throws IOException {
@@ -38,25 +37,24 @@ public class JoinServerURLConnection extends HttpURLConnection {
                 serverId
         );
 
-
         if (validJoin) {
             response = "ok";
-            responseCode = 200;
         }
     }
 
     @Override
     public InputStream getInputStream() throws IOException {
+        System.out.println("Join Server: " + response);
         return new ByteArrayInputStream(response.getBytes());
     }
 
     @Override
     public int getResponseCode() {
-        return responseCode;
+        return 200;
     }
 
     @Override
     public String getResponseMessage() {
-        return responseMessage;
+        return "ok";
     }
 }

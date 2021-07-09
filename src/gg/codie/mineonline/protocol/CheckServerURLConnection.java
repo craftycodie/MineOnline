@@ -68,6 +68,6 @@ public class CheckServerURLConnection extends HttpURLConnection {
 
     @Override
     public String getResponseMessage() {
-        return responseMessage;
+        return "ok";
     }
 }
