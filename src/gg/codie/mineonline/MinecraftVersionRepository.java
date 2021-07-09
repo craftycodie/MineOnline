@@ -254,9 +254,11 @@ public class MinecraftVersionRepository {
         }
         // Load cached versions
         versions = getVersions(LauncherFiles.MINEONLINE_VERSION_INFO_FOLDER);
+
         // Load custom versions
         customVersions = getVersions(LauncherFiles.MINEONLINE_CUSTOM_VERSION_INFO_FOLDER);
         //Load installed versions
+
         if (loadJarPath != null)
             loadJar(loadJarPath);
         if (getLastSelectedJarPath() != null)
