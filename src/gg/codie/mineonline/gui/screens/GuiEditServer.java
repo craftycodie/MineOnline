@@ -72,6 +72,13 @@ public class GuiEditServer extends AbstractGuiScreen
         }
     };
 
+    public void selectNextField() {
+        if (nameTextField.isFocused) {
+            nameTextField.setFocused(false);
+            addressTextField.setFocused(true);
+        }
+    }
+
     public void initGui()
     {
         Keyboard.enableRepeatEvents(true);
@@ -139,10 +146,10 @@ public class GuiEditServer extends AbstractGuiScreen
         if(c == '\r' && addressTextField.isFocused && ((GuiButton) controlList.get(0)).enabled) {
             doneButtonHandler.OnButtonPress();
             return;
-        } else {
-            nameTextField.textboxKeyTyped(c, i);
-            addressTextField.textboxKeyTyped(c, i);
         }
+
+        nameTextField.textboxKeyTyped(c, i);
+        addressTextField.textboxKeyTyped(c, i);
 
         server.address = addressTextField.getText();
         server.name = nameTextField.getText();
