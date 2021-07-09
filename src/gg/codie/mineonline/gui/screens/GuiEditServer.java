@@ -112,6 +112,7 @@ public class GuiEditServer extends AbstractGuiScreen
         addressTextField = new GuiTextField(this, getWidth() / 2 - 100, (getHeight() / 4 - 10) + 50 + 18, 200, 20, server.address);
         addressTextField.isFocused = true;
         addressTextField.setMaxStringLength(128);
+        addressTextField.disableSpaces();
 
         nameTextField = new GuiTextField(this, getWidth() / 2 - 100, (getHeight() / 4 - 10) + 50 + 22, 200, 20, server.name);
         nameTextField.isFocused = false;
@@ -135,16 +136,12 @@ public class GuiEditServer extends AbstractGuiScreen
 
     protected void keyTyped(char c, int i)
     {
-        addressTextField.textboxKeyTyped(c, i);
-        if(c == '\r' && ((GuiButton) controlList.get(0)).enabled)
-        {
+        if(c == '\r' && addressTextField.isFocused && ((GuiButton) controlList.get(0)).enabled) {
             doneButtonHandler.OnButtonPress();
-        }
-
-        nameTextField.textboxKeyTyped(c, i);
-        if(c == '\r' && ((GuiButton) controlList.get(0)).enabled)
-        {
-            doneButtonHandler.OnButtonPress();
+            return;
+        } else {
+            nameTextField.textboxKeyTyped(c, i);
+            addressTextField.textboxKeyTyped(c, i);
         }
 
         server.address = addressTextField.getText();

@@ -80,6 +80,7 @@ public class GuiDirectConnect extends AbstractGuiScreen
         textField = new GuiTextField(this, getWidth() / 2 - 100, (getHeight() / 4 - 10) + 50 + 18, 200, 20, s);
         textField.isFocused = true;
         textField.setMaxStringLength(128);
+        textField.disableSpaces();
     }
 
     public void resize() {

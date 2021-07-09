@@ -37,15 +37,15 @@ public class GuiLoginLegacy extends AbstractGuiScreen
 
     protected void keyTyped(char c, int i)
     {
+        if(passwordField.isFocused && c == '\r' && loginButton.enabled) {
+            loginHandler.OnButtonPress();
+            return;
+        }
+
         usernameField.textboxKeyTyped(c, i);
         passwordField.textboxKeyTyped(c, i);
 
         loginButton.enabled = usernameField.getText().length() > 0 && passwordField.getText().length() > 0;
-
-        if(passwordField.isFocused && c == '\r' && loginButton.enabled)
-        {
-            loginHandler.OnButtonPress();
-        }
 
         if (playOfflineButton != null)
             playOfflineButton.enabled = usernameField.getText().length() > 0;
@@ -197,6 +197,7 @@ public class GuiLoginLegacy extends AbstractGuiScreen
 
         usernameField.isFocused = true;
         usernameField.setMaxStringLength(128);
+        usernameField.disableSpaces();
 
         passwordField.isFocused = false;
         passwordField.setMaxStringLength(256);

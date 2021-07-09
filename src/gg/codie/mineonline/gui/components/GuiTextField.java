@@ -10,6 +10,7 @@ import org.lwjgl.input.Keyboard;
 
 public class GuiTextField extends GuiComponent
 {
+    boolean allowSpaces = true;
 
     public GuiTextField(AbstractGuiScreen guiscreen, int x, int y, int width, int height, String value)
     {
@@ -27,6 +28,10 @@ public class GuiTextField extends GuiComponent
     public void resize(int x, int y) {
         xPos = x;
         yPos = y;
+    }
+
+    public void disableSpaces() {
+        allowSpaces = false;
     }
 
     public void setText(String s)
@@ -72,7 +77,7 @@ public class GuiTextField extends GuiComponent
         {
             text = text.substring(0, text.length() - 1);
         }
-        if(InputSanitization.allowedCharacters.indexOf(c) >= 0 && (text.length() < maxStringLength || maxStringLength == 0) && (int)c > 32)
+        if(InputSanitization.allowedCharacters.indexOf(c) >= 0 && (text.length() < maxStringLength || maxStringLength == 0) && (int)c > (allowSpaces ? 31 : 32))
         {
             text += c;
         }
