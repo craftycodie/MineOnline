@@ -246,7 +246,6 @@ public class MinecraftVersionRepository {
                     target.getParentFile().mkdirs();
                     Files.copy(MinecraftVersionRepository.class.getResourceAsStream("/version-info/" + version.type + "/" + version.name + " " + version.md5 + ".json"), Paths.get(target.toURI()), StandardCopyOption.REPLACE_EXISTING);
                     target.setLastModified(MinecraftVersionRepository.class.getResource("/version-info/" + version.type + "/" + version.name + " " + version.md5 + ".json").openConnection().getLastModified());
-
                 }
             } catch (Exception ex) {
                 System.out.println("Failed to extract version " + version.md5);
@@ -268,7 +267,7 @@ public class MinecraftVersionRepository {
                 // Load installed versions
                 loadInstalledVersions();
                 // Load official launcher installed versions
-                loadOfficialLauncherVersions();
+//                loadOfficialLauncherVersions();
                 ProgressDialog.setSubMessage(null);
                 loadingInstalledVersions = false;
             }
