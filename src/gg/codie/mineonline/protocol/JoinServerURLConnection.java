@@ -44,7 +44,6 @@ public class JoinServerURLConnection extends HttpURLConnection {
 
     @Override
     public InputStream getInputStream() throws IOException {
-        System.out.println("Join Server: " + response);
         return new ByteArrayInputStream(response.getBytes());
     }
 
