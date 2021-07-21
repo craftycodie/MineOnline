@@ -29,21 +29,14 @@ public class LauncherFiles {
     public static final String WEBHOOK_JAR = MINEONLINE_LIBRARY_FOLDER + "discord-webhooks-0.5.0.jar";
 
     public static final String MINEONLINE_NATIVES_FOLDER = MINEONLINE_LIBRARY_FOLDER + "native" + File.separator + OSUtils.getPlatform().toString();
-
     public static final String MINEONLINE_CACHE_FOLDER = MINEONLINE_FOLDER + "cache" + File.separator;
-
     public static final String MINEONLINE_TEMP_FOLDER = MINEONLINE_FOLDER + "temp" + File.separator;
     public static final String MINEONLINE_RUNTIME_NATIVES_FOLDER = MINEONLINE_TEMP_FOLDER + "natives" + File.separator;
-
-    public static final String CACHED_SKIN_PATH = MINEONLINE_CACHE_FOLDER + "skin.png";
-    public static final String CACHED_SKIN_METADATA_PATH = MINEONLINE_CACHE_FOLDER + "skin.json";
-    public static final String CACHED_CLOAK_PATH = MINEONLINE_CACHE_FOLDER + "cloak.png";
-
     public static final String LAST_LOGIN_PATH = MINEONLINE_CACHE_FOLDER + "lastlogin";
     public static final String MINEONLINE_CUSTOM_VERSION_INFO_FOLDER = MINEONLINE_FOLDER + "custom-version-info" + File.separator;
     public static final String MINEONLINE_VERSION_INFO_FOLDER = MINEONLINE_FOLDER + "version-info" + File.separator;
-    public static final String MINEONLINE_VERSIONS_PATH = MINEONLINE_FOLDER + "versions" + File.separator;
-    public static final String MINEONLINE_WORLDS_PATH = MINEONLINE_FOLDER + "worlds" + File.separator;
+    public static final String MINEONLINE_VERSIONS_FOLDER = MINEONLINE_FOLDER + "versions" + File.separator;
+    public static final String MINEONLINE_WORLDS_FOLDER = MINEONLINE_FOLDER + "worlds" + File.separator;
     public static final String MINEONLINE_LATEST_LOG = MINEONLINE_FOLDER + "latest.log";
     public static final String MINEONLINE_RESOURCES_PATH = MINEONLINE_FOLDER + "resources" + File.separator;
     public static final String MINEONLINE_OPTIONS_PATH = MINEONLINE_FOLDER + "options.txt";
@@ -52,14 +45,8 @@ public class LauncherFiles {
     public static final String MINECRAFT_TEXTURE_PACKS_PATH = OLD_MINECRAFT_FOLDER + File.separator + "texturepacks" + File.separator;
     public static final String MINECRAFT_ASSETS_PATH = NEW_MINECRAFT_FOLDER + File.separator + "assets" + File.separator;
     public static final String MINECRAFT_SCREENSHOTS_PATH = OLD_MINECRAFT_FOLDER + File.separator + "screenshots" + File.separator;
-    public static final String MINECRAFT_BINARIES_PATH = OLD_MINECRAFT_FOLDER + File.separator + "bin" + File.separator;
-    public static final String MINECRAFT_OPTIONS_PATH = OLD_MINECRAFT_FOLDER + File.separator + "options.txt";
     public static final String MINECRAFT_VERSIONS_PATH = NEW_MINECRAFT_FOLDER + File.separator + "versions" + File.separator;
     public static final String MINECRAFT_LIBRARIES_PATH = NEW_MINECRAFT_FOLDER + File.separator + "libraries" + File.separator;
-
-
-
-    public static final String MINECRAFT_VERSION_FILE = MINECRAFT_BINARIES_PATH + "version";
 
     public static final URL MISSING_TEXTURE = LauncherFiles.class.getResource("/img/missing.png");
 
@@ -140,7 +127,7 @@ public class LauncherFiles {
 
     static {
         new File(MINEONLINE_CACHE_FOLDER).mkdirs();
-        new File(MINEONLINE_WORLDS_PATH).mkdirs();
+        new File(MINEONLINE_WORLDS_FOLDER).mkdirs();
     }
 
 }

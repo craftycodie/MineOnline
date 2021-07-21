@@ -215,7 +215,7 @@ public class MinecraftVersion {
         System.out.println(downloadURL.toString());
         InputStream in = httpConnection.getInputStream();
 
-        String path = LauncherFiles.MINEONLINE_VERSIONS_PATH + "clients" + File.separator + name + " " + md5 + File.separator + baseVersion + ".jar";
+        String path = LauncherFiles.MINEONLINE_VERSIONS_FOLDER + "clients" + File.separator + name + " " + md5 + File.separator + baseVersion + ".jar";
 
         File clientJar = new File(path);
         clientJar.getParentFile().mkdirs();

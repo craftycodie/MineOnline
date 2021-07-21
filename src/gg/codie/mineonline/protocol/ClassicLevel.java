@@ -45,8 +45,8 @@ public class ClassicLevel {
         if (levels[mapID - 1].equals("-"))
             throw new FileNotFoundException("Level not found.");
 
-        byte[] mapData = new byte[(int)Files.size(Paths.get(LauncherFiles.MINEONLINE_WORLDS_PATH + mapID + "_" + levels[mapID - 1] + ".mine"))];
-        new FileInputStream(new File(LauncherFiles.MINEONLINE_WORLDS_PATH + mapID + "_" + levels[mapID - 1] + ".mine")).read(mapData, 0, mapData.length);
+        byte[] mapData = new byte[(int)Files.size(Paths.get(LauncherFiles.MINEONLINE_WORLDS_FOLDER + mapID + "_" + levels[mapID - 1] + ".mine"))];
+        new FileInputStream(new File(LauncherFiles.MINEONLINE_WORLDS_FOLDER + mapID + "_" + levels[mapID - 1] + ".mine")).read(mapData, 0, mapData.length);
 
         ClassicLevel classicLevel = new ClassicLevel();
         classicLevel.mapID = (byte)mapID;
@@ -63,7 +63,7 @@ public class ClassicLevel {
     public static String[] listLevels() {
         String[] worldNames = new String[] {"-", "-", "-", "-", "-"};
 
-        File dir = new File(LauncherFiles.MINEONLINE_WORLDS_PATH);
+        File dir = new File(LauncherFiles.MINEONLINE_WORLDS_FOLDER);
         File[] directoryListing = dir.listFiles();
         if (directoryListing != null) {
             for (File child : directoryListing) {
@@ -87,7 +87,7 @@ public class ClassicLevel {
     }
 
     public void saveToFile() throws IOException {
-        File worldFile = new File(LauncherFiles.MINEONLINE_WORLDS_PATH + (mapID + 1) + "_" + mapName + ".mine");
+        File worldFile = new File(LauncherFiles.MINEONLINE_WORLDS_FOLDER + (mapID + 1) + "_" + mapName + ".mine");
         FileOutputStream fos = new FileOutputStream(worldFile);
         fos.write(mapData);
         fos.flush();
