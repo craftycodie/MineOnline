@@ -140,6 +140,7 @@ public class LauncherFiles {
 
     static {
         new File(MINEONLINE_CACHE_FOLDER).mkdirs();
+        new File(MINEONLINE_WORLDS_PATH).mkdirs();
     }
 
 }
