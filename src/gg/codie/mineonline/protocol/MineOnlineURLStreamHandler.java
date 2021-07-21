@@ -13,8 +13,6 @@ public class MineOnlineURLStreamHandler extends URLStreamHandler {
         // Online-Mode fix
         if (url.toString().contains("/game/joinserver.jsp"))
             return new JoinServerURLConnection(url);
-        if (url.toString().contains("/game/checkserver.jsp"))
-            return new CheckServerURLConnection(url);
         // Old anti-piracy endpoints return positive responses.
         else if (url.toString().contains("/login/session.jsp")) // May be unused.
             return new BasicResponseURLConnection(url, 200, "ok");

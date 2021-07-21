@@ -29,6 +29,11 @@ public class JoinServerURLConnection extends HttpURLConnection {
 
     @Override
     public void connect() throws IOException {
+
+    }
+
+    @Override
+    public InputStream getInputStream() throws IOException {
         String serverId = this.url.toString().substring(this.url.toString().indexOf("&serverId=") + 10);
 
         boolean validJoin = SessionServer.joinGame(
@@ -40,10 +45,7 @@ public class JoinServerURLConnection extends HttpURLConnection {
         if (validJoin) {
             response = "ok";
         }
-    }
 
-    @Override
-    public InputStream getInputStream() throws IOException {
         return new ByteArrayInputStream(response.getBytes());
     }
 
