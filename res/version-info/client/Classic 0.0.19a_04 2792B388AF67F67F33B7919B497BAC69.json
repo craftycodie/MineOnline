@@ -1,0 +1,19 @@
+{
+  "name": "Classic 0.0.19a_04",
+  "md5": "2792B388AF67F67F33B7919B497BAC69",
+  "type": "client",
+  "baseVersion": "c0.0.19a_04",
+  "enableScreenshotPatch": true,
+  "enableCursorPatch": true,
+  "useFOVPatch": true,
+  "useTexturepackPatch": true,
+  "ingameVersionString": "0.0.19a_04",
+  "legacy": true,
+  "resourcesVersion": "c0.0.22a_05",
+  "guiClass": "com.mojang.minecraft.b.a",
+  "optionsVersion": "CLASSIC",
+  "useResizePatch": true,
+  "hasNetherPortalTexture": false,
+  "colorCodePrefix": "&",
+  "downloadURL": "https://archive.org/download/Minecraft-JE-Classic/c0.0.19a_04/c0.0.19a_04.jar"
+}
