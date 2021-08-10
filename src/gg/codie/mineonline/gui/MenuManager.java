@@ -216,13 +216,13 @@ public class MenuManager {
         if (DisplayManager.getFrame() == null)
             showLoadingScreen();
 
-        if(Session.session != null && Session.session.isOnline())
+        if (Session.session != null && Session.session.isOnline())
             if(joinserver != null)
                 setMenuScreen(new GuiDirectConnect(null, joinserver));
             else
                 setMenuScreen(new GuiMainMenu());
         else
-            setMenuScreen(new GuiLoginLegacy());
+            setMenuScreen(new GuiLoginLegacy(lastLogin != null));
 
         int lastWidth = Display.getWidth();
         int lastHeight = Display.getHeight();

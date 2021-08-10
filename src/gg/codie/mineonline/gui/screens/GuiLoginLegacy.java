@@ -30,8 +30,9 @@ public class GuiLoginLegacy extends AbstractGuiScreen
     private String errorText;
     private boolean offline;
 
-    public GuiLoginLegacy()
+    public GuiLoginLegacy(boolean offline)
     {
+        this.offline = offline;
         initGui();
     }
 
@@ -118,17 +119,8 @@ public class GuiLoginLegacy extends AbstractGuiScreen
             @Override
             public void OnButtonPress() {
                 try {
-                    if(usernameField.getText().contains("@")) {
-                        EventQueue.invokeLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                JOptionPane.showMessageDialog(null, "Enter a username to play in offline-mode.");
-                            }
-                        });
-                        return;
-                    }
-
-                    new Session(usernameField.getText());
+                    LastLogin lastLogin = LastLogin.readLastLogin();
+                    new Session(lastLogin.username, lastLogin.accessToken, lastLogin.clientToken, lastLogin.uuid, true);
                     MenuManager.setMenuScreen(new GuiMainMenu());
                 } catch (Exception ex) {
                 }
@@ -148,14 +140,14 @@ public class GuiLoginLegacy extends AbstractGuiScreen
                     throw new Exception(login.getString("error"));
                 if (!login.has("accessToken") || !login.has("selectedProfile"))
                     throw new Exception("Failed to authenticate!");
-                if (MojangAPI.minecraftProfile(login.getJSONObject("selectedProfile").getString("name")).optBoolean("demo", false))
-                    throw new Exception("Please buy Minecraft to use MineOnline.");
+
+                boolean demo = MojangAPI.minecraftProfile(login.getJSONObject("selectedProfile").getString("name")).optBoolean("demo", false);
 
                 String sessionToken = login.getString("accessToken");
                 String uuid = login.getJSONObject("selectedProfile").getString("id");
 
                 if (sessionToken != null) {
-                    new Session(login.getJSONObject("selectedProfile").getString("name"), sessionToken, clientSecret, uuid, true);
+                    new Session(login.getJSONObject("selectedProfile").getString("name"), sessionToken, clientSecret, uuid, demo);
                     LastLogin.writeLastLogin(Session.session.getAccessToken(), clientSecret, usernameField.getText(), Session.session.getUsername(), Session.session.getUuid(), true);
                     MenuManager.setMenuScreen(new GuiMainMenu());
                 } else {
@@ -174,7 +166,8 @@ public class GuiLoginLegacy extends AbstractGuiScreen
 
                 errorText = errorMessage;
 
-                offline = true;
+                if (LastLogin.readLastLogin() != null && LastLogin.readLastLogin().accessToken != null)
+                    offline = true;
             }
         }
     };
