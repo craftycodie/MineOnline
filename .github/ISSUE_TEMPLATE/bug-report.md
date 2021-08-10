@@ -26,6 +26,7 @@ A clear and concise description of what you expected to happen.
 If applicable, add screenshots to help explain your problem.
 
 **Desktop (please complete the following information):**
+If you're not sure, go to the About screen in the launcher/game.
  - OS: [e.g. Windows 10]
  - Java Version [e.g. 15.0.1]
  - MineOnline Version [eg 4.1.2]
