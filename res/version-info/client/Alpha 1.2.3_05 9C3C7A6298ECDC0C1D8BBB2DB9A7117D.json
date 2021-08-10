@@ -1,1 +1,15 @@
-{  "name": "Alpha 1.2.3_05",  "md5": "9C3C7A6298ECDC0C1D8BBB2DB9A7117D",  "sha256": "107676C455F32DE501C43C18A00E11762096A8ECFBEA4828AF5B3CA6805BDB25",  "type": "client",  "legacy": true,  "baseVersion": "a1.2.3_05",  "useFOVPatch": true,  "ingameVersionString": "Minecraft Alpha v1.2.3_05",  "resourcesVersion": "b1.3_01",  "optionsVersion": "ALPHA2",  "downloadURL": "https://archive.org/download/Minecraft-JE-Alpha/a1.2.3_05/a1.2.3_05.jar",  "usePlayerList": true}
+{
+  "name": "Alpha 1.2.4",
+  "info": "Mislabelled in-game."
+  "md5": "9C3C7A6298ECDC0C1D8BBB2DB9A7117D",
+  "sha256": "107676C455F32DE501C43C18A00E11762096A8ECFBEA4828AF5B3CA6805BDB25",
+  "type": "client",
+  "legacy": true,
+  "baseVersion": "a1.2.4",
+  "useFOVPatch": true,
+  "ingameVersionString": "Minecraft Alpha v1.2.3_05",
+  "resourcesVersion": "b1.3_01",
+  "optionsVersion": "ALPHA2",
+  "downloadURL": "https://archive.org/download/Minecraft-JE-Alpha/a1.2.3_05/a1.2.4.jar",
+  "usePlayerList": true
+}
