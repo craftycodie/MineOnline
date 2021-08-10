@@ -15,5 +15,6 @@
   "useResizePatch": true,
   "hasNetherPortalTexture": false,
   "colorCodePrefix": "&",
-  "fontClass": "com.mojang.minecraft.e.a"
+  "fontClass": "com.mojang.minecraft.e.a",
+  "downloadURL": "https://archive.org/download/Minecraft-JE-Classic/c0.0.12a_03/c0.0.12a_03.jar"
 }
