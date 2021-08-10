@@ -7,6 +7,8 @@ assignees: craftycodie
 
 ---
 
+Please check the [Known Issues](https://github.com/craftycodie/MineOnline/discussions/300) page before reporting a bug!
+
 **Describe the bug**
 A clear and concise description of what the bug is.
 
