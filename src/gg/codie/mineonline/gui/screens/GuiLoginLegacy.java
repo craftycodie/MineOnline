@@ -111,6 +111,7 @@ public class GuiLoginLegacy extends AbstractGuiScreen
     public void showOfflineButton() {
         controlList.remove(loginButton);
         controlList.add(loginButton = new GuiButton(0, getWidth() / 2, getHeight() / 4 + 48 + 72, 100, 20, "Login", loginHandler));
+        loginButton.enabled = false;
         controlList.add(playOfflineButton = new GuiButton(0, getWidth() / 2 - 102, getHeight() / 4 + 48 + 72, 100, 20, "Play Offline", new GuiButton.GuiButtonListener() {
             @Override
             public void OnButtonPress() {
@@ -182,14 +183,14 @@ public class GuiLoginLegacy extends AbstractGuiScreen
         passwordField = new GuiPasswordField(this, getWidth() / 2 - 100, i + 42, 200, 20, "");
         controlList.add(loginButton = new GuiButton(0, getWidth() / 2 - 100, i + 72, "Login", loginHandler));
 
-        loginButton.enabled = false;
-
         usernameField.isFocused = true;
         usernameField.setMaxStringLength(128);
         usernameField.disableSpaces();
 
         passwordField.isFocused = false;
         passwordField.setMaxStringLength(256);
+
+        loginButton.enabled = false;
     }
 
     public void resize() {
