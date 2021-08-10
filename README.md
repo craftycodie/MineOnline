@@ -17,20 +17,20 @@ For example, if you wanted to play classic right now, you'd have no way to launc
 These are features MineOnline will bring to Minecraft.
 
 - Skins and Cloaks
-- Resource Files (Sounds, the right ones for each version!)
-- Server List
+- Sounds (the right ones for each version!)
+- Server List (accessible in launcher and game)
 - FOV Slider
 - Microsoft Login Support
 - Classic World Saving
 - Screenshots (F2)
-- Texture packs for versions before Alpha 1.2.2 (when it was officially added)
-  - Custom font support.
-- GUI scaling for versions before Beta 1.5 (when it was officially added)
+- Texture packs (for versions before Alpha 1.2.2, when it was officially added)
+  - Custom font and animated texture support.
+- GUI scaling (for versions before Beta 1.5, when it was officially added)
+- Full Discord Integration
+- Tab player list.
 - Secure Server Authentication (online-mode and verify-names)
 - Resizable & Fullscreenable Applets with Mac and Linux Support
 - Bit depth fix (removes jagged lines from clouds and other stuff).
-- Full Discord Integration
-- Tab player list.
 
 ![launcher](launcherdemo.png)
 
@@ -57,11 +57,9 @@ For 1.6 and above, libraries should be provided. Examples can be found [here](ht
 
 I recommend you start with the unmodded version information as a template, as most of the settings will carry over.
 
-If you would like a version to be added to the main list, contact me (Codie).
+If you would like a version to be added to the main list, contact me [@craftycodie](github.com/craftycodie/).
 
 ## For Developers
-If you would like to help out, a good place to start is the ZenHub workspace, all of the issues are managed in [ZenHub](https://app.zenhub.com/workspaces/mineonline-5ec5d0ef84b144f89c5bc5c7).
-
 As per the license you are welcome to use the launcher code under non-commercial conditions.
 
 I also request that forks remain up to date for security.
