@@ -47,10 +47,6 @@ public class GuiLoginLegacy extends AbstractGuiScreen
         passwordField.textboxKeyTyped(c, i);
 
         loginButton.enabled = usernameField.getText().length() > 0 && passwordField.getText().length() > 0;
-
-        if (playOfflineButton != null)
-            playOfflineButton.enabled = usernameField.getText().length() > 0;
-
     }
 
     private void microsoftLogin() {
