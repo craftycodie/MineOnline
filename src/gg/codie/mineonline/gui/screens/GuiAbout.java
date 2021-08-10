@@ -1,9 +1,13 @@
 package gg.codie.mineonline.gui.screens;
 
+import gg.codie.common.utils.OSUtils;
+import gg.codie.mineonline.Globals;
+import gg.codie.mineonline.Session;
 import gg.codie.mineonline.client.LegacyGameManager;
 import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.gui.components.GuiButton;
 import gg.codie.mineonline.gui.rendering.Font;
+import jdk.nashorn.internal.objects.Global;
 
 import java.awt.*;
 import java.net.URI;
@@ -20,8 +24,7 @@ public class GuiAbout extends AbstractGuiScreen
     public void initGui()
     {
         controlList.clear();
-        byte byte0 = -16;
-        controlList.add(new GuiButton(1, getWidth() / 2 - 100, getHeight() / 4 + 120 + byte0, "Done", new GuiButton.GuiButtonListener() {
+        controlList.add(new GuiButton(1, getWidth() / 2 - 100, getHeight() / 6 + 168, "Done", new GuiButton.GuiButtonListener() {
             @Override
             public void OnButtonPress() {
                 if (LegacyGameManager.isInGame())
@@ -31,12 +34,12 @@ public class GuiAbout extends AbstractGuiScreen
             }
         }));
 
-        controlList.add(new GuiButton(4, getWidth() / 2 - 100, getHeight() / 4 + 24 + byte0, "Discord", new GuiButton.GuiButtonListener() {
+        controlList.add(new GuiButton(4, getWidth() / 2 - 100, getHeight() / 6 + 120 + 12, "Made by @craftycodie", new GuiButton.GuiButtonListener() {
             @Override
             public void OnButtonPress() {
                 if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
                     try {
-                        Desktop.getDesktop().browse(new URI("http://discord.codie.gg"));
+                        Desktop.getDesktop().browse(new URI("https://linktr.ee/craftycodie"));
                     } catch (Exception ex) {
 
                     }
@@ -54,6 +57,12 @@ public class GuiAbout extends AbstractGuiScreen
         drawDefaultBackground();
 
         Font.minecraftFont.drawCenteredStringWithShadow("About", getWidth() / 2, 20, 0xffffff);
+        Font.minecraftFont.drawCenteredString("MineOnline " + Globals.BRANCH + " "  + Globals.LAUNCHER_VERSION + (Globals.DEV ? " (dev)" : ""), getWidth() / 2, (getHeight() / 4 - 60) + 60, 0xa0a0a0);
+        Font.minecraftFont.drawCenteredString("running on " + System.getProperty("os.name") + ", Java " + System.getProperty("java.version") + ".", getWidth() / 2, (getHeight() / 4 - 60) + 72, 0xa0a0a0);
+
+        Font.minecraftFont.drawCenteredString("Logged in as " + Session.session.getUsername() + ".", getWidth() / 2, (getHeight() / 4 - 60) + 96, 0xa0a0a0);
+        Font.minecraftFont.drawCenteredString("Thanks for playing!", getWidth() / 2, (getHeight() / 4 - 60) + 120, 0xa0a0a0);
+
         super.drawScreen(mouseX, mouseY);
     }
 }
