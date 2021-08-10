@@ -11,6 +11,8 @@ For example, if you wanted to play classic right now, you'd have no way to launc
 
 [Download](https://github.com/craftycodie/MineOnline/releases/latest)
 
+[Known Issues](https://github.com/craftycodie/MineOnline/discussions/300)
+
 ## Features
 These are features MineOnline will bring to Minecraft.
 
