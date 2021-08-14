@@ -7,7 +7,7 @@ MineOnline is a launcher Minecraft capable of running web applets without a brow
 
 For example, if you wanted to play classic right now, you'd have no way to launch it without a lot of outdated vulnerable software and luck. And even if you pulled it off, you'd be running a stipped down version of the game, with no skins, no server authentication and no online map saving. MineOnline fixes this. The program can also run regular desktop versions of the game.
 
-**Compatible with Java 8.261 - 15
+**Compatible with Java 8u261+
 
 [Download](https://github.com/craftycodie/MineOnline/releases/latest)
 
