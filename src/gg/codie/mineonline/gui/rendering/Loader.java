@@ -157,7 +157,7 @@ public class Loader {
 
     public static void reloadMinecraftTexture(String textureName) {
         if (Globals.DEV)
-            System.out.println("Loaading Texture " + textureName);
+            System.out.println("Loading Texture " + textureName);
 
         if (ignoredTextures.contains(textureName))
             return;
@@ -201,8 +201,20 @@ public class Loader {
                         try {
                             BufferedImage terrain = ImageIO.read(texturesZip.getInputStream(texture));
                             HDTextureFXHelper.scale = (float) terrain.getHeight() / 256;
+                            ItemRendererAdvice.terrainScale = (float) terrain.getHeight() / 256;
                         } catch (Exception ex) {
                             HDTextureFXHelper.scale = 1;
+                            ItemRendererAdvice.terrainScale = 1;
+                        }
+                        HDTextureFXHelper.reloadTextures();
+                    }
+
+                    if (textureName.equals("/gui/items.png")) {
+                        try {
+                            BufferedImage terrain = ImageIO.read(texturesZip.getInputStream(texture));
+                            ItemRendererAdvice.itemScale = (float) terrain.getHeight() / 256;
+                        } catch (Exception ex) {
+                            ItemRendererAdvice.itemScale = 1;
                         }
                         HDTextureFXHelper.reloadTextures();
                     }
@@ -211,6 +223,12 @@ public class Loader {
                 } else {
                     if (textureName.equals("/terrain.png")) {
                         HDTextureFXHelper.scale = 1;
+                        ItemRendererAdvice.terrainScale = 1;
+                        HDTextureFXHelper.reloadTextures();
+                    }
+                    if (textureName.equals("/gui/items.png")) {
+                        HDTextureFXHelper.scale = 1;
+                        ItemRendererAdvice.terrainScale = 1;
                         HDTextureFXHelper.reloadTextures();
                     }
                 }
