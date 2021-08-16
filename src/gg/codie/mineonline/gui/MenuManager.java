@@ -131,7 +131,6 @@ public class MenuManager {
                         quicklaunch = MinecraftVersionRepository.getSingleton().getLastSelectedJarPath();
                     }
                 }
-
             }
         }
 
@@ -141,15 +140,6 @@ public class MenuManager {
 
         // Load this before showing the display.
         MinecraftVersionRepository.getSingleton(quicklaunch);
-
-        if(quicklaunch != null) {
-            MinecraftVersion version = MinecraftVersionRepository.getSingleton().getVersion(quicklaunch);
-
-            if (version != null && version.type.equals("launcher")) {
-                MinecraftVersion.launchMinecraft(quicklaunch, null, null, null);
-                return;
-            }
-        }
 
         LastLogin lastLogin = null;
 
