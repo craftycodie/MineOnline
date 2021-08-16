@@ -136,7 +136,8 @@ public class LegacyGameManager {
         if (version != null) {
             if (version.useIndevSoundPatch)
                 PaulscodePatch.fixIndevAudio();
-
+            if (version.itemRendererClass != null)
+                ItemRendererPatch.useHDItems(version.itemRendererClass);
             if (version.useFOVPatch && version.entityRendererClass != null)
                 FOVViewmodelPatch.fixViewmodelFOV(version.entityRendererClass, version.viewModelFunction, version.hurtEffectFunction, Settings.singleton.getMainHand() == EMinecraftMainHand.LEFT);
             if (version.ingameVersionString != null) {

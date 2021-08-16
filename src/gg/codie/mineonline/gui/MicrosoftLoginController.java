@@ -338,9 +338,6 @@ public class MicrosoftLoginController extends VBox {
                 response.append('\r');
             }
             rd.close();
-
-            String body = response.toString();
-            System.out.println("store: " + body);
         } catch (IOException e) {
             e.printStackTrace();
         }

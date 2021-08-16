@@ -25,8 +25,6 @@ public class LauncherFiles {
     public static final String ASM_JAR = MINEONLINE_LIBRARY_FOLDER + "asm-8.0.1.jar";
     public static final String ASM_COMMONS_JAR = MINEONLINE_LIBRARY_FOLDER + "asm-commons-8.0.1.jar";
     public static final String DISCORD_RPC_JAR = MINEONLINE_LIBRARY_FOLDER + "discord-rpc.jar";
-    public static final String JDA_JAR = MINEONLINE_LIBRARY_FOLDER + "JDA-4.2.0_168-withDependencies-min.jar";
-    public static final String WEBHOOK_JAR = MINEONLINE_LIBRARY_FOLDER + "discord-webhooks-0.5.0.jar";
 
     public static final String MINEONLINE_NATIVES_FOLDER = MINEONLINE_LIBRARY_FOLDER + "native" + File.separator + OSUtils.getPlatform().toString();
     public static final String MINEONLINE_CACHE_FOLDER = MINEONLINE_FOLDER + "cache" + File.separator;
@@ -41,7 +39,7 @@ public class LauncherFiles {
     public static final String MINEONLINE_RESOURCES_PATH = MINEONLINE_FOLDER + "resources" + File.separator;
     public static final String MINEONLINE_OPTIONS_PATH = MINEONLINE_FOLDER + "options.txt";
 
-    public static final String MINECRAFT_RESOURCES_PATH = OLD_MINECRAFT_FOLDER + File.separator + "resources" + File.separator;
+    public static final String MINECRAFT_RESOURCES_PATH = OLD_MINECRAFT_FOLDER + File.separator + "resources" + File.separator; // used with reflection
     public static final String MINECRAFT_TEXTURE_PACKS_PATH = OLD_MINECRAFT_FOLDER + File.separator + "texturepacks" + File.separator;
     public static final String MINECRAFT_ASSETS_PATH = NEW_MINECRAFT_FOLDER + File.separator + "assets" + File.separator;
     public static final String MINECRAFT_SCREENSHOTS_PATH = OLD_MINECRAFT_FOLDER + File.separator + "screenshots" + File.separator;

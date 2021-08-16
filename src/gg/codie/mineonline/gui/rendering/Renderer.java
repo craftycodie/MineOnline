@@ -170,6 +170,13 @@ public class Renderer
         return;
     }
 
+    public void setNormal(float f, float f1, float f2) {
+        byte byte0 = (byte) ((int) (f * 128.0F));
+        byte byte1 = (byte) ((int) (f1 * 127.0F));
+        byte byte2 = (byte) ((int) (f2 * 127.0F));
+        GL11.glNormal3b(byte0, byte1, byte2);
+    }
+
     public void setTextureUV(double d, double d1)
     {
         hasTexture = true;

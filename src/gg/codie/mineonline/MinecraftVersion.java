@@ -62,6 +62,7 @@ public class MinecraftVersion {
     public final boolean usePlayerList;
     public final boolean useCustomAnimations;
     public final boolean useIndevSoundPatch;
+    public final String itemRendererClass;
 
     public MinecraftVersion(
             String sha256,
@@ -106,7 +107,8 @@ public class MinecraftVersion {
             String colorCodePrefix,
             boolean usePlayerList,
             boolean useCustomAnimations,
-            boolean useIndevSoundPatch
+            boolean useIndevSoundPatch,
+            String itemRendererClass
     ) {
         this.sha256 = sha256;
         this.name = name;
@@ -151,6 +153,7 @@ public class MinecraftVersion {
         this.usePlayerList = usePlayerList;
         this.useCustomAnimations = useCustomAnimations;
         this.useIndevSoundPatch = useIndevSoundPatch;
+        this.itemRendererClass = itemRendererClass;
     }
 
     public MinecraftVersion(JSONObject object) {
@@ -196,6 +199,7 @@ public class MinecraftVersion {
         usePlayerList = object.optBoolean("usePlayerList", false);
         useCustomAnimations = object.optBoolean("useCustomAnimations", true);
         useIndevSoundPatch = object.optBoolean("useIndevSoundPatch", false);
+        itemRendererClass = object.optString("itemRendererClass", null);
 
         URL parsedURL = null;
 
@@ -435,7 +439,8 @@ public class MinecraftVersion {
                     null,
                     false,
                     false,
-                    false
+                    false,
+                    null
             );
         } catch (Exception ex) {
             System.err.println("Bad launcher JSON for version " + jarFile);
