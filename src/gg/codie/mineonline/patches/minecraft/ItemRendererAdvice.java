@@ -19,16 +19,40 @@ public class ItemRendererAdvice {
     public static float itemScale = 1;
 
     @Advice.OnMethodEnter(skipOn = Advice.OnNonDefaultValue.class)
-    static boolean intercept(@Advice.Argument(value = 0, readOnly = false, typing = Assigner.Typing.DYNAMIC) Object entityLiving, @Advice.Argument(value = 1, readOnly = false, typing = Assigner.Typing.DYNAMIC) Object itemStack) {
+    static boolean intercept(@Advice.AllArguments Object[] args, @Advice.This Object thisObj) {
+        Object entityLiving = null;
+        Object itemStack = null;
+        int itemIcon = 0;
+
         try {
-            int itemID = itemStack.getClass().getField("c").getInt(itemStack);
-            Method getItemIconMethod = null;
-            for (Method method : entityLiving.getClass().getMethods()) {
-                if (method.getParameterCount() == 1 && method.getParameterTypes()[0] == itemStack.getClass() && method.getReturnType() == int.class)
-                    getItemIconMethod = method;
+            if (args.length == 2) {
+                entityLiving = args[0];
+                itemStack = args[1];
+                for (Method method : entityLiving.getClass().getMethods()) {
+                    if (method.getParameterCount() == 1 && method.getParameterTypes()[0] == itemStack.getClass() && method.getReturnType() == int.class) {
+                        itemIcon = (int) method.invoke(entityLiving, itemStack);
+                        break;
+                    }
+                }
+            } else {
+                if (!args[0].getClass().isAssignableFrom(float.class)) {
+                    itemStack = args[0];
+                    for (Method method : itemStack.getClass().getMethods()) {
+                        if (method.getParameterCount() == 0 && method.getReturnType() == int.class && method.getName().equals("b")) {
+                            itemIcon = (int) method.invoke(itemStack);
+                            break;
+                        }
+                    }
+                }
+                else {
+                    // Pre alpha is not currently supported.
+                    System.err.println("Pre-alpha item renderer patch is currently not supported.");
+                    return false;
+                    //itemStack = thisObj.getClass().getField("b").get(thisObj);
+                }
             }
-            if (getItemIconMethod == null)
-                return false;
+
+            int itemID = itemStack.getClass().getField("c").getInt(itemStack);
 
             Set<Integer> blocksRenderedLikeItems = new HashSet(Arrays.asList(new Integer[] {
                     6,          // sapling
@@ -63,17 +87,18 @@ public class ItemRendererAdvice {
 
                 GL11.glPushMatrix();
                 if (itemID < 256) {
+                    num = (int)(terrainScale * 16);
                     GL11.glBindTexture(3553, HashMapPutAdvice.textures.get("/terrain.png"));
                 } else {
+                    num = (int)(itemScale * 16);
                     GL11.glBindTexture(3553, HashMapPutAdvice.textures.get("/gui/items.png"));
                 }
 
                 Renderer tessellator = Renderer.singleton;
-                int i = (int)getItemIconMethod.invoke(entityLiving, itemStack);
-                float f = ((float) (i % 16 * 16) + 0.0F) / 256.0F;
-                float f1 = ((float) (i % 16 * 16) + 15.99F) / 256.0F;
-                float f2 = ((float) (i / 16 * 16) + 0.0F) / 256.0F;
-                float f3 = ((float) (i / 16 * 16) + 15.99F) / 256.0F;
+                float f = ((float) (itemIcon % 16 * 16) + 0.0F) / 256.0F;
+                float f1 = ((float) (itemIcon % 16 * 16) + 15.99F) / 256.0F;
+                float f2 = ((float) (itemIcon / 16 * 16) + 0.0F) / 256.0F;
+                float f3 = ((float) (itemIcon / 16 * 16) + 15.99F) / 256.0F;
                 float f4 = 1.0F;
                 float f5 = 0.0F;
                 float f6 = 0.3F;

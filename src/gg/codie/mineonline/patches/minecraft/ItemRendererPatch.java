@@ -11,6 +11,7 @@ public class ItemRendererPatch {
             new ByteBuddy()
                     .redefine(Class.forName(itemRendererClassName))
                     .visit(Advice.to(ItemRendererAdvice.class).on(ElementMatchers.isPublic().and(ElementMatchers.takesArguments(2))))
+                    .visit(Advice.to(ItemRendererAdvice.class).on(ElementMatchers.isPublic().and(ElementMatchers.takesArguments(1)).and(ElementMatchers.takesArgument(0, ElementMatchers.not(ElementMatchers.isPrimitive()))).and(ElementMatchers.named("a"))))
                     .make()
                     .load(ClassLoader.getSystemClassLoader(), ClassReloadingStrategy.fromInstalledAgent());
         } catch (ClassNotFoundException ex) {
