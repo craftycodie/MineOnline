@@ -1,5 +1,7 @@
 ![logo](mineonlinelogo.png)
 
+[![Build status](https://ci.appveyor.com/api/projects/status/hd3fpaffd9qqqx6d?branch=main&svg=true)](https://ci.appveyor.com/project/craftycodie/mineonline)
+
 Launch old versions of minecraft just as you remembered them.
 
 ## What is MineOnline?
