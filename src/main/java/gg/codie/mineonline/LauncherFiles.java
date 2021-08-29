@@ -24,7 +24,7 @@ public class LauncherFiles {
     public static final String BYTEBUDDY_JAR = MINEONLINE_LIBRARY_FOLDER + "net" + File.separator + "bytebuddy" + File.separator + "byte-buddy-dep" + File.separator + "1.10.14" + File.separator +  "byte-buddy-dep-1.10.14.jar";
     public static final String ASM_JAR = MINEONLINE_LIBRARY_FOLDER + "org" + File.separator + "ow2" + File.separator + "asm" + File.separator + "8.0.1" + File.separator +  "asm-8.0.1.jar";
     public static final String ASM_COMMONS_JAR = MINEONLINE_LIBRARY_FOLDER + "org" + File.separator + "ow2" + File.separator + "asm-commons" + File.separator + "8.0.1" + File.separator +  "asm-commons-8.0.1.jar";
-    public static final String DISCORD_RPC_JAR = MINEONLINE_LIBRARY_FOLDER + "com" + File.separator + "github" + File.separator + "Vatuu" + File.separator + "discord-rpc" + File.separator + "1.6.2" + File.separator + "libraries/discord-rpc-1.6.2.jar";
+    public static final String DISCORD_RPC_JAR = MINEONLINE_LIBRARY_FOLDER + "com" + File.separator + "github" + File.separator + "Vatuu" + File.separator + "discord-rpc" + File.separator + "1.6.2" + File.separator + "discord-rpc-1.6.2.jar";
 
     public static final String MINEONLINE_NATIVES_FOLDER = MINEONLINE_FOLDER + "natives" + File.separator + OSUtils.getPlatform().toString();
     public static final String MINEONLINE_CACHE_FOLDER = MINEONLINE_FOLDER + "cache" + File.separator;
