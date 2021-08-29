@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="asm-commons-8.0.1">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/src/main/resources/libraries/org/ow2/asm-commons/8.0.1/asm-commons-8.0.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

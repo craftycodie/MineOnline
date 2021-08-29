@@ -3,20 +3,26 @@
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8" inherit-compiler-output="true">
     <exclude-output />
     <content url="file://$MODULE_DIR$">
-      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/META-INF" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/res" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
       <excludeFolder url="file://$MODULE_DIR$/bin" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="intellij" level="project" />
-    <orderEntry type="library" name="slick-util" level="project" />
-    <orderEntry type="library" name="json" level="project" />
-    <orderEntry type="library" name="lwjgl" level="project" />
-    <orderEntry type="library" name="byte-buddy-dep-1.10.14" level="project" />
-    <orderEntry type="library" name="discord-rpc" level="project" />
     <orderEntry type="library" name="discord-webhooks-0.5.0" level="project" />
     <orderEntry type="library" name="JDA-4.2.0_168-withDependencies-min" level="project" />
+    <orderEntry type="library" name="byte-buddy-dep-1.10.14" level="project" />
+    <orderEntry type="library" name="discord-rpc-1.6.2" level="project" />
+    <orderEntry type="library" name="byte-buddy-agent-1.10.14" level="project" />
+    <orderEntry type="library" name="json-20200518" level="project" />
+    <orderEntry type="library" name="jinput-2.9.3" level="project" />
+    <orderEntry type="library" name="lwjgl-2.9.3" level="project" />
+    <orderEntry type="library" name="lwjgl_util-2.9.3" level="project" />
+    <orderEntry type="library" name="slick-util-2.9.3" level="project" />
+    <orderEntry type="library" name="asm-8.0.1" level="project" />
+    <orderEntry type="library" name="asm-commons-8.0.1" level="project" />
   </component>
 </module>

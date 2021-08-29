@@ -1,0 +1,32 @@
+version: '{build}'
+image: ubuntu
+stack: jdk 8
+
+install:
+  - ps: .\build_scripts\UpdateBuildVersion.ps1
+  - sh: sudo apt purge openjfx
+  - sh: sudo apt install -y openjfx=8u161-b12-1ubuntu2 libopenjfx-jni=8u161-b12-1ubuntu2 libopenjfx-java=8u161-b12-1ubuntu2
+  - sh: sudo apt-mark hold openjfx libopenjfx-jni libopenjfx-java
+before_build:
+  - mvn -v
+build_script:
+  - mvn clean package -DskipTests
+  - mvn package -P debug
+test_script:
+  - mvn install verify
+on_finish:
+  - sh: |
+      find "$APPVEYOR_BUILD_FOLDER" -type f -name 'TEST*.xml' -print0 | xargs -0 -I '{}' curl -F 'file=@{}' "https://ci.appveyor.com/api/testresults/junit/$APPVEYOR_JOB_ID"
+artifacts:
+  - path: "**/target/MineOnline.jar"
+    name: "MineOnline.jar"
+  - path: "**/target/MineOnline.exe"
+    name: "MineOnline.exe"
+  - path: "**/target/MineOnline-Dev.jar"
+    name: "MineOnline-Dev.jar"
+  - path: "**/target/MineOnline-Dev.exe"
+    name: "MineOnline-Dev.exe"
+on_success:
+  - ps: if ($env:APPVEYOR_REPO_BRANCH -eq "main") {.\build_scripts\discord-webhook.ps1 success $env:DISCORD_WEBHOOK_URL}
+on_failure:
+  - ps: if ($env:APPVEYOR_REPO_BRANCH -eq "main") {.\build_scripts\discord-webhook.ps1 failure $env:DISCORD_WEBHOOK_URL}
