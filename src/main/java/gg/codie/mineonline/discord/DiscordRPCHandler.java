@@ -160,7 +160,7 @@ public class DiscordRPCHandler {
                         System.out.println("Joining " + s);
 
                         LinkedList<String> launchArgs = new LinkedList();
-                        launchArgs.add(JREUtils.getRunningJavaExecutable());
+                        launchArgs.add(JREUtils.getJavaExecutable());
                         launchArgs.add("-javaagent:" + LauncherFiles.PATCH_AGENT_JAR);
                         launchArgs.add("-Djava.util.Arrays.useLegacyMergeSort=true");
                         launchArgs.add("-cp");
