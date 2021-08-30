@@ -11,6 +11,12 @@ public class Globals {
             DEV = Boolean.parseBoolean(properties.getProperty("devMode"));
             DISCORD_APP_ID = properties.getProperty("discordClientId");
             BRANCH = properties.getProperty("branch");
+
+            if (properties.getProperty("version").equals("${project.version}")) {
+                LAUNCHER_VERSION = "";
+                BRANCH = "main";
+                DEV = true;
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
             System.exit(1);

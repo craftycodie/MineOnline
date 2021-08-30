@@ -13,10 +13,6 @@ import org.lwjgl.opengl.GL11;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-// Referenced classes of package net.minecraft.src:
-//            Gui, RenderItem, StatCollector, Achievement,
-//            ScaledResolution, RenderHelper, FontRenderer, RenderEngine
-
 public class GuiToast extends GuiComponent
 {
     private final ArrayList<IToast> toasts = new ArrayList<>(Arrays.asList(new IToast[] {
