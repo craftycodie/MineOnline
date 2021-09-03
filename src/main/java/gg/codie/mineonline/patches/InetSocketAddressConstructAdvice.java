@@ -1,6 +1,5 @@
 package gg.codie.mineonline.patches;
 
-import gg.codie.mineonline.Globals;
 import net.bytebuddy.asm.Advice;
 
 import java.net.InetAddress;
@@ -27,8 +26,13 @@ public class InetSocketAddressConstructAdvice {
             }
         }
 
-        if (Globals.DEV) {
-            System.out.println("Connecting to " + ip  + ":" + port);
+        try {
+            if ((boolean) ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.Globals").getField("DEV").get(null)) {
+                System.out.println("Connecting to " + ip + ":" + port);
+            }
+        } catch (ClassNotFoundException | NoSuchFieldException | IllegalAccessException ex) {
+            System.out.println("InetSocketAddressConstructorAdvice");
+            ex.printStackTrace();
         }
     }
 }
