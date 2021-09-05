@@ -104,8 +104,7 @@ public class Font
             {
                 charX = (int)(2 * fontScale);
             }
-            if (fontScale == 1)
-                charX += 2;
+            charX += 2 + (fontScale - 1);
             charWidth[ascii] = (charX / fontScale);
         }
 
