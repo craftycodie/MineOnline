@@ -28,7 +28,7 @@ public class Startup {
         new SoundExtractionService().extractSoundFiles();
 
         LinkedList<String> launchArgs = new LinkedList();
-        launchArgs.add(JREUtils.getJavaExecutable());
+        launchArgs.add(JREUtils.getRunningJavaExecutable());
         launchArgs.add("-javaagent:" + LauncherFiles.PATCH_AGENT_JAR);
         launchArgs.add("-Djava.util.Arrays.useLegacyMergeSort=true");
         launchArgs.add("-cp");
