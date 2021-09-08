@@ -87,8 +87,8 @@ public class Font
                 for(int charY = 0; charY < (int)(8 * fontScale) && emptyColumn; charY++)
                 {
                     int yPixel = (yt * (int)(8 * fontScale) + charY) * fontSize;
-                    int pixel = rawPixels[xPixel + yPixel] & 0xff;
-                    if(pixel > 0)
+                    int alpha = (rawPixels[xPixel + yPixel]>>24)&0xFF;
+                    if(alpha > 0)
                     {
                         emptyColumn = false;
                     }
