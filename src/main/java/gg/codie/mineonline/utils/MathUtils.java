@@ -10,4 +10,13 @@ public class MathUtils {
         return Math.max(min, Math.min(max, val));
     }
 
+    public static double mod(double i, double j)
+    {
+        if (i < 0) {
+            return -(-i % j);
+        } else {
+            return i % j;
+        }
+    }
+
 }

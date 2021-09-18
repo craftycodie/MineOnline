@@ -29,7 +29,9 @@ public class HashMapPutAdvice {
                     "/custom_lava_still.png",
                     "/custom_portal.png",
                     "/custom_fire_e_w.png",
-                    "/custom_fire_n_s.png"
+                    "/custom_fire_n_s.png",
+                    "/custom_clock.png",
+                    "/custom_compass.png"
             });
 
             if (ignored.contains(key))

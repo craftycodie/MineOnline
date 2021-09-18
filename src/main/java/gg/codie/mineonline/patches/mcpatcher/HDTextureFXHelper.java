@@ -4,6 +4,9 @@ import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.Settings;
 import gg.codie.mineonline.client.LegacyGameManager;
 import gg.codie.mineonline.patches.HashMapPutAdvice;
+import gg.codie.mineonline.patches.minecraft.ClockFXAdvice;
+import gg.codie.mineonline.patches.minecraft.CompassFXAdvice;
+import gg.codie.mineonline.utils.MathUtils;
 import org.lwjgl.opengl.GL11;
 
 import javax.imageio.ImageIO;
@@ -37,7 +40,9 @@ public class HDTextureFXHelper {
                 "/custom_lava_still.png",
                 "/custom_portal.png",
                 "/custom_fire_e_w.png",
-                "/custom_fire_n_s.png"
+                "/custom_fire_n_s.png",
+                "/custom_clock.png",
+                "/custom_compass.png"
         };
 
         ZipFile texturesZip = null;
@@ -93,7 +98,7 @@ public class HDTextureFXHelper {
                     }
                 }
             } catch (Exception ex) {
-
+                ex.printStackTrace();
             }
         }
     }
@@ -156,16 +161,27 @@ public class HDTextureFXHelper {
         else if (x == 240 && y == 32)
             textureName = "/custom_fire_n_s.png";
 
-//        else
-//            System.out.println("Unknown dynamic texture: " + x + ", " + y);
+        else if (x == 96 && y == 48)
+            textureName = "/custom_compass.png";
+        else if (x == 96 && y == 64)
+            textureName = "/custom_clock.png";
+
+        else
+            System.out.println("Unknown dynamic texture: " + x + ", " + y);
 
         if (!textures.containsKey(textureName))
             return null;
 
-        if(ticks.containsKey(textureName))
+        if (ticks.containsKey(textureName))
             ticks.put(textureName, ticks.get(textureName) + 1);
         else
             ticks.put(textureName, 0);
+
+        if (textureName.equals("/custom_compass.png"))
+            ticks.put(textureName, (32 - ((int)((Math.abs(CompassFXAdvice.dial) % 6.4) * 10) / 2) - 1));
+
+        if (textureName.equals("/custom_clock.png"))
+            ticks.put(textureName, Math.abs((int)(MathUtils.mod(ClockFXAdvice.dial, 6.3) * 10)));
 
         if (ticks.get(textureName) > frameCounts.get(textureName) - 1)
             ticks.put(textureName, 0);

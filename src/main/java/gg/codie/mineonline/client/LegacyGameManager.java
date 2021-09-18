@@ -132,6 +132,8 @@ public class LegacyGameManager {
         ByteBufferPatch.init();
         ColorizerPatch.init();
         FontPatch.init();
+        CompassFXPatch.init();
+        ClockFXPatch.init();
 
         if (version != null) {
             if (version.useIndevSoundPatch)

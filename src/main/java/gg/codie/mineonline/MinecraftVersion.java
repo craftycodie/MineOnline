@@ -63,6 +63,8 @@ public class MinecraftVersion {
     public final boolean useCustomAnimations;
     public final boolean useIndevSoundPatch;
     public final String itemRendererClass;
+    public final String clockFXClass;
+    public final String compassFXClass;
 
     public MinecraftVersion(
             String sha256,
@@ -108,7 +110,9 @@ public class MinecraftVersion {
             boolean usePlayerList,
             boolean useCustomAnimations,
             boolean useIndevSoundPatch,
-            String itemRendererClass
+            String itemRendererClass,
+            String compassFXClass,
+            String clockFXClass
     ) {
         this.sha256 = sha256;
         this.name = name;
@@ -154,6 +158,8 @@ public class MinecraftVersion {
         this.useCustomAnimations = useCustomAnimations;
         this.useIndevSoundPatch = useIndevSoundPatch;
         this.itemRendererClass = itemRendererClass;
+        this.compassFXClass = compassFXClass;
+        this.clockFXClass = clockFXClass;
     }
 
     public MinecraftVersion(JSONObject object) {
@@ -200,6 +206,9 @@ public class MinecraftVersion {
         useCustomAnimations = object.optBoolean("useCustomAnimations", true);
         useIndevSoundPatch = object.optBoolean("useIndevSoundPatch", false);
         itemRendererClass = object.optString("itemRendererClass", null);
+        compassFXClass = object.optString("compassFXClass", null);
+        clockFXClass = object.optString("clockFXClass", null);
+
 
         URL parsedURL = null;
 
@@ -440,6 +449,8 @@ public class MinecraftVersion {
                     false,
                     false,
                     false,
+                    null,
+                    null,
                     null
             );
         } catch (Exception ex) {
