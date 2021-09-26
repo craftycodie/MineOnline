@@ -27,6 +27,17 @@ public class HDTextureFXHelper {
 
     public static float scale = 1;
 
+    private static BufferedImage resize(BufferedImage img, int newW, int newH) {
+        Image tmp = img.getScaledInstance(newW, newH, Image.SCALE_FAST);
+        BufferedImage dimg = new BufferedImage(newW, newH, BufferedImage.TYPE_INT_ARGB);
+
+        Graphics2D g2d = dimg.createGraphics();
+        g2d.drawImage(tmp, 0, 0, null);
+        g2d.dispose();
+
+        return dimg;
+    }
+
     public static void reloadTextures() {
         textures.clear();
         ticks.clear();
@@ -56,15 +67,19 @@ public class HDTextureFXHelper {
 
                 if (texture != null) {
                     BufferedImage b = ImageIO.read(texturesZip.getInputStream(texture));
-                    frameCounts.put(textureName, b.getHeight() / (int)scale * 16);
+                    frameCounts.put(textureName, b.getHeight() / b.getWidth());
                     currentTexture = new int[(int)((scale * 16) * (scale * 16) * 4)];
-                    textures.put(textureName, new int[b.getHeight()/((int)(scale * 16))][(int)((scale * 16) * (scale * 16) * 4)]);
-                    for(int i = 0; i < b.getHeight()/(scale * 16); i++)
+                    textures.put(textureName, new int[b.getHeight()/b.getWidth()][(int)((scale * 16) * (scale * 16) * 4)]);
+                    for(int i = 0; i < b.getHeight()/b.getWidth(); i++)
                     {
                         int[] tmp = new int[(int)((scale * 16) * (scale * 16))];
-                        b.getRGB(0, (int)(i*(scale * 16)), (int)((scale * 16)), (int)(scale * 16), tmp, 0, (int)(scale * 16));
-//                        int[] pixels = new int[width * height];
-//                        animatedTexture.getRGB(0, 0, width, height, pixels, 0, width);
+                        BufferedImage frame = b.getSubimage(0, i * b.getWidth(), b.getWidth(), b.getWidth());
+
+                        if (frame.getWidth() != (scale * 16)) {
+                            frame = resize(frame, (int)(scale * 16), (int)(scale * 16));
+                        }
+
+                        frame.getRGB(0, 0, (int)((scale * 16)), (int)(scale * 16), tmp, 0, (int)(scale * 16));
 
                         for(int pixelI = 0; pixelI < tmp.length; pixelI++) {
                             int alpha = ((tmp[pixelI] >> 24) & 0xff);
@@ -73,28 +88,10 @@ public class HDTextureFXHelper {
                             int blue = ((tmp[pixelI]) & 0xff);
 
 
-//                            System.out.println(textureName);
-//                            System.out.println("RED " + red);
-//                            System.out.println("green " + green);
-//                            System.out.println("blue " + blue);
-//                            System.out.println("alpha " + alpha);
-
-
                             tmp[pixelI] = red | ( green << 8 ) | ( blue << 16 ) | ( alpha << 24 );
-
-                            // ? r ? a
-//                            System.out.println(String.format("0x%08X", tmp[pixelI]));
                         }
 
                         textures.get(textureName)[i] = tmp;
-
-//                        for(int i1 = 0; i1 < tmp.length; i1++)
-//                        {
-//                            textures.get(textureName)[i][i1 * 4 + 0] = (byte)((tmp[i1] >> 16) & 0xff);
-//                            textures.get(textureName)[i][i1 * 4 + 1] = (byte)((tmp[i1] >> 8) & 0xff);
-//                            textures.get(textureName)[i][i1 * 4 + 2] = (byte)((tmp[i1]) & 0xff);
-//                            textures.get(textureName)[i][i1 * 4 + 3] = (byte)((tmp[i1] >> 24) & 0xff);
-//                        }
                     }
                 }
             } catch (Exception ex) {

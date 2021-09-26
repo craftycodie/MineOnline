@@ -134,7 +134,6 @@ public class LibraryManager {
         if (includeLWJGL2){
             classpath.append(getClasspathSeparator() + LauncherFiles.LWJGL_UTIL_JAR);
             classpath.append(getClasspathSeparator() + LauncherFiles.LWJGL_JAR);
-            classpath.append(getClasspathSeparator() + LauncherFiles.SLICK_UTIL_JAR);
             classpath.append(getClasspathSeparator() + LauncherFiles.JINPUT_JAR);
         }
 

@@ -10,29 +10,21 @@ import gg.codie.mineonline.patches.mcpatcher.HDTextureFXHelper;
 import gg.codie.mineonline.patches.minecraft.ItemRendererAdvice;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
-import org.newdawn.slick.opengl.*;
-import org.newdawn.slick.opengl.renderer.Renderer;
-import org.newdawn.slick.opengl.renderer.SGL;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-// TODO: Remove slick-util.
 public class Loader {
-    private HashMap<String, Integer> textures = new HashMap<>();
+    private final HashMap<String, Integer> textures = new HashMap<>();
 
     static final String MINEONLINE_TEXTURE_PREFIX = "mo:";
 
@@ -53,98 +45,67 @@ public class Loader {
     }
 
     public int loadTexture(String name, URL url) {
-        if (textures.containsKey(name))
-            return textures.get(name);
-
-        Texture texture;
         try {
-            texture = TextureLoader.getTexture("PNG", url.openStream());
-        } catch (Exception e) {
-            return MISSING_TEXTURE_ID;
+            return loadTexture(name, url.openStream());
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
-        int textureID = texture.getTextureID();
-
-        textures.put(name, textureID);
-
-        return textureID;
+        return MISSING_TEXTURE_ID;
     }
 
-    public int loadTexture(String name, String path) {
-        if (textures.containsKey(name))
-            return textures.get(name);
+    public void loadImageData(BufferedImage bufferedImage) {
+        int width = bufferedImage.getWidth();
+        int height = bufferedImage.getHeight();
 
-        Texture texture;
-        try {
-            if(path.startsWith("http")) {
-                texture = TextureLoader.getTexture("PNG", new URL(path).openStream());
-            } else {
-                texture = TextureLoader.getTexture("PNG", new FileInputStream(path));
+        int[] aint = new int[width * height];
+        byte[] byteBuf = new byte[width * height * 4];
+
+        bufferedImage.getRGB(0, 0, width, height, aint, 0, width);
+
+        for (int l = 0; l < aint.length; ++l) {
+            int alpha = aint[l] >> 24 & 255;
+            int red = aint[l] >> 16 & 255;
+            int green = aint[l] >> 8 & 255;
+            int blue = aint[l] & 255;
+
+            if (alpha == 0) {
+                red = 255;
+                green = 255;
+                blue = 255;
             }
-        } catch (Exception e) {
-            return MISSING_TEXTURE_ID;
+
+            byteBuf[l * 4 + 0] = (byte) red;
+            byteBuf[l * 4 + 1] = (byte) green;
+            byteBuf[l * 4 + 2] = (byte) blue;
+            byteBuf[l * 4 + 3] = (byte) alpha;
         }
 
-        int textureID = texture.getTextureID();
-
-        textures.put(name, textureID);
-
-        return textureID;
+        this.checkImageDataSize(width, height);
+        this.imageData.clear();
+        this.imageData.put(byteBuf);
+        this.imageData.position(0).limit(byteBuf.length);
     }
 
-    public int loadTexture(String name, InputStream stream) {
-        if (textures.containsKey(name))
-            return textures.get(name);
+    public void overwriteTexture(int textureID, InputStream in) throws IOException {
+        BufferedImage bufferedImage = ImageIO.read(in);
 
-        Texture texture;
-        try {
-            texture = TextureLoader.getTexture("PNG", stream);
-        } catch (Exception e) {
-            return MISSING_TEXTURE_ID;
-        }
+        int width = bufferedImage.getWidth();
+        int height = bufferedImage.getHeight();
+        this.loadImageData(bufferedImage);
 
-        int textureID = texture.getTextureID();
-
-        textures.put(name, textureID);
-
-        return textureID;
-    }
-
-    public void overwriteTexture(int textureID, InputStream in, String resourceName) throws IOException {
-        SGL GL = Renderer.get();
-        LoadableImageData imageData = ImageDataFactory.getImageDataFor(resourceName);
-        ByteBuffer textureBuffer = imageData.loadImage(new BufferedInputStream(in), false, null);
-        TextureImpl texture = new TextureImpl(resourceName, GL11.GL_TEXTURE_2D, textureID);
-        GL.glBindTexture(GL11.GL_TEXTURE_2D, textureID);
-        int width = imageData.getWidth();
-        int height = imageData.getHeight();
-        boolean hasAlpha = imageData.getDepth() == 32;
-        texture.setTextureWidth(imageData.getTexWidth());
-        texture.setTextureHeight(imageData.getTexHeight());
-        int texWidth = texture.getTextureWidth();
-        int texHeight = texture.getTextureHeight();
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureID);
         IntBuffer temp = BufferUtils.createIntBuffer(16);
-        GL.glGetInteger(3379, temp);
+        GL11.glGetInteger(3379, temp);
         int max = temp.get(0);
-        if (texWidth <= max && texHeight <= max) {
-            int srcPixelFormat = hasAlpha ? 6408 : 6407;
-            int componentCount = hasAlpha ? 4 : 3;
-            texture.setWidth(width);
-            texture.setHeight(height);
-            texture.setAlpha(hasAlpha);
-            //if (TextureLoader.holdTextureData) {
-                texture.setTextureData(srcPixelFormat, componentCount, 9729, 9729, textureBuffer);
-            //}
-
-            GL.glTexParameteri(GL11.GL_TEXTURE_2D, 10241, GL11.GL_NEAREST);
-            GL.glTexParameteri(GL11.GL_TEXTURE_2D, 10240, GL11.GL_NEAREST);
-            GL.glTexImage2D(GL11.GL_TEXTURE_2D, 0, 6408, get2Fold(width), get2Fold(height), 0, srcPixelFormat, 5121, textureBuffer);
+        if (width <= max && height <= max) {
+            GL11.glTexImage2D(3553, 0, 6408, width, height, 0, 6408, 5121, this.imageData);
         } else {
             throw new IOException("Attempt to allocate a texture to big for the current hardware");
         }
     }
 
-    private static LinkedList<String> ignoredTextures = new LinkedList<>(Arrays.asList(
+    private static final LinkedList<String> ignoredTextures = new LinkedList<>(Arrays.asList(
             "/font/default.png", //Needs to be patched separately.
             "/misc/foliagecolor.png", //Needs to be patched separately.
             "/misc/grasscolor.png", //Needs to be patched separately.
@@ -195,7 +156,10 @@ public class Loader {
                 ZipEntry texture = texturesZip.getEntry(textureName.substring(1));
 
                 if (texture != null) {
-                    Loader.singleton.overwriteTexture(HashMapPutAdvice.textures.get(textureName), texturesZip.getInputStream(texture), textureName);
+                    if (!HashMapPutAdvice.textures.containsKey(textureName))
+                        return;
+
+                    Loader.singleton.overwriteTexture(HashMapPutAdvice.textures.get(textureName), texturesZip.getInputStream(texture));
 
                     if (textureName.equals("/terrain.png")) {
                         try {
@@ -233,13 +197,13 @@ public class Loader {
                     }
                 }
             } catch (Exception ex) {
-
+                ex.printStackTrace();
             }
         }
 
         try {
             if (LegacyGameManager.getAppletWrapper().getMinecraftAppletClass() != null)
-                Loader.singleton.overwriteTexture(HashMapPutAdvice.textures.get(textureName), LegacyGameManager.getAppletWrapper().getMinecraftAppletClass().getResourceAsStream(textureName), textureName);
+                Loader.singleton.overwriteTexture(HashMapPutAdvice.textures.get(textureName), LegacyGameManager.getAppletWrapper().getMinecraftAppletClass().getResourceAsStream(textureName));
             if(textureName.equals("/terrain.png")) {
                 HDTextureFXHelper.scale = 1;
                 HDTextureFXHelper.reloadTextures();
@@ -263,7 +227,7 @@ public class Loader {
                 "/2char.png",
 
                 "/gui/gui.png",
-                "/gui/background.png",
+//                "/gui/background.png",
                 "/gui/container.png",
                 "/gui/crafting.png",
                 "/gui/logo.png",
@@ -340,14 +304,6 @@ public class Loader {
         }
     }
 
-    public static int get2Fold(int fold) {
-        int ret;
-        for(ret = 2; ret < fold; ret *= 2) {
-        }
-
-        return ret;
-    }
-
     public int getGuiTexture(EGUITexture eguiTexture) {
         if (!textures.containsKey(MINEONLINE_TEXTURE_PREFIX + eguiTexture.textureName)) {
             Settings.singleton.loadSettings();
@@ -379,5 +335,93 @@ public class Loader {
     {
         ByteBuffer bytebuffer = ByteBuffer.allocateDirect(i).order(ByteOrder.nativeOrder());
         return bytebuffer;
+    }
+
+    private final IntBuffer singleIntBuffer = createDirectIntBuffer(1);
+    private boolean clampTexture = false;
+    private boolean blurTexture = false;
+    private ByteBuffer imageData;
+
+    public static IntBuffer createDirectIntBuffer(int var0) {
+        return createDirectByteBuffer(var0 << 2).asIntBuffer();
+    }
+
+    public int loadTexture(String name, InputStream textureStream) {
+        Integer id = this.textures.get(name);
+
+        if (id != null) {
+            return id;
+        } else {
+            try {
+                if (textureStream == null) return MISSING_TEXTURE_ID;
+
+                BufferedImage bufferedImage = ImageIO.read(textureStream);
+                this.singleIntBuffer.clear();
+                GL11.glGenTextures(this.singleIntBuffer);
+                id = this.singleIntBuffer.get(0);
+                if (name.startsWith("##")) {
+                    this.setupTexture(bufferedImage, id);
+                } else if (name.startsWith("%clamp%")) {
+                    this.clampTexture = true;
+                    this.setupTexture(bufferedImage, id);
+                    this.clampTexture = false;
+                } else if (name.startsWith("%blur%")) {
+                    this.blurTexture = true;
+                    this.setupTexture(bufferedImage, id);
+                    this.blurTexture = false;
+                } else {
+                    this.setupTexture(bufferedImage, id);
+                }
+
+                this.textures.put(name, id);
+                return id;
+            } catch (IOException ioexception) {
+                ioexception.printStackTrace();
+                return MISSING_TEXTURE_ID;
+            }
+        }
+    }
+
+    public void setupTexture(BufferedImage bufferedimage, int i) {
+        GL11.glBindTexture(3553, i);
+
+        GL11.glTexParameteri(3553, 10241, 9728);
+        GL11.glTexParameteri(3553, 10240, 9728);
+
+        if (this.blurTexture) {
+            GL11.glTexParameteri(3553, 10241, 9729);
+            GL11.glTexParameteri(3553, 10240, 9729);
+        }
+
+        if (this.clampTexture) {
+            GL11.glTexParameteri(3553, 10242, 10496);
+            GL11.glTexParameteri(3553, 10243, 10496);
+        } else {
+            GL11.glTexParameteri(3553, 10242, 10497);
+            GL11.glTexParameteri(3553, 10243, 10497);
+        }
+
+        int width = bufferedimage.getWidth();
+        int height = bufferedimage.getHeight();
+        this.loadImageData(bufferedimage);
+        GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, 6408, width, height, 0, 6408, 5121, this.imageData);
+    }
+
+    private void checkImageDataSize(int width, int height) {
+        if (this.imageData != null) {
+            int len = width * height * 4;
+
+            if (this.imageData.capacity() >= len) {
+                return;
+            }
+        }
+
+        this.allocateImageData(width, height);
+    }
+
+    private void allocateImageData(int width, int height) {
+        int imgLen = width * height * 4;
+
+        this.imageData = createDirectByteBuffer(imgLen);
     }
 }

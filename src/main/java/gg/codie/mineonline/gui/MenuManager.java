@@ -30,11 +30,10 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStream;
-import java.util.Arrays;
 
 public class MenuManager {
 
-    public static boolean formopen = false;
+    public static boolean formOpen = false;
     private static ClassicServerAuthService classicAuthService = new ClassicServerAuthService();
 
     public static void setMenuScreen(AbstractGuiScreen guiScreen) {
@@ -92,7 +91,7 @@ public class MenuManager {
 
         LibraryManager.updateNativesPath();
 
-        formopen = true;
+        formOpen = true;
 
         if (Globals.BRANCH.equals("main")) {
             try {
@@ -226,7 +225,7 @@ public class MenuManager {
         int panoramaTexture = Loader.singleton.loadTexture("panorama buffer", is);
 
         // Game Loop
-        while(!Display.isCloseRequested() && formopen) {
+        while(!Display.isCloseRequested() && formOpen) {
             MouseHandler.update();
 //            renderer.prepare();
 
@@ -238,7 +237,7 @@ public class MenuManager {
             lastHeight = Display.getParent().getHeight();
 
 
-            if(!formopen) return;
+            if(!formOpen) return;
 
             GUIScale scaledresolution = new GUIScale(Display.getParent().getWidth(), Display.getParent().getHeight());
 

@@ -18,6 +18,7 @@ public class Globals {
                 DEV = true;
             }
         } catch (Exception ex) {
+            DEV = true;
             ex.printStackTrace();
             System.exit(1);
         }
