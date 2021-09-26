@@ -17,7 +17,6 @@ public class LauncherFiles {
 
     public static final String LWJGL_JAR = MINEONLINE_LIBRARY_FOLDER + "org" + File.separator + "lwjgl" + File.separator + (OSUtils.isMac() ? "lwjgl-mac" : "lwjgl") + File.separator + "2.9.3" + File.separator + (OSUtils.isMac() ? "lwjgl-mac-2.9.3.jar" : "lwjgl-2.9.3.jar");
     public static final String LWJGL_UTIL_JAR = MINEONLINE_LIBRARY_FOLDER + "org" + File.separator + "lwjgl" + File.separator + (OSUtils.isMac() ? "lwjgl_util-mac" : "lwjgl_util") + File.separator + "2.9.3" + File.separator + (OSUtils.isMac() ? "lwjgl_util-mac-2.9.3.jar" : "lwjgl_util-2.9.3.jar");
-    public static final String SLICK_UTIL_JAR = MINEONLINE_LIBRARY_FOLDER + "org" + File.separator + "newdawn" + File.separator + "slick-util" + File.separator + "2.9.3" + File.separator + "slick-util-2.9.3.jar";
     public static final String JINPUT_JAR = MINEONLINE_LIBRARY_FOLDER + "org" + File.separator + "lwjgl" + File.separator + "jinput" + File.separator + "2.9.3" + File.separator + "jinput-2.9.3.jar";
     public static final String PATCH_AGENT_JAR = MINEONLINE_LIBRARY_FOLDER + "net" + File.separator + "bytebuddy" + File.separator + "byte-buddy-agent" + File.separator + "1.10.14" + File.separator + "byte-buddy-agent-1.10.14.jar";
     public static final String JSON_JAR = MINEONLINE_LIBRARY_FOLDER + "org" + File.separator + "json" + File.separator + "json" + File.separator + "20200518" + File.separator +  "json-20200518.jar";

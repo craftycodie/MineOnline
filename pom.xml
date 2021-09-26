@@ -93,12 +93,6 @@
     </dependency>
 
     <dependency>
-      <groupId>org.newdawn</groupId>
-      <artifactId>slick-util</artifactId>
-      <version>2.9.3</version>
-    </dependency>
-
-    <dependency>
       <groupId>org.ow2</groupId>
       <artifactId>asm</artifactId>
       <version>8.0.1</version>

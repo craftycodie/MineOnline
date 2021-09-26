@@ -303,7 +303,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
 
         frame.setBackground(Color.black);
 
-        MenuManager.formopen = false;
+        MenuManager.formOpen = false;
 
         LWJGLDisplayPatch.updateListener = new OnUpdateListener() {
             @Override
