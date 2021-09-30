@@ -1,5 +1,6 @@
 package gg.codie.mineonline;
 
+import gg.codie.common.utils.OSUtils;
 import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.sound.SoundExtractionService;
 import gg.codie.mineonline.utils.JREUtils;
@@ -22,6 +23,11 @@ public class Startup {
         if (Globals.DEV) {
             System.out.println("&&& MineOnline v " + Globals.LAUNCHER_VERSION + " b " + Globals.BRANCH + " &&&");
             System.out.println("Starting in Dev mode using Java: " + JREUtils.getRunningJavaExecutable());
+        }
+
+        if (OSUtils.isWindows()) {
+            // Fix scaling on High DPI screens. Requires a restart :(
+            Runtime.getRuntime().exec("reg add \"HKCU\\Software\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers\" /V \"" + Startup.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath().substring(1).replace("/", File.separator) + "\" /T REG_SZ /D \"~ GDIDPISCALING DPIUNAWARE\" /F");
         }
 
         LibraryManager.extractLibraries();

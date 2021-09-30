@@ -16,11 +16,7 @@ import gg.codie.mineonline.gui.rendering.Font;
 import gg.codie.mineonline.gui.rendering.Loader;
 import gg.codie.mineonline.gui.screens.AbstractGuiScreen;
 import gg.codie.mineonline.gui.textures.EGUITexture;
-import gg.codie.mineonline.protocol.MineOnlineURLStreamHandlerFactory;
-import gg.codie.mineonline.patches.ByteBufferPatch;
-import gg.codie.mineonline.patches.ClassPatch;
-import gg.codie.mineonline.patches.HashMapPatch;
-import gg.codie.mineonline.patches.StringPatch;
+import gg.codie.mineonline.patches.*;
 import gg.codie.mineonline.patches.lwjgl.LWJGLGL11GLOrthoAdvice;
 import gg.codie.mineonline.patches.lwjgl.LWJGLGL11Patch;
 import gg.codie.mineonline.patches.lwjgl.LWJGLGLUPatch;
@@ -31,7 +27,6 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 
 import java.awt.*;
-import java.net.URL;
 
 public class LegacyGameManager {
 
@@ -136,6 +131,9 @@ public class LegacyGameManager {
         ClockFXPatch.init();
 
         if (version != null) {
+            if (version.name.equals("Beta 1.3 Demo"))
+                PCGamerDemoPatch.unlockDemo();
+
             if (version.useIndevSoundPatch)
                 PaulscodePatch.fixIndevAudio();
             if (version.itemRendererClass != null)

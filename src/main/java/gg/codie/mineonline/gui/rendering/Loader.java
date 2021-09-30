@@ -117,8 +117,8 @@ public class Loader {
     ));
 
     public static void reloadMinecraftTexture(String textureName) {
-        if (Globals.DEV)
-            System.out.println("Loading Texture " + textureName);
+//        if (Globals.DEV)
+//            System.out.println("Loading Texture " + textureName);
 
         if (ignoredTextures.contains(textureName))
             return;
