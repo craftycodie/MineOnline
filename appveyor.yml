@@ -25,10 +25,6 @@ artifacts:
     name: "MineOnline.jar"
   - path: "**/target/MineOnline-*.exe"
     name: "MineOnline.exe"
-  - path: "**/target/MineOnline-*-Dev.jar"
-    name: "MineOnline-Dev.jar"
-  - path: "**/target/MineOnline-*-Dev.exe"
-    name: "MineOnline-Dev.exe"
 on_success:
   - ps: if ($env:APPVEYOR_REPO_BRANCH -eq "main") {.\build_scripts\discord-webhook.ps1 success $env:DISCORD_WEBHOOK_URL}
 on_failure:
