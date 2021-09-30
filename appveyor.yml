@@ -2,6 +2,9 @@ version: '{build}'
 image: ubuntu
 stack: jdk 8
 
+cache:
+  - /usr/share/maven
+  - /home/appveyor/.m2
 install:
   - ps: .\build_scripts\UpdateBuildVersion.ps1
   - sh: sudo apt purge openjfx
