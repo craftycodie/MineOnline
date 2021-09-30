@@ -31,7 +31,7 @@ public class MineOnlineURLStreamHandler extends URLStreamHandler {
             return new ListLevelsURLConnection(url);
         // Sounds are downloaded by the launcher, so we 404 the new index and spoof the old one.
         else if (url.toString().endsWith("/MinecraftResources/"))
-            return new BasicResponseURLConnection(url, 404, "Not Found");
+            return new ResourcesIndexURLConnection(url);
         else if (url.toString().endsWith("/resources/"))
             return new ClassicResourcesIndexURLConnection(url);
         // Skins are pulled from the new endpoint and converted to the legacy format as required.
