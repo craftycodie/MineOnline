@@ -76,8 +76,6 @@ public class ResourcesIndexURLConnection extends HttpURLConnection {
 
         response.append("</ListBucketResult>");
 
-        System.out.println(response);
-
         return new ByteArrayInputStream(response.toString().getBytes());
     }
 
