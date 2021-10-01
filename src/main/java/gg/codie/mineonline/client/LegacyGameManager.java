@@ -140,10 +140,6 @@ public class LegacyGameManager {
                 ItemRendererPatch.useHDItems(version.itemRendererClass);
             if (version.useFOVPatch && version.entityRendererClass != null)
                 FOVViewmodelPatch.fixViewmodelFOV(version.entityRendererClass, version.viewModelFunction, version.hurtEffectFunction, Settings.singleton.getMainHand() == EMinecraftMainHand.LEFT);
-            if (version.ingameVersionString != null) {
-                StringPatch.hideVersionNames(version.ingameVersionString);
-                StringPatch.enable = Settings.singleton.getHideVersionString();
-            }
 
             // Fixes various input issues with classic - infdev versions.
             InputPatch.enableClassicFixes = version.enableCursorPatch;
@@ -204,7 +200,6 @@ public class LegacyGameManager {
     public static void setHideVersionString(boolean hideVersionString) {
         Settings.singleton.setHideVersionString(hideVersionString);
         Settings.singleton.saveSettings();
-        StringPatch.enable = hideVersionString;
     }
 
     public static void setGUIScale(EMinecraftGUIScale guiScale) {

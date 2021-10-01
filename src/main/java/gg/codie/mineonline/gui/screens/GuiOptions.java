@@ -116,7 +116,7 @@ public class GuiOptions extends AbstractGuiScreen
         }));
 
         if (LegacyGameManager.isInGame())
-            ((GuiButton)controlList.get(4)).enabled = LegacyGameManager.getVersion() != null && LegacyGameManager.getVersion().ingameVersionString != null;
+            ((GuiButton)controlList.get(4)).enabled = LegacyGameManager.getVersion() != null && LegacyGameManager.getVersion().ingameVersionString != null && LegacyGameManager.getVersion().fontClass != null;
 
 //        controlList.add(new GuiSmallButton(0, getWidth() / 2 + 5, getHeight() / 6 + 24, "Main Hand: " + Settings.singleton.getMainHand().name(), new GuiButton.GuiButtonListener() {
 //            @Override

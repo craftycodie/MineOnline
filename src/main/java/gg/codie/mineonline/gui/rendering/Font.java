@@ -1,6 +1,7 @@
 package gg.codie.mineonline.gui.rendering;
 
 import gg.codie.mineonline.LauncherFiles;
+import gg.codie.mineonline.MinecraftVersion;
 import gg.codie.mineonline.Settings;
 import gg.codie.mineonline.client.LegacyGameManager;
 import gg.codie.mineonline.gui.input.InputSanitization;
@@ -183,11 +184,18 @@ public class Font
 
     public void renderString(String string, int x, int y, int color, boolean darken)
     {
+        MinecraftVersion version = LegacyGameManager.isInGame() ? LegacyGameManager.getVersion() : null;
+
+        // If minecraft is rendering a version string here, and the user has turned those off, return.
+        if (!LWJGLDisplayUpdateAdvice.inUpdateHook && version != null && version.ingameVersionString != null)
+            if (string.equals(version.ingameVersionString) && Settings.singleton.getHideVersionString())
+                return;
+
         char colorCodePrefix = '\247';
 
         // Kinda hacky. If minecraft is rendering a string here, and is in classic, fix color codes.
-        if (!LWJGLDisplayUpdateAdvice.inUpdateHook && LegacyGameManager.isInGame() && LegacyGameManager.getVersion() != null && LegacyGameManager.getVersion().colorCodePrefix != null)
-            colorCodePrefix = LegacyGameManager.getVersion().colorCodePrefix.charAt(0);
+        if (!LWJGLDisplayUpdateAdvice.inUpdateHook && LegacyGameManager.isInGame() && version != null && version.colorCodePrefix != null)
+            colorCodePrefix = version.colorCodePrefix.charAt(0);
 
         if(string == null)
         {

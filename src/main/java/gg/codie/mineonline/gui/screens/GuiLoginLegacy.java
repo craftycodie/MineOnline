@@ -1,6 +1,6 @@
 package gg.codie.mineonline.gui.screens;
 
-import gg.codie.minecraft.api.AuthServer;
+import gg.codie.minecraft.api.MojangAuthService;
 import gg.codie.minecraft.api.MojangAPI;
 import gg.codie.mineonline.Globals;
 import gg.codie.mineonline.Session;
@@ -29,6 +29,7 @@ public class GuiLoginLegacy extends AbstractGuiScreen
 {
     private String errorText;
     private boolean offline;
+    private MojangAuthService mojangAuthService = new MojangAuthService();
 
     public GuiLoginLegacy(boolean offline)
     {
@@ -52,7 +53,7 @@ public class GuiLoginLegacy extends AbstractGuiScreen
     private void microsoftLogin() {
         try {
             Class.forName("javafx.scene.layout.VBox");
-            new MicrosoftLoginController();
+            new MicrosoftLoginController().login();
         } catch (ClassNotFoundException ex) {
             EventQueue.invokeLater(new Runnable() {
                 @Override
@@ -132,7 +133,7 @@ public class GuiLoginLegacy extends AbstractGuiScreen
 
             try {
                 String clientSecret = UUID.randomUUID().toString();
-                JSONObject login = AuthServer.authenticate(usernameField.getText(), passwordField.getText(), clientSecret);
+                JSONObject login = mojangAuthService.authenticate(usernameField.getText(), passwordField.getText(), clientSecret);
 
                 if (login.has("error"))
                     throw new Exception(login.getString("error"));

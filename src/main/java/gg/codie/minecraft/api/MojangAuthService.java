@@ -10,10 +10,10 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
-public class AuthServer {
+public class MojangAuthService {
     private static final String BASE_URL = "https://authserver.mojang.com";
 
-    public static JSONObject authenticate(String username, String password, String clientToken) throws IOException {
+    public JSONObject authenticate(String username, String password, String clientToken) throws IOException {
         HttpURLConnection connection;
 
         JSONObject jsonObject = new JSONObject();
@@ -63,7 +63,7 @@ public class AuthServer {
         }
     }
 
-    public static JSONObject refresh(String accessToken, String clientToken) throws IOException {
+    public JSONObject refresh(String accessToken, String clientToken) throws IOException {
         HttpURLConnection connection;
 
         JSONObject jsonObject = new JSONObject();

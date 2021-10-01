@@ -42,8 +42,8 @@ public class HashMapPutAdvice {
             ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.HashMapPutAdvice").getField("ignore").set(null, true);
             boolean DEV = (boolean) ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.Globals").getField("DEV").get(null);
 
-            if (DEV)
-                System.out.println("Loaded Texture " + key + " at " + value);
+//            if (DEV)
+//                System.out.println("Loaded Texture " + key + " at " + value);
 
             HashMap<String, Integer> textures = (HashMap<String, Integer>) ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.HashMapPutAdvice").getField("textures").get(null);
 

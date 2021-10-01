@@ -38,7 +38,7 @@ public class LastLogin {
             dos.writeBoolean(legacy);
             dos.close();
         } catch (Exception e) {
-//            e.printStackTrace();
+            e.printStackTrace();
         }
     }
 
@@ -79,12 +79,12 @@ public class LastLogin {
             String username = dis.readUTF();
             String uuid = dis.readUTF();
             boolean legacy = dis.readBoolean();
-            if(accessToken.length() > 0 && clientToken.length() > 0 && username.length() > 0 && uuid.length() > 0 && loginUsername.length() > 0) {
+            if(accessToken.length() > 0 && username.length() > 0 && uuid.length() > 0) {
                 return new LastLogin(accessToken, clientToken, loginUsername, username, uuid, legacy);
             }
             dis.close();
         } catch (Exception e) {
-//            e.printStackTrace();
+            e.printStackTrace();
         }
 
         return null;

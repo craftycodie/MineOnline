@@ -641,7 +641,7 @@ public class Settings implements IMinecraftOptionsHandler {
             input.close();
 
             settings = new JSONObject(stringBuffer.toString());
-        } catch (IOException io) {
+        } catch (IOException | JSONException io) {
             io.printStackTrace();
         }
     }

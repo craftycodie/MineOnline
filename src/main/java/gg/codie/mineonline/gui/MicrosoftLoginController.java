@@ -93,7 +93,7 @@ public class MicrosoftLoginController extends VBox {
     JFrame frame;
     WebView webView;
 
-    public MicrosoftLoginController() {
+    public void login() {
         try {
             frame = new JFrame("MineOnline Login");
             JFXPanel jfxPanel = new JFXPanel();
@@ -372,13 +372,29 @@ public class MicrosoftLoginController extends VBox {
             String uuid = (String) jsonObject.get("id");
 
             new Session(name, mcAccessToken, "", uuid, true);
-            LastLogin.writeLastLogin(Session.session.getAccessToken(), "", null, Session.session.getUsername(), Session.session.getUuid(), false);
+            LastLogin.writeLastLogin(Session.session.getAccessToken(), "", "", Session.session.getUsername(), Session.session.getUuid(), false);
             frame.dispose();
             Display.getParent().getParent().setVisible(true);
             MenuManager.setMenuScreen(new GuiMainMenu());
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean validateToken(String mcAccessToken) {
+        try {
+            URL uri = new URL(mcProfileUrl);
+
+            HttpURLConnection connection = (HttpURLConnection)uri.openConnection();
+            connection.setRequestProperty("Authorization", "Bearer " + mcAccessToken);
+            connection.setRequestMethod("GET");
+            connection.setDoInput(true);
+
+            return connection.getResponseCode() == 200 || connection.getResponseCode() == 204;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public static String ofFormData(Map<Object, Object> data) throws UnsupportedEncodingException {

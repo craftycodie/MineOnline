@@ -1,6 +1,6 @@
 package gg.codie.mineonline.gui;
 
-import gg.codie.minecraft.api.AuthServer;
+import gg.codie.minecraft.api.MojangAuthService;
 import gg.codie.minecraft.api.MojangAPI;
 import gg.codie.mineonline.*;
 import gg.codie.mineonline.api.ClassicServerAuthService;
@@ -26,10 +26,7 @@ import javax.imageio.ImageIO;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.InputStream;
+import java.io.*;
 
 public class MenuManager {
 
@@ -153,7 +150,7 @@ public class MenuManager {
             try {
                 // TODO: Add support for refreshing Microsoft auth.
                 if (lastLogin.legacy) {
-                    JSONObject login = AuthServer.refresh(lastLogin.accessToken, lastLogin.clientToken);
+                    JSONObject login = new MojangAuthService().refresh(lastLogin.accessToken, lastLogin.clientToken);
 
                     if (login.has("error"))
                         throw new Exception(login.getString("error"));
@@ -166,9 +163,18 @@ public class MenuManager {
                     username = login.getJSONObject("selectedProfile").getString("name");
                     uuid = login.getJSONObject("selectedProfile").getString("id");
                 } else {
-                    sessionToken = lastLogin.accessToken;
-                    username = lastLogin.username;
-                    uuid = lastLogin.uuid;
+                    try {
+                        if (new MicrosoftLoginController().validateToken(lastLogin.accessToken)) {
+                            sessionToken = lastLogin.accessToken;
+                            username = lastLogin.username;
+                            uuid = lastLogin.uuid;
+                        } else {
+                            throw new Exception("Your session has expired.");
+                        }
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                        throw new Exception("Failed to authenticate!");
+                    }
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
