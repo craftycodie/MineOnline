@@ -8,6 +8,8 @@ import gg.codie.mineonline.utils.Logging;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -25,9 +27,10 @@ public class Startup {
             System.out.println("Starting in Dev mode using Java: " + JREUtils.getRunningJavaExecutable());
         }
 
-        if (OSUtils.isWindows()) {
-            // Fix scaling on High DPI screens. Requires a restart :(
-            Runtime.getRuntime().exec("reg add \"HKCU\\Software\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers\" /V \"" + Startup.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath().substring(1).replace("/", File.separator) + "\" /T REG_SZ /D \"~ GDIDPISCALING DPIUNAWARE\" /F");
+        try {
+            ensureCorrectDPIScalingOnWindows();
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
 
         LibraryManager.extractLibraries();
@@ -64,6 +67,34 @@ public class Startup {
             }
         }
         Runtime.getRuntime().halt(0);
+    }
+
+    // This is a hacky way to correct scaling on Windows by fiddling with the Registry and restarting the process.
+    private static void ensureCorrectDPIScalingOnWindows() throws IOException, URISyntaxException {
+        if (!OSUtils.isWindows())
+            return;
+
+        final String DPI_AWARENESS_CMD = "reg query " +
+                "\"HKCU\\Software\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers\""
+                + " /v \"" + Startup.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath().substring(1).replace("/", File.separator) + "\"";
+
+        Process process = Runtime.getRuntime().exec(DPI_AWARENESS_CMD);
+
+        InputStream is = process.getInputStream();
+        StringWriter sw = new StringWriter();
+
+        int c;
+        while ((c = is.read()) != -1)
+            sw.write(c);
+
+
+        boolean scalingFlagSet = sw.toString().contains("~ GDIDPISCALING DPIUNAWARE");
+
+        if (!scalingFlagSet) {
+            Runtime.getRuntime().exec("reg add \"HKCU\\Software\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers\" /V \"" + Startup.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath().substring(1).replace("/", File.separator) + "\" /T REG_SZ /D \"~ GDIDPISCALING DPIUNAWARE\" /F");
+            Runtime.getRuntime().exec("cmd /c " + Startup.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath().substring(1).replace("/", File.separator));
+            System.exit(0);
+        }
     }
 
 }
