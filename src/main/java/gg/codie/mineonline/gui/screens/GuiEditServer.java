@@ -53,6 +53,8 @@ public class GuiEditServer extends AbstractGuiScreen
                 LegacyGameManager.setGUIScreen(thisScreen);
             else
                 MenuManager.setMenuScreen(thisScreen);
+                
+            Keyboard.enableRepeatEvents(true);
         }
     };
 
