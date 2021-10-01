@@ -372,7 +372,7 @@ public class MicrosoftLoginController extends VBox {
             String uuid = (String) jsonObject.get("id");
 
             new Session(name, mcAccessToken, "", uuid, true);
-            LastLogin.writeLastLogin(Session.session.getAccessToken(), "", null, Session.session.getUsername(), Session.session.getUuid(), false);
+            LastLogin.writeLastLogin(Session.session.getAccessToken(), "", "", Session.session.getUsername(), Session.session.getUuid(), false);
             frame.dispose();
             Display.getParent().getParent().setVisible(true);
             MenuManager.setMenuScreen(new GuiMainMenu());
