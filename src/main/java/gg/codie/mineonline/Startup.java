@@ -74,6 +74,9 @@ public class Startup {
         if (!OSUtils.isWindows())
             return;
 
+        if (!Startup.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath().endsWith(".exe"))
+            return;
+
         final String DPI_AWARENESS_CMD = "reg query " +
                 "\"HKCU\\Software\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers\""
                 + " /v \"" + Startup.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath().substring(1).replace("/", File.separator) + "\"";
