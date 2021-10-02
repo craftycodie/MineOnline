@@ -129,10 +129,13 @@ public class LegacyGameManager {
         FontPatch.init();
         CompassFXPatch.init();
         ClockFXPatch.init();
+        ClassLoaderPatch.allowUnsignedCode();
 
         if (version != null) {
-            if (version.name.equals("Beta 1.3 Demo"))
-                PCGamerDemoPatch.unlockDemo();
+            if (version.name.equals("Beta 1.3 Demo")) {
+                PCGamerDemoPatch.login();
+                PCGamerDemoPatch.addNetcode();
+            }
 
             if (version.useIndevSoundPatch)
                 PaulscodePatch.fixIndevAudio();
