@@ -60,7 +60,7 @@ public class LegacyTrackerServerRepository {
     public LegacyTrackerServer getServer(String serverIP, String port) throws IOException {
         HttpURLConnection connection;
 
-        URL url = new URL("https://servers.api.legacyminecraft.com/api/v1/getServer?serverip=" + serverIP + "&port=" + port);
+        URL url = new URL("http://servers.api.legacyminecraft.com/api/v1/getServer?serverip=" + serverIP + "&port=" + port);
         connection = (HttpURLConnection) url.openConnection();
         connection.setDoInput(true);
         connection.setDoOutput(false);
@@ -92,7 +92,7 @@ public class LegacyTrackerServerRepository {
     public static LinkedList<LegacyTrackerServer> getServerList() throws IOException {
         HttpURLConnection connection;
 
-        URL url = new URL("https://servers.api.legacyminecraft.com/api/v1/getServers?type=all&icons=true");
+        URL url = new URL("http://servers.api.legacyminecraft.com/api/v1/getServers?type=all&icons=true");
         connection = (HttpURLConnection) url.openConnection();
         connection.setDoInput(true);
         connection.setDoOutput(false);
