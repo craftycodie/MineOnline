@@ -24,5 +24,6 @@
     <orderEntry type="library" name="slick-util-2.9.3" level="project" />
     <orderEntry type="library" name="asm-8.0.1" level="project" />
     <orderEntry type="library" name="asm-commons-8.0.1" level="project" />
+    <orderEntry type="library" name="authlib-2.3.31" level="project" />
   </component>
 </module>

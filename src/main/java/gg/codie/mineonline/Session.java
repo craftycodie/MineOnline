@@ -2,11 +2,7 @@ package gg.codie.mineonline;
 
 import gg.codie.mineonline.discord.DiscordRPCHandler;
 import gg.codie.mineonline.utils.LastLogin;
-import gg.codie.mineonline.utils.SkinUtils;
-import org.json.JSONObject;
 
-import java.io.*;
-import java.net.URL;
 import java.util.UUID;
 
 public class Session {

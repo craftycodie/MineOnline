@@ -1,13 +1,17 @@
 package gg.codie.mineonline.protocol;
 
-import gg.codie.mineonline.gui.textures.TextureHelper;
-import gg.codie.mineonline.utils.SkinUtils;
-import org.json.JSONObject;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Map;
+import java.net.Proxy;
+
+import com.mojang.authlib.minecraft.MinecraftProfileTexture;
+import com.mojang.authlib.ProfileLookupCallback;
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.Agent;
+import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
 
 public class CapeURLConnection extends HttpURLConnection {
     public CapeURLConnection(URL url) {
@@ -16,7 +20,6 @@ public class CapeURLConnection extends HttpURLConnection {
 
     @Override
     public void disconnect() {
-
     }
 
     @Override
@@ -38,10 +41,35 @@ public class CapeURLConnection extends HttpURLConnection {
                 .replace("/cloak/get.jsp?user=", "");
 
         try {
-            inputStream = SkinUtils.findCloakURLForUsername(username).openConnection().getInputStream();
+            MinecraftProfileTexture cape = getUserCape(username);
+            inputStream = new URL(cape.getUrl()).openConnection().getInputStream();
         } catch (Exception ex) {
             responseCode = 404;
         }
+    }
+
+    YggdrasilAuthenticationService authenticationService = new YggdrasilAuthenticationService(Proxy.NO_PROXY, (String)null);
+    GameProfile gameProfile = null;
+
+    private MinecraftProfileTexture getUserCape(String username) {
+        authenticationService.createProfileRepository().findProfilesByNames(new String[] { username }, Agent.MINECRAFT, new ProfileLookupCallback() {
+            public void onProfileLookupSucceeded(GameProfile paramGameProfile) {
+                gameProfile = paramGameProfile;
+            }
+            public void onProfileLookupFailed(GameProfile paramGameProfile, Exception paramException) {
+            }
+        });
+
+        if (gameProfile == null)
+            return null;
+
+        gameProfile = authenticationService.createMinecraftSessionService().fillProfileProperties(gameProfile, true);
+
+        Map<MinecraftProfileTexture.Type, MinecraftProfileTexture> textures = authenticationService.createMinecraftSessionService().getTextures(gameProfile, true);
+        if (textures.containsKey(MinecraftProfileTexture.Type.CAPE))
+            return textures.get(MinecraftProfileTexture.Type.CAPE);
+
+        return null;
     }
 
     @Override

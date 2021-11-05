@@ -2,7 +2,6 @@ package gg.codie.mineonline.protocol;
 
 import gg.codie.minecraft.api.SessionServer;
 import gg.codie.mineonline.Session;
-import gg.codie.mineonline.utils.SkinUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

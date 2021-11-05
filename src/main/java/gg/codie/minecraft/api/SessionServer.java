@@ -38,49 +38,4 @@ public class SessionServer {
 
         return connection.getResponseCode() == 204;
     }
-
-    public static boolean hasJoined(String username, String serverId, String ip) throws IOException {
-        HttpURLConnection connection;
-
-        URL url = new URL(BASE_URL + "/session/minecraft/hasJoined?username=" + username + "&serverId=" + serverId + (ip != null ? "&ip=" + ip : ""));
-        connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("GET");
-        connection.setDoInput(true);
-        connection.setDoOutput(false);
-
-        connection.connect();
-
-        return connection.getResponseCode() == 200;
-    }
-
-    public static JSONObject minecraftProfile(String uuid) throws IOException {
-        HttpURLConnection connection;
-
-        URL url = new URL(BASE_URL + "/session/minecraft/profile/" + uuid);
-        connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestProperty("Content-Type", "application/json");
-        connection.setRequestMethod("GET");
-        connection.setDoInput(true);
-        connection.setDoOutput(false);
-
-        InputStream is = connection.getInputStream();
-        BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-
-        StringBuilder response = new StringBuilder();
-        String line;
-        while ((line = rd.readLine()) != null) {
-            response.append(line);
-            response.append('\r');
-        }
-        rd.close();
-
-        try {
-            return new JSONObject(response.toString());
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            JSONObject errorObject = new JSONObject();
-            errorObject.put("error", response.toString());
-            return errorObject;
-        }
-    }
 }
