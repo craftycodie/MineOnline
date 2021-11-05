@@ -385,6 +385,7 @@ public class MinecraftVersion {
                 if(jsonLibrary.getJSONObject("downloads").has("classifiers"))
                     switch(OSUtils.getPlatform()) {
                         case macosx:
+                        case macosxm1:
                             if (jsonLibrary.getJSONObject("downloads").getJSONObject("classifiers").has("natives-macos"))
                                 natives.add(jsonLibrary.getJSONObject("downloads").getJSONObject("classifiers").getJSONObject("natives-macos").getString("path"));
                             if (jsonLibrary.getJSONObject("downloads").getJSONObject("classifiers").has("natives-osx"))

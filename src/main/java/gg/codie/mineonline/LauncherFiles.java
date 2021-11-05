@@ -15,8 +15,8 @@ public class LauncherFiles {
 
     public static final String MINEONLINE_LIBRARY_FOLDER = MINEONLINE_FOLDER + "libraries" + File.separator;
 
-    public static final String LWJGL_JAR = MINEONLINE_LIBRARY_FOLDER + "org" + File.separator + "lwjgl" + File.separator + (OSUtils.isMac() ? "lwjgl-mac" : "lwjgl") + File.separator + "2.9.3" + File.separator + (OSUtils.isMac() ? "lwjgl-mac-2.9.3.jar" : "lwjgl-2.9.3.jar");
-    public static final String LWJGL_UTIL_JAR = MINEONLINE_LIBRARY_FOLDER + "org" + File.separator + "lwjgl" + File.separator + (OSUtils.isMac() ? "lwjgl_util-mac" : "lwjgl_util") + File.separator + "2.9.3" + File.separator + (OSUtils.isMac() ? "lwjgl_util-mac-2.9.3.jar" : "lwjgl_util-2.9.3.jar");
+    public static final String LWJGL_JAR = MINEONLINE_LIBRARY_FOLDER + "org" + File.separator + "lwjgl" + File.separator + (OSUtils.isM1Mac() ? "lwjgl-mac-m1" : (OSUtils.isMac() ? "lwjgl-mac" : "lwjgl")) + File.separator + "2.9.3" + File.separator + (OSUtils.isM1Mac() ? "lwjgl-mac-m1-2.9.3.jar" : (OSUtils.isMac() ? "lwjgl-mac-2.9.3.jar" : "lwjgl-2.9.3.jar"));
+    public static final String LWJGL_UTIL_JAR = MINEONLINE_LIBRARY_FOLDER + "org" + File.separator + "lwjgl" + File.separator + (OSUtils.isMac() ? "lwjgl_util-mac" : "lwjgl_util") + File.separator + "2.9.3" + File.separator + (OSUtils.isM1Mac() ? "lwjgl_util-mac-m1-2.9.3.jar" : (OSUtils.isMac() ? "lwjgl_util-mac-2.9.3.jar" : "lwjgl_util-2.9.3.jar"));
     public static final String JINPUT_JAR = MINEONLINE_LIBRARY_FOLDER + "org" + File.separator + "lwjgl" + File.separator + "jinput" + File.separator + "2.9.3" + File.separator + "jinput-2.9.3.jar";
     public static final String PATCH_AGENT_JAR = MINEONLINE_LIBRARY_FOLDER + "net" + File.separator + "bytebuddy" + File.separator + "byte-buddy-agent" + File.separator + "1.10.14" + File.separator + "byte-buddy-agent-1.10.14.jar";
     public static final String JSON_JAR = MINEONLINE_LIBRARY_FOLDER + "org" + File.separator + "json" + File.separator + "json" + File.separator + "20200518" + File.separator +  "json-20200518.jar";
@@ -63,6 +63,7 @@ public class LauncherFiles {
                 }
                 workingDirectory = new File(userHome, ".mineonline/");
                 break;
+            case macosxm1:
             case macosx:
                 workingDirectory = new File(userHome, "Library/Application Support/mineonline/");
                 break;
@@ -90,8 +91,9 @@ public class LauncherFiles {
                     break;
                 }
                 workingDirectory = new File(userHome, ".minecraft/");
-            break;
-                case macosx:
+                break;
+            case macosxm1:
+            case macosx:
                 workingDirectory = new File(userHome, "Library/Application Support/minecraft/");
                 break;
             default:
@@ -111,6 +113,7 @@ public class LauncherFiles {
             case solaris:
             case windows:
             case macosx:
+            case macosxm1:
                 workingDirectory = getOldMinecraftDirectory();
                 break;
             default:
