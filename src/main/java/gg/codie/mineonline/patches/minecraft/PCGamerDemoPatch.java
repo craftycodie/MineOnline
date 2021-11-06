@@ -6,7 +6,7 @@ import net.bytebuddy.dynamic.loading.ClassReloadingStrategy;
 import net.bytebuddy.matcher.ElementMatchers;
 
 public class PCGamerDemoPatch {
-    public static void unlockDemo() {
+    public static void login() {
         try {
             new ByteBuddy()
                     .redefine(Class.forName("fd"))

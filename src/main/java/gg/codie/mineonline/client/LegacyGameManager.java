@@ -1,6 +1,7 @@
 package gg.codie.mineonline.client;
 
 import gg.codie.common.utils.FileChangeListener;
+import gg.codie.common.utils.OSUtils;
 import gg.codie.minecraft.client.options.EMinecraftGUIScale;
 import gg.codie.minecraft.client.options.EMinecraftMainHand;
 import gg.codie.minecraft.client.options.EMinecraftOptionsVersion;
@@ -122,7 +123,9 @@ public class LegacyGameManager {
 
         HashMapPatch.init();
         ClassPatch.init();
-        LWJGLGL11Patch.init();
+        LWJGLGL11Patch.init(OSUtils.isM1Mac());
+        if (OSUtils.isM1Mac())
+            BufferedImagePatch.fixM1();
         LWJGLGLUPatch.useCustomFOV();
         ByteBufferPatch.init();
         ColorizerPatch.init();
@@ -132,7 +135,7 @@ public class LegacyGameManager {
 
         if (version != null) {
             if (version.name.equals("Beta 1.3 Demo"))
-                PCGamerDemoPatch.unlockDemo();
+                PCGamerDemoPatch.login();
 
             if (version.useIndevSoundPatch)
                 PaulscodePatch.fixIndevAudio();

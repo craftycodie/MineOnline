@@ -95,7 +95,7 @@ public class HDTextureFXHelper {
                     }
                 }
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //ex.printStackTrace();
             }
         }
     }

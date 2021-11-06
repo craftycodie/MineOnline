@@ -46,9 +46,23 @@ public class LibraryManager {
             // Only extract libraries for the running OS.
             if (file.getName().contains("native") && !file.getName().contains(OSUtils.getPlatform().name()))
                 continue;
-            if (OSUtils.isMac() && (file.getName().endsWith("lwjgl.jar") || file.getName().endsWith("lwjgl_util.jar")))
+            if (OSUtils.isM1Mac() && (
+                    file.getName().endsWith("lwjgl.jar") ||
+                            file.getName().endsWith("lwjgl-mac.jar") ||
+                            file.getName().endsWith("lwjgl_util.jar") ||
+                            file.getName().endsWith("lwjgl_util-mac.jar")))
                 continue;
-            else if (!OSUtils.isMac() && (file.getName().endsWith("lwjgl-mac.jar") || file.getName().endsWith("lwjgl_util-mac.jar")))
+            else if (OSUtils.isMac() && !OSUtils.isM1Mac() && (
+                    file.getName().endsWith("lwjgl.jar") ||
+                    file.getName().endsWith("lwjgl-mac-m1.jar") ||
+                    file.getName().endsWith("lwjgl_util.jar") ||
+                    file.getName().endsWith("lwjgl_util-mac-m1.jar")))
+                continue;
+            else if (!OSUtils.isMac() && (
+                    file.getName().endsWith("lwjgl-mac.jar") ||
+                    file.getName().endsWith("lwjgl-mac-m1.jar") ||
+                    file.getName().endsWith("lwjgl_util-mac.jar") ||
+                    file.getName().endsWith("lwjgl_util-mac-m1.jar")))
                 continue;
 
             ProgressDialog.setSubMessage(file.getName());
