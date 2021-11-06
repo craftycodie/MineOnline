@@ -57,4 +57,36 @@ public class LWJGLGL11Patch {
             ex.printStackTrace();
         }
     }
+
+    public static void m1FixOnly() {
+        try {
+            new ByteBuddy()
+                    .redefine(LWJGLGL11Patch.class.getClassLoader().loadClass("org.lwjgl.opengl.GL11"))
+                    .visit(Advice.to(LWJGLGL11M1Advice.class).on(ElementMatchers.named("glClearColor").and(ElementMatchers.takesArguments(
+                            float.class, float.class, float.class, float.class
+                    ))))
+                    .visit(Advice.to(LWJGLGL11M1Advice.class).on(ElementMatchers.named("glColor4f").and(ElementMatchers.takesArguments(
+                            float.class, float.class, float.class, float.class
+                    ))))
+                    .visit(Advice.to(LWJGLGL11M1Advice.class).on(ElementMatchers.named("glColor4d").and(ElementMatchers.takesArguments(
+                            double.class, double.class, double.class, double.class
+                    ))))
+                    .visit(Advice.to(LWJGLGL11M1Advice.class).on(ElementMatchers.named("glColor4b").and(ElementMatchers.takesArguments(
+                            byte.class, byte.class, byte.class, byte.class
+                    ))))
+                    .visit(Advice.to(LWJGLGL11M1Advice.class).on(ElementMatchers.named("glColor3f").and(ElementMatchers.takesArguments(
+                            float.class, float.class, float.class
+                    ))))
+                    .visit(Advice.to(LWJGLGL11M1Advice.class).on(ElementMatchers.named("glColor3d").and(ElementMatchers.takesArguments(
+                            double.class, double.class, double.class
+                    ))))
+                    .visit(Advice.to(LWJGLGL11M1Advice.class).on(ElementMatchers.named("glColor3b").and(ElementMatchers.takesArguments(
+                            byte.class, byte.class, byte.class
+                    ))))
+                    .make()
+                    .load(Class.forName("org.lwjgl.opengl.GL11").getClassLoader(), ClassReloadingStrategy.fromInstalledAgent());
+        } catch (ClassNotFoundException ex) {
+            ex.printStackTrace();
+        }
+    }
 }
