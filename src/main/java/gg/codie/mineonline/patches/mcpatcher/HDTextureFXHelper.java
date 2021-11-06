@@ -7,6 +7,7 @@ import gg.codie.mineonline.patches.HashMapPutAdvice;
 import gg.codie.mineonline.patches.minecraft.ClockFXAdvice;
 import gg.codie.mineonline.patches.minecraft.CompassFXAdvice;
 import gg.codie.mineonline.utils.MathUtils;
+import org.json.JSONObject;
 import org.lwjgl.opengl.GL11;
 
 import javax.imageio.ImageIO;
@@ -14,14 +15,18 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.awt.image.Raster;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.HashMap;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 public class HDTextureFXHelper {
 
-    public static HashMap<String, Integer> ticks = new HashMap<>();
+    public static HashMap<String, Float> ticks = new HashMap<>();
     public static HashMap<String, Integer> frameCounts = new HashMap<>();
+    public static HashMap<String, Integer> frameTimes = new HashMap<>();
     public static HashMap<String, int[][]> textures = new HashMap<>();
     public static int[] currentTexture;
 
@@ -64,6 +69,7 @@ public class HDTextureFXHelper {
                     texturesZip = new ZipFile(LauncherFiles.MINECRAFT_TEXTURE_PACKS_PATH + Settings.singleton.getTexturePack());
 
                 ZipEntry texture = texturesZip.getEntry(textureName.substring(1));
+                frameTimes.put(textureName, 1);
 
                 if (texture != null) {
                     BufferedImage b = ImageIO.read(texturesZip.getInputStream(texture));
@@ -94,8 +100,17 @@ public class HDTextureFXHelper {
                         textures.get(textureName)[i] = tmp;
                     }
                 }
+
+                ZipEntry mcmeta = texturesZip.getEntry(textureName.replace(".png", ".mcmeta").substring(1));
+                if (mcmeta != null) {
+                    String mcmetaString = new BufferedReader(new InputStreamReader(texturesZip.getInputStream(mcmeta)))
+                            .lines().collect(Collectors.joining("\n"));
+                    JSONObject mcmetaJson = new JSONObject(mcmetaString);
+                    if (mcmetaJson.optJSONObject("animation") != null)
+                        frameTimes.put(textureName, mcmetaJson.getJSONObject("animation").optInt("frametime", 1));
+                }
             } catch (Exception ex) {
-                //ex.printStackTrace();
+                ex.printStackTrace();
             }
         }
     }
@@ -170,20 +185,20 @@ public class HDTextureFXHelper {
             return null;
 
         if (ticks.containsKey(textureName))
-            ticks.put(textureName, ticks.get(textureName) + 1);
+            ticks.put(textureName, ticks.get(textureName) + (1 / (float)frameTimes.get(textureName)));
         else
-            ticks.put(textureName, 0);
+            ticks.put(textureName, 0f);
 
         if (textureName.equals("/custom_compass.png"))
-            ticks.put(textureName, (32 - ((int)((Math.abs(CompassFXAdvice.dial) % 6.4) * 10) / 2) - 1));
+            ticks.put(textureName, (float)(32 - ((int)((Math.abs(CompassFXAdvice.dial) % 6.4) * 10) / 2) - 1));
 
         if (textureName.equals("/custom_clock.png"))
-            ticks.put(textureName, Math.abs((int)(MathUtils.mod(ClockFXAdvice.dial, 6.3) * 10)));
+            ticks.put(textureName, (float)Math.abs((int)(MathUtils.mod(ClockFXAdvice.dial, 6.3) * 10)));
 
         if (ticks.get(textureName) > frameCounts.get(textureName) - 1)
-            ticks.put(textureName, 0);
+            ticks.put(textureName, 0f);
 
-        System.arraycopy(textures.get(textureName)[ticks.get(textureName)%textures.get(textureName).length], 0, currentTexture, 0, textures.get(textureName)[ticks.get(textureName)%textures.get(textureName).length].length);
+        System.arraycopy(textures.get(textureName)[(int)Math.floor(ticks.get(textureName))%textures.get(textureName).length], 0, currentTexture, 0, textures.get(textureName)[(int)Math.floor(ticks.get(textureName))%textures.get(textureName).length].length);
 
         BufferedImage animatedTexture = new BufferedImage((int)scale * 16, (int)scale * 16, BufferedImage.TYPE_INT_ARGB);
         animatedTexture.setData(Raster.createRaster(animatedTexture.getSampleModel(), new DataBufferInt(currentTexture, currentTexture.length), new Point()));
