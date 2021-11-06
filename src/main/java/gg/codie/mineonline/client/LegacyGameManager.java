@@ -117,12 +117,16 @@ public class LegacyGameManager {
 
         MinecraftVersion version = getVersion();
 
+        boolean isM1 = System.getProperty("os.arch").toLowerCase().contains("aarch64") || System.getProperty("os.arch").toLowerCase().contains("arm64");
+
         // Allow the MineOnline menu to freeze game input.
         InputPatch.init();
 
         HashMapPatch.init();
         ClassPatch.init();
-        LWJGLGL11Patch.init();
+        LWJGLGL11Patch.init(isM1);
+        if (isM1)
+            BufferedImagePatch.fixM1();
         LWJGLGLUPatch.useCustomFOV();
         ByteBufferPatch.init();
         ColorizerPatch.init();
