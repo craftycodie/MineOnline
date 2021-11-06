@@ -154,6 +154,7 @@ public class LibraryManager {
         classpath.append(getClasspathSeparator() + LauncherFiles.BYTEBUDDY_JAR);
         classpath.append(getClasspathSeparator() + LauncherFiles.ASM_COMMONS_JAR);
         classpath.append(getClasspathSeparator() + LauncherFiles.ASM_JAR);
+        classpath.append(getClasspathSeparator() + LauncherFiles.AUTHLIB_JAR);
 
         for(String jar : includeJars) {
             classpath.append(getClasspathSeparator() + jar);
