@@ -10,20 +10,15 @@ public class OSUtils {
         linux, solaris, windows, macosx, macosxm1, unknown;
     }
 
-    static {
-        try {
-            getUnderlyingArchM1();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
+    static boolean checkedUnderlyingArch = false;
     static boolean underlyingM1 = false;
-    private static void getUnderlyingArchM1() throws IOException, InterruptedException {
+    private static void getUnderlyingArch() throws IOException, InterruptedException {
         // On Mac OS, we can't trust the os.arch, as this returns the JVM architecture.
         // With Rosetta 2, the JVM architecture may not match the system architecture.
         // So, if the user is on a mac, we use this command to check the underlying arch, then cache the result.
         if (!isMac()) return;
+
+        System.out.println("Checking underlying architecture...");
 
         String command = "uname -a";
 
@@ -47,6 +42,8 @@ public class OSUtils {
         System.out.println(output.endsWith("arm64"));
         System.out.println(output.endsWith("aarch64"));
 
+        checkedUnderlyingArch = true;
+
         if (output.endsWith("arm64") || output.endsWith("aarch64"))
             underlyingM1 = true;
     }
@@ -66,6 +63,13 @@ public class OSUtils {
     }
 
     public static boolean isM1System() {
+        if (!checkedUnderlyingArch) {
+            try {
+                getUnderlyingArch();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         return underlyingM1;
     }
 
