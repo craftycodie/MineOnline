@@ -9,10 +9,10 @@ import java.nio.FloatBuffer;
 public class LWJGLGL11M1GlFogAdvice {
     @Advice.OnMethodEnter
     static void intercept(@Advice.Argument(value = 1, readOnly = false, typing = Assigner.Typing.DYNAMIC) FloatBuffer rgba) {
-        float a = rgba.get();
-        float b = rgba.get();
-        float g = rgba.get();
         float r = rgba.get();
+        float g = rgba.get();
+        float b = rgba.get();
+        float a = rgba.get();
 
         FloatBuffer bgra = Loader.createDirectFloatBuffer(16);
 
