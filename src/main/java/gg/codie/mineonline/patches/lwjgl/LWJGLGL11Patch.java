@@ -33,6 +33,9 @@ public class LWJGLGL11Patch {
                         .visit(Advice.to(LWJGLGL11M1Advice.class).on(ElementMatchers.named("glColor4b").and(ElementMatchers.takesArguments(
                                 byte.class, byte.class, byte.class, byte.class
                         ))))
+                        .visit(Advice.to(LWJGLGL11M1Advice.class).on(ElementMatchers.named("glColor4ub").and(ElementMatchers.takesArguments(
+                                byte.class, byte.class, byte.class, byte.class
+                        ))))
                         .visit(Advice.to(LWJGLGL11M1Advice.class).on(ElementMatchers.named("glColor3f").and(ElementMatchers.takesArguments(
                                 float.class, float.class, float.class
                         ))))
