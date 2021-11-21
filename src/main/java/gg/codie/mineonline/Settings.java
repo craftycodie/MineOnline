@@ -153,7 +153,7 @@ public class Settings implements IMinecraftOptionsHandler {
         settings.put(STENCIL_COUNT, 0);
         settings.put(COVERAGE_SAMPLE_COUNT, 0);
         settings.put(USE_CUSTOM_FONTS, false);
-        settings.put(M1_GRAPHICS_PATCH, OSUtils.isM1Mac());
+        settings.put(M1_GRAPHICS_PATCH, OSUtils.isM1JVM());
 
         settings.put(KEY_CODE_INVENTORY, 18);
         settings.put(KEY_CODE_CHAT, 20);
@@ -608,7 +608,7 @@ public class Settings implements IMinecraftOptionsHandler {
                         if (getPickItemKey() == -99)
                             setPickItemKey(-98);
                     case 16:
-                        settings.put(M1_GRAPHICS_PATCH, OSUtils.isM1Mac());
+                        settings.put(M1_GRAPHICS_PATCH, OSUtils.isM1JVM());
                 }
                 settings.put(SETTINGS_VERSION, SETTINGS_VERSION_NUMBER);
             }
@@ -652,7 +652,7 @@ public class Settings implements IMinecraftOptionsHandler {
     }
 
     public boolean getM1GraphicsPatch() {
-        return settings.optBoolean(M1_GRAPHICS_PATCH, OSUtils.isM1Mac());
+        return settings.optBoolean(M1_GRAPHICS_PATCH, OSUtils.isM1JVM());
     }
 
     public void setM1GraphicsPatch(boolean m1GraphicsPatch) {

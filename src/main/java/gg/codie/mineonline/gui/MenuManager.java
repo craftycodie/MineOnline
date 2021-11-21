@@ -91,7 +91,7 @@ public class MenuManager {
 
         LibraryManager.updateNativesPath();
 
-        if (OSUtils.isM1Mac()) {
+        if (OSUtils.isM1System()) {
             LWJGLGL11Patch.m1FixOnly();
             BufferedImagePatch.fixM1();
         }

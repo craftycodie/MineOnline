@@ -123,8 +123,8 @@ public class LegacyGameManager {
 
         HashMapPatch.init();
         ClassPatch.init();
-        LWJGLGL11Patch.init(OSUtils.isM1Mac());
-        if (OSUtils.isM1Mac())
+        LWJGLGL11Patch.init(OSUtils.isM1System());
+        if (OSUtils.isM1System())
             BufferedImagePatch.fixM1();
         LWJGLGLUPatch.useCustomFOV();
         ByteBufferPatch.init();
