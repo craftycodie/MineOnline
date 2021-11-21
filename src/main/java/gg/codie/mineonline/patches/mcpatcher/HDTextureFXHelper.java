@@ -1,5 +1,6 @@
 package gg.codie.mineonline.patches.mcpatcher;
 
+import gg.codie.common.utils.OSUtils;
 import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.Settings;
 import gg.codie.mineonline.client.LegacyGameManager;
@@ -93,8 +94,10 @@ public class HDTextureFXHelper {
                             int green = ((tmp[pixelI] >> 8) & 0xff);
                             int blue = ((tmp[pixelI]) & 0xff);
 
-
-                            tmp[pixelI] = red | (green << 8) | (blue << 16) | (alpha << 24);
+                            if (OSUtils.isM1System())
+                                tmp[pixelI] = blue | (green << 8) | (red << 16) | (alpha << 24);
+                            else
+                                tmp[pixelI] = red | (green << 8) | (blue << 16) | (alpha << 24);
                         }
 
                         textures.get(textureName)[i] = tmp;
