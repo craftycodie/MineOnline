@@ -27,7 +27,6 @@ public class Settings implements IMinecraftOptionsHandler {
     private static final String STENCIL_COUNT = "stencilCount";
     private static final String COVERAGE_SAMPLE_COUNT = "coverageSampleCount";
     private static final String LAST_LAUNCHED_OPTIONS_VERSION = "lastLaunchedOptionsVersion";
-    private static final String M1_GRAPHICS_PATCH = "useM1GraphicsPatch";
     @Deprecated
     private static final String USE_CUSTOM_FONTS = "useCustomFonts";
 
@@ -105,7 +104,7 @@ public class Settings implements IMinecraftOptionsHandler {
     private static final String KEY_CODE_PICK_ITEM = "keyCodePickItem";
     private static final String KEY_CODE_PLAYER_LIST = "keyCodePlayerList";
 
-    private static final int SETTINGS_VERSION_NUMBER = 17;
+    private static final int SETTINGS_VERSION_NUMBER = 16;
 
     private static boolean readonly = true;
 
@@ -153,7 +152,6 @@ public class Settings implements IMinecraftOptionsHandler {
         settings.put(STENCIL_COUNT, 0);
         settings.put(COVERAGE_SAMPLE_COUNT, 0);
         settings.put(USE_CUSTOM_FONTS, false);
-        settings.put(M1_GRAPHICS_PATCH, OSUtils.isM1JVM());
 
         settings.put(KEY_CODE_INVENTORY, 18);
         settings.put(KEY_CODE_CHAT, 20);
@@ -607,8 +605,6 @@ public class Settings implements IMinecraftOptionsHandler {
                     case 15:
                         if (getPickItemKey() == -99)
                             setPickItemKey(-98);
-                    case 16:
-                        settings.put(M1_GRAPHICS_PATCH, OSUtils.isM1JVM());
                 }
                 settings.put(SETTINGS_VERSION, SETTINGS_VERSION_NUMBER);
             }
@@ -649,14 +645,6 @@ public class Settings implements IMinecraftOptionsHandler {
         } catch (IOException | JSONException io) {
             io.printStackTrace();
         }
-    }
-
-    public boolean getM1GraphicsPatch() {
-        return settings.optBoolean(M1_GRAPHICS_PATCH, OSUtils.isM1JVM());
-    }
-
-    public void setM1GraphicsPatch(boolean m1GraphicsPatch) {
-        settings.put(M1_GRAPHICS_PATCH, m1GraphicsPatch);
     }
 
     public String getJavaHome() {

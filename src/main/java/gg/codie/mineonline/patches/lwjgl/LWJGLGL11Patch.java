@@ -96,15 +96,4 @@ public class LWJGLGL11Patch {
             ex.printStackTrace();
         }
     }
-
-    public static void reset() {
-        try {
-            new ByteBuddy()
-                    .redefine(LWJGLGL11Patch.class.getClassLoader().loadClass("org.lwjgl.opengl.GL11"))
-                    .make()
-                    .load(Class.forName("org.lwjgl.opengl.GL11").getClassLoader(), ClassReloadingStrategy.fromInstalledAgent());
-        } catch (ClassNotFoundException ex) {
-            ex.printStackTrace();
-        }
-    }
 }

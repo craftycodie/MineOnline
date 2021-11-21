@@ -7,7 +7,6 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
 
@@ -63,16 +62,13 @@ public class TextureHelper {
                 }
             }
 
-//            if (tall) {
-//                // Flatten second layers.
-//                movePart = skin.getSubimage(0, 32, 56, 16);
-//                graphics.drawImage(movePart, 0, 16, null);
-//            }
+            if (tall) {
+                // Flatten second layers.
+                movePart = skin.getSubimage(0, 32, 56, 16);
+                graphics.drawImage(movePart, 0, 16, null);
+            }
 
             graphics.dispose();
-
-            File outputfile = new File("C:\\Users\\codie\\Desktop\\mineonline-api\\image.png");
-            ImageIO.write(skin, "png", outputfile);
 
             // Crop
             BufferedImage croppedSkin = skin.getSubimage(0, 0, 64, 32);
