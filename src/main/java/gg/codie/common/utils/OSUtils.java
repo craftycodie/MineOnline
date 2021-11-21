@@ -20,7 +20,7 @@ public class OSUtils {
 
         System.out.println("Checking underlying architecture...");
 
-        String command = "uname -a";
+        String command = "sysctl -n sysctl.proc_translated";
 
         Process proc = Runtime.getRuntime().exec(command);
 
@@ -30,7 +30,7 @@ public class OSUtils {
         StringBuilder outputBuilder = new StringBuilder();
         String line;
         while((line = reader.readLine()) != null) {
-            outputBuilder.append("\n" + line);
+            outputBuilder.append(line);
         }
 
         proc.waitFor();
@@ -39,12 +39,11 @@ public class OSUtils {
 
         System.out.println("M1 Check Complete... Output Below");
         System.out.println(output);
-        System.out.println(output.endsWith("arm64"));
-        System.out.println(output.endsWith("aarch64"));
+        System.out.println(output.contains("1"));
 
         checkedUnderlyingArch = true;
 
-        if (output.endsWith("arm64") || output.endsWith("aarch64"))
+        if (output.contains("1"))
             underlyingM1 = true;
     }
 
