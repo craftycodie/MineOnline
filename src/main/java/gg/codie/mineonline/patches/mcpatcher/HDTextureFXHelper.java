@@ -52,15 +52,15 @@ public class HDTextureFXHelper {
         currentTexture = null;
 
         String[] textureNames = new String[] {
-                "/custom_water_flowing.png",
-                "/custom_water_still.png",
-                "/custom_lava_flowing.png",
-                "/custom_lava_still.png",
-                "/custom_portal.png",
-                "/custom_fire_e_w.png",
-                "/custom_fire_n_s.png",
-                "/custom_clock.png",
-                "/custom_compass.png"
+            "/custom_water_flowing.png",
+            "/custom_water_still.png",
+            "/custom_lava_flowing.png",
+            "/custom_lava_still.png",
+            "/custom_portal.png",
+            "/custom_fire_e_w.png",
+            "/custom_fire_n_s.png",
+            "/custom_clock.png",
+            "/custom_compass.png"
         };
 
         ZipFile texturesZip = null;
@@ -182,6 +182,10 @@ public class HDTextureFXHelper {
             textureName = "/custom_compass.png";
         else if (x == 96 && y == 64)
             textureName = "/custom_clock.png";
+
+        // Unknown, beta 1.9-pre6
+        else if (x == 0 && y == 0)
+            return null;
 
         else
             System.out.println("Unknown dynamic texture: " + x + ", " + y);
