@@ -1,5 +1,6 @@
 package gg.codie.mineonline.client;
 
+import gg.codie.common.utils.OSUtils;
 import gg.codie.common.utils.TransferableImage;
 import gg.codie.minecraft.client.options.EMinecraftOptionsVersion;
 import gg.codie.mineonline.*;
@@ -339,6 +340,14 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
                             ypos = 12;
                         Font.minecraftFont.drawStringWithShadow("MineOnline " + (Globals.DEV ? "Dev " : "") + Globals.LAUNCHER_VERSION  + " (" + Globals.BRANCH + ")", 2, ypos, 0xffffff);
                     }
+
+                    String osName = System.getProperty("os.name").toLowerCase();
+                    String osArch = System.getProperty("os.arch").toLowerCase();
+
+                    Font.minecraftFont.drawStringWithShadow(osName, 2, 22, 0xffffff);
+                    Font.minecraftFont.drawStringWithShadow(osArch, 2, 32, 0xffffff);
+                    Font.minecraftFont.drawStringWithShadow(OSUtils.isMac() + "", 2, 42, 0xffffff);
+                    Font.minecraftFont.drawStringWithShadow(OSUtils.isM1Mac() + "", 2, 52, 0xffffff);
 
                     GUIScale scaledresolution = new GUIScale(getWidth(), getHeight());
 //                    GL11.glClear(256);
