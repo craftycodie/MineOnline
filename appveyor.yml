@@ -14,6 +14,7 @@ before_build:
 build_script:
   - mvn clean package -DskipTests
   - mvn package -P debug
+  - ps: .\build_scripts\BuildMacOSApp.ps1
 test_script:
   - mvn install verify
 on_finish:
@@ -24,6 +25,8 @@ artifacts:
     name: "MineOnline.jar"
   - path: "**/target/MineOnline-*.exe"
     name: "MineOnline.exe"
+  - path: "**/target/MineOnline-*.zip"
+    name: "MineOnline.zip"
 on_success:
   - ps: if ($env:APPVEYOR_REPO_BRANCH -eq "main") {.\build_scripts\discord-webhook.ps1 success $env:DISCORD_WEBHOOK_URL}
 on_failure:
