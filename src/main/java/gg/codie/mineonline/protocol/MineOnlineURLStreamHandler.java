@@ -16,7 +16,7 @@ public class MineOnlineURLStreamHandler extends URLStreamHandler {
         // Old anti-piracy endpoints return positive responses.
         else if (url.toString().contains("/login/session.jsp")) // May be unused.
             return new BasicResponseURLConnection(url, 200, "ok");
-        else if (url.toString().contains("login.minecraft.net/session?name="))
+        else if (url.toString().contains("login.minecraft.net"))
             return new BasicResponseURLConnection(url, 200, "ok");
         else if (url.toString().contains("/game/?n="))
             return new BasicResponseURLConnection(url, 200, "42069");
