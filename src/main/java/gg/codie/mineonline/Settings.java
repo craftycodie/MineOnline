@@ -1,5 +1,6 @@
 package gg.codie.mineonline;
 
+import gg.codie.common.utils.OSUtils;
 import gg.codie.minecraft.client.options.*;
 import org.json.JSONException;
 import org.json.JSONObject;

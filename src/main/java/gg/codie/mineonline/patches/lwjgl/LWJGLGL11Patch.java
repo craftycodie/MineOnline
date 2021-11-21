@@ -7,6 +7,7 @@ import net.bytebuddy.dynamic.loading.ClassReloadingStrategy;
 import net.bytebuddy.matcher.ElementMatchers;
 
 import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
 
 public class LWJGLGL11Patch {
     public static void init(boolean m1Fix) {
@@ -32,6 +33,9 @@ public class LWJGLGL11Patch {
                         .visit(Advice.to(LWJGLGL11M1Advice.class).on(ElementMatchers.named("glColor4b").and(ElementMatchers.takesArguments(
                                 byte.class, byte.class, byte.class, byte.class
                         ))))
+                        .visit(Advice.to(LWJGLGL11M1Advice.class).on(ElementMatchers.named("glColor4ub").and(ElementMatchers.takesArguments(
+                                byte.class, byte.class, byte.class, byte.class
+                        ))))
                         .visit(Advice.to(LWJGLGL11M1Advice.class).on(ElementMatchers.named("glColor3f").and(ElementMatchers.takesArguments(
                                 float.class, float.class, float.class
                         ))))
@@ -40,6 +44,9 @@ public class LWJGLGL11Patch {
                         ))))
                         .visit(Advice.to(LWJGLGL11M1Advice.class).on(ElementMatchers.named("glColor3b").and(ElementMatchers.takesArguments(
                                 byte.class, byte.class, byte.class
+                        ))))
+                        .visit(Advice.to(LWJGLGL11M1GlFogAdvice.class).on(ElementMatchers.named("glFog").and(ElementMatchers.takesArguments(
+                                int.class, FloatBuffer.class
                         ))))
                         .make()
                         .load(Class.forName("org.lwjgl.opengl.GL11").getClassLoader(), ClassReloadingStrategy.fromInstalledAgent());

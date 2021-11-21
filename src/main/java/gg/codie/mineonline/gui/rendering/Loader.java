@@ -18,8 +18,10 @@ import java.io.InputStream;
 import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -35,6 +37,14 @@ public class Loader {
     public Loader() {
         MISSING_TEXTURE_ID = loadTexture("missingno.", LauncherFiles.MISSING_TEXTURE);
         singleton = this;
+    }
+
+    public static void reloadMineOnlineTextures() {
+        List<String> moTextures = singleton.textures.keySet().stream().filter(tex -> tex.startsWith(MINEONLINE_TEXTURE_PREFIX)).collect(Collectors.toList());
+        moTextures.forEach(texture -> {
+            singleton.unloadTexture(texture);
+        });
+        Font.reloadFont();
     }
 
     public void unloadTexture(String name) {
@@ -227,7 +237,7 @@ public class Loader {
                 "/2char.png",
 
                 "/gui/gui.png",
-//                "/gui/background.png",
+                "/gui/background.png", // This was commented before, no idea why.
                 "/gui/container.png",
                 "/gui/crafting.png",
                 "/gui/logo.png",
@@ -335,6 +345,10 @@ public class Loader {
     {
         ByteBuffer bytebuffer = ByteBuffer.allocateDirect(i).order(ByteOrder.nativeOrder());
         return bytebuffer;
+    }
+
+    public static FloatBuffer createDirectFloatBuffer(int var0) {
+        return createDirectByteBuffer(var0 << 2).asFloatBuffer();
     }
 
     private final IntBuffer singleIntBuffer = createDirectIntBuffer(1);

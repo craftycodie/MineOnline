@@ -1,5 +1,6 @@
 package gg.codie.mineonline.patches.mcpatcher;
 
+import gg.codie.common.utils.OSUtils;
 import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.Settings;
 import gg.codie.mineonline.client.LegacyGameManager;
@@ -16,6 +17,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.awt.image.Raster;
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.stream.Collectors;
@@ -74,27 +76,28 @@ public class HDTextureFXHelper {
                 if (texture != null) {
                     BufferedImage b = ImageIO.read(texturesZip.getInputStream(texture));
                     frameCounts.put(textureName, b.getHeight() / b.getWidth());
-                    currentTexture = new int[(int)((scale * 16) * (scale * 16) * 4)];
-                    textures.put(textureName, new int[b.getHeight()/b.getWidth()][(int)((scale * 16) * (scale * 16) * 4)]);
-                    for(int i = 0; i < b.getHeight()/b.getWidth(); i++)
-                    {
-                        int[] tmp = new int[(int)((scale * 16) * (scale * 16))];
+                    currentTexture = new int[(int) ((scale * 16) * (scale * 16) * 4)];
+                    textures.put(textureName, new int[b.getHeight() / b.getWidth()][(int) ((scale * 16) * (scale * 16) * 4)]);
+                    for (int i = 0; i < b.getHeight() / b.getWidth(); i++) {
+                        int[] tmp = new int[(int) ((scale * 16) * (scale * 16))];
                         BufferedImage frame = b.getSubimage(0, i * b.getWidth(), b.getWidth(), b.getWidth());
 
                         if (frame.getWidth() != (scale * 16)) {
-                            frame = resize(frame, (int)(scale * 16), (int)(scale * 16));
+                            frame = resize(frame, (int) (scale * 16), (int) (scale * 16));
                         }
 
-                        frame.getRGB(0, 0, (int)((scale * 16)), (int)(scale * 16), tmp, 0, (int)(scale * 16));
+                        frame.getRGB(0, 0, (int) ((scale * 16)), (int) (scale * 16), tmp, 0, (int) (scale * 16));
 
-                        for(int pixelI = 0; pixelI < tmp.length; pixelI++) {
+                        for (int pixelI = 0; pixelI < tmp.length; pixelI++) {
                             int alpha = ((tmp[pixelI] >> 24) & 0xff);
                             int red = ((tmp[pixelI] >> 16) & 0xff);
                             int green = ((tmp[pixelI] >> 8) & 0xff);
                             int blue = ((tmp[pixelI]) & 0xff);
 
-
-                            tmp[pixelI] = red | ( green << 8 ) | ( blue << 16 ) | ( alpha << 24 );
+                            if (OSUtils.isM1System())
+                                tmp[pixelI] = blue | (green << 8) | (red << 16) | (alpha << 24);
+                            else
+                                tmp[pixelI] = red | (green << 8) | (blue << 16) | (alpha << 24);
                         }
 
                         textures.get(textureName)[i] = tmp;
@@ -109,6 +112,8 @@ public class HDTextureFXHelper {
                     if (mcmetaJson.optJSONObject("animation") != null)
                         frameTimes.put(textureName, mcmetaJson.getJSONObject("animation").optInt("frametime", 1));
                 }
+            } catch (FileNotFoundException fex) {
+                // nada
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
