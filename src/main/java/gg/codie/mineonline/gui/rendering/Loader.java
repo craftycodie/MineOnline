@@ -237,7 +237,7 @@ public class Loader {
                 "/2char.png",
 
                 "/gui/gui.png",
-//                "/gui/background.png",
+                "/gui/background.png", // This was commented before, no idea why.
                 "/gui/container.png",
                 "/gui/crafting.png",
                 "/gui/logo.png",

@@ -32,16 +32,22 @@ public class OSUtils {
         // Read the output
         BufferedReader reader = new BufferedReader(new InputStreamReader(proc.getInputStream()));
 
-        StringBuilder output = new StringBuilder();
+        StringBuilder outputBuilder = new StringBuilder();
         String line;
         while((line = reader.readLine()) != null) {
-            output.append("\n" + line);
+            outputBuilder.append("\n" + line);
         }
 
         proc.waitFor();
 
-        String outputStr = output.toString();
-        if (outputStr.endsWith("arm64") || outputStr.endsWith("aarch64"))
+        String output = outputBuilder.toString();
+
+        System.out.println("M1 Check Complete... Output Below");
+        System.out.println(output);
+        System.out.println(output.endsWith("arm64"));
+        System.out.println(output.endsWith("aarch64"));
+
+        if (output.endsWith("arm64") || output.endsWith("aarch64"))
             underlyingM1 = true;
     }
 
