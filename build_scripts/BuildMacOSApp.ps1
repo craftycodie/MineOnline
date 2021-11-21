@@ -4,6 +4,6 @@ Copy-Item ".\target\MineOnline-$pomVersion.jar" -Destination ".\build_scripts\Mi
 $compress = @{
   Path = ".\build_scripts\MineOnline.app"
   CompressionLevel = "Fastest"
-  DestinationPath = "MineOnline-$pomVersion.zip"
+  DestinationPath = ".\target\MineOnline-$pomVersion.zip"
 }
 Compress-Archive @compress
