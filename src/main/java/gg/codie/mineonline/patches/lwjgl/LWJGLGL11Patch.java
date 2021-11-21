@@ -7,6 +7,7 @@ import net.bytebuddy.dynamic.loading.ClassReloadingStrategy;
 import net.bytebuddy.matcher.ElementMatchers;
 
 import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
 
 public class LWJGLGL11Patch {
     public static void init(boolean m1Fix) {
@@ -40,6 +41,9 @@ public class LWJGLGL11Patch {
                         ))))
                         .visit(Advice.to(LWJGLGL11M1Advice.class).on(ElementMatchers.named("glColor3b").and(ElementMatchers.takesArguments(
                                 byte.class, byte.class, byte.class
+                        ))))
+                        .visit(Advice.to(LWJGLGL11M1GlFogAdvice.class).on(ElementMatchers.named("glFog").and(ElementMatchers.takesArguments(
+                                int.class, FloatBuffer.class
                         ))))
                         .make()
                         .load(Class.forName("org.lwjgl.opengl.GL11").getClassLoader(), ClassReloadingStrategy.fromInstalledAgent());
@@ -83,6 +87,17 @@ public class LWJGLGL11Patch {
                     .visit(Advice.to(LWJGLGL11M1Advice.class).on(ElementMatchers.named("glColor3b").and(ElementMatchers.takesArguments(
                             byte.class, byte.class, byte.class
                     ))))
+                    .make()
+                    .load(Class.forName("org.lwjgl.opengl.GL11").getClassLoader(), ClassReloadingStrategy.fromInstalledAgent());
+        } catch (ClassNotFoundException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public static void reset() {
+        try {
+            new ByteBuddy()
+                    .redefine(LWJGLGL11Patch.class.getClassLoader().loadClass("org.lwjgl.opengl.GL11"))
                     .make()
                     .load(Class.forName("org.lwjgl.opengl.GL11").getClassLoader(), ClassReloadingStrategy.fromInstalledAgent());
         } catch (ClassNotFoundException ex) {

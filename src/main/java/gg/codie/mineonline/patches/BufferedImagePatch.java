@@ -19,4 +19,12 @@ public class BufferedImagePatch {
                 .make()
                 .load(BufferedImage.class.getClassLoader(), ClassReloadingStrategy.fromInstalledAgent());
     }
+
+    public static void reset() {
+        new ByteBuddy()
+                .with(Implementation.Context.Disabled.Factory.INSTANCE)
+                .redefine(BufferedImage.class)
+                .make()
+                .load(BufferedImage.class.getClassLoader(), ClassReloadingStrategy.fromInstalledAgent());
+    }
 }

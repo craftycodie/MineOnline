@@ -9,6 +9,9 @@ import gg.codie.mineonline.gui.components.GuiButton;
 import gg.codie.mineonline.gui.components.GuiSlider;
 import gg.codie.mineonline.gui.components.GuiSmallButton;
 import gg.codie.mineonline.gui.rendering.Font;
+import gg.codie.mineonline.gui.rendering.Loader;
+import gg.codie.mineonline.patches.BufferedImagePatch;
+import gg.codie.mineonline.patches.lwjgl.LWJGLGL11Patch;
 
 public class GuiOptions extends AbstractGuiScreen
 {
@@ -148,8 +151,37 @@ public class GuiOptions extends AbstractGuiScreen
             }
         }));
 
+        controlList.add(new GuiSmallButton(0, getWidth() / 2 + 5, getHeight() / 6 + 24, "M1 Graphics Patch: " + (Settings.singleton.getM1GraphicsPatch() ? "ON" : "OFF"), new GuiButton.GuiButtonListener() {
+            @Override
+            public void OnButtonPress() {
+                Settings.singleton.setM1GraphicsPatch(!Settings.singleton.getM1GraphicsPatch());
+                ((GuiSmallButton) controlList.get(6)).displayString = "M1 Graphics Patch: " + (Settings.singleton.getM1GraphicsPatch() ? "ON" : "OFF");
+                Settings.singleton.saveSettings();
+
+                if (Settings.singleton.getM1GraphicsPatch()) {
+                    BufferedImagePatch.fixM1();
+                } else {
+                    BufferedImagePatch.reset();
+                }
+
+                Loader.reloadMineOnlineTextures();
+
+                if (!LegacyGameManager.isInGame()) {
+                    if (Settings.singleton.getM1GraphicsPatch()) {
+                        LWJGLGL11Patch.m1FixOnly();
+                    } else {
+                        LWJGLGL11Patch.reset();
+                    }
+                } else {
+                    LWJGLGL11Patch.init(Settings.singleton.getM1GraphicsPatch());
+                    Loader.reloadMinecraftTextures();
+                }
+
+            }
+        }));
+
         if (!LegacyGameManager.isInGame()) {
-            controlList.add(new GuiSmallButton(0, getWidth() / 2 + 5, getHeight() / 6 + 24, "Fullscreen: " + (Settings.singleton.getFullscreen() ? "ON" : "OFF"), new GuiButton.GuiButtonListener() {
+            controlList.add(new GuiSmallButton(0, getWidth() / 2 + 5, getHeight() / 6 + 48, "Fullscreen: " + (Settings.singleton.getFullscreen() ? "ON" : "OFF"), new GuiButton.GuiButtonListener() {
                 @Override
                 public void OnButtonPress() {
                     Settings.singleton.setFullscreen(!Settings.singleton.getFullscreen());
