@@ -18,8 +18,6 @@ public class OSUtils {
         // So, if the user is on a mac, we use this command to check the underlying arch, then cache the result.
         if (!isMac()) return;
 
-        System.out.println("Checking underlying architecture...");
-
         String command = "sysctl -n sysctl.proc_translated";
 
         Process proc = Runtime.getRuntime().exec(command);
@@ -37,13 +35,10 @@ public class OSUtils {
 
         String output = outputBuilder.toString();
 
-        System.out.println("M1 Check Complete... Output Below");
-        System.out.println(output);
-        System.out.println(output.contains("1"));
-
         checkedUnderlyingArch = true;
 
-        if (output.contains("1"))
+        // If the JVM is M1, and the process is being translated, it must be underlying x86.
+        if (output.contains("1") && !isM1JVM())
             underlyingM1 = true;
     }
 
