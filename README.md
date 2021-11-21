@@ -2,7 +2,7 @@
 
 [![Build status](https://ci.appveyor.com/api/projects/status/hd3fpaffd9qqqx6d?branch=main&svg=true)](https://ci.appveyor.com/project/craftycodie/mineonline)
 
-Launch old versions of minecraft just as you remembered them.
+Launch old versions of Minecraft just as you remembered them.
 
 ## What is MineOnline?
 MineOnline is a launcher Minecraft capable of running web applets without a browser, and redirecting web requests to a new API.
@@ -55,7 +55,7 @@ This file should contain an array of JSON versions, like this:
 }
 ```
 
-Legacy is true for any pre-1.6 minecraft version.
+Legacy is true for any pre-1.6 Minecraft version.
 For 1.6 and above, libraries should be provided. Examples can be found [here](https://github.com/craftycodie/MineOnline/blob/master/res/version-info/client/).
 
 I recommend you start with the unmodded version information as a template, as most of the settings will carry over.
