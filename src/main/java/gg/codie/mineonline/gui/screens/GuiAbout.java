@@ -34,12 +34,12 @@ public class GuiAbout extends AbstractGuiScreen
             }
         }));
 
-        controlList.add(new GuiButton(4, getWidth() / 2 - 100, getHeight() / 6 + 120 + 12, "Made by @craftycodie", new GuiButton.GuiButtonListener() {
+        controlList.add(new GuiButton(4, getWidth() / 2 - 100, getHeight() / 6 + 120 + 12, "Omniarchive Discord", new GuiButton.GuiButtonListener() {
             @Override
             public void OnButtonPress() {
                 if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
                     try {
-                        Desktop.getDesktop().browse(new URI("https://linktr.ee/craftycodie"));
+                        Desktop.getDesktop().browse(new URI("https://discord.gg/h45wxnE"));
                     } catch (Exception ex) {
 
                     }
@@ -61,7 +61,7 @@ public class GuiAbout extends AbstractGuiScreen
         Font.minecraftFont.drawCenteredString("running on " + System.getProperty("os.name") + ", Java " + System.getProperty("java.version") + ".", getWidth() / 2, (getHeight() / 4 - 60) + 72, 0xa0a0a0);
 
         Font.minecraftFont.drawCenteredString("Logged in as " + Session.session.getUsername() + ".", getWidth() / 2, (getHeight() / 4 - 60) + 96, 0xa0a0a0);
-        Font.minecraftFont.drawCenteredString("Thanks for playing!", getWidth() / 2, (getHeight() / 4 - 60) + 120, 0xa0a0a0);
+        Font.minecraftFont.drawCenteredString("Versions provided by Omniarchive", getWidth() / 2, (getHeight() / 4 - 60) + 120, 0xa0a0a0);
 
         super.drawScreen(mouseX, mouseY);
     }
