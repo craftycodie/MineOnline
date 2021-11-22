@@ -37,31 +37,6 @@ These are features MineOnline will bring to Minecraft.
 
 ![launcher](launcherdemo.png)
 
-## For Modders
-You can add custom version information to the launcher by creating a version info file at `.mineonline\custom-version-info\`.
-The file should be in a directory named client or server, and it's name should contain the version name and md5.
-For example:
-`.mineonline\custom-version-info\client\Skylands 0.1 F8F78A4ED4033547CC1EA28C776DA7AE.json`
-This file should contain an array of JSON versions, like this:
-
-```json
-{ 
-  "name": "Skylands 0.1", 
-  "md5": "F8F78A4ED4033547CC1EA28C776DA7AE", 
-  "type": "client",
-  "baseVersion": "b1.7.3",
-  "info": "Beta 1.7.3 mod",
-  "legacy": true
-}
-```
-
-Legacy is true for any pre-1.6 minecraft version.
-For 1.6 and above, libraries should be provided. Examples can be found [here](https://github.com/craftycodie/MineOnline/blob/master/res/version-info/client/).
-
-I recommend you start with the unmodded version information as a template, as most of the settings will carry over.
-
-If you would like a version to be added to the main list, contact me [@craftycodie](github.com/craftycodie/).
-
 ## For Developers
 As per the license you are welcome to use the launcher code under non-commercial conditions.
 
