@@ -498,9 +498,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
 
         DisplayManager.getFrame().setTitle("Minecraft");
         if (LegacyGameManager.getVersion() != null)
-            DisplayManager.getFrame().setTitle("Minecraft " + (LegacyGameManager.getVersion().ingameVersionString != null
-                    ? LegacyGameManager.getVersion().ingameVersionString.replace("Minecraft ", "")
-                    : LegacyGameManager.getVersion().name.replace("Release ", "")));
+            DisplayManager.getFrame().setTitle("Minecraft " + LegacyGameManager.getVersion().name.replace("Release ", ""));
 
         Settings.singleton.saveMinecraftOptions(minecraftVersion != null ? minecraftVersion.optionsVersion : EMinecraftOptionsVersion.DEFAULT);
 
