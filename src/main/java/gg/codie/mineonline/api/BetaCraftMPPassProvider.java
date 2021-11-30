@@ -10,7 +10,7 @@ public class BetaCraftMPPassProvider implements IMPPassProvider {
     @Override
     public String getMPPass(String serverIP, String serverPort, String username) {
         try {
-            URL url = new URL("https://betacraft.pl/api/getmppass.jsp?user=" + username + "&server=" + serverIP + ":" + serverPort);
+            URL url = new URL("https://betacraft.uk/api/getmppass.jsp?user=" + username + "&server=" + serverIP + ":" + serverPort);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             connection.setRequestMethod("POST");
