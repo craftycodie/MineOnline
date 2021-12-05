@@ -85,13 +85,7 @@ public class GuiSlotServer extends GuiSlot
             MinecraftVersion version = MinecraftVersionRepository.getSingleton().getVersionByMD5(server.clientMD5);
             String versionName = "Unknown Version";
             if (version != null) {
-                if (version.clientName != null) {
-                    versionName = version.clientName;
-                } else if (version.clientVersions.length > 0) {
-                    versionName = Arrays.toString(version.clientVersions).replace("[", "").replace("]", "");
-                } else {
-                    versionName = version.name;
-                }
+                versionName = version.name;
             }
 
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, Loader.singleton.getGuiTexture(EGUITexture.UNKNOWN_PACK));

@@ -3,6 +3,8 @@ package gg.codie.mineonline.gui.screens;
 import com.johnymuffin.BetaEvolutionsUtils;
 import com.johnymuffin.LegacyTrackerServer;
 import com.johnymuffin.LegacyTrackerServerRepository;
+import gg.codie.common.utils.SHA1Utils;
+import gg.codie.minecraft.api.SessionServer;
 import gg.codie.mineonline.MinecraftVersion;
 import gg.codie.mineonline.MinecraftVersionRepository;
 import gg.codie.mineonline.Session;
@@ -21,6 +23,7 @@ import gg.codie.mineonline.api.ClassicServerAuthService;
 
 import javax.swing.*;
 import java.awt.*;
+import java.net.InetAddress;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -237,7 +240,18 @@ public class GuiMultiplayer extends AbstractGuiScreen
         }
 
         try {
-            String mppass = classicAuthService.getMPPass(ip, port, Session.session.getAccessToken(), Session.session.getUuid(), Session.session.getUsername());
+            String mppass = null;
+
+            MinecraftVersion minecraftVersion = MinecraftVersionRepository.getSingleton().getVersion(jarPath);
+            if (minecraftVersion != null && minecraftVersion.cantVerifyName) {
+                InetAddress inetAddress = InetAddress.getByName(ip);
+                ip = inetAddress.getHostAddress();
+
+                SessionServer.joinGame(Session.session.getAccessToken(), Session.session.getUuid(), SHA1Utils.sha1(ip + ":" + port));
+            } else {
+                mppass = classicAuthService.getMPPass(ip, port, Session.session.getAccessToken(), Session.session.getUuid(), Session.session.getUsername());
+            }
+
             MinecraftVersion.launchMinecraft(jarPath, ip, port, mppass);
 
             if (LegacyGameManager.isInGame()) {

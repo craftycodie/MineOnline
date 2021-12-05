@@ -17,7 +17,9 @@ public class BetaCraftMPPassProvider implements IMPPassProvider {
             connection.setDoInput(true);
             InputStream is = connection.getInputStream();
             BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-            return rd.readLine();
+            String mppass = rd.readLine();
+            if (mppass.equals("SERVER NOT FOUND")) return null;
+            return mppass;
         } catch (Exception ex) {
             ex.printStackTrace();
             return null;

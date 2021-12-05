@@ -26,16 +26,13 @@ public class MinecraftVersion {
     public final boolean baseURLHasNoPort;
     public final boolean enableScreenshotPatch;
     public final String baseVersion;
-    public final boolean hasHeartbeat;
     public final boolean enableFullscreenPatch;
     public final String info;
-    public final String[] clientVersions;
     public final boolean enableCursorPatch;
     public final boolean legacy;
     public final String assetIndex;
     public final String[] libraries;
     public final String[] natives;
-    public final String clientName;
     public final String guiClass;
     public final String guiScreenClass;
     public final String scaledResolutionClass;
@@ -65,6 +62,7 @@ public class MinecraftVersion {
     public final String itemRendererClass;
     public final String clockFXClass;
     public final String compassFXClass;
+    public final boolean cantVerifyName;
 
     public MinecraftVersion(
             String sha256,
@@ -74,16 +72,13 @@ public class MinecraftVersion {
             String type,
             boolean baseURLHasNoPort,
             boolean enableScreenshotPatch,
-            boolean hasHeartbeat,
             boolean enableFullscreenPatch,
             String info,
-            String[] clientVersions,
             boolean enableCursorPatch,
             boolean legacy,
             String assetIndex,
             String[] libraries,
             String[] nativesWindows,
-            String clientName,
             String guiClass,
             String guiScreenClass,
             String scaledResolutionClass,
@@ -112,7 +107,8 @@ public class MinecraftVersion {
             boolean useIndevSoundPatch,
             String itemRendererClass,
             String compassFXClass,
-            String clockFXClass
+            String clockFXClass,
+            boolean cantVerifyName
     ) {
         this.sha256 = sha256;
         this.name = name;
@@ -120,17 +116,14 @@ public class MinecraftVersion {
         this.type = type;
         this.baseURLHasNoPort = baseURLHasNoPort;
         this.enableScreenshotPatch = enableScreenshotPatch;
-        this.hasHeartbeat = hasHeartbeat;
         this.baseVersion = baseVersion;
         this.enableFullscreenPatch = enableFullscreenPatch;
         this.info = info;
-        this.clientVersions = clientVersions;
         this.enableCursorPatch = enableCursorPatch;
         this.legacy = legacy;
         this.assetIndex = assetIndex;
         this.libraries = libraries;
         this.natives = nativesWindows;
-        this.clientName = clientName;
         this.guiClass = guiClass;
         this.guiScreenClass = guiScreenClass;
         this.scaledResolutionClass = scaledResolutionClass;
@@ -160,6 +153,7 @@ public class MinecraftVersion {
         this.itemRendererClass = itemRendererClass;
         this.compassFXClass = compassFXClass;
         this.clockFXClass = clockFXClass;
+        this.cantVerifyName = cantVerifyName;
     }
 
     public MinecraftVersion(JSONObject object) {
@@ -170,16 +164,13 @@ public class MinecraftVersion {
         type = object.getString("type");
         baseURLHasNoPort = object.optBoolean("baseURLHasNoPort", false);
         enableScreenshotPatch = object.optBoolean("enableScreenshotPatch", false);
-        hasHeartbeat = object.optBoolean("hasHeartbeat", false);
         enableFullscreenPatch = object.optBoolean("enableFullscreenPatch", false);
         info = (object.has("info") ? object.getString("info") : null);
-        clientVersions = (object.has("clientVersions") ? JSONUtils.getStringArray(object.getJSONArray("clientVersions")) : new String[] { object.getString("baseVersion")});
         enableCursorPatch = object.optBoolean("enableCursorPatch", false);
         legacy = object.optBoolean("legacy", false);
         assetIndex = (object.has("assetIndex") ? object.getString("assetIndex") : object.has("baseVersion") ? object.getString("baseVersion") : null);
         libraries = (object.has("libraries") ? JSONUtils.getStringArray(object.getJSONArray("libraries")) : new String[0]);
         natives = (object.has("natives") && object.getJSONObject("natives").has(OSUtils.getPlatform().name()) ? JSONUtils.getStringArray(object.getJSONObject("natives").getJSONArray(OSUtils.getPlatform().name())) : new String[0]);
-        clientName = object.optString("clientName", object.getString("name"));
         guiClass = object.optString("guiClass", null);
         guiScreenClass = object.optString("guiScreenClass", null);
         scaledResolutionClass = object.optString("scaledResolutionClass", null);
@@ -208,6 +199,7 @@ public class MinecraftVersion {
         itemRendererClass = object.optString("itemRendererClass", null);
         compassFXClass = object.optString("compassFXClass", null);
         clockFXClass = object.optString("clockFXClass", null);
+        cantVerifyName = object.optBoolean("cantVerifyName", false);
 
 
         URL parsedURL = null;
@@ -415,15 +407,12 @@ public class MinecraftVersion {
                     false,
                     false,
                     false,
-                    false,
                     null,
-                    new String[] { versionManifest.getString("id")},
                     false,
                     isLegacy,
                     versionManifest.getString("assets"),
                     libraries.toArray(new String[0]),
                     natives.toArray(new String[0]),
-                    typeName + " " + versionNumber,
                     null,
                     null,
                     null,
@@ -452,7 +441,8 @@ public class MinecraftVersion {
                     false,
                     null,
                     null,
-                    null
+                    null,
+                    false
             );
         } catch (Exception ex) {
             System.err.println("Bad launcher JSON for version " + jarFile);

@@ -1,6 +1,8 @@
 package gg.codie.mineonline.gui.screens;
 
 import com.johnymuffin.BetaEvolutionsUtils;
+import gg.codie.common.utils.SHA1Utils;
+import gg.codie.minecraft.api.SessionServer;
 import gg.codie.mineonline.MinecraftVersion;
 import gg.codie.mineonline.MinecraftVersionRepository;
 import gg.codie.mineonline.Session;
@@ -14,6 +16,8 @@ import gg.codie.mineonline.gui.rendering.DisplayManager;
 import gg.codie.mineonline.gui.rendering.Font;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
+
+import java.net.InetAddress;
 
 // Referenced classes of package net.minecraft.src:
 //            GuiScreen, GuiTextField, StringTranslate, GuiButton, 
@@ -127,7 +131,19 @@ public class GuiDirectConnect extends AbstractGuiScreen
             try {
                 String ip = as[0];
                 String port = as.length > 1 ? as[1] : "25565";
-                String mppass = classicAuthService.getMPPass(ip, port, Session.session.getAccessToken(), Session.session.getUuid(), Session.session.getUsername());
+
+                String mppass = null;
+
+                MinecraftVersion minecraftVersion = MinecraftVersionRepository.getSingleton().getVersion(jarPath);
+                if (minecraftVersion != null && minecraftVersion.cantVerifyName) {
+                    InetAddress inetAddress = InetAddress.getByName(ip);
+                    ip = inetAddress.getHostAddress();
+
+                    SessionServer.joinGame(Session.session.getAccessToken(), Session.session.getUuid(), SHA1Utils.sha1(ip + ":" + port));
+                } else {
+                    mppass = classicAuthService.getMPPass(ip, port, Session.session.getAccessToken(), Session.session.getUuid(), Session.session.getUsername());
+                }
+
                 MinecraftVersion.launchMinecraft(jarPath, as[0], (as.length <= 1 ? "25565" : as[1]), mppass);
                 if (LegacyGameManager.isInGame()) {
 //                    if (usingBetaEvolutions) {

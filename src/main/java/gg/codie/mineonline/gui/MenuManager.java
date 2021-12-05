@@ -1,8 +1,10 @@
 package gg.codie.mineonline.gui;
 
 import gg.codie.common.utils.OSUtils;
+import gg.codie.common.utils.SHA1Utils;
 import gg.codie.minecraft.api.MojangAuthService;
 import gg.codie.minecraft.api.MojangAPI;
+import gg.codie.minecraft.api.SessionServer;
 import gg.codie.mineonline.*;
 import gg.codie.mineonline.api.ClassicServerAuthService;
 import gg.codie.mineonline.api.UpdateCheckerService;
@@ -30,6 +32,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.net.InetAddress;
 
 public class MenuManager {
 
@@ -210,7 +213,16 @@ public class MenuManager {
                     ip = ipAndPort[0];
                     port = "25565";
                 }
-                mppass = classicAuthService.getMPPass(ip, port, Session.session.getAccessToken(), Session.session.getUuid(), Session.session.getUsername());
+
+                MinecraftVersion minecraftVersion = MinecraftVersionRepository.getSingleton().getVersion(quicklaunch);
+                if (minecraftVersion != null && minecraftVersion.cantVerifyName) {
+                    InetAddress inetAddress = InetAddress.getByName(ip);
+                    ip = inetAddress.getHostAddress();
+
+                    SessionServer.joinGame(Session.session.getAccessToken(), Session.session.getUuid(), SHA1Utils.sha1(ip + ":" + port));
+                } else {
+                    mppass = classicAuthService.getMPPass(ip, port, Session.session.getAccessToken(), Session.session.getUuid(), Session.session.getUsername());
+                }
             }
             MinecraftVersion.launchMinecraft(quicklaunch, ip, port, mppass);
             return;

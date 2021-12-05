@@ -16,5 +16,6 @@
   "hasNetherPortalTexture": false,
   "colorCodePrefix": "&",
   "downloadURL": "https://archive.org/download/Minecraft-JE-Classic/c0.0.16a_02/c0.0.16a_02.jar",
-  "usePlayerList": true
+  "usePlayerList": true,
+  "cantVerifyName": true
 }
