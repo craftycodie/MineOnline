@@ -16,6 +16,12 @@ public class SkinURLConnection extends HttpURLConnection {
         super(url);
     }
 
+    public final static String[] OLD_SKIN_ADDRESSES = new String[] {
+            "http://www.minecraft.net/skin/",               // Introduced Classic 0.0.18a (when skins were added)
+            "http://s3.amazonaws.com/MinecraftSkins/",      // Introduced Beta 1.2
+            "http://skins.minecraft.net/MinecraftSkins/"    // Introduced Release 1.3.1
+    };
+
     @Override
     public void disconnect() {
 
@@ -29,16 +35,22 @@ public class SkinURLConnection extends HttpURLConnection {
     InputStream inputStream = null;
     int responseCode = 200;
 
+    private String getUsernameFromURL() {
+        String username = this.url.toString();
+
+        // We get the username from the skin by replacing the url up to the username with whitespace.
+        for (String oldSkinAddress : OLD_SKIN_ADDRESSES) {
+            username = username.replace(oldSkinAddress, "");
+        }
+        /// ... and dropping the .png.
+        username = username.replace(".png", "");
+
+        return username;
+    }
+
     @Override
     public void connect() throws IOException {
-        String url = this.url.toString();
-        String username = (url.contains("/MinecraftSkins/")
-                ? url.substring(url.indexOf("/MinecraftSkins/"))
-                .replace("/MinecraftSkins/", "")
-                .replace(".png", "")
-                : url.substring(url.indexOf("/skin/")))
-                .replace("/skin/", "")
-                .replace(".png", "");
+        String username = getUsernameFromURL();
 
         JSONObject skin = SkinUtils.getUserSkin(username);
         TextureHelper.convertModernSkin(skin);

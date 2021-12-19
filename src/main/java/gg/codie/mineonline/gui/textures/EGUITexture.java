@@ -1,6 +1,6 @@
 package gg.codie.mineonline.gui.textures;
 
-public enum  EGUITexture {
+public enum EGUITexture {
     GUI("/gui/gui.png", true),
     MINEONLINE_GUI_ICONS("/mineonline/gui/icons.png", true),
     MINEONLINE_LOGO("/mineonline/gui/logo.png", true),

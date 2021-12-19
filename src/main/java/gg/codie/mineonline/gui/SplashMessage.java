@@ -53,13 +53,21 @@ public class SplashMessage {
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
-        if(calendar.get(2) + 1 == 12 && calendar.get(5) == 24)
+        if (calendar.get(Calendar.MONTH) + 1 == 12 && (calendar.get(Calendar.DATE) == 24 || calendar.get(Calendar.DATE) == 25))
         {
             splashMessage = "Merry X-mas!";
         }
-        else if(calendar.get(2) + 1 == 1 && calendar.get(5) == 1)
+        else if (calendar.get(Calendar.MONTH) + 1 == 1 && calendar.get(Calendar.DATE) == 1)
         {
             splashMessage = "Happy new year!";
+        }
+        else if (calendar.get(Calendar.MONTH) + 1 == 7 && calendar.get(Calendar.DATE) == 10)
+        {
+            splashMessage = "Today is also my birthday!";
+        }
+        else if (calendar.get(Calendar.MONTH) + 1 == 3 && calendar.get(Calendar.DATE) == 26)
+        {
+            splashMessage = "Happy Birthday Codie c:";
         }
     }
 }
