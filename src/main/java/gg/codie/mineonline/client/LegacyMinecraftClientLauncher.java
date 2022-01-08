@@ -327,7 +327,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
 
                     }
 
-                    if (minecraftVersion.useTexturepackPatch) {
+                    if (minecraftVersion != null && minecraftVersion.useTexturepackPatch) {
                         ColorizerPatch.updateColorizers();
                     }
                 }
@@ -335,7 +335,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
                 if (Loader.singleton != null) {
                     if (!Globals.BRANCH.equalsIgnoreCase("main")) {
                         int ypos = 2;
-                        if (minecraftVersion.ingameVersionString != null && !Settings.singleton.getHideVersionString())
+                        if (minecraftVersion != null && minecraftVersion.ingameVersionString != null && !Settings.singleton.getHideVersionString())
                             ypos = 12;
                         Font.minecraftFont.drawStringWithShadow("MineOnline " + (Globals.DEV ? "Dev " : "") + Globals.LAUNCHER_VERSION  + " (" + Globals.BRANCH + ")", 2, ypos, 0xffffff);
                     }
@@ -686,7 +686,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
 
             Object gui = guiField != null & minecraft != null ? guiField.get(minecraft) : null;
 
-            if (minecraftVersion.useResizePatch) {
+            if (minecraftVersion != null && minecraftVersion.useResizePatch) {
                 widthField.setInt(minecraft, width);
                 heightField.setInt(minecraft, height);
             }
@@ -786,7 +786,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
             Clipboard c = Toolkit.getDefaultToolkit().getSystemClipboard();
             c.setContents( trans, null );
 
-            if (minecraftVersion.enableScreenshotPatch) {
+            if (minecraftVersion != null && minecraftVersion.enableScreenshotPatch) {
                 File screenshotsFolder = new File(LauncherFiles.MINECRAFT_SCREENSHOTS_PATH);
                 screenshotsFolder.mkdirs();
 
