@@ -303,8 +303,10 @@ public class BetaEvolutionsUtils {
 
     static {
         //Some nodes may support multiple types. Ideally in the future, this class will contact nodes asking for their protocol versions, however, V2 should remain online.
-        beServers.put("https://auth.johnymuffin.com", BEVersion.V1);
+        //beServers.put("https://auth.johnymuffin.com", BEVersion.V1); - EOS: 01/02/2022
         beServers.put("https://auth1.evolutions.johnymuffin.com", BEVersion.V2_PLAINTEXT);
+        beServers.put("https://auth2.evolutions.johnymuffin.com", BEVersion.V2_PLAINTEXT);
+        beServers.put("https://auth3.evolutions.johnymuffin.com", BEVersion.V2_PLAINTEXT);
     }
 
     public enum BEVersion {
