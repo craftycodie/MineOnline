@@ -18,6 +18,11 @@ public class ClassicFOVViewmodelAdvice {
     @Advice.OnMethodExit
     static void intercept() {
         try {
+            if (LegacyGameManager.thirdPersonView) {
+                ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.minecraft.ClassicFOVViewmodelAdvice").getField("callCount").set(null, 1);
+                return;
+            }
+
             String viewModelFunction = LegacyGameManager.getVersion().viewModelFunction;
 
             if (viewModelFunction != null) {
