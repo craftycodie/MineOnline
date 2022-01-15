@@ -25,6 +25,11 @@ public class ListLevelsURLConnection extends HttpURLConnection {
     }
 
     @Override
+    public int getResponseCode() throws IOException {
+        return 200;
+    }
+
+    @Override
     public InputStream getInputStream() throws IOException {
         String[] worldNames = ClassicLevel.listLevels();
 
