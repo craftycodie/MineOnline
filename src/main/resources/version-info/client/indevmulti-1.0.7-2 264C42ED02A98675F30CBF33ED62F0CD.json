@@ -1,6 +1,6 @@
 {
-  "name": "indevmulti-1.0.5_01",
-  "md5": "C119374766B6B31775EEFAEF156E06D8",
+  "name": "indevmulti-1.0.7-2",
+  "md5": "264C42ED02A98675F30CBF33ED62F0CD",
   "type": "client",
   "enableScreenshotPatch": true,
   "baseURLHasNoPort": true,
@@ -18,5 +18,6 @@
   "entityRendererClass": "net.minecraft.client.a.e",
   "hurtEffectFunction": "c",
   "hurtEffectCallsPerFrame": 3,
-  "fontClass": "net.minecraft.client.c.j"
+  "fontClass": "net.minecraft.client.c.j",
+  "downloadURL": "https://github.com/craftycodie/MineOnline/blob/main/resources/indevmulti-1.0.7-2.jar?raw=true"
 }
