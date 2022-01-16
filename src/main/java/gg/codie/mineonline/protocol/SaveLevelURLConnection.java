@@ -35,6 +35,11 @@ public class SaveLevelURLConnection extends HttpURLConnection {
     }
 
     @Override
+    public int getResponseCode() throws IOException {
+        return 200;
+    }
+
+    @Override
     public InputStream getInputStream() throws IOException {
         ClassicLevel classicLevel = ClassicLevel.fromSaveRequest(new ByteArrayInputStream(outputStream.toByteArray()));
         classicLevel.saveToFile();

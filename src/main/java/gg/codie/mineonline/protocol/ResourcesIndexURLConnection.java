@@ -36,6 +36,11 @@ public class ResourcesIndexURLConnection extends HttpURLConnection {
     }
 
     @Override
+    public int getResponseCode() throws IOException {
+        return 200;
+    }
+
+    @Override
     public InputStream getInputStream() {
         String resourcesVersion = LegacyGameManager.getVersion() != null ? LegacyGameManager.getVersion().resourcesVersion : "default";
 

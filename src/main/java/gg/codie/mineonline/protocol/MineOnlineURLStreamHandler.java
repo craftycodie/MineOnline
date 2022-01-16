@@ -29,9 +29,12 @@ public class MineOnlineURLStreamHandler extends URLStreamHandler {
             return new LoadLevelURLConnection(url);
         else if (url.toString().contains("listmaps.jsp"))
             return new ListLevelsURLConnection(url);
-        // Sounds are downloaded by the launcher, so we 404 the new index and spoof the old one.
+        // Sounds are downloaded by the launcher, so we spoof the index.
         else if (url.toString().endsWith("/MinecraftResources/"))
             return new ResourcesIndexURLConnection(url);
+        // Fallback for #323
+        else if (url.toString().contains("/MinecraftResources/"))
+            return new ResourceDownloadURLConnection(url);
         else if (url.toString().endsWith("/resources/"))
             return new ClassicResourcesIndexURLConnection(url);
 

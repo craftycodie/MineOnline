@@ -26,12 +26,15 @@ public class LoadLevelURLConnection extends HttpURLConnection {
     }
 
     @Override
+    public int getResponseCode() throws IOException {
+        return 200;
+    }
+
+    @Override
     public InputStream getInputStream() throws IOException {
         int mapID = url.toString().charAt(url.toString().indexOf("id=") + 3) - 47;
         ClassicLevel classicLevel = ClassicLevel.fromFile(mapID);
 
         return classicLevel.toLoadResponse();
     }
-
-
 }
