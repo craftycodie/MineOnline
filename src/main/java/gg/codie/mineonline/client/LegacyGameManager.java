@@ -24,6 +24,7 @@ import gg.codie.mineonline.patches.lwjgl.LWJGLGLUPatch;
 import gg.codie.mineonline.patches.lwjgl.LWJGLGLUPerspectiveAdvice;
 import gg.codie.mineonline.patches.minecraft.*;
 import gg.codie.mineonline.patches.paulscode.PaulscodePatch;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 
@@ -33,6 +34,7 @@ public class LegacyGameManager {
 
     private static LegacyGameManager singleton;
     public static AbstractGuiScreen guiScreen;
+    public static boolean thirdPersonView;
 
     private MinecraftVersion version;
     private IMinecraftAppletWrapper appletWrapper;
@@ -55,8 +57,16 @@ public class LegacyGameManager {
         new Thread(optionsListener).start();
     }
 
+    private static boolean f5wasDown;
     public static void update() {
         readOptionChanges();
+
+        if (Mouse.isGrabbed() && Keyboard.getEventKey() == Keyboard.KEY_F5 && !Keyboard.isRepeatEvent() && Keyboard.getEventKeyState() && !f5wasDown) {
+            thirdPersonView = !thirdPersonView;
+            f5wasDown = true;
+        } else if (Keyboard.getEventKey() == Keyboard.KEY_F5 && !Keyboard.getEventKeyState()) {
+            f5wasDown = false;
+        }
     }
 
     static boolean optionsFileChanged = false;
