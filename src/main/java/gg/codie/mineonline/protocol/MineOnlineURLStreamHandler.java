@@ -32,6 +32,9 @@ public class MineOnlineURLStreamHandler extends URLStreamHandler {
         // Sounds are downloaded by the launcher, so we spoof the index.
         else if (url.toString().endsWith("/MinecraftResources/"))
             return new ResourcesIndexURLConnection(url);
+        // Fallback for #323
+        else if (url.toString().contains("/MinecraftResources/"))
+            return new ResourceDownloadURLConnection(url);
         else if (url.toString().endsWith("/resources/"))
             return new ClassicResourcesIndexURLConnection(url);
 
