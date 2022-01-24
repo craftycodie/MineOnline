@@ -33,19 +33,11 @@ public class SkinUtils {
 
     public static URL findEventCloakURLForUsername(String username) {
         try {
-            JSONObject profile = MojangAPI.minecraftProfile(username);
-            if (!profile.has("id"))
-                throw new FileNotFoundException("User not found: " + username);
-
             LocalDateTime today = java.time.LocalDateTime.now();
             if ((today.getDayOfMonth() == 24 || today.getDayOfMonth() == 25) && today.getMonth() == Month.DECEMBER)
                 return SkinUtils.class.getResource("/textures/mineonline/capes/xmas.png");
-//            if ((today.getDayOfMonth() == 31 && today.getMonth() == Month.DECEMBER) || (today.getDayOfMonth() == 1 && today.getMonth() == Month.JANUARY))
-//                return SkinUtils.class.getResource("/textures/mineonline/capes/newyear.png");
 
-            String uuid = profile.getString("id");
-            URL uuidCape = SkinUtils.class.getResource("/textures/mineonline/capes/" + uuid + ".png");
-            return uuidCape;
+            return null;
         } catch (Exception ex) {
             return null;
         }

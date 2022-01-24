@@ -10,6 +10,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Base64;
 import java.util.LinkedList;
 import java.util.concurrent.CompletableFuture;
 
@@ -38,7 +41,37 @@ public class LegacyTrackerServerRepository {
                 servers = getServerList();
             } catch (Exception ex) {
                 ex.printStackTrace();
-                servers = new LinkedList<>();
+                servers = new LinkedList<LegacyTrackerServer>();
+
+                String serverIcon = null;
+                try {
+                    InputStream iconStream = LegacyTrackerServerRepository.class.getClassLoader().getResourceAsStream("textures/mineonline/gui/server-icon.png");
+                    byte[] data = new byte[iconStream.available()];
+                    iconStream.read(data);
+
+                    serverIcon = Base64.getEncoder().encodeToString(data);
+                } catch (Exception ex2) {
+                    ex.printStackTrace();
+                }
+
+                servers.push(new LegacyTrackerServer(
+                        "",
+                        "mc.craftycodie.com",
+                        "mc.craftycodie.com",
+                        25565,
+                        0,
+                        64,
+                        "Ampersand SMP &",
+                        "b1.2_02",
+                        true,
+                        null,
+                        "An Early-Beta, Vanilla SMP Experience!",
+                        false,
+                        false,
+                        false,
+                        serverIcon,
+                        false
+                ));
                 failed = true;
             }
             for(GotServersListener listener : listeners) {

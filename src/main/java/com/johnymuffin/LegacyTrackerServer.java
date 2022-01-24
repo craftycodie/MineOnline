@@ -5,8 +5,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Iterator;
-import java.util.LinkedList;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -50,7 +53,7 @@ public class LegacyTrackerServer {
     public static LinkedList<LegacyTrackerServer> parseServers(JSONArray jsonArray) {
         Iterator<Object> iterator = jsonArray.iterator();
 
-        LinkedList<LegacyTrackerServer> servers = new LinkedList();
+        LinkedList<LegacyTrackerServer> servers = new LinkedList<>();
 
         while(iterator.hasNext()) {
             JSONObject object = (JSONObject)iterator.next();
@@ -64,6 +67,73 @@ public class LegacyTrackerServer {
         }
 
         servers.sort((LegacyTrackerServer server, LegacyTrackerServer otherServer) -> otherServer.users - server.users);
+
+        List<LegacyTrackerServer> ampServers = servers.stream().filter(server -> server.connectAddress.equals("mc.craftycodie.com")).collect(Collectors.toList());
+        LegacyTrackerServer ampServer = ampServers.size() > 0 ? ampServers.get(0) : null;
+
+        String serverIcon = ampServer.serverIcon;
+        if (ampServer != null) {
+            servers = new LinkedList(servers.stream().filter(server -> !server.connectAddress.equals("mc.craftycodie.com")).collect(Collectors.toList()));
+            if (ampServer.serverIcon == null) {
+                try {
+                    InputStream iconStream = LegacyTrackerServer.class.getClassLoader().getResourceAsStream("textures/mineonline/gui/server-icon.png");
+                    byte[] data = new byte[iconStream.available()];
+                    iconStream.read(data);
+
+                    serverIcon = Base64.getEncoder().encodeToString(data);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+            ampServer = new LegacyTrackerServer(
+                    ampServer.createdAt,
+                    ampServer.connectAddress,
+                    ampServer.ip,
+                    ampServer.port,
+                    ampServer.users,
+                    ampServer.maxUsers,
+                    ampServer.name,
+                    ampServer.baseVersion,
+                    ampServer.onlineMode,
+                    ampServer.players,
+                    ampServer.motd,
+                    ampServer.dontListPlayers,
+                    ampServer.featured,
+                    ampServer.usingBetaEvolutions,
+                    serverIcon,
+                    ampServer.whitelisted
+            );
+            servers.push(ampServer);
+        } else {
+            try {
+                InputStream iconStream = LegacyTrackerServer.class.getClassLoader().getResourceAsStream("textures/mineonline/gui/server-icon.png");
+                byte[] data = new byte[iconStream.available()];
+                iconStream.read(data);
+
+                serverIcon = Base64.getEncoder().encodeToString(data);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
+            servers.push(new LegacyTrackerServer(
+                    "",
+                    "mc.craftycodie.com",
+                    "mc.craftycodie.com",
+                    25565,
+                    0,
+                    64,
+                    "Ampersand SMP &",
+                    "b1.2_02",
+                    true,
+                    null,
+                    "An Early-Beta, Vanilla SMP Experience!",
+                    false,
+                    false,
+                    false,
+                    serverIcon,
+                    false
+            ));
+        }
 
         return servers;
     }
