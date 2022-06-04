@@ -11,11 +11,15 @@ import java.io.File;
 
 public class FilePatch {
     public static String resourcesVersion;
+    public static String gameFolder;
 
-    public static void relocateFiles(String resourcesVersion) {
+    public static void relocateFiles(String resourcesVersion, String gameFolder) {
         FilePatch.resourcesVersion = resourcesVersion;
+        FilePatch.gameFolder = gameFolder;
 
         new File(LauncherFiles.MINEONLINE_RESOURCES_PATH + resourcesVersion + File.separator).mkdirs();
+        if (!gameFolder.isEmpty())
+            new File(gameFolder).mkdirs();
 
         new ByteBuddy()
                 .with(Implementation.Context.Disabled.Factory.INSTANCE)
@@ -25,6 +29,10 @@ public class FilePatch {
                 ))))
                 .visit(Advice.to(FileConstructWithParentAdvice.class).on(ElementMatchers.isConstructor().and(ElementMatchers.takesArguments(
                         File.class,
+                        String.class
+                ))))
+                .visit(Advice.to(FileConstructWithStringParentAdvice.class).on(ElementMatchers.isConstructor().and(ElementMatchers.takesArguments(
+                        String.class,
                         String.class
                 ))))
                 .make()

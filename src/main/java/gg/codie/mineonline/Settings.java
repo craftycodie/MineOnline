@@ -29,6 +29,7 @@ public class Settings implements IMinecraftOptionsHandler {
     private static final String LAST_LAUNCHED_OPTIONS_VERSION = "lastLaunchedOptionsVersion";
     @Deprecated
     private static final String USE_CUSTOM_FONTS = "useCustomFonts";
+    private static final String GAME_DIRECTORY = "minecraftFolderPath";
 
     private static final String SHOW_MENU_TOAST = "showMenuToast";
     private static final String SHOW_SCREENSHOT_TOAST = "showScreenshotToast";
@@ -104,7 +105,7 @@ public class Settings implements IMinecraftOptionsHandler {
     private static final String KEY_CODE_PICK_ITEM = "keyCodePickItem";
     private static final String KEY_CODE_PLAYER_LIST = "keyCodePlayerList";
 
-    private static final int SETTINGS_VERSION_NUMBER = 16;
+    private static final int SETTINGS_VERSION_NUMBER = 17;
 
     private static boolean readonly = true;
 
@@ -192,6 +193,7 @@ public class Settings implements IMinecraftOptionsHandler {
         settings.put(AUTO_JUMP, false);
         settings.put(KEY_CODE_INGAME_MENU, 19);
         settings.put(LIMIT_FRAMERATE, false);
+        settings.put(GAME_DIRECTORY, "");
 
         saveSettings();
         loadSettings();
@@ -605,6 +607,8 @@ public class Settings implements IMinecraftOptionsHandler {
                     case 15:
                         if (getPickItemKey() == -99)
                             setPickItemKey(-98);
+                    case 16:
+                        settings.put(GAME_DIRECTORY, "");
                 }
                 settings.put(SETTINGS_VERSION, SETTINGS_VERSION_NUMBER);
             }
@@ -645,6 +649,10 @@ public class Settings implements IMinecraftOptionsHandler {
         } catch (IOException | JSONException io) {
             io.printStackTrace();
         }
+    }
+
+    public String getMinecraftDirectoryPath() {
+        return settings.optString(GAME_DIRECTORY, "");
     }
 
     public String getJavaHome() {

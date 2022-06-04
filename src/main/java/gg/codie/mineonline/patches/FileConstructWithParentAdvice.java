@@ -12,7 +12,7 @@ public class FileConstructWithParentAdvice {
         if (child == null || child.isEmpty())
             return;
         // Warning: This stops the hook from recurring, the class load below uses this same constructor!
-        if ((!parent.toString().contains("resources") && !child.contains("options")) || parent.toString().contains(".jar") || parent.toString().contains(".exe"))
+        if ((!parent.toString().contains("resources") && !child.contains("options") && !parent.toString().contains(".minecraft")) || parent.toString().contains(".jar") || parent.toString().contains(".exe"))
             return;
 
         String path = parent.getPath() + File.separator + child;
@@ -25,13 +25,14 @@ public class FileConstructWithParentAdvice {
             String MINEONLINE_OPTIONS_PATH = (String)ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.LauncherFiles").getField("MINEONLINE_OPTIONS_PATH").get(null);
 
             String resourcesVersion = (String) ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.FilePatch").getField("resourcesVersion").get(null);
+            String customGameFolder = (String) ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.patches.FilePatch").getField("gameFolder").get(null);
 
             String OLD_MINECRAFT_FOLDER = (String)ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.LauncherFiles").getField("OLD_MINECRAFT_FOLDER").get(null);
             String NEW_MINECRAFT_FOLDER = (String)ClassLoader.getSystemClassLoader().loadClass("gg.codie.mineonline.LauncherFiles").getField("NEW_MINECRAFT_FOLDER").get(null);
 
-            if(DEV) {
-                //System.out.println("Old Path: " + path);
-            }
+//            if(DEV) {
+//                System.out.println("Old Path: " + path);
+//            }
 
             if (path.startsWith(MINECRAFT_RESOURCES_PATH) || path.substring(1).startsWith(MINECRAFT_RESOURCES_PATH)) {
                 path = path.replace(MINECRAFT_RESOURCES_PATH, MINEONLINE_RESOURCES_PATH + resourcesVersion + File.separator);
@@ -39,9 +40,18 @@ public class FileConstructWithParentAdvice {
                 path = MINEONLINE_OPTIONS_PATH;
             }
 
-            if(DEV) {
-                //System.out.println("New Path: " + path);
+            if (!customGameFolder.isEmpty()) {
+                if (path.startsWith(OLD_MINECRAFT_FOLDER) || path.substring(1).startsWith(OLD_MINECRAFT_FOLDER)) {
+                    path = path.replace(OLD_MINECRAFT_FOLDER, customGameFolder);
+                } else if (path.startsWith(NEW_MINECRAFT_FOLDER) || path.substring(1).startsWith(NEW_MINECRAFT_FOLDER)) {
+                    path = path.replace(NEW_MINECRAFT_FOLDER, customGameFolder);
+                }
             }
+
+//            if(DEV) {
+//                System.out.println(customGameFolder);
+//                System.out.println("New Path: " + path);
+//            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }

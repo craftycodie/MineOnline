@@ -505,7 +505,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
         // Patches
         SocketPatch.watchSockets();
         URL.setURLStreamHandlerFactory(new MineOnlineURLStreamHandlerFactory());
-        FilePatch.relocateFiles(minecraftVersion != null ? minecraftVersion.resourcesVersion : "default");
+        FilePatch.relocateFiles(minecraftVersion != null ? minecraftVersion.resourcesVersion : "default", Settings.singleton.getMinecraftDirectoryPath());
 
         // Allows c0.0.15a to connect to servers.
         InetSocketAddressPatch.allowCustomServers(serverAddress, serverPort);
