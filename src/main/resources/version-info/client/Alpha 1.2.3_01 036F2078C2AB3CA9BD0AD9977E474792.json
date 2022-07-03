@@ -1,0 +1,14 @@
+{
+  "name": "Alpha 1.2.3_01",
+  "info": "Reupload",
+  "md5": "036F2078C2AB3CA9BD0AD9977E474792",
+  "type": "client",
+  "legacy": true,
+  "baseVersion": "a1.2.3_01",
+  "useFOVPatch": true,
+  "ingameVersionString": "Minecraft Alpha v1.2.3_01",
+  "resourcesVersion": "b1.3_01",
+  "optionsVersion": "ALPHA2",
+  "downloadURL": "https://vault.minerarity.org/versions/Java-Edition/Client/Alpha/a1.2.3_01-0956.jar",
+  "usePlayerList": true
+}
