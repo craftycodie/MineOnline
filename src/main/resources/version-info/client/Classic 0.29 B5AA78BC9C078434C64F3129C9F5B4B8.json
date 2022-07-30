@@ -1,0 +1,18 @@
+{
+  "name": "Classic 0.29",
+  "md5": "B5AA78BC9C078434C64F3129C9F5B4B8",
+  "type": "client",
+  "enableScreenshotPatch": true,
+  "enableCursorPatch": true,
+  "legacy": true,
+  "baseVersion": "c0.29",
+  "useFOVPatch": true,
+  "useTexturepackPatch": true,
+  "ingameVersionString": "0.29",
+  "resourcesVersion": "a1.0.1_01",
+  "optionsVersion": "CLASSIC",
+  "useResizePatch": true,
+  "hasNetherPortalTexture": false,
+  "colorCodePrefix": "&",
+  "downloadURL": "https://vault.minerarity.org/versions/Java-Edition/Client/Classic/c0.29.jar"
+}
