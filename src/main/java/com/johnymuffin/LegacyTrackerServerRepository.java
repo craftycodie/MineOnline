@@ -42,36 +42,6 @@ public class LegacyTrackerServerRepository {
             } catch (Exception ex) {
                 ex.printStackTrace();
                 servers = new LinkedList<LegacyTrackerServer>();
-
-                String serverIcon = null;
-                try {
-                    InputStream iconStream = LegacyTrackerServerRepository.class.getClassLoader().getResourceAsStream("textures/mineonline/gui/server-icon.png");
-                    byte[] data = new byte[iconStream.available()];
-                    iconStream.read(data);
-
-                    serverIcon = Base64.getEncoder().encodeToString(data);
-                } catch (Exception ex2) {
-                    ex.printStackTrace();
-                }
-
-                servers.push(new LegacyTrackerServer(
-                        "",
-                        "mc.craftycodie.com",
-                        "mc.craftycodie.com",
-                        25565,
-                        0,
-                        64,
-                        "Ampersand SMP &",
-                        "b1.2_02",
-                        true,
-                        null,
-                        "An Early-Beta, Vanilla SMP Experience!",
-                        false,
-                        false,
-                        false,
-                        serverIcon,
-                        false
-                ));
                 failed = true;
             }
             for(GotServersListener listener : listeners) {
