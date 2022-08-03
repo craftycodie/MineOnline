@@ -76,7 +76,7 @@ public class MinecraftClientLauncher {
             if (!Settings.singleton.getClientLaunchArgs().isEmpty())
                 launchArgs.addAll(Arrays.asList(Settings.singleton.getClientLaunchArgs().split(" ")));
             launchArgs.add("-cp");
-            launchArgs.add(LibraryManager.getClasspath(false, false, libraries.toArray(new String[libraries.size()])));
+            launchArgs.add(LibraryManager.getClasspath(false, libraries.toArray(new String[libraries.size()])));
             launchArgs.add(MinecraftClientLauncher.class.getCanonicalName());
             launchArgs.add(jarPath);
             launchArgs.add("" + Settings.singleton.getGameWidth());

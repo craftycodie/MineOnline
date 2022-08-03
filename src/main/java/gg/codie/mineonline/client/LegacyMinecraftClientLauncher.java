@@ -90,7 +90,7 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
             if (!Settings.singleton.getClientLaunchArgs().isEmpty())
                 launchArgs.addAll(Arrays.asList(Settings.singleton.getClientLaunchArgs().split(" ")));
             launchArgs.add("-cp");
-            launchArgs.add(LibraryManager.getClasspath(true, false, new String[] {
+            launchArgs.add(LibraryManager.getClasspath(true, new String[] {
                     new File(LegacyMinecraftClientLauncher.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath(),
                     jarPath,
                     LauncherFiles.DISCORD_RPC_JAR

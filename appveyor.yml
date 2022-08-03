@@ -6,9 +6,6 @@ cache:
   - /home/appveyor/.m2
 install:
   - ps: .\build_scripts\UpdateBuildVersion.ps1
-  - sh: sudo apt purge openjfx
-  - sh: sudo apt install -y openjfx=8u161-b12-1ubuntu2 libopenjfx-jni=8u161-b12-1ubuntu2 libopenjfx-java=8u161-b12-1ubuntu2
-  - sh: sudo apt-mark hold openjfx libopenjfx-jni libopenjfx-java
 before_build:
   - mvn -v
 build_script:

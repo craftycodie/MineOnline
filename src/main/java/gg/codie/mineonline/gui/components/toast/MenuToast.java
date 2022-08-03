@@ -17,7 +17,7 @@ public class MenuToast implements IToast {
 
     @Override
     public boolean isActive() {
-        if (LegacyGameManager.getVersion() == null || !LegacyGameManager.getVersion().useMineOnlineMenu)
+        if (!LegacyGameManager.isInGame() || LegacyGameManager.getVersion() == null || !LegacyGameManager.getVersion().useMineOnlineMenu)
             return false;
         return Settings.singleton.getMenuToast();
     }

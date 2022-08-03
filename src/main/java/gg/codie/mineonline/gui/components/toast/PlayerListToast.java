@@ -21,7 +21,7 @@ public class PlayerListToast implements IToast {
 
     @Override
     public boolean isActive() {
-        if (Settings.singleton.getPlayerListToast())
+        if (LegacyGameManager.isInGame() && Settings.singleton.getPlayerListToast())
             return playerList.hasPlayers();
 
         return false;

@@ -164,7 +164,7 @@ public class DiscordRPCHandler {
                         launchArgs.add("-javaagent:" + LauncherFiles.PATCH_AGENT_JAR);
                         launchArgs.add("-Djava.util.Arrays.useLegacyMergeSort=true");
                         launchArgs.add("-cp");
-                        launchArgs.add(LibraryManager.getClasspath(true, true, new String[]{new File(MenuManager.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath(), LauncherFiles.DISCORD_RPC_JAR}));
+                        launchArgs.add(LibraryManager.getClasspath(true, new String[]{new File(MenuManager.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath(), LauncherFiles.DISCORD_RPC_JAR}));
                         launchArgs.add(MenuManager.class.getCanonicalName());
                         launchArgs.add("-server");
                         launchArgs.add(s.replace(", ", ":"));

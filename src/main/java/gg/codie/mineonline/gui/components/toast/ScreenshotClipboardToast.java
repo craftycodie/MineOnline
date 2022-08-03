@@ -17,7 +17,7 @@ public class ScreenshotClipboardToast implements IToast {
 
     @Override
     public boolean isActive() {
-        if (Keyboard.isKeyDown(Keyboard.KEY_F2) && Settings.singleton.getScreenshotToast()) {
+        if (LegacyGameManager.isInGame() && Keyboard.isKeyDown(Keyboard.KEY_F2) && Settings.singleton.getScreenshotToast()) {
             Settings.singleton.setScreenshotToast(false);
             Settings.singleton.saveSettings();
             return true;

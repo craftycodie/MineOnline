@@ -17,7 +17,7 @@ public class ZoomToast implements IToast {
 
     @Override
     public boolean isActive() {
-        if (Settings.singleton.getZoomKeyCode() == 0)
+        if (!LegacyGameManager.isInGame() || Settings.singleton.getZoomKeyCode() == 0)
             return false;
         return Settings.singleton.getZoomToast();
     }

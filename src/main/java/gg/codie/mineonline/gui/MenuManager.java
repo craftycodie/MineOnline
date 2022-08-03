@@ -9,6 +9,7 @@ import gg.codie.mineonline.*;
 import gg.codie.mineonline.api.ClassicServerAuthService;
 import gg.codie.mineonline.api.UpdateCheckerService;
 import gg.codie.mineonline.discord.DiscordRPCHandler;
+import gg.codie.mineonline.gui.components.GuiToast;
 import gg.codie.mineonline.gui.input.MouseHandler;
 import gg.codie.mineonline.gui.rendering.DisplayManager;
 import gg.codie.mineonline.gui.rendering.Loader;
@@ -84,6 +85,8 @@ public class MenuManager {
         tessellator.addVertexWithUV(i + 0, j + 0, 0.0D, (float)(k + 0) * f, (float)(l + 0) * f1);
         tessellator.draw();
     }
+
+    private static GuiToast toast = new GuiToast();
 
     public static void main(String[] args) throws Exception {
         System.setProperty("apple.awt.application.name", "MineOnline");
@@ -236,8 +239,10 @@ public class MenuManager {
                 setMenuScreen(new GuiDirectConnect(null, joinserver));
             else
                 setMenuScreen(new GuiMainMenu());
-        else
-            setMenuScreen(new GuiLoginLegacy(lastLogin != null));
+        else {
+            MicrosoftLoginController.loadDeviceCode();
+            setMenuScreen(new GuiLogin(lastLogin != null));
+        }
 
         int lastWidth = Display.getWidth();
         int lastHeight = Display.getHeight();
@@ -295,9 +300,11 @@ public class MenuManager {
                 panorama_func(((float)(System.currentTimeMillis() - startTime) / 1000) * 20, panoramaTexture);
 
                 MenuManager.guiScreen.drawScreen(k, i1);
+                toast.renderToast();
 
                 MenuManager.guiScreen.handleInput();
             }
+
 
             DisplayManager.updateDisplay();
         }

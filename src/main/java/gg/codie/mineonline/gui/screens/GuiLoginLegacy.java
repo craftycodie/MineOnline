@@ -51,20 +51,7 @@ public class GuiLoginLegacy extends AbstractGuiScreen
     }
 
     private void microsoftLogin() {
-        try {
-            Class.forName("javafx.scene.layout.VBox");
-            new MicrosoftLoginController().login();
-        } catch (ClassNotFoundException ex) {
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    JOptionPane.showMessageDialog(null,
-                            "You must install Java FX to use Microsoft Login.\n" +
-                            "Your Java install is here: " + JREUtils.getRunningJavaExecutable()
-                    );
-                }
-            });
-        }
+        MenuManager.setMenuScreen(new GuiLogin(offline));
     }
 
     protected void mouseClicked(int x, int y, int button)

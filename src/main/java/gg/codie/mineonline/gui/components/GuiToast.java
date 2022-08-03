@@ -1,5 +1,6 @@
 package gg.codie.mineonline.gui.components;
 
+import gg.codie.mineonline.client.LegacyGameManager;
 import gg.codie.mineonline.gui.GUIScale;
 import gg.codie.mineonline.gui.components.toast.*;
 import gg.codie.mineonline.gui.rendering.Font;
@@ -19,7 +20,8 @@ public class GuiToast extends GuiComponent
             new MenuToast(),
             new ScreenshotClipboardToast(),
             new ZoomToast(),
-            new PlayerListToast()
+            new PlayerListToast(),
+            new DeviceCodeClipboardToast(),
     }));
 
     public boolean isShowingToast() {
@@ -48,7 +50,7 @@ public class GuiToast extends GuiComponent
 
     public void renderToast()
     {
-        if (!Mouse.isGrabbed())
+        if (!Mouse.isGrabbed() && LegacyGameManager.isInGame())
             return;
 
         if (displayToast != null && !displayToast.isActive() && System.currentTimeMillis() - toastTime > 3000)
