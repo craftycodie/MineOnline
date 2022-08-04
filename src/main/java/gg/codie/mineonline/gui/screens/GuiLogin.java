@@ -30,8 +30,6 @@ public class GuiLogin extends AbstractGuiScreen
     {
         this.offline = offline;
 
-        System.out.println(MicrosoftLoginController.getLoginCode() == null);
-
         if (MicrosoftLoginController.getLoginCode() == null)
             MicrosoftLoginController.loadDeviceCode();
 
@@ -91,6 +89,13 @@ public class GuiLogin extends AbstractGuiScreen
         }
 
         if (errorText == null && y > getHeight() / 4 + 48 + 52 - 22 && y < getHeight() / 4 + 48 + 52 - 22 + 10 && x > (getWidth() / 2) - (Font.minecraftFont.width(loginCode) / 2) && x < (getWidth() / 2) + (Font.minecraftFont.width(loginCode) / 2)) {
+            loginHandler.OnButtonPress();
+        }
+    }
+
+    GuiButton.GuiButtonListener loginHandler =  new GuiButton.GuiButtonListener() {
+        @Override
+        public void OnButtonPress() {
             ClickSound.play();
             try {
                 Desktop.getDesktop().browse(new URI(verificationUrl));
@@ -102,9 +107,11 @@ public class GuiLogin extends AbstractGuiScreen
 
             }
         }
-    }
+    };
 
     public void showOfflineButton() {
+        controlList.remove(loginButton);
+        controlList.add(loginButton = new GuiButton(0, getWidth() / 2, getHeight() / 4 + 48 + 72, 100, 20, "Login", loginHandler));
         controlList.add(playOfflineButton = new GuiButton(0, getWidth() / 2 - 102, getHeight() / 4 + 48 + 72, 100, 20, "Play Offline", new GuiButton.GuiButtonListener() {
             @Override
             public void OnButtonPress() {
@@ -119,14 +126,33 @@ public class GuiLogin extends AbstractGuiScreen
         }));
     }
 
+    public void showRetryButton() {
+        controlList.add(retryButton = new GuiButton(0, getWidth() / 2 - 50, getHeight() / 4 + 84 - 16, 100, 20, "Retry", new GuiButton.GuiButtonListener() {
+            @Override
+            public void OnButtonPress() {
+                try {
+                    MicrosoftLoginController.loadDeviceCode();
+                    controlList.remove(retryButton);
+                    retryButton = null;
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }));
+    }
+
     public void initGui()
     {
         int i = getHeight() / 4 + 48;
+        controlList.add(loginButton = new GuiButton(0, getWidth() / 2 - 100, i + 72, "Login", loginHandler));
     }
 
     public void resize() {
         if (playOfflineButton != null) {
+            loginButton.resize(getWidth() / 2 + 2, getHeight() / 4 + 48 + 72);
             playOfflineButton.resize(getWidth() / 2 - 102, getHeight() / 4 + 48 + 72);
+        } else {
+            loginButton.resize(getWidth() / 2 - 100, getHeight() / 4 + 48 + 72);
         }
     }
 
@@ -136,8 +162,17 @@ public class GuiLogin extends AbstractGuiScreen
 
     public void drawScreen(int mouseX, int mouseY)
     {
+        loginCode = MicrosoftLoginController.getLoginCode();
+        verificationUrl = MicrosoftLoginController.getVerificationUrl();
+        errorText = MicrosoftLoginController.getError();
+
+        loginButton.enabled = errorText == null;
+
         if (offline && playOfflineButton == null)
             showOfflineButton();
+
+        if (errorText != null && retryButton == null)
+            showRetryButton();
 
         resize();
 
@@ -161,18 +196,20 @@ public class GuiLogin extends AbstractGuiScreen
         Font.minecraftFont.drawCenteredString("Microsoft Login", getWidth() / 2, getHeight() / 4 + 48 - 16, 0xffffff);
 
         if (errorText == null) {
-            int line1Width = Font.minecraftFont.width("Click the login code below to open the Microsoft Login page,");
-            Font.minecraftFont.drawString("Click the login code below to open the Microsoft Login page,", getWidth() / 2 - (line1Width / 2), getHeight() / 4 + 64 - 16, 0xffffff);
-            Font.minecraftFont.drawString("or go to " + verificationUrl + ".", getWidth() / 2 - (line1Width / 2), getHeight() / 4 + 74 - 16, 0xffffff);
+            int line1Width = Font.minecraftFont.width("When you click to login button, the login code will be copied to your clipboard,");
+            Font.minecraftFont.drawString("When you click to login button, the login code will be copied to your clipboard,", getWidth() / 2 - (line1Width / 2), getHeight() / 4 + 64 - 16, 0xffffff);
+            Font.minecraftFont.drawString("and you will be taken to the login page.", getWidth() / 2 - (line1Width / 2), getHeight() / 4 + 74 - 16, 0xffffff);
+            Font.minecraftFont.drawString("Or, you can visit " + verificationUrl + " to login on any device.", getWidth() / 2 - (line1Width / 2), getHeight() / 4 + 94 - 16, 0xffffff);
+            Font.minecraftFont.drawCenteredString(loginCode, getWidth() / 2, getHeight() / 4 + 48 + 52 + 20 - 22, 0x5555FF);
         }
-//        Font.minecraftFont.drawString("Once you have submitted the code, return here and click Login.", getWidth() / 2 - (line1Width / 2), getHeight() / 4 + 48 + 72 - 22, 0xffffff);
 
-
-        Font.minecraftFont.drawCenteredString(loginCode, getWidth() / 2, getHeight() / 4 + 48 + 52 - 22, 0x5555FF);
         Font.minecraftFont.drawString(errorText, (getWidth() / 2) - Font.minecraftFont.width(errorText) / 2, getHeight() / 4 + 64 - 16, 0xFF5555);
 
         super.drawScreen(mouseX, mouseY);
     }
 
+    private GuiButton retryButton;
+
+    private GuiButton loginButton;
     private GuiButton playOfflineButton;
 }

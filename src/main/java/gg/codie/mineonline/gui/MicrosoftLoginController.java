@@ -13,13 +13,12 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
 public class MicrosoftLoginController {
-    private static final String authTokenUrl = "https://login.live.com/oauth20_token.srf";
-
     private static final String xblAuthUrl = "https://user.auth.xboxlive.com/user/authenticate";
 
     private static final String xstsAuthUrl = "https://xsts.auth.xboxlive.com/xsts/authorize";
@@ -60,15 +59,15 @@ public class MicrosoftLoginController {
         isLoggingIn = false;
         loginPollThread = new Thread(){
             public void run(){
-                while (isLoggingIn) {
-                    deviceCodeLoginPoll();
-                    try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+            while (isLoggingIn && error == null) {
+                deviceCodeLoginPoll();
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-                interrupt();
+            }
+            interrupt();
             }
         };
     }
@@ -128,7 +127,13 @@ public class MicrosoftLoginController {
 
             isLoggingIn = true;
             loginPollThread.start();
-        } catch (IOException e) {
+        } catch (UnknownHostException e) {
+            error = "Failed to contact Microsoft. Are you offline?";
+            isLoggingIn = false;
+            e.printStackTrace();
+        } catch (Exception e) {
+            error = "Something went wrong!";
+            isLoggingIn = false;
             e.printStackTrace();
         }
     }
@@ -169,11 +174,42 @@ public class MicrosoftLoginController {
                 return;
             }
 
+            if (jsonObject.optString("error", "").equals("authorization_declined")) {
+                error = "Login was cancelled.";
+                isLoggingIn = false;
+                return;
+            }
+
+            if (jsonObject.optString("error", "").equals("bad_verification_code")) {
+                error = "Something went wrong!";
+                isLoggingIn = false;
+                return;
+            }
+
+            if (jsonObject.optString("error", "").equals("expired_token")) {
+                error = "Login has expired.";
+                isLoggingIn = false;
+                return;
+            }
+
+            if (connection.getResponseCode() != 200) {
+                error = "Something went wrong!";
+                isLoggingIn = false;
+                System.out.println(response);
+                return;
+            }
+
             singleton.isLoggingIn = false;
 
             String accessToken = (String) jsonObject.get("access_token");
             acquireXBLToken(accessToken);
-        } catch (IOException e) {
+        } catch (UnknownHostException e) {
+            error = "Failed to contact Microsoft. Are you offline?";
+            isLoggingIn = false;
+            e.printStackTrace();
+        } catch (Exception e) {
+            error = "Something went wrong!";
+            isLoggingIn = false;
             e.printStackTrace();
         }
     }
@@ -214,10 +250,23 @@ public class MicrosoftLoginController {
             }
             rd.close();
 
+            if (connection.getResponseCode() != 200) {
+                error = "Failed to login to Xbox Live";
+                isLoggingIn = false;
+                System.out.println(response);
+                return;
+            }
+
             JSONObject jsonObject = new JSONObject(response.toString());
             String xblToken = (String) jsonObject.get("Token");
             acquireXsts(xblToken);
-        } catch (IOException e) {
+        } catch (UnknownHostException e) {
+            error = "Failed to contact Xbox Live. Are you offline?";
+            isLoggingIn = false;
+            e.printStackTrace();
+        } catch (Exception e) {
+            error = "Something went wrong!";
+            isLoggingIn = false;
             e.printStackTrace();
         }
     }
@@ -280,17 +329,31 @@ public class MicrosoftLoginController {
                 if (jsonObject.has("XErr")) {
                     long errorCode = jsonObject.getLong("XErr");
                     if (errorCode ==  2148916233L) {
-                        JOptionPane.showMessageDialog(null, "This Microsoft account is not signed up with Xbox.\nPlease login to minecraft.net to continue.");
+                        error = "You are not signed up with Xbox.\nPlease login to minecraft.net to continue.";
                     } else if (errorCode == 2148916238L) {
-                        if (jsonObject.has("Redirect")) {
-                        } else {
-                            JOptionPane.showMessageDialog(null, "The Microsoft account holder is under 18.\nPlease add this account to a family to continue.");
-                        }
+                        error = "Account holder is under 18.\nPlease add this account to a family to continue.";
+                    } else if (errorCode == 2148916235L) {
+                        error = "Account is registered in a country where Xbox Live is not available.";
+                    } else if (errorCode == 2148916236L) {
+                        error = "You must complete Adult verification on the Xbox Live homepage.";
+                    } else if (errorCode == 2148916237L) {
+                        error = "You must complete Age verification on the Xbox Live homepage.";
+                    } else {
+                        error = "Failed to login to Xbox Live";
+                        System.out.println(response);
                     }
-                } else
-                    throw e;
+                } else {
+                    error = "Failed to login to Xbox Live";
+                    System.out.println(response);
+                }
             }
-        } catch (IOException e) {
+        } catch (UnknownHostException e) {
+            error = "Failed to contact Xbox Live. Are you offline?";
+            isLoggingIn = false;
+            e.printStackTrace();
+        } catch (Exception e) {
+            error = "Something went wrong!";
+            isLoggingIn = false;
             e.printStackTrace();
         }
     }
@@ -327,7 +390,13 @@ public class MicrosoftLoginController {
             String mcAccessToken = (String) jsonObject.get("access_token");
             checkMcStore(mcAccessToken);
             checkMcProfile(mcAccessToken);
-        } catch (IOException e) {
+        } catch (UnknownHostException e) {
+            error = "Failed to contact Minecraft Services. Are you offline?";
+            isLoggingIn = false;
+            e.printStackTrace();
+        } catch (Exception e) {
+            error = "Something went wrong!";
+            isLoggingIn = false;
             e.printStackTrace();
         }
     }
@@ -350,7 +419,13 @@ public class MicrosoftLoginController {
                 response.append('\r');
             }
             rd.close();
-        } catch (IOException e) {
+        } catch (UnknownHostException e) {
+            error = "Failed to contact Minecraft Services. Are you offline?";
+            isLoggingIn = false;
+            e.printStackTrace();
+        } catch (Exception e) {
+            error = "Something went wrong!";
+            isLoggingIn = false;
             e.printStackTrace();
         }
     }
@@ -388,7 +463,13 @@ public class MicrosoftLoginController {
             reset();
             DisplayManager.getFrame().setAlwaysOnTop(true);
             DisplayManager.getFrame().setAlwaysOnTop(false);
-        } catch (IOException e) {
+        } catch (UnknownHostException e) {
+            error = "Failed to contact Minecraft Services. Are you offline?";
+            isLoggingIn = false;
+            e.printStackTrace();
+        } catch (Exception e) {
+            error = "Something went wrong!";
+            isLoggingIn = false;
             e.printStackTrace();
         }
     }
