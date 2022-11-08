@@ -64,7 +64,7 @@ public class OSUtils {
                 e.printStackTrace();
             }
         }
-        return underlyingM1;
+        return underlyingM1 || isM1JVM();
     }
 
     public static boolean isLinux() {
