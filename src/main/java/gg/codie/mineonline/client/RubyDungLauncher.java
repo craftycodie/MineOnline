@@ -1,5 +1,6 @@
 package gg.codie.mineonline.client;
 
+import gg.codie.common.utils.OSUtils;
 import gg.codie.common.utils.TransferableImage;
 import gg.codie.mineonline.*;
 import gg.codie.mineonline.discord.DiscordRPCHandler;
@@ -466,7 +467,9 @@ public class RubyDungLauncher implements IMinecraftAppletWrapper {
                     int k1 = pixelData[j1 * 3 + 0] & 0xff;
                     int l1 = pixelData[j1 * 3 + 1] & 0xff;
                     int i2 = pixelData[j1 * 3 + 2] & 0xff;
-                    int j2 = 0xff000000 | k1 << 16 | l1 << 8 | i2;
+                    int j2 = OSUtils.isM1System()
+                            ? 0xff000000 | i2 << 16 | l1 << 8 | k1
+                            : 0xff000000 | k1 << 16 | l1 << 8 | i2;
                     imageData[l + i1 * width] = j2;
                 }
 
