@@ -65,26 +65,29 @@ public class BetaEvolutionsUtils {
      * @return VerificationResults class which contains successful/failed nodes
      */
     public VerificationResults authenticateUser(String username, String sessionID) {
-        //Fetch IP address for V2 and above support
-        String ip = getExternalIP();
-        if (ip == null) {
-            log("Can't authenticate with any nodes, can't fetch external IP address. Your internet is probably offline!");
+        try {
+            //Fetch IP address for V2 and above support
+            String ip = getExternalIP();
+            if (ip == null) {
+                log("Can't authenticate with any nodes, can't fetch external IP address. Your internet is probably offline!");
+                return new VerificationResults(0, 0, beServers.size());
+            }
+            VerificationResults verificationResults = new VerificationResults();
+            //Iterate through all nodes while verifying
+            for (String node : beServers.keySet()) {
+                Boolean result = authenticateWithBetaEvolutions(username, node, beServers.get(node), sessionID, ip);
+                if (result == null) {
+                    verificationResults.setErrored(verificationResults.getErrored() + 1);
+                } else if (result == true) {
+                    verificationResults.setSuccessful(verificationResults.getSuccessful() + 1);
+                } else if (result == false) {
+                    verificationResults.setFailed(verificationResults.getFailed() + 1);
+                }
+            }
+            return verificationResults;
+        } catch (Exception ex) {
             return new VerificationResults(0, 0, beServers.size());
         }
-        VerificationResults verificationResults = new VerificationResults();
-        //Iterate through all nodes while verifying
-        for (String node : beServers.keySet()) {
-            Boolean result = authenticateWithBetaEvolutions(username, node, beServers.get(node), sessionID, ip);
-            if (result == null) {
-                verificationResults.setErrored(verificationResults.getErrored() + 1);
-            } else if (result == true) {
-                verificationResults.setSuccessful(verificationResults.getSuccessful() + 1);
-            } else if (result == false) {
-                verificationResults.setFailed(verificationResults.getFailed() + 1);
-            }
-        }
-        return verificationResults;
-
     }
 
     /**
