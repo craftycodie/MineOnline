@@ -37,6 +37,10 @@ These are features MineOnline will bring to Minecraft.
 
 ![launcher](launcherdemo.png)
 
+## Apple Silicon Support
+MineOnline supports Apple Silicon with both native and roestta JVMs. However, support is not perfected. The main problem is that the game library which old versions of Minecraft use (LWJGL 2) has been unsupported for a long time. For the game to run at all we are already using a community patch.
+For the best experience we currently recommend running MineOnline under Rosetta. You can find a suitable Java Runtime Environment [here](https://www.azul.com/downloads/?version=java-8-lts&os=macos&architecture=x86-64-bit&package=jdk).
+
 ## For Developers
 As per the license you are welcome to use the launcher code under non-commercial conditions.
 
