@@ -1,5 +1,6 @@
 package gg.codie.mineonline.gui.screens;
 
+import gg.codie.common.utils.OSUtils;
 import gg.codie.minecraft.api.MojangAuthService;
 import gg.codie.minecraft.api.MojangAPI;
 import gg.codie.mineonline.Globals;
@@ -219,6 +220,8 @@ public class GuiLoginLegacy extends AbstractGuiScreen
         tessellator.setColorRGBA(255, 255, 255, 255);
         if (MenuManager.isUpdateAvailable())
             Font.minecraftFont.drawString("Update Available!", 2, getHeight() - 20, 0xffff00);
+        else if (OSUtils.isM1JVM())
+            Font.minecraftFont.drawString("x86 JVM Recommended!", 2, getHeight() - 20, 0xffff00);
         Font.minecraftFont.drawString("MineOnline " + (Globals.DEV ? "Dev " : "") + Globals.LAUNCHER_VERSION + (!Globals.BRANCH.equalsIgnoreCase("main") ? " (" + Globals.BRANCH + ")" : ""), 2, getHeight() - 10, 0xffffff);
         String s = "Made by @craftycodie <3";
         Font.minecraftFont.drawString(s, getWidth() - Font.minecraftFont.width(s) - 2, getHeight() - 10, 0xffffff);

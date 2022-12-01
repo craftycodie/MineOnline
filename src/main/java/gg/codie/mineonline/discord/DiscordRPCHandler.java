@@ -77,6 +77,9 @@ public class DiscordRPCHandler {
     }
 
     private static void play(String versionName, String serverIP, String serverPort, String username) {
+        if (OSUtils.isRosetta())
+            return;
+
         boolean isUpdate = false;
 
         if (versionName!= null && versionName.equals(DiscordRPCHandler.versionName)
@@ -141,6 +144,9 @@ public class DiscordRPCHandler {
     private static Thread discordThread;
 
     public static void initialize(){
+        if (OSUtils.isRosetta())
+            return;
+
         //TODO: Reimplement
         //externalIP = MineOnlineAPI.getExternalIP();
         username = System.getProperty("mineonline.username");

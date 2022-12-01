@@ -1,8 +1,10 @@
 package gg.codie.mineonline.patches.minecraft;
 
 import gg.codie.common.utils.OSUtils;
+import gg.codie.mineonline.Globals;
 import gg.codie.mineonline.MinecraftVersionRepository;
 import gg.codie.mineonline.client.LegacyGameManager;
+import jdk.nashorn.internal.objects.Global;
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.asm.Advice;
 import net.bytebuddy.dynamic.loading.ClassReloadingStrategy;
@@ -83,8 +85,6 @@ public class ColorizerPatch {
                     try {
                         Class<?> clazz = Class.forName(file.getName().replace(".class", "").replace("/", "."));
 
-                        System.out.println(clazz.getCanonicalName());
-
                         // We check for a class with matching methods and fields to the foliage colorizer.
                         Field pixelsField = clazz.getDeclaredField("a");
                         // not in b1.5_01 for some reason
@@ -121,7 +121,8 @@ public class ColorizerPatch {
                         if (unkMethod != null && (!Modifier.isPublic(unkMethod.getModifiers()) || !Modifier.isStatic(unkMethod.getModifiers())))
                             continue;
 
-                        System.out.println("Foliage Found " + clazz.getCanonicalName());
+                        if (Globals.DEV)
+                            System.out.println("Foliage Found " + clazz.getCanonicalName());
 
                         // Ok this is probably the one.
                         new ByteBuddy()

@@ -35,6 +35,15 @@ public class GuiControls extends AbstractGuiScreen
             }
         }));
 
+        if (!LegacyGameManager.isInGame() || (LegacyGameManager.getVersion() != null && LegacyGameManager.getVersion().usePlayerList)) {
+            controlList.add(playerListButton = new GuiSmallButton(1, i + (0 % 2) * 160, getHeight() / 6 + 24 * (2 >> 1), 70, 20, (buttonId == 2 ? "> " : "") + Keyboard.getKeyName(Settings.singleton.getPlayerListKey()) + (buttonId == 2 ? " <" : ""), new GuiButton.GuiButtonListener() {
+                @Override
+                public void OnButtonPress() {
+                    buttonId = 2;
+                }
+            }));
+        }
+
         controlList.add(new GuiButton(200, getWidth() / 2 - 100, getHeight() / 6 + 168, "Done", new GuiButton.GuiButtonListener() {
             @Override
             public void OnButtonPress() {
@@ -63,6 +72,10 @@ public class GuiControls extends AbstractGuiScreen
                     Settings.singleton.setMineonlineMenuKeyCode(i);
                     menuButton.displayString = Keyboard.getKeyName(Settings.singleton.getMineonlineMenuKeyCode());
                     break;
+                case 2:
+                    Settings.singleton.setPlayerListKey(i);
+                    playerListButton.displayString = Keyboard.getKeyName(Settings.singleton.getPlayerListKey());
+                    break;
             }
             Settings.singleton.saveSettings();
             buttonId = -1;
@@ -82,6 +95,8 @@ public class GuiControls extends AbstractGuiScreen
         int k = getWidth() / 2 - 155;
         Font.minecraftFont.drawString("Zoom", k + (0 % 2) * 160 + 70 + 6, getHeight() / 6 + 24 * (0 >> 1) + 7, -1);
         Font.minecraftFont.drawString("MineOnline Menu", k + (1 % 2) * 160 + 70 + 6, getHeight() / 6 + 24 * (1 >> 1) + 7, -1);
+        Font.minecraftFont.drawString("Player List", k + (0 % 2) * 160 + 70 + 6, getHeight() / 6 + 24 * (2 >> 1) + 7, -1);
+
 
         super.drawScreen(mouseX, mouseY);
     }
@@ -91,4 +106,5 @@ public class GuiControls extends AbstractGuiScreen
     private int buttonId;
     private GuiButton zoomButton;
     private GuiButton menuButton;
+    private GuiButton playerListButton;
 }

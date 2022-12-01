@@ -1,5 +1,6 @@
 package gg.codie.mineonline.gui.screens;
 
+import gg.codie.common.utils.OSUtils;
 import gg.codie.mineonline.Globals;
 import gg.codie.mineonline.MinecraftVersion;
 import gg.codie.mineonline.MinecraftVersionRepository;
@@ -36,6 +37,14 @@ public class GuiMainMenu extends AbstractGuiScreen
             ClickSound.play();
             try {
                 Desktop.getDesktop().browse(new URI("https://github.com/craftycodie/MineOnline/releases/latest"));
+            } catch (Exception ex) {
+
+            }
+        }
+        else if (OSUtils.isM1JVM() && y > getHeight() - 20 && y < getHeight() - 10 && x < Font.minecraftFont.width("x86 JVM Recommended!")) {
+            ClickSound.play();
+            try {
+                Desktop.getDesktop().browse(new URI("https://www.azul.com/downloads/?version=java-8-lts&os=macos&architecture=x86-64-bit&package=jdk"));
             } catch (Exception ex) {
 
             }
@@ -138,6 +147,8 @@ public class GuiMainMenu extends AbstractGuiScreen
         GL11.glPopMatrix();
         if (MenuManager.isUpdateAvailable())
             Font.minecraftFont.drawString("Update Available!", 2, getHeight() - 20, 0xffff00);
+        else if (OSUtils.isM1JVM())
+            Font.minecraftFont.drawString("x86 JVM Recommended!", 2, getHeight() - 20, 0xffff00);
         Font.minecraftFont.drawString("MineOnline " + (Globals.DEV ? "Dev " : "") + Globals.LAUNCHER_VERSION + (!Globals.BRANCH.equalsIgnoreCase("main") ? " (" + Globals.BRANCH + ")" : ""), 2, getHeight() - 10, 0xffffff);
         String s = "Made by @craftycodie <3";
         Font.minecraftFont.drawString(s, getWidth() - Font.minecraftFont.width(s) - 2, getHeight() - 10, 0xffffff);

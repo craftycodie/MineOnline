@@ -56,6 +56,10 @@ public class OSUtils {
         return getPlatform() == OS.macosxm1;
     }
 
+    public static boolean isRosetta() {
+        return isM1System() && !isM1JVM();
+    }
+
     public static boolean isM1System() {
         if (!checkedUnderlyingArch) {
             try {

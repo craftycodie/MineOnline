@@ -1,5 +1,6 @@
 package gg.codie.mineonline.client;
 
+import gg.codie.common.utils.OSUtils;
 import gg.codie.common.utils.TransferableImage;
 import gg.codie.minecraft.client.options.EMinecraftOptionsVersion;
 import gg.codie.mineonline.*;
@@ -529,6 +530,9 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
     public int getWidth() {
         int width = Display.getParent().getWidth();
 
+        if (OSUtils.isM1System())
+            return width;
+
         if (Display.isFullscreen() || fullscreen) {
             width = Display.getDisplayMode().getWidth();
         } else if (minecraftApplet != null) {
@@ -541,6 +545,9 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
     @Override
     public int getHeight() {
         int height = Display.getParent().getHeight();
+
+        if (OSUtils.isM1System())
+            return height;
 
         if (Display.isFullscreen() || fullscreen) {
             height = Display.getDisplayMode().getHeight();
