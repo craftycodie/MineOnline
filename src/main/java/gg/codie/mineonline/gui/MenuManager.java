@@ -1,6 +1,5 @@
 package gg.codie.mineonline.gui;
 
-import gg.codie.common.utils.OSUtils;
 import gg.codie.common.utils.SHA1Utils;
 import gg.codie.minecraft.api.MojangAuthService;
 import gg.codie.minecraft.api.MojangAPI;
@@ -16,8 +15,6 @@ import gg.codie.mineonline.gui.rendering.Loader;
 import gg.codie.mineonline.gui.rendering.Renderer;
 import gg.codie.mineonline.gui.screens.*;
 import gg.codie.mineonline.gui.textures.EGUITexture;
-import gg.codie.mineonline.patches.BufferedImagePatch;
-import gg.codie.mineonline.patches.lwjgl.LWJGLGL11Patch;
 import gg.codie.mineonline.utils.LastLogin;
 import gg.codie.mineonline.utils.Logging;
 import org.json.JSONObject;
@@ -96,11 +93,6 @@ public class MenuManager {
         DiscordRPCHandler.initialize();
 
         LibraryManager.updateNativesPath();
-
-        if (OSUtils.isM1System()) {
-            LWJGLGL11Patch.m1FixOnly();
-            BufferedImagePatch.fixM1();
-        }
 
         formOpen = true;
 

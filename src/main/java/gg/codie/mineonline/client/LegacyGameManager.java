@@ -133,9 +133,7 @@ public class LegacyGameManager {
 
         HashMapPatch.init();
         ClassPatch.init();
-        LWJGLGL11Patch.init(OSUtils.isM1System());
-        if (OSUtils.isM1System())
-            BufferedImagePatch.fixM1();
+        LWJGLGL11Patch.init();
         LWJGLGLUPatch.useCustomFOV();
         ByteBufferPatch.init();
         ColorizerPatch.init();
