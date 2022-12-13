@@ -325,7 +325,7 @@ public class RubyDungLauncher implements IMinecraftAppletWrapper {
                                 }
                             }
 
-                            if (Keyboard.getEventKey() == Keyboard.KEY_F1 && !Keyboard.isRepeatEvent() && Keyboard.getEventKeyState() && !f1WasDown) {
+                            if (Keyboard.getEventKey() == Keyboard.KEY_F1 && !Keyboard.isRepeatEvent() && Keyboard.getEventKeyState() && !f1WasDown && !OSUtils.isM1System()) {
                                 if (minecraftVersion.enableScreenshotPatch) {
                                     LWJGLGL11GLOrthoAdvice.hideHud = true;
                                     FOVViewmodelAdvice.hideViewModel = true;
@@ -333,7 +333,7 @@ public class RubyDungLauncher implements IMinecraftAppletWrapper {
 
                                 f1WasDown = true;
                             }
-                            if (Keyboard.getEventKey() == Keyboard.KEY_F1 && !Keyboard.isRepeatEvent() && !Keyboard.getEventKeyState()) {
+                            if (Keyboard.getEventKey() == Keyboard.KEY_F1 && !Keyboard.isRepeatEvent() && !Keyboard.getEventKeyState() && !OSUtils.isM1System()) {
                                 if (!zoomWasDown) {
                                     LWJGLGL11GLOrthoAdvice.hideHud = false;
                                     FOVViewmodelAdvice.hideViewModel = false;
@@ -354,7 +354,7 @@ public class RubyDungLauncher implements IMinecraftAppletWrapper {
                                 closeApplet();
                             }
 
-                            if (Settings.singleton.getZoomKeyCode() != 0) {
+                            if (Settings.singleton.getZoomKeyCode() != 0 && !OSUtils.isM1System()) {
                                 if (Mouse.isGrabbed() && Keyboard.getEventKey() == Settings.singleton.getZoomKeyCode() && !Keyboard.isRepeatEvent() && Keyboard.getEventKeyState() && !zoomWasDown) {
                                     LWJGLGLUPatch.zoom();
                                     LWJGLGL11GLOrthoAdvice.hideHud = true;
@@ -467,9 +467,7 @@ public class RubyDungLauncher implements IMinecraftAppletWrapper {
                     int k1 = pixelData[j1 * 3 + 0] & 0xff;
                     int l1 = pixelData[j1 * 3 + 1] & 0xff;
                     int i2 = pixelData[j1 * 3 + 2] & 0xff;
-                    int j2 = OSUtils.isM1System()
-                            ? 0xff000000 | i2 << 16 | l1 << 8 | k1
-                            : 0xff000000 | k1 << 16 | l1 << 8 | i2;
+                    int j2 = 0xff000000 | k1 << 16 | l1 << 8 | i2;
                     imageData[l + i1 * width] = j2;
                 }
 

@@ -16,8 +16,7 @@ import gg.codie.mineonline.gui.rendering.Loader;
 import gg.codie.mineonline.gui.rendering.Renderer;
 import gg.codie.mineonline.gui.screens.*;
 import gg.codie.mineonline.gui.textures.EGUITexture;
-import gg.codie.mineonline.patches.BufferedImagePatch;
-import gg.codie.mineonline.patches.lwjgl.LWJGLGL11Patch;
+import gg.codie.mineonline.patches.lwjgl.LWJGLDisplayUpdateAdvice;
 import gg.codie.mineonline.utils.LastLogin;
 import gg.codie.mineonline.utils.Logging;
 import org.json.JSONObject;
@@ -96,11 +95,6 @@ public class MenuManager {
         DiscordRPCHandler.initialize();
 
         LibraryManager.updateNativesPath();
-
-        if (OSUtils.isM1System()) {
-            LWJGLGL11Patch.m1FixOnly();
-            BufferedImagePatch.fixM1();
-        }
 
         formOpen = true;
 
@@ -366,6 +360,8 @@ public class MenuManager {
         GL11.glDisable(GL11.GL_FOG);
         GL11.glEnable(GL11.GL_ALPHA_TEST);
         GL11.glAlphaFunc(516, 0.1F);
+        if (OSUtils.isM1System())
+            LWJGLDisplayUpdateAdvice.drawM1Quad();
         Display.swapBuffers();
 
         DisplayManager.getFrame().addWindowListener(closeListener);

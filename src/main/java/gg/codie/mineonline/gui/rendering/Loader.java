@@ -1,6 +1,5 @@
 package gg.codie.mineonline.gui.rendering;
 
-import gg.codie.mineonline.Globals;
 import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.Settings;
 import gg.codie.mineonline.client.LegacyGameManager;
@@ -394,6 +393,26 @@ public class Loader {
                 return MISSING_TEXTURE_ID;
             }
         }
+    }
+
+    public int loadRGBBuffer(String name, ByteBuffer rgb, int width, int height) {
+        if (rgb == null) return MISSING_TEXTURE_ID;
+
+        this.singleIntBuffer.clear();
+        GL11.glGenTextures(this.singleIntBuffer);
+        Integer id = this.textures.get(name);
+        if (id == null)
+            id = this.singleIntBuffer.get(0);
+
+        GL11.glBindTexture(3553, id);
+
+        GL11.glTexParameteri(3553, 10241, 9728);
+        GL11.glTexParameteri(3553, 10240, 9728);
+
+        GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGB, width, height, 0, GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, rgb);
+
+        this.textures.put(name, id);
+        return id;
     }
 
     public void setupTexture(BufferedImage bufferedimage, int i) {

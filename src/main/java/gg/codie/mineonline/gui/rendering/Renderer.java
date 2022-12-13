@@ -23,31 +23,28 @@ public class Renderer
         floatBuffer = byteBuffer.asFloatBuffer();
         rawBuffer = new int[i];
     }
-
     public void renderTooltip(String tooltipText, int mouseX, int mouseY)
     {
-        if(tooltipText == null)
-        {
-            return;
-        } else
+        if(tooltipText != null)
         {
             int tooltipX = mouseX + 12;
             int tooltipY = mouseY - 12;
             int tooltipWidth = Font.minecraftFont.width(tooltipText);
             Renderer.singleton.drawGradient(tooltipX - 3, tooltipY - 3, tooltipX + tooltipWidth + 3, tooltipY + 8 + 3, 0xc0, 0, 0, 0, 0xc0, 0, 0, 0);
             Font.minecraftFont.drawStringWithShadow(tooltipText, tooltipX, tooltipY, -1);
-            return;
         }
     }
 
     public void drawSprite(int x, int y, int atlasX, int atlasY, int width, int height)
     {
         float atlasUnit = 0.00390625F;
+
         startDrawingQuads();
         addVertexWithUV(x, y + height, 0, atlasX * atlasUnit, (float)(atlasY + height) * atlasUnit);
         addVertexWithUV(x + width, y + height, 0, (float)(atlasX + width) * atlasUnit, (float)(atlasY + height) * atlasUnit);
         addVertexWithUV(x + width, y, 0, (float)(atlasX + width) * atlasUnit, atlasY * atlasUnit);
         addVertexWithUV(x, y, 0, atlasX * atlasUnit, atlasY * atlasUnit);
+
         draw();
     }
 
@@ -61,11 +58,11 @@ public class Renderer
         Renderer tessellator = Renderer.singleton;
         tessellator.startDrawingQuads();
         tessellator.setColorRGBA(r1, g1, b1, a1);
-        tessellator.addVertex(width, y, 0.0D);
-        tessellator.addVertex(x, y, 0.0D);
+        tessellator.addVertex(width, y, 0);
+        tessellator.addVertex(x, y, 0);
         tessellator.setColorRGBA(r2, g2, b2, a2);
-        tessellator.addVertex(x, height, 0.0D);
-        tessellator.addVertex(width, height, 0.0D);
+        tessellator.addVertex(x, height, 0);
+        tessellator.addVertex(width, height, 0);
         tessellator.draw();
         GL11.glShadeModel(GL11.GL_FLAT);
         GL11.glDisable(GL11.GL_BLEND);
@@ -96,10 +93,10 @@ public class Renderer
         GL11.glBlendFunc(770, 771);
         GL11.glColor4f(f1, f2, f3, f);
         startDrawingQuads();
-        addVertex(x, height, 0.0D);
-        addVertex(width, height, 0.0D);
-        addVertex(width, y, 0.0D);
-        addVertex(x, y, 0.0D);
+        addVertex(x, height, 0);
+        addVertex(width, height, 0);
+        addVertex(width, y, 0);
+        addVertex(x, y, 0);
         draw();
         GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glDisable(GL11.GL_BLEND);
@@ -164,10 +161,10 @@ public class Renderer
     public void startDrawing(int i)
     {
         reset();
+
         drawMode = i;
         hasColor = false;
         hasTexture = false;
-        return;
     }
 
     public void setNormal(float f, float f1, float f2) {
@@ -201,10 +198,10 @@ public class Renderer
         }
     }
 
-    public void addVertexWithUV(double d, double d1, double d2, double d3, double d4)
+    public void addVertexWithUV(double x, double y, double z, double uvx, double uvy)
     {
-        setTextureUV(d3, d4);
-        addVertex(d, d1, d2);
+        setTextureUV(uvx, uvy);
+        addVertex(x, y, z);
     }
 
     public void addVertex(double d, double d1, double d2)

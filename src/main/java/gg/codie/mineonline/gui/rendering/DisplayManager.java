@@ -1,5 +1,7 @@
 package gg.codie.mineonline.gui.rendering;
 
+import gg.codie.common.utils.OSUtils;
+import gg.codie.mineonline.patches.lwjgl.LWJGLDisplayUpdateAdvice;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
@@ -101,6 +103,8 @@ public class DisplayManager {
     }
 
     public static void updateDisplay() {
+        if (OSUtils.isM1System())
+            LWJGLDisplayUpdateAdvice.drawM1Quad();
         Display.sync(FPS);
         Display.update();
 
@@ -109,8 +113,6 @@ public class DisplayManager {
 
     public static void closeDisplay() {
         Display.destroy();
-        //frame.dispose();
-        //frame.setVisible(false);
     }
 
     public static void fullscreen(boolean on) {

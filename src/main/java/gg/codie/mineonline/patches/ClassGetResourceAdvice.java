@@ -1,14 +1,11 @@
 package gg.codie.mineonline.patches;
 
-import gg.codie.mineonline.Settings;
 import net.bytebuddy.asm.Advice;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 public class ClassGetResourceAdvice {
 
@@ -33,11 +30,9 @@ public class ClassGetResourceAdvice {
                         "Stand up for equality in your community!\n" +
                         "Trans Rights!\n" +
                         "Now Playing: Home - Resonance\n" +
-                        "you love chips and i love chips\n" +
+                        "Now Playing: C418 - Figure 8\n" +
                         "MineOnline!\n" +
-                        "@craftycodie\n" +
-                        "Hello Kai!\n" +
-                        "The Great Journey Awaits!\n";
+                        "@craftycodie\n";
 
                 byte[] splashesTxt = new byte[inputStream.available()];
                 inputStream.read(splashesTxt);

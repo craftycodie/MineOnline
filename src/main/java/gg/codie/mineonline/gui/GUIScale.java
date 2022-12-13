@@ -20,7 +20,7 @@ public class GUIScale
             guiScale = 1000;
         }
         for(; scaleFactor < guiScale && scaledWidth / (scaleFactor + 1) >= MIN_WIDTH && scaledHeight / (scaleFactor + 1) >= MIN_HEIGHT; scaleFactor++) { }
-        scaledWidth =  scaledWidth / (double)scaleFactor;
+        scaledWidth = scaledWidth / (double)scaleFactor;
         scaledHeight = scaledHeight / (double)scaleFactor;
         singleton = this;
     }
@@ -41,6 +41,10 @@ public class GUIScale
 
     public static int lastScaledWidth() {
         return (int)Math.ceil(singleton.getScaledWidth());
+    }
+
+    public static int lastScaleFactor() {
+        return singleton.scaleFactor;
     }
 
     public static int lastScaledHeight() {
