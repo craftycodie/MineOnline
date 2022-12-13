@@ -23,7 +23,11 @@ public class TextureHelper {
             AlphaComposite alpha = AlphaComposite.getInstance(AlphaComposite.SRC_OVER);
             graphics.setComposite(alpha);
 
-
+            if (tall) {
+                // Flatten second layers.
+                movePart = skin.getSubimage(0, 32, 56, 16);
+                graphics.drawImage(movePart, 0, 16, null);
+            }
             if (alex) {
                 // Convert alex to steve.
 
@@ -34,38 +38,6 @@ public class TextureHelper {
                 graphics.drawImage(movePart, 50, 16, null);
                 movePart = skin.getSubimage(53, 20, 2, 12);
                 graphics.drawImage(movePart, 54, 20, null);
-
-                if (tall) {
-                    // Stretch right sleeve.
-                    movePart = skin.getSubimage(45, 32, 9, 16);
-                    graphics.drawImage(movePart, 46, 32, null);
-                    movePart = skin.getSubimage(49, 32, 2, 4);
-                    graphics.drawImage(movePart, 50, 32, null);
-                    movePart = skin.getSubimage(53, 36, 2, 12);
-                    graphics.drawImage(movePart, 54, 36, null);
-
-                    // Stretch left arm.
-                    movePart = skin.getSubimage(37, 48, 9, 16);
-                    graphics.drawImage(movePart, 38, 48, null);
-                    movePart = skin.getSubimage(41, 48, 2, 4);
-                    graphics.drawImage(movePart, 42, 32, null);
-                    movePart = skin.getSubimage(45, 52, 2, 12);
-                    graphics.drawImage(movePart, 46, 36, null);
-
-                    // Stretch left sleeve.
-                    movePart = skin.getSubimage(53, 48, 9, 16);
-                    graphics.drawImage(movePart, 54, 48, null);
-                    movePart = skin.getSubimage(57, 48, 2, 4);
-                    graphics.drawImage(movePart, 58, 32, null);
-                    movePart = skin.getSubimage(61, 52, 2, 12);
-                    graphics.drawImage(movePart, 62, 36, null);
-                }
-            }
-
-            if (tall) {
-                // Flatten second layers.
-                movePart = skin.getSubimage(0, 32, 56, 16);
-                graphics.drawImage(movePart, 0, 16, null);
             }
 
             graphics.dispose();
