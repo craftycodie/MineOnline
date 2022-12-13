@@ -1,5 +1,6 @@
 package gg.codie.mineonline.gui.screens;
 
+import gg.codie.common.utils.OSUtils;
 import gg.codie.mineonline.Settings;
 import gg.codie.mineonline.client.LegacyGameManager;
 import gg.codie.mineonline.gui.MenuManager;
@@ -22,26 +23,33 @@ public class GuiControls extends AbstractGuiScreen
     {
         int i = getWidth() / 2 - 155;
 
-        controlList.add(zoomButton = new GuiSmallButton(0, i + (0 % 2) * 160, getHeight() / 6 + 24 * (0 >> 1), 70, 20, (buttonId == 0 ? "> " : "") + Keyboard.getKeyName(Settings.singleton.getZoomKeyCode()) + (buttonId == 0 ? " <" : ""), new GuiButton.GuiButtonListener() {
-            @Override
-            public void OnButtonPress() {
-                buttonId = 0;
-            }
-        }));
-        controlList.add(menuButton = new GuiSmallButton(1, i + (1 % 2) * 160, getHeight() / 6 + 24 * (1 >> 1), 70, 20, (buttonId == 1 ? "> " : "") + Keyboard.getKeyName(Settings.singleton.getMineonlineMenuKeyCode()) + (buttonId == 1 ? " <" : ""), new GuiButton.GuiButtonListener() {
+        int buttonOffset = 0;
+
+        if (!OSUtils.isM1System()) {
+            controlList.add(zoomButton = new GuiSmallButton(0, i + (buttonOffset % 2) * 160, getHeight() / 6 + 24 * (buttonOffset >> 1), 70, 20, (buttonId == 0 ? "> " : "") + Keyboard.getKeyName(Settings.singleton.getZoomKeyCode()) + (buttonId == 0 ? " <" : ""), new GuiButton.GuiButtonListener() {
+                @Override
+                public void OnButtonPress() {
+                    buttonId = 0;
+                }
+            }));
+            buttonOffset++;
+        }
+        controlList.add(menuButton = new GuiSmallButton(1, i + (buttonOffset % 2) * 160, getHeight() / 6 + 24 * (buttonOffset >> 1), 70, 20, (buttonId == 1 ? "> " : "") + Keyboard.getKeyName(Settings.singleton.getMineonlineMenuKeyCode()) + (buttonId == 1 ? " <" : ""), new GuiButton.GuiButtonListener() {
             @Override
             public void OnButtonPress() {
                 buttonId = 1;
             }
         }));
+        buttonOffset++;
 
         if (!LegacyGameManager.isInGame() || (LegacyGameManager.getVersion() != null && LegacyGameManager.getVersion().usePlayerList)) {
-            controlList.add(playerListButton = new GuiSmallButton(1, i + (0 % 2) * 160, getHeight() / 6 + 24 * (2 >> 1), 70, 20, (buttonId == 2 ? "> " : "") + Keyboard.getKeyName(Settings.singleton.getPlayerListKey()) + (buttonId == 2 ? " <" : ""), new GuiButton.GuiButtonListener() {
+            controlList.add(playerListButton = new GuiSmallButton(1, i + (buttonOffset % 2) * 160, getHeight() / 6 + 24 * (buttonOffset >> 1), 70, 20, (buttonId == 2 ? "> " : "") + Keyboard.getKeyName(Settings.singleton.getPlayerListKey()) + (buttonId == 2 ? " <" : ""), new GuiButton.GuiButtonListener() {
                 @Override
                 public void OnButtonPress() {
                     buttonId = 2;
                 }
             }));
+            buttonOffset++;
         }
 
         controlList.add(new GuiButton(200, getWidth() / 2 - 100, getHeight() / 6 + 168, "Done", new GuiButton.GuiButtonListener() {
@@ -93,10 +101,16 @@ public class GuiControls extends AbstractGuiScreen
         drawDefaultBackground();
         Font.minecraftFont.drawCenteredStringWithShadow(screenTitle, getWidth() / 2, 20, 0xffffff);
         int k = getWidth() / 2 - 155;
-        Font.minecraftFont.drawString("Zoom", k + (0 % 2) * 160 + 70 + 6, getHeight() / 6 + 24 * (0 >> 1) + 7, -1);
-        Font.minecraftFont.drawString("MineOnline Menu", k + (1 % 2) * 160 + 70 + 6, getHeight() / 6 + 24 * (1 >> 1) + 7, -1);
-        Font.minecraftFont.drawString("Player List", k + (0 % 2) * 160 + 70 + 6, getHeight() / 6 + 24 * (2 >> 1) + 7, -1);
 
+        int buttonOffset = 0;
+
+        if (!OSUtils.isM1System()) {
+            Font.minecraftFont.drawString("Zoom", k + (buttonOffset % 2) * 160 + 70 + 6, getHeight() / 6 + 24 * (buttonOffset >> 1) + 7, -1);
+            buttonOffset++;
+        }
+        Font.minecraftFont.drawString("MineOnline Menu", k + (buttonOffset % 2) * 160 + 70 + 6, getHeight() / 6 + 24 * (buttonOffset >> 1) + 7, -1);
+        buttonOffset++;
+        Font.minecraftFont.drawString("Player List", k + (buttonOffset % 2) * 160 + 70 + 6, getHeight() / 6 + 24 * (buttonOffset >> 1) + 7, -1);
 
         super.drawScreen(mouseX, mouseY);
     }
