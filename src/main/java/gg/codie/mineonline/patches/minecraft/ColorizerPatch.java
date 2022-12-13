@@ -1,22 +1,10 @@
 package gg.codie.mineonline.patches.minecraft;
 
-import gg.codie.common.utils.OSUtils;
-import gg.codie.mineonline.Globals;
-import gg.codie.mineonline.MinecraftVersionRepository;
 import gg.codie.mineonline.client.LegacyGameManager;
-import jdk.nashorn.internal.objects.Global;
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.asm.Advice;
 import net.bytebuddy.dynamic.loading.ClassReloadingStrategy;
 import net.bytebuddy.matcher.ElementMatchers;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.Enumeration;
-import java.util.LinkedList;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 
 public class ColorizerPatch {
     public static void init() {

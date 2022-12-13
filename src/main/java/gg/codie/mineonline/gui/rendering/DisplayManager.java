@@ -1,7 +1,7 @@
 package gg.codie.mineonline.gui.rendering;
 
 import gg.codie.common.utils.OSUtils;
-import gg.codie.mineonline.patches.lwjgl.LWJGLDisplayUpdateAdvice;
+import gg.codie.mineonline.patches.lwjgl.M1Fix;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
@@ -104,7 +104,7 @@ public class DisplayManager {
 
     public static void updateDisplay() {
         if (OSUtils.isM1System())
-            LWJGLDisplayUpdateAdvice.drawM1Quad();
+            M1Fix.drawM1Quad();
         Display.sync(FPS);
         Display.update();
 
