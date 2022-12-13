@@ -178,12 +178,13 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
         minecraftVersion = MinecraftVersionRepository.getSingleton(jarPath).getVersion(jarPath);
         Settings.singleton.saveMinecraftOptions(minecraftVersion != null ? minecraftVersion.optionsVersion : EMinecraftOptionsVersion.DEFAULT);
 
-        if (minecraftVersion != null)
+        if (minecraftVersion != null) {
             try {
                 new SoundExtractionService().downloadSoundpack(minecraftVersion.resourcesVersion);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
+        }
     }
 
     boolean firstUpdate = true;
@@ -202,16 +203,34 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
             DiscordRPCHandler.play(Paths.get(jarPath).getFileName().toString(), serverAddress, serverPort);
 
         DisplayManager.init();
+
+        Frame frame = DisplayManager.getFrame();
+
         DisplayManager.getCanvas().setPreferredSize(new Dimension(startWidth, startHeight));
-        DisplayManager.getFrame().setPreferredSize(new Dimension(startWidth + DisplayManager.getFrame().getInsets().left + DisplayManager.getFrame().getInsets().right, startHeight + DisplayManager.getFrame().getInsets().top + DisplayManager.getFrame().getInsets().bottom));
+        frame.setPreferredSize(new Dimension(startWidth + DisplayManager.getFrame().getInsets().left + DisplayManager.getFrame().getInsets().right, startHeight + DisplayManager.getFrame().getInsets().top + DisplayManager.getFrame().getInsets().bottom));
         DisplayManager.getCanvas().setSize(startWidth, startHeight);
-        DisplayManager.getFrame().setSize(startWidth + DisplayManager.getFrame().getInsets().left + DisplayManager.getFrame().getInsets().right, startHeight + DisplayManager.getFrame().getInsets().top + DisplayManager.getFrame().getInsets().bottom);
-        DisplayManager.getFrame().pack();
-        DisplayManager.getFrame().setVisible(true);
+        frame.setSize(startWidth + DisplayManager.getFrame().getInsets().left + DisplayManager.getFrame().getInsets().right, startHeight + DisplayManager.getFrame().getInsets().top + DisplayManager.getFrame().getInsets().bottom);
+
+        if (OSUtils.isM1JVM()) {
+            frame.setExtendedState(frame.getExtendedState() | frame.MAXIMIZED_BOTH);
+            frame.setVisible(true);
+            frame.setResizable(false);
+
+            // Maximise animation.
+            // This animation can be slowed down in settings, but we're gonna ignore that for now.
+            Thread.sleep(1000);
+
+            frame.setSize(frame.getWidth(), frame.getHeight());
+            frame.setPreferredSize(new Dimension(frame.getWidth(), frame.getHeight()));
+            frame.pack();
+        }
+
+        frame.pack();
+        frame.setVisible(true);
         Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
-        int x = (int) ((dimension.getWidth() - DisplayManager.getFrame().getWidth()) / 2);
-        int y = (int) ((dimension.getHeight() - DisplayManager.getFrame().getHeight()) / 2);
-        DisplayManager.getFrame().setLocation(x, y);
+        int x = (int) ((dimension.getWidth() - frame.getWidth()) / 2);
+        int y = (int) (((dimension.getHeight() - frame.getHeight()) / 2) - frame.getInsets().top);
+        frame.setLocation(x, y);
 
         DisplayManager.getFrame().addWindowListener(new WindowAdapter() {
             @Override
@@ -227,8 +246,6 @@ public class LegacyMinecraftClientLauncher extends Applet implements AppletStub,
         });
 
         String appletClassName = MinecraftVersion.getAppletClass(jarPath);
-
-        Frame frame = DisplayManager.getFrame();
 
         LWJGLDisplayPatch.createListener = new OnCreateListener() {
             @Override
