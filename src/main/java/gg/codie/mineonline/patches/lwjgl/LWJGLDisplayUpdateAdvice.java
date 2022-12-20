@@ -1,5 +1,6 @@
 package gg.codie.mineonline.patches.lwjgl;
 
+import gg.codie.common.utils.OSUtils;
 import net.bytebuddy.asm.Advice;
 
 import java.lang.reflect.Field;
@@ -17,6 +18,7 @@ public class LWJGLDisplayUpdateAdvice {
             LWJGLDisplayPatch.updateListener.onUpdateEvent();
         inUpdateHookField.set(null, false);
 
-        M1Fix.drawM1Quad();
+        if (OSUtils.isM1System())
+            M1Fix.drawM1Quad();
     }
 }
