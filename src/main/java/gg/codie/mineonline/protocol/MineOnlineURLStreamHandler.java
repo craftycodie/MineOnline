@@ -1,13 +1,18 @@
 package gg.codie.mineonline.protocol;
 
-import sun.net.www.protocol.http.HttpURLConnection;
-
 import java.io.IOException;
+import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
 
 public class MineOnlineURLStreamHandler extends URLStreamHandler {
+    private final Class<? extends URLConnection> defaultHttpConnectionClass;
+
+    public MineOnlineURLStreamHandler(Class<? extends URLConnection> _defaultHttpConnectionClass) {
+        defaultHttpConnectionClass = _defaultHttpConnectionClass;
+    }
+
     @Override
     protected URLConnection openConnection(URL url) throws IOException {
         // Online-Mode fix
@@ -49,6 +54,11 @@ public class MineOnlineURLStreamHandler extends URLStreamHandler {
                 return new CapeURLConnection(url);
         }
 
-        return new HttpURLConnection(url, null);
+        try {
+            return defaultHttpConnectionClass.getConstructor(URL.class, Proxy.class).newInstance(url, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }
