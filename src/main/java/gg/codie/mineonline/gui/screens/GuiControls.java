@@ -110,7 +110,10 @@ public class GuiControls extends AbstractGuiScreen
         }
         Font.minecraftFont.drawString("MineOnline Menu", k + (buttonOffset % 2) * 160 + 70 + 6, getHeight() / 6 + 24 * (buttonOffset >> 1) + 7, -1);
         buttonOffset++;
-        Font.minecraftFont.drawString("Player List", k + (buttonOffset % 2) * 160 + 70 + 6, getHeight() / 6 + 24 * (buttonOffset >> 1) + 7, -1);
+
+        if (!LegacyGameManager.isInGame() || (LegacyGameManager.getVersion() != null && LegacyGameManager.getVersion().usePlayerList)) {
+            Font.minecraftFont.drawString("Player List", k + (buttonOffset % 2) * 160 + 70 + 6, getHeight() / 6 + 24 * (buttonOffset >> 1) + 7, -1);
+        }
 
         super.drawScreen(mouseX, mouseY);
     }
