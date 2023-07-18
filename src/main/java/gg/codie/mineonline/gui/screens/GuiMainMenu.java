@@ -53,7 +53,7 @@ public class GuiMainMenu extends AbstractGuiScreen
         if (y > getHeight() - 10 && y < getHeight() && x > getWidth() - Font.minecraftFont.width("Made by @codiegotlost <3")) {
             ClickSound.play();
             try {
-                Desktop.getDesktop().browse(new URI("https://twitter.com/codiegotlost"));
+                Desktop.getDesktop().browse(new URI("https://linktr.ee/codiegotlost"));
             } catch (Exception ex) {
 
             }
