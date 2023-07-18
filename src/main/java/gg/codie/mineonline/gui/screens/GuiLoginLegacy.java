@@ -87,10 +87,10 @@ public class GuiLoginLegacy extends AbstractGuiScreen
             }
         }
 
-        if (y > getHeight() - 10 && y < getHeight() && x > getWidth() - Font.minecraftFont.width("Made by @craftycodie <3")) {
+        if (y > getHeight() - 10 && y < getHeight() && x > getWidth() - Font.minecraftFont.width("Made by @codiegotlost <3")) {
             ClickSound.play();
             try {
-                Desktop.getDesktop().browse(new URI("https://twitter.com/craftycodie"));
+                Desktop.getDesktop().browse(new URI("https://twitter.com/codiegotlost"));
             } catch (Exception ex) {
 
             }
@@ -223,7 +223,7 @@ public class GuiLoginLegacy extends AbstractGuiScreen
         else if (OSUtils.isM1JVM())
             Font.minecraftFont.drawString("x86 JVM Recommended!", 2, getHeight() - 20, 0xffff00);
         Font.minecraftFont.drawString("MineOnline " + (Globals.DEV ? "Dev " : "") + Globals.LAUNCHER_VERSION + (!Globals.BRANCH.equalsIgnoreCase("main") ? " (" + Globals.BRANCH + ")" : ""), 2, getHeight() - 10, 0xffffff);
-        String s = "Made by @craftycodie <3";
+        String s = "Made by @codiegotlost <3";
         Font.minecraftFont.drawString(s, getWidth() - Font.minecraftFont.width(s) - 2, getHeight() - 10, 0xffffff);
         Font.minecraftFont.drawString("Login via Microsoft", ((getWidth() / 2) - 100), getHeight() / 4 + 48 + 96, 0x5555FF);
         Font.minecraftFont.drawString("Need Account?", ((getWidth() / 2) + 102) - Font.minecraftFont.width("Need Account?"), getHeight() / 4 + 48 + 96, 0x5555FF);
