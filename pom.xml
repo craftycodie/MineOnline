@@ -198,6 +198,7 @@
               <manifest></manifest>
               <icon>${project.basedir}/docs/icon.ico</icon>
               <jre>
+                <path>%JAVA_HOME%;%PATH%</path>
                 <requires64Bit>false</requires64Bit>
                 <minVersion>1.8.0_261</minVersion>
                 <maxVersion>15.0.1</maxVersion>
