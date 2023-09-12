@@ -198,13 +198,11 @@
               <manifest></manifest>
               <icon>${project.basedir}/docs/icon.ico</icon>
               <jre>
-                <path></path>
-                <bundledJre64Bit>false</bundledJre64Bit>
-                <bundledJreAsFallback>false</bundledJreAsFallback>
+                <requires64Bit>false</requires64Bit>
                 <minVersion>1.8.0_261</minVersion>
                 <maxVersion>15.0.1</maxVersion>
-                <jdkPreference>preferJre</jdkPreference>
-                <runtimeBits>64/32</runtimeBits>
+                <requiresJdk>false</requiresJdk>
+                <requires64Bit>false</requires64Bit>
               </jre>
             </configuration>
           </execution>
