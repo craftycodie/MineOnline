@@ -1,4 +1,4 @@
-Copyright (c) 2020 Codie Newark (@craftycodie)
+Copyright (c) 2023 Alex Newark (@ahnewark)
 All rights reserved.
 
 Attribution-NonCommercial 3.0 Unported (CC BY-NC 3.0)

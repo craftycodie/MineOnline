@@ -1,7 +1,6 @@
 package com.johnymuffin;
 
-import gg.codie.mineonline.Globals;
-import gg.codie.mineonline.api.IMPPassProvider;
+import com.ahnewark.mineonline.api.IMPPassProvider;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
