@@ -9,7 +9,7 @@ import gg.codie.mineonline.Settings;
 import gg.codie.mineonline.api.ClassicServerAuthService;
 import gg.codie.mineonline.client.LegacyGameManager;
 import gg.codie.mineonline.gui.MenuManager;
-import gg.johnymuffin.BetaEvolutionsUtils;
+import com.johnymuffin.BetaEvolutionsUtils;
 import gg.codie.mineonline.gui.components.GuiButton;
 import gg.codie.mineonline.gui.components.GuiTextField;
 import gg.codie.mineonline.gui.rendering.DisplayManager;

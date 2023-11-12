@@ -1,8 +1,8 @@
 package gg.codie.mineonline.gui;
 
 import gg.codie.mineonline.Session;
-import gg.johnymuffin.LegacyTrackerServer;
-import gg.johnymuffin.LegacyTrackerServerRepository;
+import com.johnymuffin.LegacyTrackerServer;
+import com.johnymuffin.LegacyTrackerServerRepository;
 import gg.codie.mineonline.client.LegacyGameManager;
 import gg.codie.mineonline.gui.rendering.Font;
 import gg.codie.mineonline.gui.rendering.Renderer;

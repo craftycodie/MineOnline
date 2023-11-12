@@ -17,8 +17,5 @@ public class LWJGLDisplayUpdateAdvice {
         if(LWJGLDisplayPatch.updateListener != null)
             LWJGLDisplayPatch.updateListener.onUpdateEvent();
         inUpdateHookField.set(null, false);
-
-        if (OSUtils.isM1System())
-            M1Fix.drawM1Quad();
     }
 }

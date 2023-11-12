@@ -32,7 +32,7 @@ These are features MineOnline will bring to Minecraft.
 - Tab player list.
 - Secure Server Authentication (online-mode and verify-names)
 - Resizable & Fullscreenable Applets with Mac and Linux Support
-- M1 Mac Support
+- Apple Silicon (M1, M2 etc.) Mac Support
 - Bit depth fix (removes jagged lines from clouds and other stuff).
 
 ![launcher](launcherdemo.png)

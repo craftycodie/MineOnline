@@ -1,4 +1,4 @@
-package gg.johnymuffin;
+package com.johnymuffin;
 
 import gg.codie.mineonline.api.IMPPassProvider;
 import org.json.JSONObject;

@@ -4,7 +4,7 @@ import gg.codie.mineonline.MinecraftVersion;
 import gg.codie.mineonline.MinecraftVersionRepository;
 import gg.codie.mineonline.api.SavedMinecraftServer;
 import gg.codie.mineonline.server.ThreadPollServers;
-import gg.johnymuffin.LegacyTrackerServer;
+import com.johnymuffin.LegacyTrackerServer;
 import gg.codie.mineonline.gui.rendering.Font;
 import gg.codie.mineonline.gui.rendering.Loader;
 import gg.codie.mineonline.gui.rendering.Renderer;

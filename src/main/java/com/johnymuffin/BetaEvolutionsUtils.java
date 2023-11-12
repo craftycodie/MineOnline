@@ -1,4 +1,4 @@
-package gg.johnymuffin;
+package com.johnymuffin;
 
 
 import org.json.JSONException;
