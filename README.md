@@ -1,6 +1,6 @@
 ![logo](mineonlinelogo.png)
 
-[![Build status](https://ci.appveyor.com/api/projects/status/hd3fpaffd9qqqx6d?branch=main&svg=true)](https://ci.appveyor.com/project/ahnewark/mineonline)
+[![Build status](https://ci.appveyor.com/api/projects/status/hd3fpaffd9qqqx6d?branch=main&svg=true)](https://ci.appveyor.com/project/craftycodie/mineonline)
 
 Launch old versions of minecraft just as you remembered them.
 
@@ -11,9 +11,9 @@ For example, if you wanted to play classic right now, you'd have no way to launc
 
 **Compatible with Java 8u261+**
 
-[Download](https://github.com/ahnewark/MineOnline/releases/latest)
+[Download](https://github.com/craftycodie/MineOnline/releases/latest)
 
-[Known Issues](https://github.com/ahnewark/MineOnline/discussions/300)
+[Known Issues](https://github.com/craftycodie/MineOnline/discussions/300)
 
 ## Features
 These are features MineOnline will bring to Minecraft.

@@ -3,11 +3,11 @@ name: Bug Report
 about: Create a report to help us improve
 title: "[BUG] "
 labels: bug
-assignees: ahnewark
+assignees: craftycodie
 
 ---
 
-Please check the [Known Issues](https://github.com/ahnewark/MineOnline/discussions/300) page before reporting a bug!
+Please check the [Known Issues](https://github.com/craftycodie/MineOnline/discussions/300) page before reporting a bug!
 
 **Describe the bug**
 A clear and concise description of what the bug is.
