@@ -10,7 +10,14 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    # Windows, so the installer can be built in the same job (Inno Setup is Windows-only).
+    runs-on: windows-latest
+
+    env:
+      # Java runtime bundled in the installer. To update it, change all three together (from https://adoptium.net/temurin/releases/?version=8).
+      JRE_VERSION: jdk8u512-b09
+      JRE_URL: https://github.com/adoptium/temurin8-binaries/releases/download/jdk8u512-b09/OpenJDK8U-jre_x64_windows_hotspot_8u512b09.zip
+      JRE_SHA256: ae1ae12f817d7735477c6555107eece73854da0654da69077309ef9bff0b78bf
 
     steps:
       - name: Check out
@@ -34,6 +41,23 @@ jobs:
 
       - name: Run tests
         run: mvn -B verify
+
+      - name: Download Java runtime for the installer
+        shell: pwsh
+        run: |
+          Invoke-WebRequest -Uri $env:JRE_URL -OutFile target\jre.zip
+          $hash = (Get-FileHash target\jre.zip -Algorithm SHA256).Hash.ToLower()
+          if ($hash -ne $env:JRE_SHA256) { throw "Java runtime checksum mismatch: $hash" }
+          Expand-Archive target\jre.zip -DestinationPath target\jre-extract
+
+      - name: Build installer
+        shell: pwsh
+        run: |
+          $iscc = "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe"
+          if (-not (Test-Path $iscc)) { choco install innosetup -y --no-progress }
+          $version = ([xml](Get-Content pom.xml)).project.version
+          & $iscc "/DAppVersion=$version" "/DJarFile=$PWD\target\MineOnline-$version.jar" "/DJreDir=$PWD\target\jre-extract\$env:JRE_VERSION-jre" "/DOutputDir=$PWD\target" installer\MineOnline.iss
+          if ($LASTEXITCODE -ne 0) { throw "ISCC failed with exit code $LASTEXITCODE" }
 
       - name: Upload build
         uses: actions/upload-artifact@v4
