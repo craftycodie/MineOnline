@@ -220,13 +220,10 @@ public class GuiMultiplayer extends AbstractGuiScreen
                 try {
                     jarPath = clientVersion.download();
                 } catch (Exception ex) {
-                    EventQueue.invokeLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            JOptionPane.showMessageDialog(null, "Failed to launch Minecraft.");
-                        }
-                    });
-            }
+                    ex.printStackTrace();
+                    MinecraftVersion.showDownloadFailedMessage(clientVersion, ex);
+                    return;
+                }
             else {
                 EventQueue.invokeLater(new Runnable() {
                     @Override
@@ -234,6 +231,7 @@ public class GuiMultiplayer extends AbstractGuiScreen
                         JOptionPane.showMessageDialog(null, "Couldn't find a compatible version.");
                     }
                 });
+                return;
             }
         }
 

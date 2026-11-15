@@ -64,7 +64,12 @@ public class GuiSlotVersion extends GuiSlot
     public String getSelectedPath() throws Exception {
         SelectableVersion version = versions.get(selectedIndex);
         if (version.path == null) {
-            return version.version.download();
+            try {
+                return version.version.download();
+            } catch (Exception ex) {
+                MinecraftVersion.showDownloadFailedMessage(version.version, ex);
+                throw ex;
+            }
         }
 
         return versions.get(selectedIndex).path;

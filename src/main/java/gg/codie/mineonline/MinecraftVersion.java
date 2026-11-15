@@ -219,23 +219,49 @@ public class MinecraftVersion {
         HttpURLConnection httpConnection = (java.net.HttpURLConnection) (downloadURL.openConnection());
         httpConnection.setRequestProperty("User-Agent", "MineOnline/" + Globals.LAUNCHER_VERSION);
         System.out.println(downloadURL.toString());
-        InputStream in = httpConnection.getInputStream();
+
+        int responseCode = httpConnection.getResponseCode();
+        if (responseCode != HttpURLConnection.HTTP_OK)
+            throw new IOException("Server returned HTTP " + responseCode + " for " + downloadURL);
 
         String path = LauncherFiles.MINEONLINE_VERSIONS_FOLDER + "clients" + File.separator + name + " " + md5 + File.separator + baseVersion + ".jar";
 
         File clientJar = new File(path);
         clientJar.getParentFile().mkdirs();
-        OutputStream out = new java.io.FileOutputStream(path, false);
+        // Download to a temporary file first so a failed or bad download never leaves a broken jar in place.
+        File partFile = new File(path + ".part");
 
-        final byte[] data = new byte[1024];
-        int count;
-        while ((count = in.read(data, 0, 1024)) != -1) {
-            out.write(data, 0, count);
+        try {
+            try (InputStream in = httpConnection.getInputStream(); OutputStream out = new FileOutputStream(partFile, false)) {
+                final byte[] data = new byte[8192];
+                int count;
+                while ((count = in.read(data)) != -1) {
+                    out.write(data, 0, count);
+                }
+            }
+
+            String downloadedMD5;
+            try {
+                downloadedMD5 = MD5Checksum.getMD5ChecksumForFile(partFile.getPath());
+            } catch (Exception ex) {
+                throw new IOException("Couldn't verify the downloaded file.", ex);
+            }
+            if (!md5.equalsIgnoreCase(downloadedMD5))
+                throw new IOException("The downloaded file doesn't match this version (MD5 " + downloadedMD5 + ", expected " + md5 + ").");
+
+            java.nio.file.Files.move(partFile.toPath(), clientJar.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+        } finally {
+            partFile.delete();
         }
 
         MinecraftVersionRepository.getSingleton().addInstalledVersion(path);
 
         return path;
+    }
+
+    public static void showDownloadFailedMessage(MinecraftVersion version, Exception ex) {
+        String message = "Failed to download " + version.name + (version.info != null ? " (" + version.info + ")" : "") + ".\n" + ex.getMessage();
+        java.awt.EventQueue.invokeLater(() -> javax.swing.JOptionPane.showMessageDialog(null, message, "Download Failed", javax.swing.JOptionPane.ERROR_MESSAGE));
     }
 
     public static String getAppletClass(String path) throws IOException {
