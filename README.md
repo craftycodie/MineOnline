@@ -1,6 +1,6 @@
 ![logo](mineonlinelogo.png)
 
-[![Build status](https://ci.appveyor.com/api/projects/status/hd3fpaffd9qqqx6d?branch=main&svg=true)](https://ci.appveyor.com/project/craftycodie/mineonline)
+[![Build status](https://github.com/craftycodie/MineOnline/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/craftycodie/MineOnline/actions/workflows/build.yml)
 
 Launch old versions of minecraft just as you remembered them.
 
