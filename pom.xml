@@ -177,6 +177,8 @@
       <plugin>
         <groupId>com.akathist.maven.plugins.launch4j</groupId>
         <artifactId>launch4j-maven-plugin</artifactId>
+        <!-- 2.7.0+ needs Java 17 to run; 2.6.0 is the newest that runs on the JDK 8 this project builds with. -->
+        <version>2.6.0</version>
         <executions>
           <execution>
             <id>l4j-clui</id>
