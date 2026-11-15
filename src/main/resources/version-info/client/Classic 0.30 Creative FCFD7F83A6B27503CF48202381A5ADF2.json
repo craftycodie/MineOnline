@@ -21,5 +21,6 @@
   "useResizePatch": true,
   "hasNetherPortalTexture": false,
   "fontClass": "com.mojang.minecraft.e.l",
-  "colorCodePrefix": "&"
+  "colorCodePrefix": "&",
+  "downloadURL": "https://vault.omniarchive.uk/archive/java/client-classic/c0.30-c-1900-renew.jar"
 }
