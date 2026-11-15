@@ -37,7 +37,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <discordClientId>718163542783819818</discordClientId>
+    <discordClientId>1571533518876713090</discordClientId>
     <devMode>false</devMode>
     <buildSuffix></buildSuffix>
   </properties>
