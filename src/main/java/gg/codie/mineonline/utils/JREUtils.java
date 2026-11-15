@@ -7,20 +7,25 @@ import java.io.File;
 
 public class JREUtils {
     public static String getRunningJavaExecutable() {
-        switch(OSUtils.getPlatform()) {
-            case windows:
-                return System.getProperty("java.home") + File.separator + "bin" + File.separator + "java.exe";
-            default:
-                return System.getProperty("java.home") + File.separator + "bin" + File.separator + "java";
-        }
+        return getJavaExecutable(System.getProperty("java.home"));
     }
 
     public static String getJavaExecutable() {
         Settings.singleton.loadSettings();
         String javaHome = Settings.singleton.getJavaHome();
         if (javaHome == null || javaHome.isEmpty())
-            javaHome = System.getProperty("java.home");
+            return getRunningJavaExecutable();
 
+        String javaExecutable = getJavaExecutable(javaHome);
+        if (!new File(javaExecutable).isFile()) {
+            System.out.println("Configured Java home \"" + javaHome + "\" has no Java executable at " + javaExecutable + ", using the running Java instead.");
+            return getRunningJavaExecutable();
+        }
+
+        return javaExecutable;
+    }
+
+    private static String getJavaExecutable(String javaHome) {
         switch(OSUtils.getPlatform()) {
             case windows:
                 return javaHome + File.separator + "bin" + File.separator + "java.exe";
