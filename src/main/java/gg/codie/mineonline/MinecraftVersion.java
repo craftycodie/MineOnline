@@ -217,6 +217,7 @@ public class MinecraftVersion {
 
     public String download() throws IOException {
         HttpURLConnection httpConnection = (java.net.HttpURLConnection) (downloadURL.openConnection());
+        httpConnection.setRequestProperty("User-Agent", "MineOnline/" + Globals.LAUNCHER_VERSION);
         System.out.println(downloadURL.toString());
         InputStream in = httpConnection.getInputStream();
 
