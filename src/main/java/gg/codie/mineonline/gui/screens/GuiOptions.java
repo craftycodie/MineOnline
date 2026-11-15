@@ -4,6 +4,7 @@ import gg.codie.minecraft.client.options.EMinecraftGUIScale;
 import gg.codie.mineonline.Session;
 import gg.codie.mineonline.Settings;
 import gg.codie.mineonline.client.LegacyGameManager;
+import gg.codie.mineonline.discord.DiscordRPCHandler;
 import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.gui.components.GuiButton;
 import gg.codie.mineonline.gui.components.GuiSlider;
@@ -165,6 +166,26 @@ public class GuiOptions extends AbstractGuiScreen
                 }
             }));
         }
+
+        discordRichPresenceButton = new GuiSmallButton(0, getWidth() / 2 + 5, getDiscordRichPresenceButtonY(), getDiscordRichPresenceLabel(), new GuiButton.GuiButtonListener() {
+            @Override
+            public void OnButtonPress() {
+                Settings.singleton.setDiscordRichPresence(Settings.singleton.getDiscordRichPresence().next());
+                DiscordRPCHandler.settingsChanged();
+                discordRichPresenceButton.displayString = getDiscordRichPresenceLabel();
+            }
+        });
+        controlList.add(discordRichPresenceButton);
+    }
+
+    private static String getDiscordRichPresenceLabel() {
+        return "Rich Presence: " + Settings.singleton.getDiscordRichPresence().name();
+    }
+
+    // In-game there's no Fullscreen button, so take its place beside "Hide Version Number".
+    // In the menu, sit beside Logout.
+    private int getDiscordRichPresenceButtonY() {
+        return getHeight() / 6 + (LegacyGameManager.isInGame() ? 24 : 48);
     }
 
     public void resize() {
@@ -180,6 +201,8 @@ public class GuiOptions extends AbstractGuiScreen
             controlList.get(6).resize(getWidth() / 2 + 5, getHeight() / 6 + 24);
             controlList.get(7).resize(getWidth() / 2 - 155, getHeight() / 6 + 48);
         }
+
+        discordRichPresenceButton.resize(getWidth() / 2 + 5, getDiscordRichPresenceButtonY());
     }
 
     @Override
@@ -194,4 +217,5 @@ public class GuiOptions extends AbstractGuiScreen
 
     private AbstractGuiScreen parent;
     private String screenName;
+    private GuiSmallButton discordRichPresenceButton;
 }

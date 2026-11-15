@@ -1,6 +1,7 @@
 package gg.codie.mineonline;
 
 import gg.codie.minecraft.client.options.*;
+import gg.codie.mineonline.discord.EDiscordRichPresence;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -18,6 +19,7 @@ public class Settings implements IMinecraftOptionsHandler {
     private static final String JAVA_HOME = "javaHome";
     private static final String CLIENT_LAUNCH_ARGS = "clientLaunchArgs";
     private static final String HIDE_VERSION_STRING = "hideVersionString";
+    private static final String DISCORD_RICH_PRESENCE = "discordRichPresence";
     private static final String GAME_WIDTH = "gameWidth";
     private static final String GAME_HEIGHT = "gameHeight";
     private static final String CUSTOM_CAPES = "customCapes";
@@ -104,7 +106,7 @@ public class Settings implements IMinecraftOptionsHandler {
     private static final String KEY_CODE_PICK_ITEM = "keyCodePickItem";
     private static final String KEY_CODE_PLAYER_LIST = "keyCodePlayerList";
 
-    private static final int SETTINGS_VERSION_NUMBER = 17;
+    private static final int SETTINGS_VERSION_NUMBER = 18;
 
     private static boolean readonly = true;
 
@@ -145,6 +147,7 @@ public class Settings implements IMinecraftOptionsHandler {
         settings.put(GUI_SCALE, 3);
         settings.put(TEXTURE_PACK, "Default");
         settings.put(HIDE_VERSION_STRING, false);
+        settings.put(DISCORD_RICH_PRESENCE, EDiscordRichPresence.ON.name());
         settings.put(GAME_WIDTH, 854);
         settings.put(GAME_HEIGHT, 480);
         settings.put(CUSTOM_CAPES, true);
@@ -608,12 +611,20 @@ public class Settings implements IMinecraftOptionsHandler {
                             setPickItemKey(-98);
                     case 16:
                         settings.put(GAME_DIRECTORY, "");
+                    case 17:
+                        settings.put(DISCORD_RICH_PRESENCE, EDiscordRichPresence.ON.name());
                 }
                 settings.put(SETTINGS_VERSION, SETTINGS_VERSION_NUMBER);
             }
 
             if (settings.has("redirectedDomains"))
                 settings.remove("redirectedDomains");
+
+            // Replaced by discordRichPresence during development of settings version 18.
+            if (settings.has("hideServerIPInDiscord")) {
+                settings.put(DISCORD_RICH_PRESENCE, (settings.optBoolean("hideServerIPInDiscord", false) ? EDiscordRichPresence.PRIVATE : EDiscordRichPresence.ON).name());
+                settings.remove("hideServerIPInDiscord");
+            }
 
             saveSettings();
         } catch (IOException ex) {
@@ -668,6 +679,14 @@ public class Settings implements IMinecraftOptionsHandler {
 
     public void setHideVersionString(boolean hideVersionString) {
         settings.put(HIDE_VERSION_STRING, hideVersionString);
+    }
+
+    public EDiscordRichPresence getDiscordRichPresence() {
+        return EDiscordRichPresence.fromString(settings.optString(DISCORD_RICH_PRESENCE, EDiscordRichPresence.ON.name()));
+    }
+
+    public void setDiscordRichPresence(EDiscordRichPresence discordRichPresence) {
+        settings.put(DISCORD_RICH_PRESENCE, discordRichPresence.name());
     }
 
     public int getGameWidth() {

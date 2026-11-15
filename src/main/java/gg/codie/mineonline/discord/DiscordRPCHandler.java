@@ -4,6 +4,7 @@ import gg.codie.common.utils.OSUtils;
 import gg.codie.mineonline.Globals;
 import gg.codie.mineonline.LauncherFiles;
 import gg.codie.mineonline.LibraryManager;
+import gg.codie.mineonline.Settings;
 import gg.codie.mineonline.client.LegacyGameManager;
 import gg.codie.mineonline.gui.MenuManager;
 import gg.codie.mineonline.utils.JREUtils;
@@ -101,6 +102,13 @@ public class DiscordRPCHandler {
         if (DiscordRPCHandler.serverPort != null && (DiscordRPCHandler.serverPort.isEmpty() || DiscordRPCHandler.serverPort.equals("null")))
             DiscordRPCHandler.serverPort = null;
 
+        EDiscordRichPresence mode = Settings.singleton.getDiscordRichPresence();
+
+        if (mode == EDiscordRichPresence.OFF) {
+            DiscordRPC.discordClearPresence();
+            return;
+        }
+
         if (DiscordRPCHandler.versionName == null) {
             DiscordRichPresence.Builder presence = new DiscordRichPresence.Builder("In the launcher.");
             presence.setDetails("Version " + Globals.LAUNCHER_VERSION + (Globals.DEV ? " Dev" : ""));
@@ -119,6 +127,17 @@ public class DiscordRPCHandler {
         else {
             if(DiscordRPCHandler.serverPort == null)
                 DiscordRPCHandler.serverPort = "25565";
+
+            if (mode == EDiscordRichPresence.PRIVATE) {
+                // The join secret and party ID both contain the address, so leave them out too (this also disables "Ask to Join").
+                DiscordRichPresence.Builder presence = new DiscordRichPresence.Builder("Playing Multiplayer");
+                presence.setDetails(DiscordRPCHandler.versionName);
+                presence.setStartTimestamps(startTimestamp);
+                presence.setBigImage("multiplayer", null);
+                presence.setSmallImage("nametag", DiscordRPCHandler.username);
+                DiscordRPC.discordUpdatePresence(presence.build());
+                return;
+            }
 
             DiscordRichPresence.Builder presence = new DiscordRichPresence.Builder(DiscordRPCHandler.serverIP + (!DiscordRPCHandler.serverPort.equals("25565") ? (":" + DiscordRPCHandler.serverPort) : ""));
             presence.setDetails(DiscordRPCHandler.versionName);
@@ -143,8 +162,23 @@ public class DiscordRPCHandler {
 
     private static Thread discordThread;
 
+    // Call after the rich presence setting changes, so it applies straight away.
+    public static void settingsChanged() {
+        if (discordThread == null) {
+            initialize();
+        }
+        hasUpdate = true;
+    }
+
     public static void initialize(){
         if (OSUtils.isRosetta())
+            return;
+
+        // Don't connect to Discord at all while rich presence is off; settingsChanged() connects later if it's turned on.
+        if (Settings.singleton.getDiscordRichPresence() == EDiscordRichPresence.OFF)
+            return;
+
+        if (discordThread != null)
             return;
 
         //TODO: Reimplement
@@ -154,10 +188,8 @@ public class DiscordRPCHandler {
         discordThread = new Thread(() -> {
             DiscordEventHandlers handlers = new DiscordEventHandlers.Builder().setReadyEventHandler((user) -> {
                 System.out.println("Discord logged in " + user.username + "#" + user.discriminator + "!");
-                DiscordRichPresence.Builder presence = new DiscordRichPresence.Builder("In the launcher.");
-                presence.setDetails("Version " + Globals.LAUNCHER_VERSION + (Globals.DEV ? " Dev" : ""));
-                presence.setBigImage("favicon", null);
-                DiscordRPC.discordUpdatePresence(presence.build());
+                // Send the current presence through play(), so it respects the rich presence setting.
+                hasUpdate = true;
             })
             .setJoinGameEventHandler(new JoinGameCallback() {
                 @Override
