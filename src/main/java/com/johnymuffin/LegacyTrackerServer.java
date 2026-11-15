@@ -84,7 +84,7 @@ public class LegacyTrackerServer {
                 object.optBoolean("featured", false),
                 object.optBoolean("useBetaEvolutionsAuth", false),
                 object.optString("serverIcon", null),
-                object.optBoolean("whitelisted", false)
+                object.optBoolean("whitelist", object.optBoolean("whitelisted", false))
         );
     }
 }
